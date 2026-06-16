@@ -54,3 +54,17 @@ npm run dev
 ### Payments (Paystack)
 - `POST /api/payments/initialize` — `{ plan: "premium-monthly" | "premium-yearly", email, callbackUrl? }` → `{ authorizationUrl, reference }`
 - `GET /api/payments/verify/:reference` — verifies the transaction and activates premium on success
+
+## Deployment
+
+1. Provision a managed MongoDB instance (e.g. MongoDB Atlas) and grab its connection string for `MONGODB_URI`.
+2. On your host (Render, Railway, Fly.io, etc.), set the environment variables below — do not reuse the placeholder values from `.env.example`:
+   - `NODE_ENV=production`
+   - `MONGODB_URI` — your Atlas connection string
+   - `JWT_SECRET` — a long random value, e.g. `openssl rand -hex 32`
+   - `JWT_EXPIRES_IN=7d`
+   - `CLIENT_ORIGIN` — your deployed frontend's origin (locks down CORS instead of the `*` default)
+   - `PAYSTACK_SECRET_KEY` — your **live** `sk_live_...` key
+   - Leave `PORT` unset on platforms that inject their own port
+3. Deploy with `npm install && npm start`.
+4. Point the frontend's `window.DSB_API_BASE_URL` (see `frontend/index.html`) at this service's public URL.
