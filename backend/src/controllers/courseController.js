@@ -132,7 +132,6 @@ async function submitQuiz(req, res) {
       id: q.id,
       question: q.question,
       selectedIndex,
-      correctIndex: q.correctIndex,
       correct,
       explanation: q.explanation,
     };
