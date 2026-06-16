@@ -1,1 +1,851 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destiny Skills Bridge — Global Skills. Dollar Opportunities.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; }
+        .hero-bg { background: linear-gradient(135deg, #0F172A 0%, #1E2937 100%); }
+        .skill-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .skill-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1); }
+        .modal-backdrop { background: rgba(15, 23, 42, 0.6); }
+        .chat-scroll::-webkit-scrollbar { width: 6px; }
+        .chat-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-[#0A66C2] rounded-2xl flex items-center justify-center">
+                    <span class="text-white font-bold text-2xl">DS</span>
+                </div>
+                <div>
+                    <span class="font-display text-2xl font-semibold tracking-tighter">Destiny Skills</span>
+                    <span class="font-display text-2xl font-semibold tracking-tighter text-[#0A66C2]">Bridge</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="#skills" class="text-slate-600 hover:text-slate-900">Skills</a>
+                <a href="#how" class="text-slate-600 hover:text-slate-900">How it Works</a>
+                <a href="#courses" class="text-slate-600 hover:text-slate-900">Courses</a>
+                <a href="#opportunities" class="text-slate-600 hover:text-slate-900">Opportunities</a>
+                <a href="#premium" class="text-slate-600 hover:text-slate-900">Premium</a>
+                <a href="#ai" class="text-slate-600 hover:text-slate-900">AI Advisor</a>
+            </div>
+            <div class="flex items-center gap-x-3">
+                <button id="navAuthBtn" onclick="openAuthModal('login')"
+                        class="px-5 py-2.5 text-sm font-semibold border border-slate-300 rounded-2xl hover:bg-slate-50">
+                    Log In
+                </button>
+                <button onclick="openApplicationModal()"
+                        class="px-6 py-2.5 text-sm font-semibold bg-[#0A66C2] text-white rounded-2xl hover:bg-[#0954a0]">
+                    Apply Now
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <div class="hero-bg text-white">
+        <div class="max-w-screen-xl mx-auto px-6 pt-20 pb-24">
+            <div class="max-w-3xl">
+                <div class="inline-block px-4 py-1.5 bg-white/10 rounded-3xl text-sm mb-6">
+                    Global Platform • Built for African Youth
+                </div>
+
+                <h1 class="text-6xl font-display font-semibold tracking-tighter leading-none mb-6">
+                    Global Skills.<br>
+                    <span class="text-[#60A5FA]">Dollar Opportunities.</span><br>
+                    African Futures.
+                </h1>
+
+                <p class="text-xl text-slate-300 max-w-lg mb-8">
+                    We bridge the gap between African youth and global economic opportunity — learn in-demand digital
+                    skills, build an AI-powered international portfolio, and get matched to freelance gigs and remote
+                    jobs that pay in dollars.
+                </p>
+
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="document.getElementById('skills').scrollIntoView({ behavior: 'smooth' })"
+                            class="px-8 py-4 bg-white text-[#0A66C2] font-semibold rounded-3xl flex items-center gap-x-3">
+                        Start Learning Free <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                    <button onclick="document.getElementById('ai').scrollIntoView({ behavior: 'smooth' })"
+                            class="px-8 py-4 border border-white/40 rounded-3xl font-semibold flex items-center gap-x-2">
+                        <i class="fa-solid fa-robot"></i> Talk to AI Advisor
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skills Section -->
+    <div id="skills" class="max-w-screen-xl mx-auto px-6 py-16">
+        <div class="text-center mb-10">
+            <span class="text-[#0A66C2] font-semibold text-sm tracking-widest">SKILLS THAT PAY IN DOLLARS</span>
+            <h2 class="text-4xl font-semibold tracking-tight mt-2">Choose Your Global Path</h2>
+        </div>
+
+        <div class="mb-10">
+            <div class="flex items-center gap-x-3 mb-5">
+                <span class="px-4 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full">TIER 1 — FAST START</span>
+            </div>
+            <div id="tier1Skills" class="grid md:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div>
+            <div class="flex items-center gap-x-3 mb-5">
+                <span class="px-4 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">TIER 2 — HIGH GROWTH</span>
+            </div>
+            <div id="tier2Skills" class="grid md:grid-cols-3 gap-6"></div>
+        </div>
+    </div>
+
+    <!-- How it Works -->
+    <div id="how" class="bg-white py-16 border-y">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <h2 class="text-center text-3xl font-semibold mb-12">How It Works</h2>
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-[#0A66C2] mb-3">01</div>
+                    <h4 class="font-semibold">Learn Global Skills</h4>
+                    <p class="text-sm text-slate-600 mt-2">Practical training designed for international opportunities</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-[#0A66C2] mb-3">02</div>
+                    <h4 class="font-semibold">AI Builds Your Portfolio</h4>
+                    <p class="text-sm text-slate-600 mt-2">Professional international portfolio generated automatically</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-[#0A66C2] mb-3">03</div>
+                    <h4 class="font-semibold">Get Matched Globally</h4>
+                    <p class="text-sm text-slate-600 mt-2">Access to Upwork, Fiverr, remote jobs &amp; global clients</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-4xl font-bold text-[#0A66C2] mb-3">04</div>
+                    <h4 class="font-semibold">Earn in Dollars</h4>
+                    <p class="text-sm text-slate-600 mt-2">Get paid through Payoneer while learning &amp; working</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive Courses -->
+    <div id="courses" class="max-w-screen-xl mx-auto px-6 py-16">
+        <div id="courseCatalogView">
+            <div class="text-center mb-10">
+                <span class="text-[#0A66C2] font-semibold text-sm tracking-widest">SKILLS INTERACTIVE COURSES</span>
+                <h2 class="text-4xl font-semibold tracking-tight mt-2">Learn by Doing — Lessons, Quizzes & Progress</h2>
+                <p class="text-slate-600 mt-3 max-w-xl mx-auto">Self-paced courses with real lessons and graded quizzes. Progress saves automatically — log in to sync it across devices.</p>
+            </div>
+            <div id="courseCatalogGrid" class="grid md:grid-cols-2 gap-6"></div>
+        </div>
+
+        <div id="courseDetailView" class="hidden">
+            <button onclick="closeCourseDetail()" class="mb-6 text-sm font-semibold text-[#0A66C2] flex items-center gap-x-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Courses
+            </button>
+            <h3 id="courseDetailTitle" class="text-2xl font-semibold mb-1"></h3>
+            <p id="courseDetailDescription" class="text-slate-500 text-sm mb-4"></p>
+            <div class="w-full bg-slate-100 rounded-full h-2 mb-8">
+                <div id="courseProgressBar" class="bg-[#0A66C2] h-2 rounded-full transition-all" style="width:0%"></div>
+            </div>
+            <div class="grid md:grid-cols-[300px_1fr] gap-8">
+                <div id="courseSidebar" class="space-y-6"></div>
+                <div id="courseMainPanel" class="bg-slate-50 border rounded-3xl p-6 min-h-[300px]"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Opportunity Matching -->
+    <div id="opportunities" class="max-w-screen-xl mx-auto px-6 py-16">
+        <div class="text-center mb-10">
+            <span class="text-[#0A66C2] font-semibold text-sm tracking-widest">OPPORTUNITY MATCHING</span>
+            <h2 class="text-4xl font-semibold tracking-tight mt-2">Real Global Gigs &amp; Remote Jobs</h2>
+            <p class="text-slate-600 mt-3 max-w-xl mx-auto">Sample opportunities matched to each skill track — a preview of what graduates get connected to.</p>
+        </div>
+        <div id="opportunityList" class="grid md:grid-cols-3 gap-6"></div>
+    </div>
+
+    <!-- Premium / Payments -->
+    <div id="premium" class="bg-slate-900 text-white py-16">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="text-center mb-10">
+                <span class="text-[#60A5FA] font-semibold text-sm tracking-widest">PREMIUM</span>
+                <h2 class="text-4xl font-semibold tracking-tight mt-2">Unlock the Full Bridge</h2>
+                <p class="text-slate-300 mt-3 max-w-xl mx-auto">AI Portfolio Builder, priority opportunity matching, and 1:1 AI Advisor sessions.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                <div class="bg-white text-slate-900 rounded-3xl p-8">
+                    <h3 class="font-semibold text-xl mb-1">Premium Monthly</h3>
+                    <p class="text-3xl font-bold mb-4">₦5,000<span class="text-base font-normal text-slate-500">/mo</span></p>
+                    <button onclick="startUpgrade('premium-monthly')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Upgrade Monthly</button>
+                </div>
+                <div class="bg-white text-slate-900 rounded-3xl p-8 border-2 border-[#60A5FA]">
+                    <h3 class="font-semibold text-xl mb-1">Premium Yearly</h3>
+                    <p class="text-3xl font-bold mb-4">₦50,000<span class="text-base font-normal text-slate-500">/yr</span></p>
+                    <button onclick="startUpgrade('premium-yearly')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Upgrade Yearly</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Builder -->
+    <div id="portfolio" class="max-w-screen-xl mx-auto px-6 py-16">
+        <div class="text-center mb-10">
+            <span class="text-[#0A66C2] font-semibold text-sm tracking-widest">PREMIUM FEATURE</span>
+            <h2 class="text-4xl font-semibold tracking-tight mt-2">AI-Powered Portfolio Builder</h2>
+            <p class="text-slate-600 mt-3 max-w-xl mx-auto">Tell us about your work — our AI turns it into an internationally-ready portfolio summary.</p>
+        </div>
+        <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="bg-white border rounded-3xl p-6">
+                <label class="block text-sm font-medium mb-1">Full Name</label>
+                <input id="pfName" type="text" class="w-full border rounded-xl px-4 py-2 mb-4" placeholder="Ada Okafor">
+                <label class="block text-sm font-medium mb-1">Skill Track</label>
+                <select id="pfTrack" class="w-full border rounded-xl px-4 py-2 mb-4"></select>
+                <label class="block text-sm font-medium mb-1">Highlights (one per line)</label>
+                <textarea id="pfHighlights" rows="4" class="w-full border rounded-xl px-4 py-2 mb-4" placeholder="Built a landing page for a US startup&#10;Ran a $500 ad campaign with 3x ROAS"></textarea>
+                <button onclick="generatePortfolio()" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
+                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generate Portfolio
+                </button>
+            </div>
+            <div id="portfolioResult" class="bg-white border rounded-3xl p-6 text-slate-500 flex items-center justify-center text-sm">
+                Your AI-generated portfolio will appear here.
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Advisor Chat -->
+    <div id="ai" class="max-w-screen-xl mx-auto px-6 py-16">
+        <div class="max-w-2xl mx-auto">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-semibold">Ask Our Global AI Advisor</h2>
+                <p class="text-slate-600 mt-2">Get instant guidance on skills, earnings, timelines, and portfolios.</p>
+            </div>
+            <div class="bg-white border rounded-3xl p-1">
+                <div id="chatMessages" class="chat-scroll h-96 overflow-y-auto p-5 space-y-4"></div>
+                <form id="chatForm" class="flex items-center gap-x-2 border-t p-3" onsubmit="return handleChatSubmit(event)">
+                    <input id="chatInput" type="text" placeholder="Ask about skills, earnings, or your career path..."
+                           class="flex-1 border rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]">
+                    <button type="submit" class="w-12 h-12 bg-[#0A66C2] text-white rounded-2xl flex items-center justify-center">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t py-10 text-center text-sm text-slate-500">
+        © 2026 Destiny Skills Bridge. Bridging African youth to global opportunity.
+    </footer>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center px-4">
+        <div class="bg-white rounded-3xl p-8 max-w-md w-full relative">
+            <button onclick="closeModal('authModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="authTitle" class="text-2xl font-semibold mb-1">Log In</h3>
+            <p class="text-slate-500 text-sm mb-6">Welcome back to your global skills journey.</p>
+            <form id="authForm" onsubmit="return handleAuthSubmit(event)">
+                <div id="authNameField" class="hidden mb-4">
+                    <label class="block text-sm font-medium mb-1">Full Name</label>
+                    <input id="authName" type="text" class="w-full border rounded-xl px-4 py-2">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Email</label>
+                    <input id="authEmail" type="email" required class="w-full border rounded-xl px-4 py-2">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input id="authPassword" type="password" required minlength="6" class="w-full border rounded-xl px-4 py-2">
+                </div>
+                <p id="authError" class="hidden text-red-600 text-sm mb-4"></p>
+                <button type="submit" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Continue</button>
+            </form>
+            <p class="text-center text-sm text-slate-500 mt-5">
+                <span id="authSwitchPrompt">New here?</span>
+                <button onclick="toggleAuthMode()" id="authSwitchBtn" class="text-[#0A66C2] font-semibold">Create an account</button>
+            </p>
+        </div>
+    </div>
+
+    <!-- Application Modal -->
+    <div id="applicationModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center px-4">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('applicationModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-2xl font-semibold mb-1">Apply to a Skill Track</h3>
+            <p class="text-slate-500 text-sm mb-6">Tell us about yourself and we'll match you to a cohort.</p>
+            <form id="applicationForm" onsubmit="return handleApplicationSubmit(event)">
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Full Name</label>
+                        <input id="appFullName" required type="text" class="w-full border rounded-xl px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Phone</label>
+                        <input id="appPhone" required type="text" class="w-full border rounded-xl px-4 py-2">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Email</label>
+                    <input id="appEmail" required type="email" class="w-full border rounded-xl px-4 py-2">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Country</label>
+                    <input id="appCountry" required type="text" class="w-full border rounded-xl px-4 py-2" placeholder="Nigeria">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Skill Track</label>
+                    <select id="appTrack" required class="w-full border rounded-xl px-4 py-2"></select>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium mb-1">Why do you want to join?</label>
+                    <textarea id="appMotivation" required rows="3" class="w-full border rounded-xl px-4 py-2"></textarea>
+                </div>
+                <p id="appError" class="hidden text-red-600 text-sm mb-4"></p>
+                <p id="appSuccess" class="hidden text-emerald-600 text-sm mb-4"></p>
+                <button type="submit" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.DSB_API_BASE_URL || 'http://localhost:5000';
+
+        const FALLBACK_SKILLS = [
+            { id: 'digital-marketing', tier: 'tier1', name: 'Digital Marketing', description: 'Work with global clients on Upwork & Fiverr', earningPotential: { ngnMonthly: '₦150,000 – ₦800,000', usdMonthly: '$400 – $2,000+' } },
+            { id: 'virtual-assistance', tier: 'tier1', name: 'Virtual Assistance & Customer Support', description: 'Support international teams remotely', earningPotential: { ngnMonthly: '₦120,000 – ₦600,000', usdMonthly: '$350 – $1,500+' } },
+            { id: 'content-writing', tier: 'tier1', name: 'Content Writing & Copywriting', description: 'Write for brands around the world', earningPotential: { ngnMonthly: '₦130,000 – ₦700,000', usdMonthly: '$350 – $1,800+' } },
+            { id: 'ai-tools-automation', tier: 'tier2', name: 'AI Tools & Automation', description: 'High-demand skill for global remote work', earningPotential: { ngnMonthly: '₦300,000 – ₦1,600,000', usdMonthly: '$800 – $4,000+' } },
+            { id: 'ui-ux-design', tier: 'tier2', name: 'UI/UX & Graphic Design', description: 'Design for international startups', earningPotential: { ngnMonthly: '₦250,000 – ₦1,400,000', usdMonthly: '$700 – $3,500+' } },
+            { id: 'web-development', tier: 'tier2', name: 'Web Development Fundamentals', description: 'Build sites and apps for global clients', earningPotential: { ngnMonthly: '₦350,000 – ₦2,000,000', usdMonthly: '$900 – $5,000+' } },
+        ];
+
+        let cachedSkills = FALLBACK_SKILLS;
+        let authMode = 'login';
+
+        function authToken() { return localStorage.getItem('dsb_token'); }
+        function authUser() {
+            const raw = localStorage.getItem('dsb_user');
+            return raw ? JSON.parse(raw) : null;
+        }
+        function setSession(token, user) {
+            localStorage.setItem('dsb_token', token);
+            localStorage.setItem('dsb_user', JSON.stringify(user));
+            refreshNavAuth();
+        }
+        function clearSession() {
+            localStorage.removeItem('dsb_token');
+            localStorage.removeItem('dsb_user');
+            refreshNavAuth();
+        }
+        function refreshNavAuth() {
+            const user = authUser();
+            const btn = document.getElementById('navAuthBtn');
+            if (user) {
+                btn.textContent = `Hi, ${user.name.split(' ')[0]} (Logout)`;
+                btn.onclick = () => { clearSession(); };
+            } else {
+                btn.textContent = 'Log In';
+                btn.onclick = () => openAuthModal('login');
+            }
+        }
+
+        async function apiRequest(path, options = {}) {
+            const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+            const token = authToken();
+            if (token) headers.Authorization = `Bearer ${token}`;
+            const response = await fetch(`${API_BASE_URL}${path}`, Object.assign({}, options, { headers }));
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.message || 'Request failed');
+            return data;
+        }
+
+        function skillCardHTML(skill) {
+            const color = skill.tier === 'tier1' ? 'emerald' : 'amber';
+            return `
+                <div class="skill-card bg-white p-6 rounded-3xl border">
+                    <h4 class="font-semibold">${skill.name}</h4>
+                    <p class="text-sm text-slate-500 mt-1">${skill.description}</p>
+                    <div class="mt-4 text-${color}-600 text-sm font-medium">${skill.earningPotential.usdMonthly}/month</div>
+                    <div class="text-slate-400 text-xs mt-1">${skill.earningPotential.ngnMonthly}/month locally</div>
+                </div>`;
+        }
+
+        function renderSkills(skills) {
+            cachedSkills = skills;
+            document.getElementById('tier1Skills').innerHTML = skills.filter(s => s.tier === 'tier1').map(skillCardHTML).join('');
+            document.getElementById('tier2Skills').innerHTML = skills.filter(s => s.tier === 'tier2').map(skillCardHTML).join('');
+
+            const options = skills.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+            document.getElementById('appTrack').innerHTML = options;
+            document.getElementById('pfTrack').innerHTML = options;
+        }
+
+        function opportunityCardHTML(opp) {
+            return `
+                <div class="bg-white border rounded-3xl p-6">
+                    <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">${opp.type}</span>
+                    <h4 class="font-semibold mt-2">${opp.title}</h4>
+                    <p class="text-sm text-slate-500 mt-1">${opp.client}</p>
+                    <div class="mt-4 flex items-center justify-between text-sm">
+                        <span class="text-emerald-600 font-medium">${opp.payRange}</span>
+                        <span class="text-slate-400">${opp.location}</span>
+                    </div>
+                </div>`;
+        }
+
+        async function loadSkills() {
+            try {
+                const data = await apiRequest('/api/skills');
+                renderSkills(data.skills);
+            } catch (err) {
+                renderSkills(FALLBACK_SKILLS);
+            }
+        }
+
+        async function loadOpportunities() {
+            const container = document.getElementById('opportunityList');
+            try {
+                const data = await apiRequest('/api/opportunities');
+                container.innerHTML = data.opportunities.map(opportunityCardHTML).join('');
+            } catch (err) {
+                container.innerHTML = '<p class="text-slate-400 col-span-3 text-center text-sm">Opportunities will appear here once connected to the backend.</p>';
+            }
+        }
+
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function openAuthModal(mode) {
+            authMode = mode;
+            applyAuthMode();
+            openModal('authModal');
+        }
+        function toggleAuthMode() {
+            authMode = authMode === 'login' ? 'register' : 'login';
+            applyAuthMode();
+        }
+        function applyAuthMode() {
+            const isRegister = authMode === 'register';
+            document.getElementById('authTitle').textContent = isRegister ? 'Create Your Account' : 'Log In';
+            document.getElementById('authNameField').classList.toggle('hidden', !isRegister);
+            document.getElementById('authSwitchPrompt').textContent = isRegister ? 'Already have an account?' : 'New here?';
+            document.getElementById('authSwitchBtn').textContent = isRegister ? 'Log in' : 'Create an account';
+            document.getElementById('authError').classList.add('hidden');
+        }
+
+        async function handleAuthSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const errorEl = document.getElementById('authError');
+            errorEl.classList.add('hidden');
+
+            try {
+                const payload = authMode === 'register'
+                    ? { name: document.getElementById('authName').value, email, password }
+                    : { email, password };
+                const data = await apiRequest(`/api/auth/${authMode === 'register' ? 'register' : 'login'}`, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                });
+                setSession(data.token, data.user);
+                closeModal('authModal');
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+            }
+            return false;
+        }
+
+        function openApplicationModal() {
+            document.getElementById('appError').classList.add('hidden');
+            document.getElementById('appSuccess').classList.add('hidden');
+            openModal('applicationModal');
+        }
+
+        async function handleApplicationSubmit(event) {
+            event.preventDefault();
+            const trackId = document.getElementById('appTrack').value;
+            const skill = cachedSkills.find(s => s.id === trackId);
+            const errorEl = document.getElementById('appError');
+            const successEl = document.getElementById('appSuccess');
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+
+            try {
+                await apiRequest('/api/applications', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        fullName: document.getElementById('appFullName').value,
+                        email: document.getElementById('appEmail').value,
+                        phone: document.getElementById('appPhone').value,
+                        country: document.getElementById('appCountry').value,
+                        track: skill ? skill.name : trackId,
+                        tier: skill ? skill.tier : 'tier1',
+                        motivation: document.getElementById('appMotivation').value,
+                    }),
+                });
+                successEl.textContent = "Application received! We'll be in touch soon.";
+                successEl.classList.remove('hidden');
+                document.getElementById('applicationForm').reset();
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+            }
+            return false;
+        }
+
+        async function startUpgrade(plan) {
+            const user = authUser();
+            const email = user ? user.email : prompt('Enter your email to continue to payment:');
+            if (!email) return;
+
+            try {
+                const data = await apiRequest('/api/payments/initialize', {
+                    method: 'POST',
+                    body: JSON.stringify({ plan, email, callbackUrl: window.location.href }),
+                });
+                window.location.href = data.authorizationUrl;
+            } catch (err) {
+                alert(`Could not start payment: ${err.message}`);
+            }
+        }
+
+        async function generatePortfolio() {
+            const name = document.getElementById('pfName').value;
+            const trackId = document.getElementById('pfTrack').value;
+            const highlights = document.getElementById('pfHighlights').value.split('\n').map(s => s.trim()).filter(Boolean);
+            const resultEl = document.getElementById('portfolioResult');
+
+            if (!name) {
+                resultEl.innerHTML = '<p class="text-red-600">Please enter your name first.</p>';
+                return;
+            }
+
+            resultEl.innerHTML = '<p class="text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Generating your portfolio...</p>';
+
+            try {
+                const data = await apiRequest('/api/portfolio/generate', {
+                    method: 'POST',
+                    body: JSON.stringify({ name, trackId, highlights }),
+                });
+                const p = data.portfolio;
+                resultEl.innerHTML = `
+                    <div>
+                        <h4 class="font-semibold text-lg mb-2">${p.headline}</h4>
+                        <p class="text-sm text-slate-600 mb-4">${p.summary}</p>
+                        ${p.highlights.length ? `<ul class="text-sm list-disc list-inside space-y-1">${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>` : ''}
+                    </div>`;
+            } catch (err) {
+                resultEl.innerHTML = `<p class="text-red-600">${err.message}</p>`;
+            }
+        }
+
+        function appendChatMessage(role, text) {
+            const container = document.getElementById('chatMessages');
+            const bubble = document.createElement('div');
+            bubble.className = role === 'user' ? 'flex justify-end' : 'flex justify-start';
+            bubble.innerHTML = `
+                <div class="${role === 'user' ? 'bg-[#0A66C2] text-white' : 'bg-slate-100 text-slate-800'} rounded-2xl px-4 py-3 max-w-[80%] text-sm">
+                    ${text}
+                </div>`;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        const chatHistory = [];
+
+        async function handleChatSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message) return false;
+
+            appendChatMessage('user', message);
+            chatHistory.push({ role: 'user', message });
+            input.value = '';
+
+            try {
+                const data = await apiRequest('/api/advisor/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({ message, history: chatHistory }),
+                });
+                appendChatMessage('advisor', data.reply);
+                chatHistory.push({ role: 'advisor', message: data.reply });
+            } catch (err) {
+                appendChatMessage('advisor', "I'm having trouble connecting right now — please make sure the backend API is running and try again.");
+            }
+            return false;
+        }
+
+        // ----- Interactive Courses -----
+        let currentCourse = null;
+        let currentLessonId = null;
+        let currentQuizModuleId = null;
+
+        function courseProgressStoreKey() { return 'dsb_course_progress'; }
+        function getAllLocalCourseProgress() {
+            const raw = localStorage.getItem(courseProgressStoreKey());
+            return raw ? JSON.parse(raw) : {};
+        }
+        function getLocalCourseProgress(courseId) {
+            const all = getAllLocalCourseProgress();
+            return all[courseId] || { completedLessons: [], quizResults: {} };
+        }
+        function setLocalCourseProgress(courseId, progress) {
+            const all = getAllLocalCourseProgress();
+            all[courseId] = progress;
+            localStorage.setItem(courseProgressStoreKey(), JSON.stringify(all));
+        }
+
+        function isLessonComplete(lessonId) {
+            return currentCourse._progress.completedLessons.includes(lessonId);
+        }
+        function isQuizComplete(quizId) {
+            return !!currentCourse._progress.quizResults[quizId];
+        }
+
+        function courseCardHTML(course) {
+            return `
+                <div class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
+                    <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">${course.category}</span>
+                    <h4 class="font-semibold text-lg mt-2">${course.title}</h4>
+                    <p class="text-sm text-slate-500 mt-1 flex-1">${course.description}</p>
+                    <div class="flex items-center gap-x-4 text-xs text-slate-400 mt-4 mb-4">
+                        <span><i class="fa-solid fa-layer-group mr-1"></i>${course.moduleCount} modules</span>
+                        <span><i class="fa-solid fa-book-open mr-1"></i>${course.lessonCount} lessons</span>
+                        <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
+                    </div>
+                    <button onclick="openCourse('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
+                        Start Course
+                    </button>
+                </div>`;
+        }
+
+        async function loadCourses() {
+            const grid = document.getElementById('courseCatalogGrid');
+            try {
+                const data = await apiRequest('/api/courses');
+                grid.innerHTML = data.courses.map(courseCardHTML).join('');
+            } catch (err) {
+                grid.innerHTML = '<p class="text-slate-400 col-span-2 text-center text-sm">Courses will appear here once connected to the backend.</p>';
+            }
+        }
+
+        async function openCourse(courseId) {
+            try {
+                const data = await apiRequest(`/api/courses/${courseId}`);
+                currentCourse = data.course;
+                if (data.progress) {
+                    const quizResults = {};
+                    (data.progress.quizAttempts || []).forEach((a) => {
+                        quizResults[a.lessonId] = { score: a.score, total: a.total, passed: a.total > 0 && (a.score / a.total) >= 0.7 };
+                    });
+                    currentCourse._progress = { completedLessons: data.progress.completedLessons || [], quizResults };
+                } else {
+                    currentCourse._progress = getLocalCourseProgress(courseId);
+                }
+            } catch (err) {
+                alert(`Could not load course: ${err.message}`);
+                return;
+            }
+
+            document.getElementById('courseCatalogView').classList.add('hidden');
+            document.getElementById('courseDetailView').classList.remove('hidden');
+            document.getElementById('courseDetailTitle').textContent = currentCourse.title;
+            document.getElementById('courseDetailDescription').textContent = currentCourse.description;
+
+            const firstModule = currentCourse.modules[0];
+            selectLesson(firstModule.id, firstModule.lessons[0].id);
+        }
+
+        function closeCourseDetail() {
+            document.getElementById('courseDetailView').classList.add('hidden');
+            document.getElementById('courseCatalogView').classList.remove('hidden');
+            currentCourse = null;
+        }
+
+        function renderSidebar() {
+            const sidebar = document.getElementById('courseSidebar');
+            sidebar.innerHTML = currentCourse.modules.map((mod) => {
+                const lessonItems = mod.lessons.map((lesson) => {
+                    const done = isLessonComplete(lesson.id);
+                    const active = currentLessonId === lesson.id;
+                    return `
+                        <button onclick="selectLesson('${mod.id}','${lesson.id}')"
+                                class="w-full text-left px-3 py-2 rounded-xl text-sm flex items-center gap-x-2 ${active ? 'bg-[#0A66C2] text-white' : 'hover:bg-slate-100'}">
+                            <i class="fa-solid ${done ? 'fa-circle-check text-emerald-400' : 'fa-circle text-slate-300'}"></i>
+                            <span>${lesson.title}</span>
+                        </button>`;
+                }).join('');
+
+                const quizDone = isQuizComplete(mod.quiz.id);
+                const quizActive = currentQuizModuleId === mod.id;
+                const quizItem = `
+                    <button onclick="selectQuiz('${mod.id}')"
+                            class="w-full text-left px-3 py-2 rounded-xl text-sm flex items-center gap-x-2 ${quizActive ? 'bg-[#0A66C2] text-white' : 'hover:bg-slate-100'}">
+                        <i class="fa-solid ${quizDone ? 'fa-circle-check text-emerald-400' : 'fa-circle-question text-amber-400'}"></i>
+                        <span>Module Quiz</span>
+                    </button>`;
+
+                return `
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-2">${mod.title}</h5>
+                        <div class="space-y-1">${lessonItems}${quizItem}</div>
+                    </div>`;
+            }).join('');
+        }
+
+        function updateProgressBar() {
+            const totalLessons = currentCourse.modules.reduce((sum, m) => sum + m.lessons.length, 0);
+            const done = currentCourse._progress.completedLessons.length;
+            const pct = totalLessons > 0 ? Math.round((done / totalLessons) * 100) : 0;
+            document.getElementById('courseProgressBar').style.width = `${pct}%`;
+        }
+
+        function renderLessonPanel(mod, lesson) {
+            const done = isLessonComplete(lesson.id);
+            document.getElementById('courseMainPanel').innerHTML = `
+                <h4 class="text-xl font-semibold mb-4">${lesson.title}</h4>
+                <div class="space-y-4 text-slate-700 text-sm leading-relaxed">
+                    ${lesson.content.map((p) => `<p>${p}</p>`).join('')}
+                </div>
+                <div class="mt-6 bg-white border rounded-2xl p-4">
+                    <h5 class="font-semibold text-sm mb-2">Key Takeaways</h5>
+                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+                        ${lesson.keyTakeaways.map((k) => `<li>${k}</li>`).join('')}
+                    </ul>
+                </div>
+                <button onclick="toggleLessonComplete('${lesson.id}')"
+                        class="mt-6 px-6 py-3 rounded-2xl font-semibold text-sm ${done ? 'bg-emerald-100 text-emerald-700' : 'bg-[#0A66C2] text-white'}">
+                    <i class="fa-solid ${done ? 'fa-check' : 'fa-circle-check'} mr-2"></i>${done ? 'Completed' : 'Mark Complete'}
+                </button>`;
+        }
+
+        function selectLesson(modId, lessonId) {
+            currentLessonId = lessonId;
+            currentQuizModuleId = null;
+            const mod = currentCourse.modules.find((m) => m.id === modId);
+            const lesson = mod.lessons.find((l) => l.id === lessonId);
+            renderSidebar();
+            updateProgressBar();
+            renderLessonPanel(mod, lesson);
+        }
+
+        function renderQuizPanel(mod) {
+            const quiz = mod.quiz;
+            document.getElementById('courseMainPanel').innerHTML = `
+                <h4 class="text-xl font-semibold mb-4">Module Quiz: ${mod.title}</h4>
+                <form id="quizForm" onsubmit="return handleQuizSubmit(event, '${quiz.id}')">
+                    ${quiz.questions.map((q, qi) => `
+                        <div class="mb-6">
+                            <p class="font-medium text-sm mb-2">${qi + 1}. ${q.question}</p>
+                            <div class="space-y-2">
+                                ${q.options.map((opt, oi) => `
+                                    <label class="flex items-center gap-x-2 text-sm bg-white border rounded-xl px-3 py-2 cursor-pointer">
+                                        <input type="radio" name="q-${qi}" value="${oi}" required>
+                                        <span>${opt}</span>
+                                    </label>`).join('')}
+                            </div>
+                        </div>`).join('')}
+                    <button type="submit" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl text-sm">
+                        Submit Quiz
+                    </button>
+                </form>
+                <div id="quizResult" class="mt-6"></div>`;
+        }
+
+        function selectQuiz(modId) {
+            currentQuizModuleId = modId;
+            currentLessonId = null;
+            const mod = currentCourse.modules.find((m) => m.id === modId);
+            renderSidebar();
+            renderQuizPanel(mod);
+        }
+
+        async function toggleLessonComplete(lessonId) {
+            const progress = currentCourse._progress;
+            const completed = !progress.completedLessons.includes(lessonId);
+            if (completed) {
+                progress.completedLessons.push(lessonId);
+            } else {
+                progress.completedLessons = progress.completedLessons.filter((id) => id !== lessonId);
+            }
+            setLocalCourseProgress(currentCourse.id, progress);
+            updateProgressBar();
+            renderSidebar();
+
+            const mod = currentCourse.modules.find((m) => m.lessons.some((l) => l.id === lessonId));
+            const lesson = mod.lessons.find((l) => l.id === lessonId);
+            renderLessonPanel(mod, lesson);
+
+            try {
+                await apiRequest(`/api/courses/${currentCourse.id}/lessons/${lessonId}/complete`, {
+                    method: 'POST',
+                    body: JSON.stringify({ completed }),
+                });
+            } catch (err) {
+                // best-effort sync; local progress already saved
+            }
+        }
+
+        function renderQuizResults(data) {
+            const pct = data.total > 0 ? Math.round((data.score / data.total) * 100) : 0;
+            document.getElementById('quizResult').innerHTML = `
+                <div class="border rounded-2xl p-4 ${data.passed ? 'bg-emerald-50 border-emerald-200' : 'bg-amber-50 border-amber-200'}">
+                    <p class="font-semibold mb-3">${data.passed ? 'Passed!' : 'Keep practicing'} — ${data.score}/${data.total} (${pct}%)</p>
+                    ${data.results.map((r, i) => `
+                        <div class="mb-3 text-sm">
+                            <p class="font-medium ${r.correct ? 'text-emerald-700' : 'text-red-600'}">
+                                <i class="fa-solid ${r.correct ? 'fa-check' : 'fa-xmark'} mr-2"></i>${i + 1}. ${r.question}
+                            </p>
+                            <p class="text-slate-500 mt-1 ml-6">${r.explanation}</p>
+                        </div>`).join('')}
+                </div>`;
+        }
+
+        async function handleQuizSubmit(event, quizId) {
+            event.preventDefault();
+            const form = document.getElementById('quizForm');
+            const mod = currentCourse.modules.find((m) => m.quiz.id === quizId);
+            const answers = mod.quiz.questions.map((q, qi) => {
+                const checked = form.querySelector(`input[name="q-${qi}"]:checked`);
+                return checked ? parseInt(checked.value, 10) : -1;
+            });
+
+            try {
+                const data = await apiRequest(`/api/courses/${currentCourse.id}/lessons/${quizId}/quiz`, {
+                    method: 'POST',
+                    body: JSON.stringify({ answers }),
+                });
+                currentCourse._progress.quizResults[quizId] = { score: data.score, total: data.total, passed: data.passed };
+                setLocalCourseProgress(currentCourse.id, currentCourse._progress);
+                renderSidebar();
+                renderQuizResults(data);
+            } catch (err) {
+                document.getElementById('quizResult').innerHTML = `<p class="text-red-600 text-sm">${err.message}</p>`;
+            }
+            return false;
+        }
+
+        refreshNavAuth();
+        loadSkills();
+        loadOpportunities();
+        loadCourses();
+        appendChatMessage('advisor', "Hi, I'm your Destiny Skills Bridge AI Advisor. Ask me which skill to learn, how much you could earn, or how to build your portfolio.");
+    </script>
+</body>
+</html>
