@@ -1,0 +1,58 @@
+const OPPORTUNITIES = [
+  {
+    id: 'opp-1',
+    title: 'Social Media Manager (Contract)',
+    client: 'US-based DTC skincare brand',
+    skillId: 'digital-marketing',
+    payRange: '$600 – $1,200/month',
+    location: 'Remote — Global',
+    type: 'Part-time',
+  },
+  {
+    id: 'opp-2',
+    title: 'Executive Virtual Assistant',
+    client: 'UK fintech founder',
+    skillId: 'virtual-assistance',
+    payRange: '$500 – $900/month',
+    location: 'Remote — Global',
+    type: 'Full-time',
+  },
+  {
+    id: 'opp-3',
+    title: 'SEO Content Writer',
+    client: 'Canadian SaaS company',
+    skillId: 'content-writing',
+    payRange: '$0.06 – $0.12/word',
+    location: 'Remote — Global',
+    type: 'Freelance',
+  },
+  {
+    id: 'opp-4',
+    title: 'AI Automation Specialist',
+    client: 'European e-commerce group',
+    skillId: 'ai-tools-automation',
+    payRange: '$1,500 – $3,000/month',
+    location: 'Remote — Global',
+    type: 'Contract',
+  },
+  {
+    id: 'opp-5',
+    title: 'Product Designer (UI/UX)',
+    client: 'US Series-A startup',
+    skillId: 'ui-ux-design',
+    payRange: '$2,000 – $3,800/month',
+    location: 'Remote — Global',
+    type: 'Full-time',
+  },
+  {
+    id: 'opp-6',
+    title: 'Frontend Developer',
+    client: 'Australian agency',
+    skillId: 'web-development',
+    payRange: '$2,500 – $4,500/month',
+    location: 'Remote — Global',
+    type: 'Contract',
+  },
+];
+
+module.exports = { OPPORTUNITIES };
