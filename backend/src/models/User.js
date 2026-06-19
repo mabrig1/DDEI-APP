@@ -38,6 +38,7 @@ const userSchema = new mongoose.Schema(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     password: { type: String, required: true, minlength: 6 },
     track: { type: String, default: null },
+    activeCourseId: { type: String, default: null },
     isPremium: { type: Boolean, default: false },
     premiumExpiresAt: { type: Date, default: null },
     portfolio: { type: portfolioSchema, default: null },

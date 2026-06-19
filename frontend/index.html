@@ -320,6 +320,18 @@
         </div>
     </div>
 
+    <!-- Choose Course Modal -->
+    <div id="chooseCourseModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center px-4">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal('chooseCourseModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 class="text-2xl font-semibold mb-1">Pick One Course to Focus On</h3>
+            <p class="text-slate-500 text-sm mb-6">Choosing a single course at a time helps you stay focused instead of feeling overwhelmed. You can switch later — your progress is saved per course.</p>
+            <div id="chooseCourseGrid" class="grid md:grid-cols-2 gap-4"></div>
+        </div>
+    </div>
+
     <!--
       Deployment: set window.DSB_API_BASE_URL to your deployed backend's public URL,
       e.g. <script>window.DSB_API_BASE_URL = "https://api.yourdomain.com";</script>
@@ -354,6 +366,7 @@
             localStorage.removeItem('dsb_token');
             localStorage.removeItem('dsb_user');
             refreshNavAuth();
+            renderCoursesSection();
         }
         function refreshNavAuth() {
             const user = authUser();
@@ -468,6 +481,11 @@
                 });
                 setSession(data.token, data.user);
                 closeModal('authModal');
+                renderCoursesSection();
+                if (!data.user.activeCourseId) {
+                    await ensureCoursesLoaded();
+                    openChooseCourseModal();
+                }
             } catch (err) {
                 errorEl.textContent = err.message;
                 errorEl.classList.remove('hidden');
@@ -640,13 +658,93 @@
                 </div>`;
         }
 
-        async function loadCourses() {
-            const grid = document.getElementById('courseCatalogGrid');
+        let cachedCourses = [];
+
+        async function ensureCoursesLoaded() {
+            if (cachedCourses.length) return;
             try {
                 const data = await apiRequest('/api/courses');
-                grid.innerHTML = data.courses.map(courseCardHTML).join('');
+                cachedCourses = data.courses;
             } catch (err) {
+                cachedCourses = [];
+            }
+        }
+
+        async function loadCourses() {
+            await ensureCoursesLoaded();
+            renderCoursesSection();
+        }
+
+        function renderCoursesSection() {
+            const grid = document.getElementById('courseCatalogGrid');
+            if (!cachedCourses.length) {
                 grid.innerHTML = '<p class="text-slate-400 col-span-2 text-center text-sm">Courses will appear here once connected to the backend.</p>';
+                return;
+            }
+
+            const user = authUser();
+
+            if (user && user.activeCourseId) {
+                const active = cachedCourses.find((c) => c.id === user.activeCourseId);
+                grid.innerHTML = `
+                    <div class="md:col-span-2 bg-white border-2 border-[#0A66C2] rounded-3xl p-6">
+                        <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">Your Active Course</span>
+                        <h4 class="font-semibold text-xl mt-2">${active ? active.title : 'Course'}</h4>
+                        <p class="text-sm text-slate-500 mt-1">${active ? active.description : ''}</p>
+                        <div class="flex flex-wrap gap-3 mt-4">
+                            <button onclick="openCourse('${user.activeCourseId}')" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Continue Course</button>
+                            <button onclick="openChooseCourseModal()" class="px-6 py-3 border border-slate-300 text-slate-600 font-semibold rounded-2xl">Switch Course</button>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-3">Staying focused on one course at a time helps you finish faster. Your progress is saved per course, so switching back later won't lose anything.</p>
+                    </div>`;
+                return;
+            }
+
+            if (user) {
+                grid.innerHTML = `
+                    <div class="md:col-span-2 text-center bg-white border rounded-3xl p-8">
+                        <h4 class="font-semibold text-lg mb-2">Choose your first course</h4>
+                        <p class="text-sm text-slate-500 mb-4">Pick one course to focus on so you're not overwhelmed — you can switch later.</p>
+                        <button onclick="openChooseCourseModal()" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Choose a Course</button>
+                    </div>`;
+                return;
+            }
+
+            grid.innerHTML = cachedCourses.map(courseCardHTML).join('');
+        }
+
+        function courseChooseCardHTML(course) {
+            return `
+                <div class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
+                    <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">${course.category}</span>
+                    <h4 class="font-semibold text-lg mt-2">${course.title}</h4>
+                    <p class="text-sm text-slate-500 mt-1 flex-1">${course.description}</p>
+                    <div class="flex items-center gap-x-4 text-xs text-slate-400 mt-4 mb-4">
+                        <span><i class="fa-solid fa-layer-group mr-1"></i>${course.moduleCount} modules</span>
+                        <span><i class="fa-solid fa-book-open mr-1"></i>${course.lessonCount} lessons</span>
+                        <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
+                    </div>
+                    <button onclick="chooseCourse('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
+                        Choose This Course
+                    </button>
+                </div>`;
+        }
+
+        async function openChooseCourseModal() {
+            await ensureCoursesLoaded();
+            document.getElementById('chooseCourseGrid').innerHTML = cachedCourses.map(courseChooseCardHTML).join('');
+            openModal('chooseCourseModal');
+        }
+
+        async function chooseCourse(courseId) {
+            try {
+                const data = await apiRequest(`/api/courses/${courseId}/select`, { method: 'POST' });
+                setSession(authToken(), data.user);
+                closeModal('chooseCourseModal');
+                renderCoursesSection();
+                openCourse(courseId);
+            } catch (err) {
+                alert(`Could not select course: ${err.message}`);
             }
         }
 

@@ -170,4 +170,18 @@ async function getProgress(req, res) {
   res.json({ progress });
 }
 
-module.exports = { listCourses, getCourse, updateProgress, submitQuiz, getProgress };
+async function selectCourse(req, res) {
+  const course = findCourse(req.params.id);
+  if (!course) return res.status(404).json({ message: 'Course not found' });
+
+  const user = await User.findByIdAndUpdate(
+    req.userId,
+    { activeCourseId: course.id },
+    { new: true }
+  );
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  res.json({ user });
+}
+
+module.exports = { listCourses, getCourse, updateProgress, submitQuiz, getProgress, selectCourse };
