@@ -95,10 +95,6 @@ async function updateProgress(req, res) {
 
   const completed = req.body.completed !== false;
 
-  if (!req.userId) {
-    return res.json({ lessonId, completed });
-  }
-
   const result = await getOrCreateProgress(req.userId, course.id);
   if (!result) return res.status(404).json({ message: 'User not found' });
   const { user, progress } = result;

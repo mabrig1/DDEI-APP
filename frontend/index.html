@@ -386,8 +386,19 @@
             if (token) headers.Authorization = `Bearer ${token}`;
             const response = await fetch(`${API_BASE_URL}${path}`, Object.assign({}, options, { headers }));
             const data = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(data.message || 'Request failed');
+            if (!response.ok) {
+                const err = new Error(data.message || 'Request failed');
+                err.status = response.status;
+                err.data = data;
+                throw err;
+            }
             return data;
+        }
+
+        function showUpgradePrompt(message) {
+            alert(message || 'Your free 7-day trial has ended. Upgrade to Premium to keep learning.');
+            const premiumSection = document.getElementById('premium');
+            if (premiumSection) premiumSection.scrollIntoView({ behavior: 'smooth' });
         }
 
         function skillCardHTML(skill) {
@@ -482,7 +493,11 @@
                 setSession(data.token, data.user);
                 closeModal('authModal');
                 renderCoursesSection();
-                if (!data.user.activeCourseId) {
+                if (pendingCourseSelection) {
+                    const courseId = pendingCourseSelection;
+                    pendingCourseSelection = null;
+                    await chooseCourse(courseId);
+                } else if (!data.user.activeCourseId) {
                     await ensureCoursesLoaded();
                     openChooseCourseModal();
                 }
@@ -652,13 +667,33 @@
                         <span><i class="fa-solid fa-book-open mr-1"></i>${course.lessonCount} lessons</span>
                         <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
                     </div>
-                    <button onclick="openCourse('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
+                    <button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
                         Start Course
                     </button>
                 </div>`;
         }
 
         let cachedCourses = [];
+        let pendingCourseSelection = null;
+
+        function handleStartCourseClick(courseId) {
+            if (!authUser()) {
+                pendingCourseSelection = courseId;
+                openAuthModal('register');
+                return;
+            }
+            openCourse(courseId);
+        }
+
+        function trialStatusHTML(user) {
+            if (user.isPremium) return '<p class="text-xs text-emerald-600 font-semibold mt-3">Premium — unlimited access.</p>';
+            if (!user.trialExpiresAt) return '';
+            const daysLeft = Math.ceil((new Date(user.trialExpiresAt) - new Date()) / (24 * 60 * 60 * 1000));
+            if (daysLeft <= 0) {
+                return '<p class="text-xs text-red-600 font-semibold mt-3">Your free trial has ended. <a href="#premium" class="underline">Upgrade to Premium</a> to keep learning.</p>';
+            }
+            return `<p class="text-xs text-amber-600 font-semibold mt-3">${daysLeft} day${daysLeft === 1 ? '' : 's'} left in your free trial.</p>`;
+        }
 
         async function ensureCoursesLoaded() {
             if (cachedCourses.length) return;
@@ -696,6 +731,7 @@
                             <button onclick="openChooseCourseModal()" class="px-6 py-3 border border-slate-300 text-slate-600 font-semibold rounded-2xl">Switch Course</button>
                         </div>
                         <p class="text-xs text-slate-400 mt-3">Staying focused on one course at a time helps you finish faster. Your progress is saved per course, so switching back later won't lose anything.</p>
+                        ${trialStatusHTML(user)}
                     </div>`;
                 return;
             }
@@ -706,6 +742,7 @@
                         <h4 class="font-semibold text-lg mb-2">Choose your first course</h4>
                         <p class="text-sm text-slate-500 mb-4">Pick one course to focus on so you're not overwhelmed — you can switch later.</p>
                         <button onclick="openChooseCourseModal()" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Choose a Course</button>
+                        ${trialStatusHTML(user)}
                     </div>`;
                 return;
             }
@@ -744,6 +781,11 @@
                 renderCoursesSection();
                 openCourse(courseId);
             } catch (err) {
+                closeModal('chooseCourseModal');
+                if (err.status === 402) {
+                    showUpgradePrompt(err.message);
+                    return;
+                }
                 alert(`Could not select course: ${err.message}`);
             }
         }
@@ -762,6 +804,15 @@
                     currentCourse._progress = getLocalCourseProgress(courseId);
                 }
             } catch (err) {
+                if (err.status === 402) {
+                    showUpgradePrompt(err.message);
+                    return;
+                }
+                if (err.status === 401) {
+                    pendingCourseSelection = courseId;
+                    openAuthModal('login');
+                    return;
+                }
                 alert(`Could not load course: ${err.message}`);
                 return;
             }
@@ -901,7 +952,8 @@
                     body: JSON.stringify({ completed }),
                 });
             } catch (err) {
-                // best-effort sync; local progress already saved
+                if (err.status === 402) showUpgradePrompt(err.message);
+                // otherwise best-effort sync; local progress already saved
             }
         }
 
@@ -939,6 +991,7 @@
                 renderSidebar();
                 renderQuizResults(data);
             } catch (err) {
+                if (err.status === 402) showUpgradePrompt(err.message);
                 document.getElementById('quizResult').innerHTML = `<p class="text-red-600 text-sm">${err.message}</p>`;
             }
             return false;

@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
+const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+
 function signToken(user) {
   return jwt.sign({ sub: user._id.toString() }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
@@ -22,7 +24,8 @@ async function register(req, res) {
     return res.status(409).json({ message: 'An account with this email already exists' });
   }
 
-  const user = await User.create({ name, email, password, track: track || null });
+  const trialExpiresAt = new Date(Date.now() + TRIAL_DURATION_MS);
+  const user = await User.create({ name, email, password, track: track || null, trialExpiresAt });
   const token = signToken(user);
   res.status(201).json({ token, user });
 }

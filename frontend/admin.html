@@ -80,6 +80,7 @@
                         <th class="px-4 py-3">Email</th>
                         <th class="px-4 py-3">Track</th>
                         <th class="px-4 py-3">Premium</th>
+                        <th class="px-4 py-3">Access</th>
                         <th class="px-4 py-3">Lessons Completed</th>
                         <th class="px-4 py-3">Joined</th>
                         <th class="px-4 py-3"></th>
@@ -296,6 +297,14 @@
             return courseCatalogPromise;
         }
 
+        function accessStatusHTML(user) {
+            if (user.isPremium) return '<span class="text-emerald-600 font-medium">Premium</span>';
+            if (!user.trialExpiresAt) return '<span class="text-slate-400">—</span>';
+            const daysLeft = Math.ceil((new Date(user.trialExpiresAt) - new Date()) / (24 * 60 * 60 * 1000));
+            if (daysLeft <= 0) return '<span class="text-red-600 font-medium">Trial expired</span>';
+            return `<span class="text-amber-600">Trial: ${daysLeft}d left</span>`;
+        }
+
         function renderUserRow(user) {
             const tr = document.createElement('tr');
             tr.className = 'border-t';
@@ -308,6 +317,7 @@
                 <td class="px-4 py-3 text-slate-500">${escapeHtml(user.email)}</td>
                 <td class="px-4 py-3">${escapeHtml(user.track || '—')}</td>
                 <td class="px-4 py-3">${user.isPremium ? 'Yes' : 'No'}</td>
+                <td class="px-4 py-3">${accessStatusHTML(user)}</td>
                 <td class="px-4 py-3">${lessonsCompleted}</td>
                 <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${new Date(user.createdAt).toLocaleDateString()}</td>
                 <td class="px-4 py-3"></td>
@@ -316,7 +326,7 @@
             const detailTr = document.createElement('tr');
             detailTr.className = 'border-t bg-slate-50 hidden';
             const detailTd = document.createElement('td');
-            detailTd.colSpan = 7;
+            detailTd.colSpan = 8;
             detailTd.className = 'px-4 py-4 text-sm';
             detailTd.textContent = 'Loading progress…';
             detailTr.appendChild(detailTd);
@@ -336,6 +346,7 @@
             });
 
             const premiumCell = tr.children[3];
+            const accessCell = tr.children[4];
             const premiumBtn = document.createElement('button');
             premiumBtn.className = 'text-xs font-semibold hover:underline';
             const renderPremiumBtn = () => {
@@ -345,6 +356,7 @@
                     ? 'text-xs font-semibold text-red-600 hover:underline ml-2'
                     : 'text-xs font-semibold text-[#0A66C2] hover:underline ml-2';
                 premiumCell.appendChild(premiumBtn);
+                accessCell.innerHTML = accessStatusHTML(user);
             };
             premiumBtn.addEventListener('click', async () => {
                 const next = !user.isPremium;
@@ -364,7 +376,7 @@
             });
             renderPremiumBtn();
 
-            tr.children[6].appendChild(toggleBtn);
+            tr.children[7].appendChild(toggleBtn);
 
             const fragment = document.createDocumentFragment();
             fragment.appendChild(tr);
