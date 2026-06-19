@@ -1,9 +1,10 @@
 const express = require('express');
 const { generatePortfolio } = require('../controllers/portfolioController');
-const { optionalAuth } = require('../middleware/auth');
+const { requireAuth } = require('../middleware/auth');
+const { requirePremium } = require('../middleware/access');
 
 const router = express.Router();
 
-router.post('/generate', optionalAuth, generatePortfolio);
+router.post('/generate', requireAuth, requirePremium, generatePortfolio);
 
 module.exports = router;

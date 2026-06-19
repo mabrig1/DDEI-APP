@@ -588,6 +588,16 @@
                         ${p.highlights.length ? `<ul class="text-sm list-disc list-inside space-y-1">${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>` : ''}
                     </div>`;
             } catch (err) {
+                if (err.status === 401) {
+                    resultEl.innerHTML = '<p class="text-red-600">Please log in to use the AI Portfolio Builder.</p>';
+                    openAuthModal('login');
+                    return;
+                }
+                if (err.status === 402) {
+                    resultEl.innerHTML = '<p class="text-red-600">The AI Portfolio Builder is a Premium feature.</p>';
+                    showUpgradePrompt(err.message);
+                    return;
+                }
                 resultEl.innerHTML = `<p class="text-red-600">${err.message}</p>`;
             }
         }
@@ -624,6 +634,16 @@
                 appendChatMessage('advisor', data.reply);
                 chatHistory.push({ role: 'advisor', message: data.reply });
             } catch (err) {
+                if (err.status === 401) {
+                    appendChatMessage('advisor', 'Please log in to chat with the AI Advisor.');
+                    openAuthModal('login');
+                    return false;
+                }
+                if (err.status === 402) {
+                    appendChatMessage('advisor', 'The AI Advisor is a Premium feature.');
+                    showUpgradePrompt(err.message);
+                    return false;
+                }
                 appendChatMessage('advisor', "I'm having trouble connecting right now — please make sure the backend API is running and try again.");
             }
             return false;
@@ -997,10 +1017,27 @@
             return false;
         }
 
+        async function hydrateAdminAccess() {
+            const params = new URLSearchParams(window.location.search);
+            const token = params.get('adminAccess');
+            if (!token) return;
+
+            history.replaceState({}, '', window.location.pathname + window.location.hash);
+            localStorage.setItem('dsb_token', token);
+            try {
+                const data = await apiRequest('/api/auth/me');
+                setSession(token, data.user);
+                renderCoursesSection();
+            } catch (err) {
+                clearSession();
+            }
+        }
+
         refreshNavAuth();
         loadSkills();
         loadOpportunities();
         loadCourses();
+        hydrateAdminAccess();
         appendChatMessage('advisor', "Hi, I'm your Destiny Skills Bridge AI Advisor. Ask me which skill to learn, how much you could earn, or how to build your portfolio.");
     </script>
 </body>

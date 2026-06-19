@@ -1,10 +1,12 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 const Application = require('../models/Application');
 const User = require('../models/User');
 const Subscription = require('../models/Subscription');
 
 const APPLICATION_STATUSES = ['pending', 'reviewing', 'accepted', 'rejected'];
+const ADMIN_PREVIEW_EMAIL = 'admin-preview@destinyskillsbridge.internal';
 
 async function login(req, res) {
   const { username, password } = req.body;
@@ -81,6 +83,30 @@ async function setUserPremium(req, res) {
   res.json({ user });
 }
 
+async function createAccessLink(req, res) {
+  let user = await User.findOne({ email: ADMIN_PREVIEW_EMAIL });
+
+  if (!user) {
+    user = await User.create({
+      name: 'Admin Preview',
+      email: ADMIN_PREVIEW_EMAIL,
+      password: crypto.randomBytes(16).toString('hex'),
+      isPremium: true,
+      premiumExpiresAt: null,
+    });
+  } else if (!user.isPremium) {
+    user.isPremium = true;
+    user.premiumExpiresAt = null;
+    await user.save();
+  }
+
+  const token = jwt.sign({ sub: user._id.toString() }, process.env.JWT_SECRET, {
+    expiresIn: '4h',
+  });
+
+  res.json({ token });
+}
+
 module.exports = {
   login,
   listApplications,
@@ -88,4 +114,5 @@ module.exports = {
   listUsers,
   listSubscriptions,
   setUserPremium,
+  createAccessLink,
 };

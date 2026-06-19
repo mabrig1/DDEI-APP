@@ -46,7 +46,10 @@
                 <button data-tab="users" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Users</button>
                 <button data-tab="subscriptions" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Payments</button>
             </div>
-            <button id="refreshBtn" class="px-4 py-2 text-sm font-semibold border rounded-xl hover:bg-slate-50">Refresh</button>
+            <div class="flex items-center gap-x-2">
+                <button id="fullAccessBtn" class="px-4 py-2 text-sm font-semibold bg-[#0A66C2] text-white rounded-xl hover:opacity-90">Full App Access</button>
+                <button id="refreshBtn" class="px-4 py-2 text-sm font-semibold border rounded-xl hover:bg-slate-50">Refresh</button>
+            </div>
         </div>
 
         <div id="genericEmpty" class="hidden bg-white border rounded-3xl p-10 text-center text-slate-500"></div>
@@ -189,6 +192,20 @@
         }
 
         document.getElementById('refreshBtn').addEventListener('click', () => TABS[currentTab].load());
+
+        document.getElementById('fullAccessBtn').addEventListener('click', async () => {
+            const btn = document.getElementById('fullAccessBtn');
+            btn.disabled = true;
+            try {
+                const data = await adminRequest('/api/admin/access-link', { method: 'POST' });
+                const url = `${window.location.origin}/?adminAccess=${encodeURIComponent(data.token)}`;
+                window.open(url, '_blank');
+            } catch (err) {
+                alert(`Could not generate access link: ${err.message}`);
+            } finally {
+                btn.disabled = false;
+            }
+        });
 
         const STATUS_OPTIONS = ['pending', 'reviewing', 'accepted', 'rejected'];
 

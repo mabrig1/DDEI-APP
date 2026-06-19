@@ -6,6 +6,7 @@ const {
   listUsers,
   listSubscriptions,
   setUserPremium,
+  createAccessLink,
 } = require('../controllers/adminController');
 const { requireAdmin } = require('../middleware/adminAuth');
 
@@ -17,5 +18,6 @@ router.patch('/applications/:id', requireAdmin, updateApplicationStatus);
 router.get('/users', requireAdmin, listUsers);
 router.patch('/users/:id/premium', requireAdmin, setUserPremium);
 router.get('/subscriptions', requireAdmin, listSubscriptions);
+router.post('/access-link', requireAdmin, createAccessLink);
 
 module.exports = router;

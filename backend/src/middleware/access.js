@@ -20,4 +20,21 @@ async function requireActiveAccess(req, res, next) {
   next();
 }
 
-module.exports = { requireActiveAccess };
+async function requirePremium(req, res, next) {
+  const user = await User.findById(req.userId);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  const now = new Date();
+  const isActivePremium = user.isPremium && (!user.premiumExpiresAt || user.premiumExpiresAt > now);
+
+  if (!isActivePremium) {
+    return res.status(402).json({
+      message: 'This is a Premium feature. Upgrade to a paid plan to unlock it.',
+      upgradeRequired: true,
+    });
+  }
+
+  next();
+}
+
+module.exports = { requireActiveAccess, requirePremium };
