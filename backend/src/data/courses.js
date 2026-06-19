@@ -1,5 +1,461 @@
 const COURSES = [
   // ============================================================
+  // MAIN COURSE — The Perception Pressure Theory (PPT)
+  // ============================================================
+  {
+    id: 'perception-pressure-theory',
+    slug: 'perception-pressure-theory',
+    title: 'The Perception Pressure Theory: Breaking Free from Human Opinion and Walking in Divine Identity',
+    description: 'Mabrig Korie\'s signature course for the Nigerian believer carrying the invisible weight of family timelines, village commentary, and social comparison. Discover the Perception Pressure Theory (PPT), renew your mind through the Word of God, and learn to walk in your true, unshaken, divine identity.',
+    skillIds: [],
+    category: 'Identity & Mindset',
+    estimatedHours: 14,
+    modules: [
+      {
+        id: 'ppt-m1',
+        title: 'The Invisible War: Understanding Perception Pressure',
+        lessons: [
+          {
+            id: 'ppt-m1-l1',
+            title: 'The Silent Weight of Human Expectation',
+            content: [
+              'Across Nigeria, there is an unwritten timetable for life that nobody hands you, yet almost everyone feels its weight: be done with school by a certain age, secure a "good job" (preferably in medicine, law, engineering, or now tech), get married before your late twenties, build a house, and announce it all on social media and at family gatherings. This is not written in any law, yet it presses on millions of people every single day.',
+              'This pressure is rarely loud. It shows up quietly — in the pause before an aunty asks "so when are we coming for your own?", in the side-eye at a family owambe when your contemporaries are introducing fiancés and you are introducing a business plan, in the WhatsApp family group where every cousin\'s promotion, wedding, or new car becomes an unspoken scoreboard. Perception Pressure Theory (PPT) calls this "the silent weight of human expectation" — pressure that is rarely spoken directly but is felt powerfully and constantly.',
+              'The emotional cost of "not measuring up" to these timelines is real: anxiety before family events, dread of certain phone calls, and decisions made not from conviction but from a desire to finally silence the questions. Naming this weight is the first step to dismantling it — you cannot break free from a pressure you have never clearly identified.',
+            ],
+            keyTakeaways: [
+              'Cultural timelines around marriage, career, and success create unwritten pressure that is rarely spoken but constantly felt.',
+              'Naming the pressure you feel is the necessary first step toward breaking free from it.',
+            ],
+          },
+          {
+            id: 'ppt-m1-l2',
+            title: 'The Birth of Perception Pressure',
+            content: [
+              'Perception Pressure is born the moment another person\'s opinion — real or imagined — moves from being information you can consider to being a voice that controls your decisions. It often begins small: avoiding a particular outfit because of what "they" will say, choosing a "safe" course at university because of what your father\'s friends expect, staying in a relationship long after it should have ended because breaking up would mean explaining yourself to the whole extended family.',
+              'Psychologists describe something called the "imaginary audience effect" — the sense that an invisible crowd is constantly watching, judging, and keeping score of your life. In the Nigerian context, this audience is rarely truly imaginary; it is your village WhatsApp group, your church members, your old secondary school set, your Instagram followers, and the aunties whose questions you have learned to dread before you even arrive at the party.',
+              'The danger is not that people have opinions — people will always have opinions. The danger is when those opinions move inside you and begin making your decisions for you: the course you study, the spouse you choose, the job you accept, the dream you abandon. Once an external opinion becomes an internal voice directing your steps, perception has become pressure.',
+            ],
+            keyTakeaways: [
+              'Perception Pressure begins when someone else\'s opinion stops being information and starts controlling your decisions.',
+              'The "imaginary audience effect" in Nigeria is rarely imaginary — it is family groups, church circles, and social media followers.',
+            ],
+          },
+          {
+            id: 'ppt-m1-l3',
+            title: 'Identity Under Attack: Comparison and Shame',
+            content: [
+              'Comparison culture thrives wherever visibility is constant — and between social media and the deeply communal nature of Nigerian life, visibility is almost inescapable. Your cousin\'s wedding photos, a former classmate\'s new car, a church member\'s testimony of traveling abroad — all of it arrives as evidence in an invisible court where you are constantly, silently, on trial.',
+              'Out of comparison grows shame-based identity formation: a sense of who you are that is built not from your God-given design but from how you rank against others. "I am the one who is not yet married," "I am the one still searching for a job," "I am the one who disappointed my parents" — these become identity labels, repeated so often in your own mind that they start to feel like facts rather than temporary circumstances.',
+              'When identity is built on comparison, it can never rest, because there will always be someone ahead of you in some category. True identity must be rooted in something that does not change when your circumstances change — a foundation Part Three of this course will establish from a biblical perspective. For now, simply notice: when you describe yourself, are you using your circumstances, or your true, God-given identity?',
+            ],
+            keyTakeaways: [
+              'Constant social and communal visibility fuels comparison, which left unchecked produces shame-based identity.',
+              'An identity built on comparison can never rest, because comparison has no finish line.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'ppt-m1-quiz',
+          questions: [
+            {
+              id: 'ppt-m1-q1',
+              question: 'What does Perception Pressure Theory call the unspoken cultural pressure around timelines like marriage and career?',
+              options: ['A legal requirement', 'The silent weight of human expectation', 'A government policy', 'A church doctrine'],
+              correctIndex: 1,
+              explanation: 'PPT names this constant, rarely-spoken cultural pressure "the silent weight of human expectation."',
+            },
+            {
+              id: 'ppt-m1-q2',
+              question: 'According to this module, when does an opinion become "Perception Pressure"?',
+              options: [
+                'When it is shared kindly',
+                'When it moves from information you consider to a voice that controls your decisions',
+                'When it comes from a stranger',
+                'Opinions are never a problem',
+              ],
+              correctIndex: 1,
+              explanation: 'Perception Pressure is born when an external opinion becomes an internal voice directing your steps.',
+            },
+            {
+              id: 'ppt-m1-q3',
+              question: 'What does an identity built purely on comparison lack?',
+              options: ['Ambition', 'A stable foundation, since comparison has no finish line', 'Family support', 'Social media followers'],
+              correctIndex: 1,
+              explanation: 'An identity built on comparison can never rest, because there is always someone ahead in some category.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'ppt-m2',
+        title: 'The Perception Pressure Theory (PPT) Explained',
+        lessons: [
+          {
+            id: 'ppt-m2-l1',
+            title: 'What Is the Perception Pressure Theory?',
+            content: [
+              'The Perception Pressure Theory (PPT) is a framework for understanding a specific, common human experience: how the perceived opinions, judgments, and expectations of other people can be internalized so deeply that they begin to shape — and sometimes derail — a person\'s identity, decisions, and destiny.',
+              'At its core, PPT teaches that pressure does not always come from what people actually say about you. More often, it comes from what you believe they are thinking, or what you fear they might say if you stepped fully into who you really are. This is why two people in the exact same circumstances — same family, same community, same culture — can respond completely differently: one is crushed by perception, the other has learned to carry it lightly.',
+              'Understanding PPT is powerful because it shifts the question from "how do I stop people from having opinions about me?" (impossible) to "how do I stop those opinions from controlling me?" (entirely possible, and the real subject of this course). The goal is not to become indifferent to people, but to become anchored enough in your true identity that perception no longer has the final word.',
+            ],
+            keyTakeaways: [
+              'PPT explains how perceived (not always real) opinions of others get internalized and begin to control identity and decisions.',
+              'The real solution is not eliminating other people\'s opinions, but breaking their internal control over you.',
+            ],
+          },
+          {
+            id: 'ppt-m2-l2',
+            title: 'The Three Dimensions of PPT',
+            content: [
+              'PPT operates through three connected dimensions. The first is Perceived Judgment — the belief, accurate or not, that you are being watched, evaluated, and found wanting by family, community, or an online audience. This is the entry point: it plants the seed of self-consciousness that the other two dimensions grow from.',
+              'The second dimension is Identity Adjustment — the gradual reshaping of how you see yourself in response to perceived judgment. You may start dressing, speaking, choosing careers, or even worshipping differently, not from conviction, but to avoid the discomfort of disapproval. Over time, the adjusted self can feel more familiar than the true self underneath it.',
+              'The third and most costly dimension is Destiny Displacement — when perception pressure does not just change how you present yourself, but actually moves you off the path you were created to walk. The business never started because "people will laugh if it fails." The calling never pursued because "what will the church say." The relationship entered or exited based on family pressure rather than discernment. Destiny Displacement is the end point of unchecked Perception Pressure, and recognizing it in your own life is essential to reversing it.',
+            ],
+            keyTakeaways: [
+              'The three dimensions of PPT are Perceived Judgment, Identity Adjustment, and Destiny Displacement.',
+              'Destiny Displacement — being moved off your true path by pressure — is the most costly outcome of unchecked perception.',
+            ],
+          },
+          {
+            id: 'ppt-m2-l3',
+            title: 'How Perception Becomes a Prison',
+            content: [
+              'Perception becomes a prison through mental replay — running the same imagined conversation, criticism, or comparison over and over in your mind, long after the actual moment has passed. A single comment from an uncle at a family function can be replayed for weeks, shaping decisions that uncle never even intended to influence.',
+              'Fear of criticism then becomes a filter applied before any decision: "what will they say if I do this" is asked before "is this actually right for me, and is this what God is leading me to do." When the first question always wins, a person stops living their own life and starts curating a performance for an audience that, in many cases, is barely paying attention.',
+              'Overthinking is the natural fruit of this cycle — decisions about a course of study, a relationship, a business idea, or a ministry calling get delayed indefinitely as a person searches for an option that will please everyone. Since pleasing everyone is impossible, the search itself becomes the prison: perpetual delay disguised as careful consideration.',
+            ],
+            keyTakeaways: [
+              'Mental replay of past or imagined criticism keeps perception pressure alive long after the moment has passed.',
+              'When "what will they say" is asked before "what is actually right for me," decision-making becomes a performance rather than a life.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'ppt-m2-quiz',
+          questions: [
+            {
+              id: 'ppt-m2-q1',
+              question: 'What is "Destiny Displacement" in PPT?',
+              options: ['Moving to a new city', 'Being moved off your true path because of unchecked perception pressure', 'A type of spiritual gift', 'A church relocation program'],
+              correctIndex: 1,
+              explanation: 'Destiny Displacement is when perception pressure actually moves a person off the path they were created to walk.',
+            },
+            {
+              id: 'ppt-m2-q2',
+              question: 'Which of the following best describes "Identity Adjustment"?',
+              options: [
+                'Reshaping how you see and present yourself to avoid disapproval, even without real conviction',
+                'Getting a new National ID card',
+                'Changing your name legally',
+                'A medical diagnosis',
+              ],
+              correctIndex: 0,
+              explanation: 'Identity Adjustment is the gradual reshaping of self-presentation in response to perceived judgment.',
+            },
+            {
+              id: 'ppt-m2-q3',
+              question: 'What keeps mental replay of criticism powerful long after the actual moment has passed?',
+              options: [
+                'Repeatedly running the imagined conversation or comparison in your mind',
+                'Writing it down once and moving on',
+                'Ignoring it completely',
+                'Talking to a trusted friend about it',
+              ],
+              correctIndex: 0,
+              explanation: 'Mental replay — repeating the imagined criticism or comparison — is what keeps it alive and influential.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'ppt-m3',
+        title: 'The Cost of Pressure and the Breaking Point',
+        lessons: [
+          {
+            id: 'ppt-m3-l1',
+            title: 'The Cost of Living for Approval',
+            content: [
+              'Living for approval has a real, measurable cost, even when it is invisible on the surface. Destiny is delayed when a person waits for unanimous family approval before starting a business, applying for an opportunity abroad, or pursuing a calling — approval that, for any sufficiently bold decision, may simply never arrive.',
+              'Emotional exhaustion accumulates from constantly managing other people\'s perceptions: rehearsing explanations before family events, avoiding certain topics at owambe parties, monitoring social media for who "liked" or commented and what that might mean. This management work is invisible labor that drains energy which could otherwise build a life or a business.',
+              'Perhaps most costly of all are the wrong relationships and decisions made under pressure rather than discernment: marrying someone primarily because "everyone was asking," taking a job because "it will make my parents proud" rather than because it fits your gifts, or staying silent about a genuine calling because it does not fit the family\'s definition of success. These decisions, made to silence external voices, often produce the very unhappiness the person was trying to avoid.',
+            ],
+            keyTakeaways: [
+              'Living for approval delays destiny, since unanimous approval for bold decisions may never come.',
+              'Decisions made to silence pressure rather than from genuine discernment often produce long-term unhappiness.',
+            ],
+          },
+          {
+            id: 'ppt-m3-l2',
+            title: 'The Breaking Point and the Awakening',
+            content: [
+              'For many people, the grip of perception pressure does not loosen gradually — it breaks at a specific point, often through crisis: a breakdown, a season of depression, a failed relationship entered under pressure, or simply an exhausted realization that years have passed living a life designed by other people\'s expectations rather than one\'s own convictions and calling.',
+              'This breaking point frequently produces an identity confusion crisis: "if I am not what my family wanted, not what my church expected, not what social media celebrates — then who am I?" This question is uncomfortable, but it is also the doorway to something better, because it forces a search for identity rooted in something more stable than shifting human opinion.',
+              'The moment of awakening is when a person begins to ask a fundamentally different question: not "how do I finally satisfy everyone watching me," but "who does God say I am, and what is He actually calling me to do?" This shift in the question is the true beginning of freedom, and it is the bridge into the biblical foundation of identity explored in the next part of this course.',
+            ],
+            keyTakeaways: [
+              'The grip of perception pressure often breaks at a specific crisis point, not gradually.',
+              'The identity confusion this crisis produces is uncomfortable but can become the doorway to a more stable, God-rooted identity.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'ppt-m3-quiz',
+          questions: [
+            {
+              id: 'ppt-m3-q1',
+              question: 'According to this module, what often happens when someone waits for unanimous family approval before pursuing a bold decision?',
+              options: ['The approval always eventually comes', 'Destiny can be delayed indefinitely, since full approval may never arrive', 'It guarantees success', 'It has no effect on timing'],
+              correctIndex: 1,
+              explanation: 'Waiting for unanimous approval can delay destiny indefinitely, since such approval may never fully arrive.',
+            },
+            {
+              id: 'ppt-m3-q2',
+              question: 'What is the "identity confusion crisis" described at the breaking point?',
+              options: ['A medical condition', 'The disorienting question of who you are once you stop defining yourself by others\' expectations', 'A type of legal dispute', 'A church doctrine'],
+              correctIndex: 1,
+              explanation: 'This crisis is the uncomfortable but necessary question of identity once external definitions fall away.',
+            },
+            {
+              id: 'ppt-m3-q3',
+              question: 'What new question marks the "moment of awakening"?',
+              options: ['How do I finally satisfy everyone watching me', 'Who does God say I am, and what is He calling me to do', 'How do I avoid every form of criticism forever', 'How do I become famous'],
+              correctIndex: 1,
+              explanation: 'The awakening replaces a question about pleasing an audience with a question about divine identity and calling.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'ppt-m4',
+        title: 'The Biblical Foundation of Identity',
+        lessons: [
+          {
+            id: 'ppt-m4-l1',
+            title: 'Man\'s Opinion vs God\'s Opinion',
+            content: [
+              'Human opinion, however confidently stated, is temporary. It shifts with mood, trends, culture, and incomplete information. The same village that once mocked your "too much ambition" will often celebrate you the moment you succeed — proving the opinion was never really about unchangeable truth, only about a passing perspective.',
+              '1 Samuel 16:7 records God telling Samuel, "man looks at the outward appearance, but the LORD looks at the heart," as young David — overlooked by his own family as a candidate for anointing — was chosen as king. David\'s family saw a shepherd boy; God saw a king. This single passage dismantles the idea that human evaluation has the final say over a person\'s worth or destiny.',
+              'God\'s perspective is eternal and unchanging, rooted in knowledge of who He created you to be before you were even born (Jeremiah 1:5; Psalm 139:13-16). When human opinion and divine opinion disagree about your worth, your timing, or your potential, Scripture is clear about which one is actually accurate and which one is simply incomplete.',
+            ],
+            keyTakeaways: [
+              'Human opinion is temporary and shifts with mood, trend, and incomplete information; God\'s perspective is eternal and complete.',
+              'David\'s story (1 Samuel 16:7) shows that being overlooked by people does not mean being overlooked by God.',
+            ],
+          },
+          {
+            id: 'ppt-m4-l2',
+            title: 'The Mind Renewal Principle (Romans 12:2)',
+            content: [
+              'Romans 12:2 instructs believers: "do not be conformed to this world, but be transformed by the renewing of your mind." This single verse is the engine behind breaking Perception Pressure — transformation does not happen by changing your circumstances first, but by changing how you think first, which then changes how you live, decide, and respond to people\'s opinions.',
+              '"Conformed" describes an external pressure shaping you from the outside — exactly how Perception Pressure operates, through comparison, judgment, and cultural expectation. "Transformed," by contrast, describes change that happens from the inside out, through a renewed mind rooted in truth rather than trend or tradition.',
+              'Renewing the mind is not a one-time event but a daily, deliberate practice: consistently replacing the thoughts that perception pressure plants ("what will they think," "I am behind," "I have failed") with what God\'s word actually says about your identity, your timing, and your worth. This is not denial of reality — it is the active discipline of choosing the more accurate, eternal truth over the louder, temporary voice.',
+            ],
+            keyTakeaways: [
+              'Romans 12:2 contrasts being "conformed" (shaped from outside by pressure) with being "transformed" (changed from inside through renewed thinking).',
+              'Renewing the mind is a daily discipline of replacing pressure-driven thoughts with God\'s truth, not a one-time decision.',
+            ],
+          },
+          {
+            id: 'ppt-m4-l3',
+            title: 'Jesus and the Pressure of Perception',
+            content: [
+              'Jesus Christ experienced Perception Pressure at the highest level and is the ultimate model of identity stability under it. His own hometown asked, "is this not the carpenter\'s son? Can anything good come out of Nazareth?" — a dismissal rooted purely in familiarity and low expectation, the same way a community can struggle to see greatness in someone they watched grow up.',
+              'Throughout His ministry, Jesus was misunderstood by religious leaders, rejected by the expectation systems of His culture (who expected a political and military Messiah, not a humble servant-king), and even doubted by His own family at points. By every external measure of His society, He did not fit the mold of who "God\'s anointed" should be.',
+              'Yet Jesus remained fully aligned with His purpose because His identity was anchored not in public opinion but in His Father\'s voice — most clearly heard at His baptism: "this is my beloved Son, in whom I am well pleased" (Matthew 3:17), spoken before He had performed a single public miracle. His identity was settled by divine declaration before it was ever validated by public results, and the same pattern is available to every believer today.',
+            ],
+            keyTakeaways: [
+              'Jesus faced rejection and low expectation from His own community, exactly as Perception Pressure Theory describes.',
+              'His identity was anchored in His Father\'s declaration, not public validation — a pattern available to every believer.',
+            ],
+          },
+          {
+            id: 'ppt-m4-l4',
+            title: 'Kingdom Identity Restoration',
+            content: [
+              'Kingdom identity restoration begins with discovering who God says you are, rather than continuing to live out who circumstances, family disappointment, or social comparison have told you that you are. Scripture repeatedly describes believers in identity-defining terms: chosen, beloved, more than conquerors, God\'s masterpiece (Ephesians 1:4-5, Romans 8:37, Ephesians 2:10) — none of which are earned through performance or approval ratings.',
+              'Identity rooted in purpose, not performance, means your value does not rise and fall with your latest success or failure, your marital status, your job title, or your follower count. Ephesians 2:10 calls believers God\'s "workmanship, created ... for good works, which God prepared beforehand" — meaning your purpose was designed before any human had the chance to form an opinion about you.',
+              'Walking in divine alignment is the practical outworking of this restored identity: making decisions, pursuing dreams, and setting timelines based on what you genuinely believe God is leading you toward, informed by wise counsel but no longer enslaved to the fear of disapproval. This is the shift from being managed by perception to being led by purpose.',
+            ],
+            keyTakeaways: [
+              'Kingdom identity is rooted in who God says you are — chosen, beloved, His workmanship — not in performance or approval.',
+              'Walking in divine alignment means being led by purpose and wise counsel, not managed by the fear of disapproval.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'ppt-m4-quiz',
+          questions: [
+            {
+              id: 'ppt-m4-q1',
+              question: 'In 1 Samuel 16:7, what does God tell Samuel about how He evaluates people?',
+              options: ['He looks only at outward appearance', 'He looks at the heart, not just outward appearance', 'He evaluates based on family reputation', 'He evaluates based on age'],
+              correctIndex: 1,
+              explanation: 'God tells Samuel that He looks at the heart, while man looks at outward appearance — the basis for David being chosen.',
+            },
+            {
+              id: 'ppt-m4-q2',
+              question: 'According to Romans 12:2, how does true transformation happen?',
+              options: ['By changing your circumstances first', 'Through the renewing of the mind, not conformity to the world', 'By avoiding all people permanently', 'By winning public approval'],
+              correctIndex: 1,
+              explanation: 'Romans 12:2 teaches transformation through renewed thinking, not through conforming to external pressure.',
+            },
+            {
+              id: 'ppt-m4-q3',
+              question: 'What anchored Jesus\'s identity despite rejection from His hometown and religious leaders?',
+              options: ['Public opinion polls of His time', 'His Father\'s declaration over Him, spoken before His public ministry began', 'The size of His following', 'Agreement from religious leaders'],
+              correctIndex: 1,
+              explanation: 'Jesus\'s identity was settled by His Father\'s declaration at His baptism, before any public results validated it.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'ppt-m5',
+        title: 'Breaking Free From Pressure Systems',
+        lessons: [
+          {
+            id: 'ppt-m5-l1',
+            title: 'Rewiring the Mind: From Perception to Truth',
+            content: [
+              'A cognitive filtering system is a deliberate mental habit of testing every incoming thought — especially thoughts about what others think of you — against a simple question: "is this actually true, and does it come from a reliable source?" Most perception-driven thoughts fail this test immediately, because they are assumptions about what someone might be thinking, not verified facts.',
+              'Replacing perception with truth means actively substituting the assumed criticism with what is actually known: instead of "they probably think I\'m a failure for still living with my parents at this age," replace it with the verifiable truth — "I am building wisely within my current season, and my worth was never tied to a rental agreement."',
+              'Mental discipline strategies that support this rewiring include: pausing before reacting to a perceived slight long enough to question it, limiting exposure to comparison triggers (certain social media accounts, certain conversations) during vulnerable seasons, and keeping a written list of God-given truths about your identity to read when pressure-thoughts rise. Like any discipline, this strengthens with consistent practice, not a single decision.',
+            ],
+            keyTakeaways: [
+              'A cognitive filtering system tests perception-driven thoughts against what is actually verifiably true.',
+              'Mental discipline — pausing, limiting comparison triggers, and rehearsing truth — rewires automatic pressure-thinking over time.',
+            ],
+          },
+          {
+            id: 'ppt-m5-l2',
+            title: 'Emotional Boundaries and Freedom',
+            content: [
+              'Saying no without guilt is one of the most practical freedoms available to someone breaking out of Perception Pressure. This applies to the family member who must be told "I am not ready to discuss marriage today," the friend pushing an unwise business venture, or the church culture pressuring testimony on a timeline that does not match your real season. A clear, respectful no protects both your peace and your decisions.',
+              'Managing intrusive conversations — the relative who interrogates your relationship status at every gathering, the old classmate who measures your worth by your job title — is best done with prepared, calm, brief responses rather than lengthy justification. Over-explaining often invites more debate; a short, settled answer ends the conversation faster and with more dignity.',
+              'Protecting mental space means recognizing that you are not obligated to give every opinion equal access to your mind. Some voices deserve a seat at the table of your decisions (wise mentors, spiritual covering, close trusted family); most voices — distant relatives, social media commentary, casual acquaintances — do not, and giving them that access voluntarily is a habit that can be unlearned.',
+            ],
+            keyTakeaways: [
+              'Saying no without guilt protects your peace and your decisions from pressure-driven obligation.',
+              'Not every opinion deserves equal access to your mind — protect mental space deliberately.',
+            ],
+          },
+          {
+            id: 'ppt-m5-l3',
+            title: 'The Power of Focused Execution',
+            content: [
+              'Clarity without action changes nothing — at some point, the renewed mind must turn into focused execution: actually starting the business, applying for the opportunity, enrolling in the course, having the difficult conversation. Clarity is the compass; execution is the journey, and many people stay stuck admiring the compass forever.',
+              'Small, consistent progress compounds in ways that dramatic, occasional bursts of motivation rarely do. A business built one customer at a time, a skill sharpened one practice session at a time, a relationship healed one honest conversation at a time — these slow, steady patterns are how most lasting destiny is actually built, far from the highlight reels that fuel comparison in the first place.',
+              'Building without external validation means learning to find satisfaction in obedience and progress itself, rather than waiting for applause, likes, or family approval to confirm you are on the right path. The people who eventually celebrate your breakthrough are often the very ones who doubted the process — proof that approval frequently arrives after the work, never before it, and should never be the reason you start.',
+            ],
+            keyTakeaways: [
+              'Clarity must turn into focused execution — the renewed mind is only the starting point, not the destination.',
+              'Small, consistent progress (not occasional bursts of motivation) is how lasting destiny is actually built.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'ppt-m5-quiz',
+          questions: [
+            {
+              id: 'ppt-m5-q1',
+              question: 'What does a "cognitive filtering system" help you do?',
+              options: ['Test perception-driven thoughts against what is actually true and verifiable', 'Avoid all human contact', 'Memorize Bible verses only', 'Increase social media usage'],
+              correctIndex: 0,
+              explanation: 'It is a deliberate habit of testing assumed criticism against verifiable truth before accepting it.',
+            },
+            {
+              id: 'ppt-m5-q2',
+              question: 'Why is saying no without guilt described as an important freedom?',
+              options: ['It guarantees family approval', 'It protects your peace and decisions from pressure-driven obligation', 'It ends all relationships', 'It is required by law'],
+              correctIndex: 1,
+              explanation: 'A clear, respectful no protects your peace and keeps decisions from being dictated by guilt or obligation.',
+            },
+            {
+              id: 'ppt-m5-q3',
+              question: 'What ultimately builds lasting destiny, according to this module?',
+              options: ['Occasional dramatic bursts of motivation', 'Small, consistent progress over time', 'Waiting for everyone\'s approval first', 'Comparing your timeline to others'],
+              correctIndex: 1,
+              explanation: 'Small, consistent progress compounds into lasting destiny far more reliably than occasional motivation spikes.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'ppt-m6',
+        title: 'Walking in Divine Alignment: The Unshaken Life',
+        lessons: [
+          {
+            id: 'ppt-m6-l1',
+            title: 'The Renewed Mind Lifestyle',
+            content: [
+              'A renewed mind is not maintained by a single breakthrough moment but by a lifestyle of daily spiritual alignment — time in prayer, scripture, and honest reflection that consistently recalibrates your thinking back to truth, the same way a phone needs regular charging, not a single full battery for life.',
+              'Disciplined thinking patterns — catching pressure-driven thoughts early, questioning their source, and replacing them with truth — become more natural with daily practice, much like a new physical habit becomes easier the more consistently it is repeated, even on days when motivation is low.',
+              'Peace, rather than the absence of criticism or the presence of applause, becomes the new guide for decision-making. A decision made in genuine peace before God tends to be sustainable, even when it disappoints some onlookers; a decision made purely to silence pressure rarely produces lasting peace, even when everyone initially approves of it.',
+            ],
+            keyTakeaways: [
+              'A renewed mind is sustained by daily spiritual alignment, not a single past breakthrough.',
+              'Peace before God — not the absence of criticism or presence of applause — becomes the guide for decisions.',
+            ],
+          },
+          {
+            id: 'ppt-m6-l2',
+            title: 'Living Beyond Opinion',
+            content: [
+              'Freedom from comparison is not the same as no longer noticing other people\'s lives — it is no longer measuring your worth or pace against them. Someone else\'s wedding, promotion, or relocation abroad can be genuinely celebrated without it triggering a personal crisis about your own current season.',
+              'Confidence in divine timing replaces anxious timeline-tracking with trust that God\'s calendar for your life, though sometimes slower than the surrounding culture\'s expectations, is not late. Ecclesiastes 3:1 reminds us there is "a time for every purpose under heaven" — and your specific time does not have to match your cousin\'s, your classmate\'s, or your church friend\'s.',
+              'Emotional stability in silence seasons — the stretches where nothing visible seems to be happening, no testimony to share, no announcement to make — is one of the clearest marks of a life no longer governed by Perception Pressure. Growth often happens most powerfully in seasons that have nothing to show an audience yet, and learning to stay steady there is itself a form of spiritual maturity.',
+            ],
+            keyTakeaways: [
+              'Freedom from comparison means no longer measuring your worth against others\' visible milestones, not ignoring them entirely.',
+              'Confidence in divine timing replaces anxiety with trust that your season, though different, is not late.',
+            ],
+          },
+          {
+            id: 'ppt-m6-l3',
+            title: 'Final Charge: The Unshaken Life',
+            content: [
+              'Destiny over perception means choosing, repeatedly, to pursue what God has called you to do over what would simply look impressive or acceptable to watching eyes. These two paths sometimes overlap, but when they diverge, the unshaken life chooses destiny every time, regardless of an audience\'s reaction.',
+              'Purpose over pressure means letting your daily decisions be shaped by a clear sense of why you are here, rather than by the shifting, often contradictory demands of family, culture, and comparison. A person anchored in purpose can absorb criticism without being destroyed by it, because the criticism does not touch the actual foundation their life is built on.',
+              'Identity over opinion is the final, settled position of this entire course: you are who God says you are — chosen, purposed, and known before you were formed — and no family WhatsApp group, village commentary, or social media comparison gets the final vote on that truth. This is the unshaken life: rooted, steady, and free, walking forward in divine identity regardless of who is watching or what they are saying.',
+            ],
+            keyTakeaways: [
+              'The unshaken life consistently chooses destiny over perception, purpose over pressure, and identity over opinion.',
+              'No external voice — family, culture, or social media — gets the final vote on who God says you are.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'ppt-m6-quiz',
+          questions: [
+            {
+              id: 'ppt-m6-q1',
+              question: 'What does "freedom from comparison" actually mean, according to this module?',
+              options: ['Never noticing other people\'s achievements', 'No longer measuring your worth or pace against others\' milestones', 'Avoiding all celebrations', 'Refusing to use social media'],
+              correctIndex: 1,
+              explanation: 'Freedom from comparison means you can notice others\' milestones without measuring your own worth against them.',
+            },
+            {
+              id: 'ppt-m6-q2',
+              question: 'What is described as one of the clearest marks of a life no longer governed by Perception Pressure?',
+              options: ['Constant public testimonies', 'Emotional stability during quiet seasons with nothing visible to show', 'Winning every family argument', 'Avoiding silence at all costs'],
+              correctIndex: 1,
+              explanation: 'Staying steady during seasons with nothing visible to show is a mark of maturity beyond perception pressure.',
+            },
+            {
+              id: 'ppt-m6-q3',
+              question: 'What is the final, settled position this course charges you to walk in?',
+              options: ['Opinion over identity', 'Perception over destiny', 'Identity over opinion, destiny over perception, purpose over pressure', 'Avoiding all relationships permanently'],
+              correctIndex: 2,
+              explanation: 'The unshaken life is rooted in identity over opinion, destiny over perception, and purpose over pressure.',
+            },
+          ],
+        },
+      },
+    ],
+  },
+
+  // ============================================================
   // COURSE 1 — Content Creation & Digital Marketing Mastery
   // ============================================================
   {
