@@ -5791,5 +5791,770 @@ const COURSES = [
       },
     ],
   },
+  // ============================================================
+  // COURSE 10 — Artificial Intelligence & Machine Learning Fundamentals
+  // ============================================================
+  {
+    id: 'ai-ml-fundamentals',
+    slug: 'ai-ml-fundamentals',
+    title: 'Artificial Intelligence & Machine Learning Fundamentals',
+    description:
+      'Understand how AI and machine learning really work, build a first ML project, and apply it to real careers and business problems.',
+    skillIds: ['ai-tools-automation'],
+    category: 'Artificial Intelligence & Machine Learning',
+    estimatedHours: 20,
+    modules: [
+      {
+        id: 'aiml-m1',
+        title: 'Introduction to AI and Machine Learning',
+        lessons: [
+          {
+            id: 'aiml-m1-l1',
+            title: 'What Is Artificial Intelligence, Really?',
+            content: [
+              'Artificial intelligence is the broad field of building systems that perform tasks normally requiring human judgment: recognizing images, understanding language, making predictions, or playing games at a high level. AI is not one technology — it is an umbrella term covering everything from simple rule-based chatbots to advanced neural networks. The key shift in the last decade is that most useful AI today is built using machine learning rather than hand-written rules.',
+              'Machine learning (ML) is a subset of AI where a system improves at a task by learning patterns from data, instead of being explicitly programmed with step-by-step instructions. Deep learning is a further subset of ML that uses layered neural networks and powers most of today\'s headline AI systems, including large language models like ChatGPT and Claude, and image generators like Midjourney. Understanding this nesting — AI contains ML contains deep learning — prevents confusion when reading articles or job descriptions that use these terms loosely.',
+              'Try this now: open any AI tool you already use (ChatGPT, Claude, a recommendation feed, a spam filter) and ask yourself which category it falls into. Write one sentence describing what data it likely learned from and what task it is predicting or generating. This habit of "reverse engineering" AI products is the fastest way to build real intuition.',
+            ],
+            keyTakeaways: [
+              'AI is the broad goal; machine learning is the dominant technique used to achieve it today.',
+              'Deep learning (neural networks) is the specific ML approach behind most modern breakthroughs.',
+              'Most AI you interact with daily is a product built on top of a trained ML model.',
+            ],
+          },
+          {
+            id: 'aiml-m1-l2',
+            title: 'Machine Learning vs. Traditional Programming',
+            content: [
+              'In traditional programming, a developer writes explicit rules: "if the email contains these words, mark it as spam." This works for simple, well-defined problems but breaks down quickly when the rules are too complex or numerous for a human to write by hand — like recognizing a face in a photo or understanding the sentiment of a customer review. Machine learning flips the approach: instead of writing the rules, you provide examples (data) and let an algorithm discover the patterns itself.',
+              'This shift has a major practical consequence: ML systems are only as good as the data they are trained on. A spam filter trained mostly on English emails will struggle with other languages; a hiring model trained on biased historical decisions will reproduce that bias. This is why "garbage in, garbage out" is the single most important phrase in machine learning — it explains both its power and its most common failures.',
+              'Try this now: pick a task you currently solve with manual rules (a spreadsheet formula, an email filter, a sorting process) and ask whether it would be easier to solve by giving examples to a model instead of writing more rules. Write down what "training examples" for that task would even look like — that exercise is the real starting point of every ML project.',
+            ],
+            keyTakeaways: [
+              'Traditional programming uses explicit rules; ML learns rules from data and examples.',
+              'ML is most valuable when rules would be too complex or numerous to hand-write.',
+              'Model quality is bounded by data quality — biased or incomplete data produces biased or incomplete predictions.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m1-quiz',
+          questions: [
+            {
+              id: 'aiml-m1-q1',
+              question: 'What is the correct relationship between AI, machine learning, and deep learning?',
+              options: [
+                'They are three unrelated, competing technologies',
+                'Deep learning contains machine learning, which contains AI',
+                'AI is the broad field; machine learning is a subset of AI; deep learning is a subset of machine learning',
+                'Machine learning and AI are the same thing, and deep learning is unrelated',
+              ],
+              correctIndex: 2,
+              explanation: 'AI is the overall goal, ML is the dominant technique, and deep learning (neural networks) is a specific ML approach.',
+            },
+            {
+              id: 'aiml-m1-q2',
+              question: 'What is the core difference between traditional programming and machine learning?',
+              options: [
+                'Traditional programming uses explicit rules; ML learns patterns from examples/data',
+                'There is no real difference between them',
+                'Machine learning never uses code, only data',
+                'Traditional programming is always faster to build than ML',
+              ],
+              correctIndex: 0,
+              explanation: 'ML replaces hand-written rules with patterns learned automatically from training data.',
+            },
+            {
+              id: 'aiml-m1-q3',
+              question: 'Why does the phrase "garbage in, garbage out" matter so much in machine learning?',
+              options: [
+                'It refers only to poorly written code, not data',
+                'It means a model trained on biased or low-quality data will produce biased or unreliable outputs',
+                'It is an outdated phrase with no relevance to modern AI',
+                'It only applies to image recognition models',
+              ],
+              correctIndex: 1,
+              explanation: 'A model can only be as accurate and fair as the data it learns from.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m2',
+        title: 'Types of Machine Learning',
+        lessons: [
+          {
+            id: 'aiml-m2-l1',
+            title: 'Supervised Learning: Learning From Labeled Examples',
+            content: [
+              'Supervised learning is the most widely used form of machine learning. The model is shown many examples that already have the "correct answer" attached — thousands of emails labeled "spam" or "not spam," or thousands of house listings labeled with their actual sale price. The algorithm learns the relationship between the input features (email text, house size and location) and the labeled output, then applies that learned relationship to new, unseen examples.',
+              'Supervised problems split into two main types: classification, where the output is a category (spam/not spam, cat/dog, approve/deny), and regression, where the output is a number (predicted price, predicted temperature, predicted demand). Almost every business use case you will encounter — fraud detection, churn prediction, demand forecasting, image tagging — is one of these two types underneath the marketing language.',
+              'Try this now: think of a decision you make repeatedly at work or in life (whether an email needs urgent reply, whether a lead is likely to convert). Decide whether that decision is a classification problem or a regression problem, and list three pieces of information ("features") you would feed a model to help it decide.',
+            ],
+            keyTakeaways: [
+              'Supervised learning trains on labeled data: inputs paired with known correct outputs.',
+              'Classification predicts categories; regression predicts numbers.',
+              'Most real-world business ML problems reduce to one of these two patterns.',
+            ],
+          },
+          {
+            id: 'aiml-m2-l2',
+            title: 'Unsupervised and Reinforcement Learning',
+            content: [
+              'Unsupervised learning works with data that has no labels at all — the algorithm\'s job is to find hidden structure on its own. The most common example is clustering: grouping customers into segments based on purchasing behavior without anyone telling the model what the segments should be. Another example is anomaly detection, used heavily in fraud and security systems to flag transactions or network traffic that looks statistically different from the norm.',
+              'Reinforcement learning (RL) is a third major paradigm where an agent learns by trial and error, receiving rewards or penalties for actions taken in an environment — this is how AI systems learned to master games like Go and Chess beyond human level, and it is a key technique used to fine-tune chatbots like ChatGPT and Claude through a process called reinforcement learning from human feedback (RLHF), where human ratings of good vs. bad responses shape the model\'s behavior.',
+              'Try this now: imagine you run an online store with no customer labels at all, just purchase histories. Describe in two sentences how an unsupervised clustering model might group your customers, and what business action you would take with each group once discovered.',
+            ],
+            keyTakeaways: [
+              'Unsupervised learning finds patterns and groupings in unlabeled data (e.g., customer segmentation).',
+              'Reinforcement learning trains an agent through trial-and-error rewards, used in games and RLHF for chatbots.',
+              'Choosing the right learning type depends on whether you have labels, want structure, or want behavior optimized over time.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m2-quiz',
+          questions: [
+            {
+              id: 'aiml-m2-q1',
+              question: 'A model predicts whether a customer will "churn" or "stay" — what type of supervised problem is this?',
+              options: [
+                'Regression',
+                'Classification',
+                'Reinforcement learning',
+                'Unsupervised clustering',
+              ],
+              correctIndex: 1,
+              explanation: 'Predicting a category (churn vs. stay) is a classification problem.',
+            },
+            {
+              id: 'aiml-m2-q2',
+              question: 'What is the defining feature of unsupervised learning?',
+              options: [
+                'It requires more labeled data than supervised learning',
+                'It finds patterns or structure in data that has no labels',
+                'It only works on images',
+                'It always involves a reward signal',
+              ],
+              correctIndex: 1,
+              explanation: 'Unsupervised learning discovers hidden structure, like clusters, without any labeled "correct answers."',
+            },
+            {
+              id: 'aiml-m2-q3',
+              question: 'What does RLHF (reinforcement learning from human feedback) do for chatbots like ChatGPT and Claude?',
+              options: [
+                'It deletes all training data after each conversation',
+                'It uses human ratings of responses as a reward signal to shape better future behavior',
+                'It replaces neural networks with rule-based systems',
+                'It has no effect on model behavior',
+              ],
+              correctIndex: 1,
+              explanation: 'RLHF fine-tunes models using human preference ratings as rewards, improving helpfulness and safety.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m3',
+        title: 'How Machines Learn: Data, Features, and Training',
+        lessons: [
+          {
+            id: 'aiml-m3-l1',
+            title: 'Data Is the Fuel: Collection, Cleaning, and Features',
+            content: [
+              'Every ML project starts with data, and most of the real-world effort goes into preparing it rather than building the model itself. Raw data is almost always messy: missing values, inconsistent formats, duplicate records, and irrelevant columns. Data cleaning — fixing or removing these issues — is unglamorous but determines whether a model will ever perform well in production.',
+              'Once data is clean, the next step is feature engineering: choosing or creating the specific input variables ("features") the model will actually learn from. For a house price model, raw square footage is a feature, but so is a derived feature like "price per square foot in this zip code" — engineered features often matter more for accuracy than the choice of algorithm itself. This is why experienced practitioners say "better data beats a better algorithm" more often than not.',
+              'Try this now: take any spreadsheet of data you have access to (sales records, survey responses) and list three problems you would need to clean before using it for ML (missing fields, inconsistent date formats, duplicate rows), then propose one new feature you could derive from the existing columns.',
+            ],
+            keyTakeaways: [
+              'Data cleaning resolves missing values, duplicates, and inconsistencies before training can begin.',
+              'Feature engineering creates or selects the input variables that most strongly predict the outcome.',
+              'High-quality, well-engineered data frequently outperforms a more sophisticated algorithm on poor data.',
+            ],
+          },
+          {
+            id: 'aiml-m3-l2',
+            title: 'Training, Testing, and the Overfitting Trap',
+            content: [
+              'A model is built by splitting data into a training set (used to learn patterns) and a test set (held back to check how well it generalizes to new, unseen data). This split is essential because a model can score perfectly on data it was trained on while performing poorly on real-world data it has never seen — the entire point of ML is generalization, not memorization.',
+              'Overfitting is the most common failure mode: the model memorizes noise and quirks specific to the training data instead of learning the true underlying pattern, leading to excellent training scores but poor real-world performance. The opposite problem, underfitting, happens when a model is too simple to capture the pattern at all. Practitioners fight overfitting with techniques like cross-validation, regularization, and simply gathering more diverse training data.',
+              'Try this now: imagine a student who memorizes the exact answers to last year\'s exam questions instead of understanding the underlying material — describe in your own words why that student (like an overfit model) would likely fail on this year\'s exam even though they scored 100% on last year\'s. This analogy is the fastest way to permanently understand overfitting.',
+            ],
+            keyTakeaways: [
+              'Models are trained on one data split and evaluated on a separate, unseen test split.',
+              'Overfitting means memorizing training data noise instead of learning the general pattern.',
+              'Good generalization — not perfect training scores — is the real measure of a useful model.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m3-quiz',
+          questions: [
+            {
+              id: 'aiml-m3-q1',
+              question: 'Why is data cleaning considered one of the most important steps in an ML project?',
+              options: [
+                'It is optional and rarely affects results',
+                'Messy, inconsistent, or incomplete data directly degrades model accuracy and reliability',
+                'It only matters for image data, not text or numbers',
+                'Cleaning data is automatically done by every algorithm',
+              ],
+              correctIndex: 1,
+              explanation: 'Models learn directly from the data provided, so quality issues propagate straight into poor predictions.',
+            },
+            {
+              id: 'aiml-m3-q2',
+              question: 'What is "feature engineering"?',
+              options: [
+                'Writing the final report after a model is deployed',
+                'Choosing or creating the input variables a model learns from',
+                'Designing the user interface of an AI product',
+                'A synonym for data cleaning',
+              ],
+              correctIndex: 1,
+              explanation: 'Feature engineering selects or derives the inputs that best help a model learn the target pattern.',
+            },
+            {
+              id: 'aiml-m3-q3',
+              question: 'A model scores 99% accuracy on training data but only 60% on new data. What is this called?',
+              options: [
+                'Underfitting',
+                'Overfitting',
+                'Reinforcement learning',
+                'Feature engineering',
+              ],
+              correctIndex: 1,
+              explanation: 'A large gap between training and real-world performance is the classic signature of overfitting.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m4',
+        title: 'Neural Networks and Deep Learning',
+        lessons: [
+          {
+            id: 'aiml-m4-l1',
+            title: 'Inside a Neural Network',
+            content: [
+              'A neural network is loosely inspired by neurons in the brain: layers of simple mathematical units ("nodes") connected to each other, each performing a small calculation and passing its result forward. Data enters through an input layer, passes through one or more "hidden" layers where patterns are progressively combined and abstracted, and produces a result at the output layer — a predicted category, a number, or in generative models, the next word or pixel.',
+              'Each connection between nodes has a "weight" that determines how much influence one node has on the next, and training a neural network means automatically adjusting millions (or billions) of these weights so the network\'s outputs get closer to the correct answers over many repeated passes through the training data, using a process called backpropagation. The word "deep" in deep learning simply refers to networks with many hidden layers stacked on top of each other.',
+              'Try this now: search for a simple visual diagram of a neural network (input layer, hidden layers, output layer) and trace, with your finger or cursor, how one input value flows through to become one output value. Seeing this physical flow once makes the abstract idea of "layers and weights" click far faster than reading definitions alone.',
+            ],
+            keyTakeaways: [
+              'Neural networks are layers of simple connected nodes that transform input data into predictions.',
+              'Training adjusts the weights between nodes so outputs gradually match correct answers (backpropagation).',
+              '"Deep" learning refers to networks with many stacked hidden layers, enabling far more complex pattern learning.',
+            ],
+          },
+          {
+            id: 'aiml-m4-l2',
+            title: 'Deep Learning and Why It Changed Everything',
+            content: [
+              'Before deep learning became practical, ML models relied heavily on humans manually engineering features — a computer vision engineer might spend months hand-coding rules to detect edges and shapes in images. Deep neural networks, given enough data and computing power, learn useful features automatically, layer by layer, removing much of that manual bottleneck. This is the central reason deep learning produced sudden, dramatic leaps in image recognition, speech recognition, and natural language understanding starting in the early 2010s.',
+              'Three ingredients converged to make deep learning explode: massive datasets (the internet provided more text and images than ever before), massive compute (GPUs originally built for video games turned out to be perfect for the matrix math neural networks require), and improved algorithms (better training techniques that made very deep networks actually trainable). Large language models like Claude and GPT are deep learning at an extreme scale — trained on enormous text datasets using thousands of GPUs.',
+              'Try this now: name one task that used to require a human expert (translating a sentence, identifying a tumor in a scan, transcribing audio) and that is now routinely handled by a deep learning model. Write one sentence on what data such a model would need to have been trained on to learn that task.',
+            ],
+            keyTakeaways: [
+              'Deep learning automatically learns useful features from raw data instead of requiring manual feature engineering.',
+              'Big data, GPU compute, and better training algorithms converged to make modern deep learning possible.',
+              'Large language models are deep learning applied at massive scale to text data.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m4-quiz',
+          questions: [
+            {
+              id: 'aiml-m4-q1',
+              question: 'What does training a neural network actually adjust?',
+              options: [
+                'The physical hardware running the model',
+                'The weights of the connections between nodes, so outputs better match correct answers',
+                'The programming language used to write the model',
+                'Nothing — neural networks work without any adjustment',
+              ],
+              correctIndex: 1,
+              explanation: 'Backpropagation iteratively updates connection weights to reduce the gap between predicted and correct outputs.',
+            },
+            {
+              id: 'aiml-m4-q2',
+              question: 'What does the word "deep" refer to in "deep learning"?',
+              options: [
+                'How accurate the model is',
+                'How much data the model was trained on',
+                'Networks with many stacked hidden layers',
+                'How expensive the model is to run',
+              ],
+              correctIndex: 2,
+              explanation: '"Deep" describes the depth (number) of hidden layers stacked in the network architecture.',
+            },
+            {
+              id: 'aiml-m4-q3',
+              question: 'Which combination of factors is credited with deep learning\'s rapid rise in the 2010s?',
+              options: [
+                'Smaller datasets and simpler hardware',
+                'Massive datasets, GPU compute power, and improved training algorithms',
+                'The complete removal of all training data requirements',
+                'A government ban on traditional programming',
+              ],
+              correctIndex: 1,
+              explanation: 'Big data, GPU-driven compute, and algorithmic improvements together enabled training very deep, effective networks.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m5',
+        title: 'Large Language Models and Generative AI',
+        lessons: [
+          {
+            id: 'aiml-m5-l1',
+            title: 'How LLMs Like GPT and Claude Actually Work',
+            content: [
+              'A large language model is trained on enormous amounts of text and learns, at its core, to predict the next word (technically, the next "token") given everything that came before it. Through this seemingly simple objective, repeated across trillions of words, the model statistically absorbs grammar, facts, reasoning patterns, and writing styles — not because it was explicitly taught any of these, but because predicting text well requires implicitly learning all of them.',
+              'After this initial "pretraining" phase, models go through fine-tuning and alignment steps (including RLHF, covered earlier) that teach them to be helpful, follow instructions, and avoid harmful outputs — this is the difference between a raw, unaligned base model and a polished assistant like Claude or ChatGPT that you can actually have a useful conversation with. It is important to understand that LLMs do not "know" facts the way a database does; they generate statistically likely text, which is why they can sound confident while being wrong (a phenomenon called hallucination).',
+              'Try this now: ask an LLM a question you already know the answer to, then ask it a slightly obscure or very recent question you suspect it may get wrong. Compare the tone of confidence in both answers — noticing that LLMs often sound equally confident whether correct or hallucinating is one of the most practically useful lessons in this entire course.',
+            ],
+            keyTakeaways: [
+              'LLMs are trained to predict the next token, and this simple objective produces broad language and reasoning ability at scale.',
+              'Fine-tuning and RLHF turn a raw base model into a helpful, instruction-following assistant.',
+              'LLMs generate statistically likely text, not verified facts, which is why hallucination is possible and confidence is not proof of accuracy.',
+            ],
+          },
+          {
+            id: 'aiml-m5-l2',
+            title: 'Generative AI Beyond Text: Images, Audio, Video',
+            content: [
+              'The same core idea behind LLMs — learning the statistical structure of huge amounts of data — extends beyond text. Image generators like Midjourney and DALL-E are trained on billions of image-caption pairs and learn to generate new images from a text description; diffusion models, the dominant technique, work by learning to gradually remove noise from a random starting image until a coherent picture matching the prompt emerges.',
+              'Video generation models (such as the underlying technology behind tools like Veo 3 and Grok Imagine, covered in this site\'s dedicated cinematic AI video course) extend this further, learning not just spatial patterns within a single frame but temporal consistency across many frames over time — a significantly harder problem, which is why high-quality AI video became practical years after high-quality AI image generation. Voice cloning and music generation models apply the same underlying principle to audio waveforms.',
+              'Try this now: generate one image from a text prompt in any free AI image tool, then rewrite the same prompt with more specific descriptive detail (lighting, style, composition) and generate again. Comparing the two outputs side by side demonstrates, hands-on, how generative models translate language into structured visual output.',
+            ],
+            keyTakeaways: [
+              'Generative AI applies the same statistical-learning principle to images, audio, and video, not just text.',
+              'Diffusion models generate images by learning to remove noise step by step until a coherent image emerges.',
+              'Video generation is harder than image generation because it requires consistency across many frames over time.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m5-quiz',
+          questions: [
+            {
+              id: 'aiml-m5-q1',
+              question: 'What is the core training objective of a large language model?',
+              options: [
+                'Memorizing a fixed database of facts',
+                'Predicting the next word/token given the preceding text',
+                'Sorting numbers in ascending order',
+                'Translating between exactly two fixed languages',
+              ],
+              correctIndex: 1,
+              explanation: 'Next-token prediction at massive scale is the foundational training objective behind LLMs like GPT and Claude.',
+            },
+            {
+              id: 'aiml-m5-q2',
+              question: 'Why can an LLM sound confident while giving a factually wrong answer ("hallucination")?',
+              options: [
+                'It is deliberately programmed to lie',
+                'It generates statistically likely text rather than verified facts from a database',
+                'It only happens when the internet connection is slow',
+                'LLMs never hallucinate once fine-tuned',
+              ],
+              correctIndex: 1,
+              explanation: 'LLMs produce plausible-sounding text based on patterns, not guaranteed factual lookups, so confident wording does not guarantee correctness.',
+            },
+            {
+              id: 'aiml-m5-q3',
+              question: 'Why has AI video generation lagged behind AI image generation in quality?',
+              options: [
+                'Video models require maintaining consistency across many frames over time, a much harder problem than a single image',
+                'There is no technical difference between image and video generation',
+                'Video generation does not use neural networks',
+                'Video models were invented before image models',
+              ],
+              correctIndex: 0,
+              explanation: 'Temporal consistency across frames adds significant complexity beyond single-frame image generation.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m6',
+        title: 'Popular AI/ML Tools and Platforms',
+        lessons: [
+          {
+            id: 'aiml-m6-l1',
+            title: 'No-Code and Low-Code Machine Learning Tools',
+            content: [
+              'You do not need to write code to start applying machine learning. Platforms like Google\'s Teachable Machine let you train a basic image, sound, or pose classifier by uploading examples and clicking "train" — useful for learning the core training/testing loop hands-on in minutes. Tools like Obviously AI, Akkio, and Google AutoML let you upload a spreadsheet and automatically build a predictive model (e.g., predicting customer churn) without writing a single line of code.',
+              'For day-to-day work, most people will get more value from skillfully using existing trained models — ChatGPT, Claude, Midjourney, ElevenLabs — than from building models from scratch. The practical career path for most non-engineers is becoming excellent at applying these tools to real problems, which is exactly what this site\'s AI Tools & Automation course focuses on in depth.',
+              'Try this now: visit Google\'s Teachable Machine in your browser, train a simple classifier using your webcam (for example, "hand raised" vs. "hand down"), and test it live. This five-minute exercise teaches the full train/test loop more effectively than reading about it for an hour.',
+            ],
+            keyTakeaways: [
+              'No-code tools (Teachable Machine, Obviously AI, AutoML) let anyone train basic models without programming.',
+              'Most real-world value today comes from skillfully applying existing trained models, not building new ones from scratch.',
+              'Hands-on experimentation with a no-code tool builds intuition faster than theory alone.',
+            ],
+          },
+          {
+            id: 'aiml-m6-l2',
+            title: 'Python, Libraries, and the Data Science Stack (for Those Who Want to Code)',
+            content: [
+              'For those who do want to go deeper technically, Python is the dominant language in machine learning, supported by a small set of essential libraries: pandas for handling tabular data, scikit-learn for classical ML algorithms (regression, classification, clustering), and PyTorch or TensorFlow for building neural networks. Jupyter Notebooks are the standard environment for experimenting with data and models interactively.',
+              'A realistic learning path looks like: basic Python syntax, then pandas for data manipulation, then scikit-learn to build and evaluate your first classification or regression model on a public dataset (Kaggle is the standard place to find these), and only after that moving into PyTorch/TensorFlow for deep learning. Skipping straight to deep learning without this foundation is the most common reason beginners get stuck and give up.',
+              'Try this now: if you are curious about the coding path, search for a beginner "Titanic survival prediction" tutorial on Kaggle — it is the most common first project in the field and walks through cleaning data, engineering features, and training a real classification model end to end in under an hour.',
+            ],
+            keyTakeaways: [
+              'Python with pandas, scikit-learn, and PyTorch/TensorFlow forms the standard ML technical stack.',
+              'A sound learning path moves from basic data handling to classical ML before attempting deep learning.',
+              'Public datasets and beginner tutorials (e.g., on Kaggle) are the most efficient way to practice real ML workflows.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m6-quiz',
+          questions: [
+            {
+              id: 'aiml-m6-q1',
+              question: 'What is the main appeal of no-code ML tools like Teachable Machine or Obviously AI?',
+              options: [
+                'They require advanced programming knowledge',
+                'They let people train or use basic models without writing code',
+                'They only work for video generation',
+                'They are slower than coding from scratch',
+              ],
+              correctIndex: 1,
+              explanation: 'No-code platforms remove the programming barrier, letting anyone experiment with training and applying models.',
+            },
+            {
+              id: 'aiml-m6-q2',
+              question: 'Which language and library combination is most standard for hands-on machine learning work?',
+              options: [
+                'Python with pandas, scikit-learn, and PyTorch/TensorFlow',
+                'HTML with CSS only',
+                'SQL exclusively, with no other tools',
+                'A language is never needed for machine learning',
+              ],
+              correctIndex: 0,
+              explanation: 'Python and its data/ML libraries form the de facto standard technical stack in the field.',
+            },
+            {
+              id: 'aiml-m6-q3',
+              question: 'What is a common reason beginners get stuck when learning ML technically?',
+              options: [
+                'They learn Python first',
+                'They skip foundational data handling and classical ML and jump straight into deep learning',
+                'They use Jupyter Notebooks',
+                'They practice on public datasets',
+              ],
+              correctIndex: 1,
+              explanation: 'Skipping the fundamentals of data handling and classical ML makes deep learning concepts far harder to absorb.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m7',
+        title: 'Building Your First ML Project',
+        lessons: [
+          {
+            id: 'aiml-m7-l1',
+            title: 'Framing a Real-World Problem as a Machine Learning Task',
+            content: [
+              'The hardest part of a real ML project is rarely the algorithm — it is correctly framing the business problem as a learnable task. This means answering: what exactly am I predicting (the target), what historical examples do I have with known outcomes (the labeled data), and what would "good enough" performance actually look like for this to be useful in practice? Skipping this framing step is the most common reason ML projects fail before a single model is trained.',
+              'A useful framing exercise is writing one sentence in the form: "Given [these inputs], predict [this output], using [this historical data] as examples." For example: "Given a customer\'s past purchase history and support tickets, predict whether they will cancel their subscription next month, using two years of historical churn records as training examples." If you cannot fill in that sentence clearly, the project is not yet ready for modeling.',
+              'Try this now: pick a real problem from your work or business and write that exact framing sentence. Then honestly assess whether you actually have historical examples with known outcomes — if you don\'t have that data yet, your real first task is data collection, not modeling.',
+            ],
+            keyTakeaways: [
+              'Correctly framing the prediction target and required historical data matters more than algorithm choice.',
+              'A clear "given X, predict Y, using Z as examples" sentence is a fast test of project readiness.',
+              'Lacking labeled historical data means the real first step is data collection, not model building.',
+            ],
+          },
+          {
+            id: 'aiml-m7-l2',
+            title: 'From Prototype to Working Model: A Step-by-Step Walkthrough',
+            content: [
+              'A realistic first project walkthrough: (1) collect or download a relevant dataset, (2) clean it and explore it visually to spot obvious issues or patterns, (3) split it into training and test sets, (4) train a simple baseline model first — even a basic one, since it gives you a benchmark to beat, (5) evaluate using metrics appropriate to the task (accuracy for balanced classification, precision/recall for imbalanced problems like fraud, mean error for regression), and (6) iterate by improving features or trying a different algorithm, always comparing back to your baseline.',
+              'A common beginner mistake is jumping straight to the most advanced or fashionable algorithm before establishing a simple baseline — without a baseline, you have no way to know whether your sophisticated model is actually adding value or just adding complexity. Another common mistake is evaluating only on training data, which (as covered earlier) hides overfitting and gives a false sense of success.',
+              'Try this now: using a no-code tool or a beginner Kaggle notebook, run through this exact six-step process on a small public dataset, even if your "baseline model" is something as simple as always predicting the most common outcome. Completing one full cycle, however small, teaches the workflow better than reading ten articles about it.',
+            ],
+            keyTakeaways: [
+              'A first ML project follows: collect, clean, split, baseline, evaluate, iterate.',
+              'Always establish a simple baseline model before trying advanced algorithms, to measure real improvement.',
+              'Evaluate only on held-out test data to get a trustworthy sense of real-world performance.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m7-quiz',
+          questions: [
+            {
+              id: 'aiml-m7-q1',
+              question: 'What is the most common reason real-world ML projects fail before modeling even begins?',
+              options: [
+                'Choosing the wrong programming language',
+                'Poorly framing the business problem as a learnable prediction task with available labeled data',
+                'Using too much computing power',
+                'Training for too many hours',
+              ],
+              correctIndex: 1,
+              explanation: 'Without a clear, well-framed prediction target and available historical examples, no algorithm can succeed.',
+            },
+            {
+              id: 'aiml-m7-q2',
+              question: 'Why should you build a simple baseline model before a sophisticated one?',
+              options: [
+                'Baselines are required by law in ML projects',
+                'A baseline gives a benchmark to know whether added complexity is actually improving results',
+                'Baselines are always more accurate than advanced models',
+                'There is no reason; baselines are optional busywork',
+              ],
+              correctIndex: 1,
+              explanation: 'Without a baseline, you cannot tell if a complex model is genuinely adding value over a simple approach.',
+            },
+            {
+              id: 'aiml-m7-q3',
+              question: 'Why must a model be evaluated on a held-out test set rather than only training data?',
+              options: [
+                'Training data evaluation is always more accurate',
+                'Evaluating only on training data hides overfitting and overstates real-world performance',
+                'Test sets are only needed for image data',
+                'There is no difference between the two approaches',
+              ],
+              correctIndex: 1,
+              explanation: 'Held-out test data reveals how well a model generalizes to data it has not memorized.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m8',
+        title: 'AI Ethics, Bias, and Responsible Use',
+        lessons: [
+          {
+            id: 'aiml-m8-l1',
+            title: 'Where Bias Comes From and Why It Matters',
+            content: [
+              'Algorithmic bias almost always originates in the training data, not in the math itself. If historical hiring data reflects decades of human bias against a particular group, a model trained on that data will learn and often amplify that same bias, packaged as an "objective" algorithmic score — a well-documented failure mode in real hiring, lending, and criminal justice tools deployed over the past decade.',
+              'Bias can also come from who is represented in the data at all: facial recognition systems trained predominantly on lighter-skinned faces historically performed significantly worse on darker-skinned faces, not because of any intent, but because of unrepresentative training data. Responsible ML practice requires actively auditing datasets and model outputs across different demographic groups, rather than assuming a model is "neutral" simply because it is mathematical.',
+              'Try this now: pick an AI system you use or have read about (a resume screener, a credit scoring tool, a content recommendation feed) and write two sentences on what historical data it was likely trained on, and one group that data might underrepresent or misrepresent. This habit of actively questioning training data is the single most useful bias-detection skill you can build.',
+            ],
+            keyTakeaways: [
+              'Bias typically originates from historical patterns or underrepresentation in training data, not from the algorithm itself.',
+              'Mathematical models are not automatically "neutral" or "objective" — they reflect the data they learned from.',
+              'Responsible practice includes actively auditing outputs across demographic groups rather than assuming fairness.',
+            ],
+          },
+          {
+            id: 'aiml-m8-l2',
+            title: 'Privacy, Misinformation, and Responsible AI Practices',
+            content: [
+              'Beyond bias, two other major ethical concerns dominate AI discussions today: privacy (models trained on personal data can sometimes memorize and leak specific details, and facial recognition/surveillance applications raise serious consent questions) and misinformation (generative AI makes it trivially easy to produce convincing fake text, images, audio, and video — deepfakes — at a scale and speed never before possible).',
+              'Responsible practice as a builder or user of AI includes: being transparent when content is AI-generated, avoiding the use of generative tools to impersonate real people without consent, respecting copyright and data-source terms when training or fine-tuning models, and applying healthy skepticism toward AI-generated content you encounter, especially anything emotionally charged or politically sensitive, before sharing it further.',
+              'Try this now: write your own personal three-line "AI use policy" — one line on transparency (when you will disclose AI involvement in your work), one line on consent (what you will never generate about real people without permission), and one line on verification (how you will fact-check AI output before relying on it). Having this written down in advance makes ethical decisions faster and more consistent in the moment.',
+            ],
+            keyTakeaways: [
+              'Privacy risks include data memorization/leakage and non-consensual surveillance or facial recognition use.',
+              'Generative AI dramatically lowers the cost of producing convincing misinformation and deepfakes.',
+              'A personal written policy on transparency, consent, and verification makes responsible AI use practical and consistent.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m8-quiz',
+          questions: [
+            {
+              id: 'aiml-m8-q1',
+              question: 'Where does algorithmic bias most commonly originate?',
+              options: [
+                'Random chance with no identifiable cause',
+                'Historical patterns or underrepresentation present in the training data',
+                'Mathematical errors in the algorithm\'s code, always',
+                'It cannot occur in modern, well-built systems',
+              ],
+              correctIndex: 1,
+              explanation: 'Models learn from data, so historical bias or unrepresentative data is the primary source of biased outcomes.',
+            },
+            {
+              id: 'aiml-m8-q2',
+              question: 'Why is generative AI a significant misinformation concern?',
+              options: [
+                'It cannot generate realistic content',
+                'It dramatically lowers the cost and increases the speed of producing convincing fake text, images, audio, and video',
+                'It only affects text, not images or video',
+                'Misinformation existed only before generative AI and is no longer possible',
+              ],
+              correctIndex: 1,
+              explanation: 'Deepfakes and synthetic content can now be produced cheaply, quickly, and at convincing quality.',
+            },
+            {
+              id: 'aiml-m8-q3',
+              question: 'Which is a recommended responsible AI practice for individuals using generative tools?',
+              options: [
+                'Generate content impersonating real people whenever convenient',
+                'Disclose AI involvement when relevant, avoid non-consensual impersonation, and verify outputs before relying on them',
+                'Assume all AI-generated content is automatically accurate',
+                'Avoid ever questioning AI-generated content',
+              ],
+              correctIndex: 1,
+              explanation: 'Transparency, consent, and verification are core pillars of responsible individual AI use.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m9',
+        title: 'AI/ML Careers and Practical Applications',
+        lessons: [
+          {
+            id: 'aiml-m9-l1',
+            title: 'Career Paths in AI and Machine Learning',
+            content: [
+              'AI/ML careers span a wider range than most people realize. Machine learning engineers and data scientists build and deploy models and typically need solid Python and statistics skills. AI product managers and prompt engineers focus on applying existing models (like LLMs) to solve business problems, requiring less coding and more problem-framing and communication skill. AI ethics/policy roles, AI-focused content creators, and "AI implementation consultants" who help small businesses adopt tools like ChatGPT and automation platforms are all growing, lower-barrier-to-entry paths.',
+              'For most people reading this without a technical background, the fastest realistic path into paid AI/ML work is not becoming a machine learning engineer — it is becoming exceptional at applying existing AI tools to solve specific, valuable business problems (covered in depth in this site\'s AI Tools & Automation course) while building basic literacy in how these systems work, which is exactly the goal of this course.',
+              'Try this now: of the roles mentioned (ML engineer, data scientist, AI product manager, prompt engineer, AI consultant, AI content creator), pick the one that sounds most realistic for you within the next six months given your current skills, and write down the one skill gap you would need to close first.',
+            ],
+            keyTakeaways: [
+              'AI/ML careers range from deeply technical (ML engineer, data scientist) to applied/non-technical (prompt engineer, AI consultant, AI product manager).',
+              'Non-technical paths into paid AI work are real and often faster to enter than engineering roles.',
+              'Combining basic AI/ML literacy with applied tool skills is a practical, realistic entry strategy for most learners.',
+            ],
+          },
+          {
+            id: 'aiml-m9-l2',
+            title: 'How Businesses Actually Use AI/ML Today',
+            content: [
+              'In practice, most businesses are not building custom deep learning models from scratch — they are applying pre-trained models and platforms to specific operational problems: customer service chatbots, sales lead scoring, demand forecasting for inventory, fraud detection in payments, personalized product recommendations, and automated content generation for marketing. Recognizing these common patterns helps you spot AI opportunities in any business, including your own.',
+              'A useful exercise for anyone wanting to work in or sell AI services is to map a business\'s existing repetitive, data-rich processes (anything done the same way, many times, using past examples to guide decisions) against this list of common AI use cases — that overlap is almost always where the highest-value, most fundable AI opportunity sits, and it is the foundation of pitching AI consulting or automation services to real clients.',
+              'Try this now: pick a business you know well (your own, an employer\'s, or a local business) and list one process that is repetitive, data-rich, and currently done manually. Match it to one of the six use-case categories above and write one sentence on what an AI-assisted version of that process could look like.',
+            ],
+            keyTakeaways: [
+              'Most real-world AI adoption applies existing pre-trained models to specific operational problems, not custom research.',
+              'Common business AI use cases include chatbots, lead scoring, forecasting, fraud detection, recommendations, and content generation.',
+              'Spotting AI opportunities means matching repetitive, data-rich business processes to these known use-case patterns.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m9-quiz',
+          questions: [
+            {
+              id: 'aiml-m9-q1',
+              question: 'Which AI/ML career path generally requires the least coding background?',
+              options: [
+                'Machine learning engineer',
+                'Data scientist',
+                'Prompt engineer / AI product manager applying existing tools',
+                'Deep learning researcher',
+              ],
+              correctIndex: 2,
+              explanation: 'Applied roles like prompt engineering and AI product management focus on using existing models, not building them.',
+            },
+            {
+              id: 'aiml-m9-q2',
+              question: 'What is the most realistic fast entry path into paid AI work for a non-technical learner?',
+              options: [
+                'Immediately becoming a machine learning research scientist',
+                'Becoming excellent at applying existing AI tools to solve specific business problems',
+                'Avoiding AI tools entirely until a formal degree is completed',
+                'Waiting for AI/ML jobs to require no skills at all',
+              ],
+              correctIndex: 1,
+              explanation: 'Applied tool expertise is a faster, realistic entry point than pursuing deep technical ML roles from scratch.',
+            },
+            {
+              id: 'aiml-m9-q3',
+              question: 'What type of business process is the best candidate for an AI/ML solution?',
+              options: [
+                'A process done once and never repeated',
+                'A repetitive, data-rich process currently handled manually using past examples to guide decisions',
+                'A process with no historical data available',
+                'Any process regardless of data availability',
+              ],
+              correctIndex: 1,
+              explanation: 'Repetitive, data-rich processes are exactly where pattern-learning models add the most measurable value.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aiml-m10',
+        title: 'The Future of AI and Staying Relevant',
+        lessons: [
+          {
+            id: 'aiml-m10-l1',
+            title: 'Where AI Is Heading Next',
+            content: [
+              'Several trends are shaping the near future of AI: "agentic" AI systems that can take multi-step actions on your behalf (browsing the web, calling other software tools, completing tasks autonomously) rather than just answering single questions; multimodal models that natively handle text, images, audio, and video together rather than as separate systems; and a continued push toward smaller, more efficient models that can run on local devices instead of requiring massive cloud data centers.',
+              'It is worth treating bold predictions about AI\'s future with healthy skepticism in both directions — the field has a long history of both overestimating how fast certain capabilities (like full self-driving) would arrive, and underestimating how fast others (like conversational LLMs) would arrive. The most reliable approach is tracking concrete capability releases (what a model can actually do today, tested yourself) rather than relying on hype or speculation alone.',
+              'Try this now: pick one recent AI product release you have heard about, and instead of trusting headlines about it, try the actual tool yourself on a real task you care about, then form your own one-sentence opinion on what it can and cannot reliably do. This first-hand testing habit is the most durable way to stay current as the field moves quickly.',
+            ],
+            keyTakeaways: [
+              'Agentic AI, multimodal models, and efficient on-device models are key near-term trends to watch.',
+              'AI capability predictions have historically been both overhyped and underhyped in different areas — verify, don\'t assume.',
+              'Hands-on testing of new tools yourself is more reliable than trusting headlines or hype.',
+            ],
+          },
+          {
+            id: 'aiml-m10-l2',
+            title: 'Building a Personal AI Learning System',
+            content: [
+              'Because AI/ML moves quickly, the most valuable long-term skill is not memorizing today\'s tools but building a personal system for staying current: following a small number of trustworthy sources (official model release notes/blogs rather than hype-driven social media), regularly testing new tools hands-on rather than only reading about them, and revisiting foundational concepts (the ones covered in this course) since they change far slower than specific products and remain useful regardless of which tool is popular next year.',
+              'A practical monthly habit: pick one new AI tool or model release, spend thirty minutes testing it on a real task from your own work, and write two or three sentences on what surprised you and where it currently falls short. Over a year, this compounds into genuinely current, hands-on expertise that outpaces people who only read about AI secondhand.',
+              'Try this now: schedule a recurring 30-minute block once a month, right now, in your calendar, labeled "AI tool test." Use the first slot to revisit one tool mentioned anywhere in this course and test it again, comparing it to what you remember from completing this lesson.',
+            ],
+            keyTakeaways: [
+              'Foundational ML concepts age far more slowly than specific tools or products, making them worth prioritizing.',
+              'A small set of trustworthy sources plus regular hands-on testing beats following AI hype passively.',
+              'A recurring personal habit of testing one new tool monthly compounds into durable, current expertise.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aiml-m10-quiz',
+          questions: [
+            {
+              id: 'aiml-m10-q1',
+              question: 'What does "agentic" AI refer to?',
+              options: [
+                'AI that can only answer single, isolated questions',
+                'AI systems that can take multi-step autonomous actions, like browsing or using tools, to complete tasks',
+                'A type of unsupervised learning algorithm',
+                'A government regulatory framework for AI',
+              ],
+              correctIndex: 1,
+              explanation: 'Agentic AI moves beyond single Q&A to multi-step, autonomous task completion using tools and actions.',
+            },
+            {
+              id: 'aiml-m10-q2',
+              question: 'Why should AI capability predictions be treated with healthy skepticism in both directions?',
+              options: [
+                'Because AI development has stopped entirely',
+                'Because the field has a track record of both overestimating and underestimating how fast different capabilities arrive',
+                'Because all predictions about AI are always correct',
+                'Because skepticism is never useful in technology',
+              ],
+              correctIndex: 1,
+              explanation: 'History shows uneven accuracy in AI forecasts — some capabilities arrived far faster, others far slower, than predicted.',
+            },
+            {
+              id: 'aiml-m10-q3',
+              question: 'Why are foundational ML concepts a better long-term learning investment than memorizing today\'s specific tools?',
+              options: [
+                'Foundational concepts change just as fast as specific products',
+                'Foundational concepts remain useful and change far more slowly than specific tools, which are frequently replaced',
+                'Specific tools never change, so this does not matter',
+                'There is no benefit to learning foundational concepts',
+              ],
+              correctIndex: 1,
+              explanation: 'Core concepts like supervised learning or overfitting stay relevant across tool generations, unlike specific product features.',
+            },
+          ],
+        },
+      },
+    ],
+  },
 ];
 module.exports = { COURSES };
