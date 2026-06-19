@@ -3436,6 +3436,1594 @@ const COURSES = [
       },
     ],
   },
-];
 
+  // ============================================================
+  // COURSE 6 — Web Development Fundamentals
+  // ============================================================
+  {
+    id: 'web-development-fundamentals',
+    slug: 'web-development-fundamentals',
+    title: 'Web Development Fundamentals: Build, Style, and Ship Real Websites',
+    description:
+      'A practical, beginner-to-job-ready path through HTML, CSS, JavaScript, Git, and deployment — everything you need to build real websites and start freelancing or applying for remote web developer roles.',
+    skillIds: ['web-development'],
+    category: 'Web Development',
+    estimatedHours: 20,
+    modules: [
+      {
+        id: 'wdf-m1',
+        title: 'Module 1: How the Web Actually Works',
+        lessons: [
+          {
+            id: 'wdf-m1-l1',
+            title: 'Clients, Servers, and the Request-Response Cycle',
+            content: [
+              'Every time you visit a website, your browser (the "client") sends a request to a server somewhere in the world, asking for a specific page; the server processes that request and sends back a response — usually an HTML file plus the CSS and JavaScript needed to display it. This back-and-forth is called the request-response cycle, and understanding it demystifies almost everything that follows in this course, because every website you will ever build is just a more sophisticated version of this same basic exchange.',
+              'A URL (Uniform Resource Locator) is the address you type or click to make this request — it specifies the protocol (https://), the domain (the server\'s human-readable name, like example.com), and often a specific path (/about) pointing to a particular page or resource on that server. The protocol HTTPS is the secure, encrypted version of HTTP, and modern browsers actively warn users away from sites that don\'t use it — which is why every site you build professionally should use HTTPS by default.',
+              'As a web developer, you will typically work on the "front end" (what the user sees and interacts with directly in the browser — HTML, CSS, JavaScript) and sometimes the "back end" (the server-side logic, databases, and APIs that power the front end behind the scenes). This course focuses primarily on front-end fundamentals first, since that is the fastest path to building and shipping something real, with enough back-end context (Module 6) to understand how the two connect.',
+            ],
+            keyTakeaways: [
+              'Every website visit is a request-response cycle between a client (browser) and a server.',
+              'A URL specifies the protocol, domain, and path used to locate a specific resource on a server.',
+              'Front-end development (HTML/CSS/JS, what users see) and back-end development (server logic/databases) work together to power a complete website.',
+            ],
+          },
+          {
+            id: 'wdf-m1-l2',
+            title: 'Setting Up Your Developer Environment',
+            content: [
+              'Before writing any code, you need three basic tools: a code editor (Visual Studio Code is the free, industry-standard choice, with built-in syntax highlighting and extensions for nearly every language), a modern web browser with developer tools (Chrome or Firefox both include a built-in "Inspect" panel that lets you view and debug HTML, CSS, and JavaScript live on any page), and a way to preview your work locally — either by opening an HTML file directly in your browser, or using a lightweight local server extension like "Live Server" in VS Code, which automatically refreshes the page whenever you save a change.',
+              'Organizing your project files matters from day one: keep a dedicated project folder with a clear structure (typically an index.html file at the root, a css folder for stylesheets, and a js folder for scripts), since messy file organization becomes a real obstacle once a project grows beyond a single page. Get comfortable using your browser\'s developer tools early — right-click any element on any website and choose "Inspect" to see exactly how it was built, which is one of the fastest ways to learn real-world techniques from sites you admire.',
+              'As your first hands-on task, install VS Code, install the Live Server extension, create a project folder with an empty index.html file, and get it displaying "Hello, World!" in your browser using Live Server\'s auto-refresh. This small exercise confirms your entire toolchain works correctly before you build anything more complex in the modules ahead.',
+            ],
+            keyTakeaways: [
+              'A code editor (VS Code), a modern browser with dev tools, and a local preview method are the three essential setup tools.',
+              'Browser developer tools let you inspect and learn from the HTML/CSS/JS of any live website.',
+              'A clean, organized project folder structure (index.html, css/, js/) prevents confusion as projects grow.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'wdf-m1-quiz',
+          questions: [
+            {
+              id: 'wdf-m1-q1',
+              question: 'What happens during the "request-response cycle"?',
+              options: [
+                'The browser deletes the website automatically',
+                'The browser (client) requests a page and the server sends back a response such as HTML, CSS, and JavaScript',
+                'The server requests data from the browser only',
+                'Nothing is exchanged between client and server',
+              ],
+              correctIndex: 1,
+              explanation: 'Every page load is a client request answered by a server response containing the page\'s content.',
+            },
+            {
+              id: 'wdf-m1-q2',
+              question: 'What does HTTPS provide compared to plain HTTP?',
+              options: [
+                'Faster loading with no other benefit',
+                'An encrypted, secure connection between browser and server',
+                'It removes the need for a domain name',
+                'It only works for images',
+              ],
+              correctIndex: 1,
+              explanation: 'HTTPS encrypts the connection, protecting data in transit between client and server.',
+            },
+            {
+              id: 'wdf-m1-q3',
+              question: 'Which tool lets you inspect and debug the HTML/CSS/JS of any live webpage?',
+              options: ['A spreadsheet program', 'Browser developer tools', 'A word processor', 'An email client'],
+              correctIndex: 1,
+              explanation: 'Browser developer tools (Inspect panel) reveal the underlying code and structure of any page you visit.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'wdf-m2',
+        title: 'Module 2: HTML — Structuring Your Content',
+        lessons: [
+          {
+            id: 'wdf-m2-l1',
+            title: 'HTML Elements, Tags, and Document Structure',
+            content: [
+              'HTML (HyperText Markup Language) is the skeleton of every webpage — it doesn\'t make anything look pretty, but it defines what each piece of content is: a heading, a paragraph, an image, a link, or a list. Every HTML element is written as a tag, usually in an opening-and-closing pair like `<p>Your text here</p>`, and elements can nest inside one another to build up a complete page structure, much like folders nesting inside folders.',
+              'Every HTML document follows the same basic skeleton: a `<!DOCTYPE html>` declaration at the very top tells the browser this is a modern HTML document, followed by an `<html>` tag wrapping everything, a `<head>` section containing metadata (like the page title and links to stylesheets) that is not directly visible to the user, and a `<body>` section containing everything the user actually sees and interacts with. Common content tags include headings (`<h1>` through `<h6>`, in decreasing importance), paragraphs (`<p>`), images (`<img>`), links (`<a>`), and lists (`<ul>` for bullet lists, `<ol>` for numbered lists, with `<li>` for each item).',
+              'Semantic HTML — using tags that describe their actual purpose, like `<nav>` for navigation, `<header>` for a page header, `<main>` for the primary content, and `<footer>` for the footer — matters for two practical reasons: it helps search engines understand and rank your page correctly, and it helps screen readers make your site usable for people with visual impairments. As your assignment, build a simple one-page HTML document about yourself with a heading, two paragraphs, a list of three skills, and a link to a site you like — using semantic tags throughout.',
+            ],
+            keyTakeaways: [
+              'HTML defines the structure and meaning of content using nested elements/tags — not visual styling.',
+              'Every HTML document follows the doctype → html → head → body skeleton.',
+              'Semantic tags (nav, header, main, footer) improve both SEO and accessibility for screen reader users.',
+            ],
+          },
+          {
+            id: 'wdf-m2-l2',
+            title: 'Forms, Attributes, and Building a Real Page',
+            content: [
+              'HTML attributes add extra information to a tag without changing what the tag fundamentally is — for example, an `<img>` tag needs a `src` attribute pointing to the image file and an `alt` attribute describing the image for accessibility and for cases when the image fails to load. An `<a>` tag (a link) needs an `href` attribute specifying the destination URL, and can include a `target="_blank"` attribute to open that link in a new tab.',
+              'Forms are how websites collect input from users — a `<form>` element wraps input fields like `<input type="text">` for short text, `<input type="email">` for email addresses (which browsers can auto-validate), `<textarea>` for longer text, and a `<button>` or `<input type="submit">` to send the data. Every input should have an associated `<label>` so users (and screen readers) understand exactly what each field is asking for — labeling forms correctly is one of the most overlooked basics that separates amateur pages from professional ones.',
+              'For your assignment, build a simple contact page containing a heading, a short intro paragraph, and a form with labeled fields for name, email, and a message textarea, plus a submit button. Don\'t worry yet about what happens when the form is submitted (that requires back-end logic covered conceptually in Module 6) — the goal here is purely correct, accessible HTML structure.',
+            ],
+            keyTakeaways: [
+              'Attributes (src, href, alt, type) add extra detail and behavior to HTML tags without changing their basic role.',
+              'Forms collect user input using input fields, textareas, and submit buttons wrapped in a form element.',
+              'Every form input should have an associated label for accessibility and clarity.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'wdf-m2-quiz',
+          questions: [
+            {
+              id: 'wdf-m2-q1',
+              question: 'What is the primary purpose of HTML on a webpage?',
+              options: [
+                'To define visual styling like colors and fonts',
+                'To define the structure and meaning of content',
+                'To handle server-side database queries',
+                'To compress images automatically',
+              ],
+              correctIndex: 1,
+              explanation: 'HTML structures and labels content; visual styling is handled separately by CSS.',
+            },
+            {
+              id: 'wdf-m2-q2',
+              question: 'Why does semantic HTML (using tags like nav, header, main) matter?',
+              options: [
+                'It has no real benefit',
+                'It improves SEO and accessibility for screen reader users',
+                'It makes pages load slower',
+                'It is required only for images',
+              ],
+              correctIndex: 1,
+              explanation: 'Semantic tags help search engines and assistive technologies understand page structure correctly.',
+            },
+            {
+              id: 'wdf-m2-q3',
+              question: 'Why should every form input have an associated label?',
+              options: [
+                'Labels are purely decorative',
+                'Labels make forms clear and accessible, including for screen reader users',
+                'Labels are required by every browser to submit a form',
+                'There is no reason to use labels',
+              ],
+              correctIndex: 1,
+              explanation: 'Labels clarify what each input field is asking for, both visually and for assistive technology.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'wdf-m3',
+        title: 'Module 3: CSS — Styling and Layout',
+        lessons: [
+          {
+            id: 'wdf-m3-l1',
+            title: 'Selectors, the Box Model, and Core Properties',
+            content: [
+              'CSS (Cascading Style Sheets) controls how your HTML actually looks — colors, fonts, spacing, sizing, and positioning. A CSS rule consists of a selector (which HTML elements it targets) followed by curly braces containing property-value pairs, for example `p { color: blue; font-size: 16px; }` makes every paragraph blue with 16-pixel text. Selectors can target elements by tag name, by class (`.my-class`, reusable across many elements), or by ID (`#my-id`, unique to one specific element) — classes are used far more often than IDs in real-world CSS because they are reusable.',
+              'The box model is the single most important concept in CSS layout: every HTML element is treated as a rectangular box made of four layers, from the inside out — content (the actual text or image), padding (space inside the border, between content and border), border (a visible or invisible edge around the padding), and margin (space outside the border, separating this box from neighboring elements). Misunderstanding the box model is the source of most early CSS frustration — for example, adding padding can unexpectedly make an element wider unless you account for it.',
+              'Beyond the box model, color (using hex codes like `#0A66C2`, or named colors, or `rgb()`/`rgba()` for transparency), typography (font-family, font-size, font-weight, line-height), and background properties (background-color, background-image) round out the core toolkit you will use on nearly every project. For your assignment, take the HTML page you built in Module 2 and add a CSS stylesheet that styles the heading with a custom color and font size, adds padding and a border around the form, and sets a background color for the page.',
+            ],
+            keyTakeaways: [
+              'CSS rules pair a selector (element, class, or ID) with property-value styling declarations.',
+              'The box model — content, padding, border, margin — governs how every element is sized and spaced.',
+              'Color, typography, and background properties are the core, most frequently used styling tools.',
+            ],
+          },
+          {
+            id: 'wdf-m3-l2',
+            title: 'Flexbox and Modern Layout',
+            content: [
+              'Before Flexbox, arranging elements side by side or centering things vertically required clunky workarounds — Flexbox solved this by giving any container a simple, powerful layout system. Setting `display: flex` on a container turns its direct children into a flexible row (by default) that can be controlled with properties like `justify-content` (controls horizontal alignment/spacing — e.g., `space-between`, `center`) and `align-items` (controls vertical alignment within the row, e.g., `center`).',
+              'Flexbox is ideal for one-dimensional layouts — a navigation bar with logo on the left and links on the right, a row of cards, or centering a single element perfectly both horizontally and vertically with just `display: flex; justify-content: center; align-items: center;`. CSS Grid (a closely related but more powerful tool for two-dimensional layouts — rows AND columns simultaneously) is worth knowing exists, though Flexbox alone will cover the large majority of layouts you build as a beginner.',
+              'For your assignment, rebuild your page\'s structure using Flexbox: create a simple navigation bar with a site name on the left and three links on the right using `justify-content: space-between`, and arrange any three content blocks (cards, images, or sections) into a responsive row using Flexbox rather than manual positioning. This single skill — Flexbox — will solve the majority of real-world layout challenges you encounter as a working developer.',
+            ],
+            keyTakeaways: [
+              'display: flex turns a container\'s children into a flexible, easily aligned row or column.',
+              'justify-content and align-items control horizontal and vertical alignment within a flex container.',
+              'Flexbox handles most one-dimensional layout needs; CSS Grid extends this to full two-dimensional layouts.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'wdf-m3-quiz',
+          questions: [
+            {
+              id: 'wdf-m3-q1',
+              question: 'What are the four layers of the CSS box model, from inside to outside?',
+              options: [
+                'Margin, border, padding, content',
+                'Content, padding, border, margin',
+                'Border, content, margin, padding',
+                'Padding, content, margin, border',
+              ],
+              correctIndex: 1,
+              explanation: 'The box model goes content → padding → border → margin, from the innermost layer outward.',
+            },
+            {
+              id: 'wdf-m3-q2',
+              question: 'What does setting display: flex on a container primarily enable?',
+              options: [
+                'It deletes all child elements',
+                'It turns the container\'s children into an easily aligned flexible row or column',
+                'It disables all CSS on the page',
+                'It only affects images, not text',
+              ],
+              correctIndex: 1,
+              explanation: 'Flexbox gives a container a flexible layout system for arranging its direct children.',
+            },
+            {
+              id: 'wdf-m3-q3',
+              question: 'Which CSS selector type is reused across many elements, unlike an ID which targets only one?',
+              options: ['Class selector (.my-class)', 'ID selector (#my-id)', 'There is no difference', 'Neither can be reused'],
+              correctIndex: 0,
+              explanation: 'Class selectors are designed to be applied to multiple elements; IDs should be unique per page.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'wdf-m4',
+        title: 'Module 4: Responsive & Mobile-First Design',
+        lessons: [
+          {
+            id: 'wdf-m4-l1',
+            title: 'Designing for Every Screen Size',
+            content: [
+              'More than half of all web traffic globally comes from mobile devices, which means a website that looks great on a laptop but breaks on a phone is failing the majority of its visitors — responsive design solves this by making layouts adapt fluidly to any screen size. The first practical step is adding the viewport meta tag, `<meta name="viewport" content="width=device-width, initial-scale=1.0">`, inside your `<head>` — without this single line, mobile browsers will render your page at desktop width and force users to zoom and scroll sideways.',
+              'Media queries are the core tool for responsive design: a rule like `@media (max-width: 768px) { ... }` applies its enclosed CSS only when the screen is 768 pixels wide or narrower, letting you redefine layouts, font sizes, or spacing specifically for smaller screens. The "mobile-first" approach flips the traditional thinking: instead of designing for desktop and then cramming it onto mobile, you design the simple mobile layout first, then use media queries to add complexity for larger screens — this generally produces cleaner, more focused results.',
+              'Combined with Flexbox\'s natural flexibility (a flex row can be told to wrap onto multiple lines with `flex-wrap: wrap`, or switch to a column layout on small screens with a media query changing `flex-direction`), responsive design becomes very achievable even as a beginner. For your assignment, add the viewport meta tag to your existing page, then add a media query that stacks your navigation links vertically and reduces your heading\'s font size when the screen width drops below 768 pixels — then resize your browser window to confirm it adapts correctly.',
+            ],
+            keyTakeaways: [
+              'The viewport meta tag is required for mobile browsers to render a page at the correct width instead of zoomed-out desktop scale.',
+              'Media queries apply CSS conditionally based on screen width, enabling layouts to adapt across devices.',
+              'Mobile-first design builds the simple small-screen layout first, then adds complexity for larger screens via media queries.',
+            ],
+          },
+          {
+            id: 'wdf-m4-l2',
+            title: 'Testing and Polishing Across Devices',
+            content: [
+              'Real responsive design is verified, not assumed — browser developer tools include a device toolbar (usually a small phone/tablet icon) that simulates how your page renders on dozens of real device sizes, from an iPhone SE to an iPad, without needing physical devices to test on. Use this constantly while building, not just at the end, since catching a broken layout early is far easier than retrofitting fixes after the entire page is built.',
+              'Common responsive pitfalls worth specifically checking for include: images that overflow their container on small screens (fixed with `max-width: 100%; height: auto;` on images), text that becomes too small or too large at certain widths, navigation menus that overlap content, and buttons or links that become too small to tap accurately on a touchscreen (a minimum touch target size of roughly 44x44 pixels is the common accessibility guideline). Testing at a handful of common breakpoints — roughly 375px (small phones), 768px (tablets), and 1024px+ (desktops) — covers the large majority of real-world devices.',
+              'For your final assignment in this module, open your page in the browser device toolbar, test it at phone, tablet, and desktop widths, and fix any issues you find — overflowing images, cramped text, or misaligned navigation. This habit of testing across breakpoints before considering a page "done" is a professional standard, not an optional extra.',
+            ],
+            keyTakeaways: [
+              'Browser device toolbars let you simulate dozens of screen sizes without needing physical devices.',
+              'Common responsive issues include overflowing images, oddly sized text, and touch targets that are too small.',
+              'Testing at small-phone, tablet, and desktop breakpoints before calling a page "done" is standard professional practice.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'wdf-m4-quiz',
+          questions: [
+            {
+              id: 'wdf-m4-q1',
+              question: 'What does the viewport meta tag do?',
+              options: [
+                'It blocks mobile users from visiting the site',
+                'It tells mobile browsers to render the page at the device\'s actual width instead of zoomed-out desktop scale',
+                'It changes the page\'s text color',
+                'It has no practical effect',
+              ],
+              correctIndex: 1,
+              explanation: 'Without the viewport meta tag, mobile browsers default to rendering at desktop width, forcing zooming and sideways scrolling.',
+            },
+            {
+              id: 'wdf-m4-q2',
+              question: 'What is the "mobile-first" approach to responsive design?',
+              options: [
+                'Designing only for mobile and ignoring desktop entirely',
+                'Designing the simple mobile layout first, then adding complexity for larger screens via media queries',
+                'Designing for desktop first and shrinking it for mobile',
+                'There is no defined approach',
+              ],
+              correctIndex: 1,
+              explanation: 'Mobile-first starts with the simplest, smallest layout and progressively enhances it for larger screens.',
+            },
+            {
+              id: 'wdf-m4-q3',
+              question: 'What tool lets you simulate different device screen sizes directly in your browser?',
+              options: ['A spreadsheet', 'The browser developer tools\' device toolbar', 'A word processor', 'An email client'],
+              correctIndex: 1,
+              explanation: 'The device toolbar in browser dev tools simulates many real device widths for responsive testing.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'wdf-m5',
+        title: 'Module 5: JavaScript Fundamentals',
+        lessons: [
+          {
+            id: 'wdf-m5-l1',
+            title: 'Variables, Functions, and the DOM',
+            content: [
+              'JavaScript is the programming language that makes web pages interactive — it can respond to clicks, validate forms, update content without reloading the page, and much more. Variables store data using `let` (for values that may change) or `const` (for values that won\'t be reassigned), for example `let score = 0;` or `const siteName = "My Portfolio";`. Functions are reusable blocks of code that perform a specific task, defined with `function greet(name) { return "Hello, " + name; }` and called later with `greet("Ada")`.',
+              'The DOM (Document Object Model) is JavaScript\'s live, in-memory representation of your HTML page — it lets your code find, read, and change elements after the page has loaded. `document.querySelector(".my-class")` finds the first element matching a CSS selector, `element.textContent = "New text"` changes what text it displays, and `element.style.color = "red"` changes its styling directly from JavaScript — this is the foundation of nearly every interactive feature you will build.',
+              'Event listeners connect user actions to JavaScript code: `button.addEventListener("click", function() { ... })` runs the provided function every time that button is clicked. As your assignment, add a `<button>` to your existing page and use JavaScript to change a paragraph\'s text and color when that button is clicked — this single exercise combines variables, the DOM, and event listeners into your first genuinely interactive feature.',
+            ],
+            keyTakeaways: [
+              'Variables (let/const) store data, and functions package reusable logic that can be called repeatedly.',
+              'The DOM is JavaScript\'s live representation of the page, letting code find and modify HTML elements after load.',
+              'Event listeners connect user actions (like clicks) to JavaScript functions, powering interactivity.',
+            ],
+          },
+          {
+            id: 'wdf-m5-l2',
+            title: 'Conditionals, Loops, and Form Validation',
+            content: [
+              'Conditionals let your code make decisions: `if (score > 50) { ... } else { ... }` runs different code depending on whether a condition is true or false, and is the basis of almost every piece of logic in real applications — from showing an error message to deciding which content to display. Comparison operators (`>`, `<`, `===` for "equals", `!==` for "not equals") are used to build these conditions.',
+              'Loops let your code repeat an action without writing it out manually each time: a `for` loop like `for (let i = 0; i < 5; i++) { console.log(i); }` runs five times, while array methods like `.forEach()` and `.map()` let you process every item in a list of data elegantly — for example, looping through an array of product names to generate HTML for each one dynamically. Arrays (`let fruits = ["apple", "banana", "mango"];`) and objects (`let user = { name: "Ada", age: 25 };`) are the two fundamental ways JavaScript organizes structured data, and you will use both constantly.',
+              'A practical, common real-world use of conditionals is form validation: checking that a required field isn\'t empty, or that an email field contains an "@" symbol, before allowing a form to submit, and displaying a clear error message if validation fails. For your assignment, add JavaScript validation to the contact form you built earlier — when the submit button is clicked, check that the name and message fields aren\'t empty, and if either is empty, prevent submission and display an error message using the DOM techniques from the previous lesson.',
+            ],
+            keyTakeaways: [
+              'Conditionals (if/else) let code branch based on whether a condition is true or false.',
+              'Loops and array methods (for, forEach, map) let code repeat actions across lists of data without manual repetition.',
+              'Form validation uses conditionals to check input before submission, giving users clear, immediate feedback.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'wdf-m5-quiz',
+          questions: [
+            {
+              id: 'wdf-m5-q1',
+              question: 'What is the DOM?',
+              options: [
+                'A type of CSS file',
+                'JavaScript\'s live, in-memory representation of the HTML page, used to read and change elements',
+                'A database management system',
+                'A web server',
+              ],
+              correctIndex: 1,
+              explanation: 'The DOM lets JavaScript find and manipulate elements on a page after it has loaded.',
+            },
+            {
+              id: 'wdf-m5-q2',
+              question: 'What does an event listener do?',
+              options: [
+                'It deletes an HTML element permanently',
+                'It connects a user action (like a click) to a JavaScript function that runs in response',
+                'It only works with images',
+                'It has no functional purpose',
+              ],
+              correctIndex: 1,
+              explanation: 'Event listeners trigger specified code whenever a defined event (click, input, etc.) occurs.',
+            },
+            {
+              id: 'wdf-m5-q3',
+              question: 'What is a practical real-world use of conditionals shown in this module?',
+              options: [
+                'Styling text with colors',
+                'Validating form input before allowing submission',
+                'Defining the page\'s HTML structure',
+                'Conditionals have no practical use',
+              ],
+              correctIndex: 1,
+              explanation: 'Form validation checks input against conditions before allowing the form to proceed.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'wdf-m6',
+        title: 'Module 6: APIs and Dynamic Data',
+        lessons: [
+          {
+            id: 'wdf-m6-l1',
+            title: 'Fetching Data From the Outside World',
+            content: [
+              'An API (Application Programming Interface) is how one piece of software requests data or services from another — when a weather app shows today\'s forecast, it is fetching that data from a weather API rather than storing weather information itself. Most modern web APIs follow a REST style, exchanging data as JSON (JavaScript Object Notation, a lightweight text format that looks like `{"name": "Lagos", "temp": 29}`), and JavaScript\'s built-in `fetch()` function is the standard tool for requesting that data from inside the browser.',
+              'A basic fetch request looks like `fetch("https://api.example.com/data").then(response => response.json()).then(data => console.log(data));` — this sends a request, waits for the response, converts it from JSON text into a usable JavaScript object, and then lets you work with that data (like displaying it on the page using the DOM techniques from Module 5). Many free, beginner-friendly public APIs exist for practice — weather data, random quotes, country information — letting you build genuinely dynamic pages without needing to build your own back end yet.',
+              'Understanding this client-server data flow also clarifies why some features need a real back end: a contact form that actually sends an email, a login system that checks a password against a database, or any feature that must securely store data — all of these require server-side code (commonly Node.js, Python, or PHP) that the front end alone cannot safely handle. For your assignment, find one free public API (search "free public APIs" with no authentication required), and use fetch() to display its data on a simple page — for example, fetching and displaying a random quote each time a button is clicked.',
+            ],
+            keyTakeaways: [
+              'APIs let one application request data or services from another, almost always exchanged as JSON.',
+              'JavaScript\'s fetch() function is the standard tool for requesting data from an API directly in the browser.',
+              'Features requiring secure storage or processing (logins, real form submissions) need server-side back-end code, not front-end JavaScript alone.',
+            ],
+          },
+          {
+            id: 'wdf-m6-l2',
+            title: 'From Static Pages to Real Web Applications',
+            content: [
+              'A static website (everything built so far in this course) serves the same fixed HTML to every visitor; a dynamic web application changes its content based on data, user accounts, or real-time input — the difference between a digital brochure and an actual product like a social media feed or an e-commerce store. Most real-world dynamic applications follow roughly the same pattern: a front end (HTML/CSS/JS, what you\'ve learned) talks to a back end (server-side code and a database) via API requests, exactly like the fetch() pattern from the previous lesson, just now talking to a server you or your team built rather than a public API.',
+              'As a front-end-focused beginner, you do not need to master back-end development to be employable or to freelance successfully — many real jobs and freelance gigs are explicitly "front-end developer" roles that only require HTML, CSS, JavaScript, and the ability to consume APIs that a back-end team already built. That said, having even a conceptual understanding of how the back end works (this lesson, plus Module 6\'s API content) makes you a significantly stronger collaborator and candidate than someone who only knows how pages look, with no sense of how data actually flows.',
+              'For your assignment, write a short paragraph (for your own notes, not submitted anywhere) explaining in your own words the journey of data when a user submits a real-world login form: from the HTML form, through JavaScript validation, to an API request, to a back-end server, to a database check, and back again with a response. Being able to explain this flow clearly is a strong signal of genuine understanding, not just memorized syntax — and it is a common interview question for junior developer roles.',
+            ],
+            keyTakeaways: [
+              'Static sites serve fixed content to everyone; dynamic applications change based on data, accounts, or real-time input.',
+              'Front-end developers can build successful careers without mastering back-end development, as long as they can consume APIs competently.',
+              'Being able to explain the full client-to-server-to-database data flow is a strong, interview-relevant signal of real understanding.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'wdf-m6-quiz',
+          questions: [
+            {
+              id: 'wdf-m6-q1',
+              question: 'What format do most modern web APIs use to exchange data?',
+              options: ['JSON', 'Microsoft Word documents', 'Printed paper', 'CSS files'],
+              correctIndex: 0,
+              explanation: 'JSON (JavaScript Object Notation) is the standard lightweight data format used by most REST APIs.',
+            },
+            {
+              id: 'wdf-m6-q2',
+              question: 'What is the key difference between a static website and a dynamic web application?',
+              options: [
+                'There is no real difference',
+                'Static sites serve fixed content to everyone; dynamic apps change based on data, accounts, or input',
+                'Dynamic apps cannot use HTML at all',
+                'Static sites are always larger in file size',
+              ],
+              correctIndex: 1,
+              explanation: 'Dynamic applications respond to data and user context, unlike fixed static pages.',
+            },
+            {
+              id: 'wdf-m6-q3',
+              question: 'Which JavaScript function is the standard tool for requesting data from an API?',
+              options: ['alert()', 'fetch()', 'console.log()', 'document.write()'],
+              correctIndex: 1,
+              explanation: 'fetch() is the built-in browser function used to make HTTP requests to APIs.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'wdf-m7',
+        title: 'Module 7: Git, GitHub, and Working Like a Developer',
+        lessons: [
+          {
+            id: 'wdf-m7-l1',
+            title: 'Version Control Fundamentals',
+            content: [
+              'Git is a version control system that tracks every change made to your code over time, letting you save checkpoints (called "commits"), see exactly what changed and when, and revert back to an earlier version if something breaks — it is the industry-standard tool used on virtually every professional software team. GitHub is a website that hosts your Git repositories online, making it possible to back up your code, collaborate with others, and — critically for a beginner building a career — showcase your work publicly to potential clients or employers.',
+              'The core Git workflow you will use constantly is: `git add` (stage the files you want to include in your next checkpoint), `git commit -m "a clear description of what changed"` (save that checkpoint with a message explaining it), and `git push` (upload your committed changes to GitHub). Writing clear, specific commit messages ("Add responsive navigation menu" rather than "fixed stuff") is a small habit that makes a large difference once you are working with others or revisiting your own old projects months later.',
+              'For your assignment, create a free GitHub account, install Git on your machine, and turn your project folder from earlier modules into a Git repository: run `git init`, then `git add .`, then `git commit -m "Initial commit: basic page structure"`, then create a new repository on GitHub and push your code to it using the commands GitHub provides. Having even one real project visible on your GitHub profile is something you can link directly in job applications and freelance proposals from this point forward.',
+            ],
+            keyTakeaways: [
+              'Git tracks changes to your code over time through commits, letting you save checkpoints and revert if needed.',
+              'GitHub hosts Git repositories online, enabling backup, collaboration, and a public showcase of your work.',
+              'The core workflow — git add, git commit, git push — with clear commit messages is used on virtually every professional team.',
+            ],
+          },
+          {
+            id: 'wdf-m7-l2',
+            title: 'Branching and Collaborating Safely',
+            content: [
+              'A branch is an independent line of development within the same Git repository — the default branch (usually called `main`) holds your stable, working code, while a new branch (created with `git checkout -b feature-name`) lets you experiment with a new feature or fix without risking the stable version until you are ready to merge your changes back in. This matters enormously once you work with others, since multiple people can work on different branches simultaneously without overwriting each other\'s work.',
+              'A pull request (PR) on GitHub is a formal request to merge one branch\'s changes into another, typically into `main` — it gives collaborators a chance to review the proposed changes, leave comments, and approve or request changes before anything is merged, which is the standard professional workflow at companies of every size. Even working solo, using branches and pull requests for your own practice projects builds the exact habits and vocabulary employers expect from day one of a junior role.',
+              'For your assignment, create a new branch in your existing repository, make a small change (like updating your page\'s color scheme), commit it on that branch, push it to GitHub, and open a pull request to merge it into `main` — then merge it yourself, since you are working solo. This single exercise, done once deliberately, removes the intimidation factor of branches and PRs before you encounter them on a real team.',
+            ],
+            keyTakeaways: [
+              'Branches let you develop new features or fixes independently from the stable main branch.',
+              'A pull request formally proposes merging one branch into another, with room for review before changes go live.',
+              'Practicing branches and pull requests solo builds the exact workflow habits expected on professional teams.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'wdf-m7-quiz',
+          questions: [
+            {
+              id: 'wdf-m7-q1',
+              question: 'What does a Git commit do?',
+              options: [
+                'It permanently deletes old code',
+                'It saves a checkpoint of your changes with a descriptive message',
+                'It uploads your code to the internet automatically',
+                'It has no practical function',
+              ],
+              correctIndex: 1,
+              explanation: 'A commit captures a snapshot of staged changes along with a message describing what changed.',
+            },
+            {
+              id: 'wdf-m7-q2',
+              question: 'What is the purpose of a Git branch?',
+              options: [
+                'To permanently delete the main codebase',
+                'To develop a new feature or fix independently without affecting the stable main branch',
+                'To slow down your computer',
+                'Branches serve no real purpose',
+              ],
+              correctIndex: 1,
+              explanation: 'Branches isolate new work so the stable main branch remains unaffected until changes are ready to merge.',
+            },
+            {
+              id: 'wdf-m7-q3',
+              question: 'What does a pull request (PR) allow collaborators to do?',
+              options: [
+                'Immediately and permanently delete a repository',
+                'Review and discuss proposed changes before merging them into another branch',
+                'Nothing — PRs have no function on GitHub',
+                'Only view code without any review capability',
+              ],
+              correctIndex: 1,
+              explanation: 'Pull requests provide a structured review process before changes are merged.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'wdf-m8',
+        title: 'Module 8: Deploying and Freelancing as a Web Developer',
+        lessons: [
+          {
+            id: 'wdf-m8-l1',
+            title: 'Putting Your Site Live on the Internet',
+            content: [
+              'Deployment is the process of taking your code from your local machine and making it accessible on the public internet — and for static sites (HTML, CSS, JavaScript, no server-side code), this has become remarkably simple and often completely free. Platforms like Vercel, Netlify, and GitHub Pages let you connect your GitHub repository and automatically publish your site to a live URL within minutes, redeploying automatically every time you push a new commit.',
+              'A custom domain name (like yourname.com instead of a free subdomain) is optional but adds professionalism for client-facing or portfolio work, and is typically inexpensive (often $10–15/year) through registrars like Namecheap or GoDaddy, then pointed at your deployment platform through simple DNS settings. For your assignment, deploy the project you have built throughout this course to Vercel, Netlify, or GitHub Pages, confirm it loads correctly on both desktop and mobile, and add the live link to your GitHub repository\'s description.',
+              'Once deployed, this project becomes the first entry in your developer portfolio — a small but real, live, link-able piece of evidence that you can build and ship working software, which matters far more to early clients and employers than any certificate alone. Every project you complete from this point forward should follow this same pattern: build it, push it to GitHub, deploy it, and add it to your growing portfolio.',
+            ],
+            keyTakeaways: [
+              'Static site deployment via Vercel, Netlify, or GitHub Pages is fast, often free, and auto-updates with every Git push.',
+              'A custom domain adds professionalism for client-facing work but is optional, especially when starting out.',
+              'Every completed project should be deployed and added to a growing, link-able portfolio — proof matters more than credentials alone.',
+            ],
+          },
+          {
+            id: 'wdf-m8-l2',
+            title: 'Finding Your First Web Development Clients or Job',
+            content: [
+              'With a deployed portfolio project in hand, you have two realistic paths into paid work: freelancing (platforms like Upwork and Fiverr, or direct outreach to small local businesses that need a simple website) or applying for junior/entry-level developer roles, many of which are remote-friendly given how distributed web development teams already are. For freelancing specifically, small businesses without an existing website are often the easiest first clients — they need something simple (a landing page, a basic multi-page site) that matches exactly the skills built in this course, and they are far less demanding than enterprise clients about advanced frameworks or complex back-end systems.',
+              'When pricing your first few projects, undercharging slightly to build a portfolio of real client work and testimonials is a reasonable short-term trade-off, but always charge something — free work rarely gets taken seriously and sets a difficult precedent for raising your rates later. A simple, honest pitch works well for first clients: "I build clean, mobile-friendly websites for small businesses — here is an example I built [link your deployed project], and I can have your site live within two weeks."',
+              'For your final assignment in this course, write a short outreach message (3-4 sentences) you could realistically send to a local business without a website, referencing your deployed portfolio project, and identify three specific local or remote businesses you could realistically send it to this week. Completing this course is the foundation — sending that first message is what actually starts your career.',
+            ],
+            keyTakeaways: [
+              'Freelancing through platforms or direct local outreach, and applying for remote-friendly junior roles, are the two realistic first paths to paid work.',
+              'Small businesses without an existing website are often the easiest, lowest-friction first clients for a new developer.',
+              'A simple, confident outreach pitch referencing a real deployed project is more persuasive than any credential alone.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'wdf-m8-quiz',
+          questions: [
+            {
+              id: 'wdf-m8-q1',
+              question: 'Which platforms are mentioned for deploying a static site for free?',
+              options: [
+                'Only paper printing services',
+                'Vercel, Netlify, and GitHub Pages',
+                'Microsoft Word',
+                'There are no free deployment options',
+              ],
+              correctIndex: 1,
+              explanation: 'Vercel, Netlify, and GitHub Pages all offer free, fast static site deployment connected to GitHub.',
+            },
+            {
+              id: 'wdf-m8-q2',
+              question: 'Why are small businesses without an existing website considered good first clients?',
+              options: [
+                'They never need to be paid',
+                'Their needs match beginner skills closely and they are less demanding about advanced frameworks',
+                'They require the most advanced back-end systems',
+                'There is no advantage to this type of client',
+              ],
+              correctIndex: 1,
+              explanation: 'Simple business website needs align well with the foundational skills built throughout this course.',
+            },
+            {
+              id: 'wdf-m8-q3',
+              question: 'What does the lesson recommend regarding charging for your first projects?',
+              options: [
+                'Always work entirely for free indefinitely',
+                'It\'s reasonable to charge less initially to build a portfolio, but always charge something',
+                'Charge the highest possible rate immediately regardless of experience',
+                'Pricing does not matter at all',
+              ],
+              correctIndex: 1,
+              explanation: 'Charging something (even modestly) while building a portfolio avoids setting an unsustainable free-work precedent.',
+            },
+          ],
+        },
+      },
+    ],
+  },
+
+  // ============================================================
+  // COURSE 7 — UI/UX & Graphic Design
+  // ============================================================
+  {
+    id: 'ui-ux-graphic-design',
+    slug: 'ui-ux-graphic-design',
+    title: 'UI/UX & Graphic Design: From First Principles to Paid Client Work',
+    description:
+      'A complete design foundation — visual principles, color and typography, user research, wireframing and prototyping in Figma, branding, and the portfolio and pricing strategy needed to land your first paying design clients.',
+    skillIds: ['ui-ux-design'],
+    category: 'UI/UX & Graphic Design',
+    estimatedHours: 20,
+    modules: [
+      {
+        id: 'uxd-m1',
+        title: 'Module 1: Introduction to UI/UX Design',
+        lessons: [
+          {
+            id: 'uxd-m1-l1',
+            title: 'What Designers Actually Do',
+            content: [
+              'UI (User Interface) design and UX (User Experience) design are related but distinct disciplines: UI design is concerned with how a product looks — colors, buttons, layout, visual style — while UX design is concerned with how a product feels to use — whether it is easy to navigate, whether it solves the user\'s actual problem, and whether the overall experience is satisfying or frustrating. A beautifully designed screen (great UI) that confuses users about what to click next (poor UX) is a common and costly mistake; the best products excel at both simultaneously.',
+              'Graphic design overlaps with both but is broader still, covering visual communication outside of digital interfaces too — logos, brand identity, social media graphics, posters, and marketing materials. Many working designers move fluidly between UI/UX work (designing an app or website) and graphic design work (designing a logo or Instagram post for the same client), and this course builds skills that transfer across both.',
+              'The design process, regardless of which specific output you are creating, generally follows the same stages: understanding the problem and the user (research), generating and narrowing ideas (ideation), creating low-detail drafts (wireframing), building more polished, testable versions (prototyping), and refining based on feedback (iteration). Skipping straight to polished visuals without understanding the actual problem is the single most common mistake beginner designers make — this course is structured to build the underlying thinking, not just visual technique.',
+            ],
+            keyTakeaways: [
+              'UI design focuses on how a product looks; UX design focuses on how it feels to use — both matter together.',
+              'Graphic design is broader, covering visual communication beyond digital interfaces (logos, brand identity, marketing graphics).',
+              'The design process — research, ideation, wireframing, prototyping, iteration — applies across nearly every type of design work.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'uxd-m1-quiz',
+          questions: [
+            {
+              id: 'uxd-m1-q1',
+              question: 'What is the primary focus of UX design, as distinct from UI design?',
+              options: [
+                'Choosing button colors only',
+                'How a product feels to use — ease of navigation and whether it solves the user\'s problem',
+                'Printing physical brochures',
+                'Writing backend server code',
+              ],
+              correctIndex: 1,
+              explanation: 'UX is concerned with the overall experience and usability, while UI focuses more on visual presentation.',
+            },
+            {
+              id: 'uxd-m1-q2',
+              question: 'What is described as the most common mistake beginner designers make?',
+              options: [
+                'Spending too much time on research',
+                'Skipping straight to polished visuals without understanding the actual problem',
+                'Using too many wireframes',
+                'Talking to too many users',
+              ],
+              correctIndex: 1,
+              explanation: 'Jumping to visuals before understanding the problem and user often produces designs that look good but don\'t actually work.',
+            },
+            {
+              id: 'uxd-m1-q3',
+              question: 'Which of these is part of the general design process described in this lesson?',
+              options: ['Research, ideation, wireframing, prototyping, iteration', 'Only final visual polish', 'Skipping user understanding entirely', 'Coding the back end first'],
+              correctIndex: 0,
+              explanation: 'The design process moves from understanding the problem through to refining a tested solution.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'uxd-m2',
+        title: 'Module 2: Design Principles & Visual Hierarchy',
+        lessons: [
+          {
+            id: 'uxd-m2-l1',
+            title: 'The Rules That Make Designs Work',
+            content: [
+              'Visual hierarchy is the deliberate arrangement of elements so the viewer\'s eye is guided to the most important information first — achieved primarily through size (bigger elements draw attention first), color and contrast (bright or high-contrast elements stand out against muted backgrounds), and position (elements at the top or center of a layout are typically seen first, following natural reading patterns). A homepage with twenty equally-sized, equally-colored elements gives the viewer no guidance at all about what matters most — strong hierarchy is what makes a design feel intentional rather than accidental.',
+              'Several core principles repeat across almost every well-designed interface: alignment (elements should line up to invisible grid lines, creating order rather than visual chaos), consistency (similar elements should look and behave similarly throughout a product, so users don\'t have to relearn patterns on every screen), proximity (related items should be grouped close together, and unrelated items separated, so relationships are visually obvious without needing labels), and white space (empty space is not "wasted" space — it gives content room to breathe and is one of the fastest ways to make a cluttered design feel calmer and more premium).',
+              'For your assignment, find two examples of the same type of webpage (e.g., two different e-commerce product pages) and analyze each using these four principles: which one has clearer hierarchy, better alignment, more visual consistency, and more effective use of white space? Write down specifically what makes the stronger one work, in terms of these named principles rather than just "it looks nicer" — training yourself to name what works is what turns vague taste into a usable design skill.',
+            ],
+            keyTakeaways: [
+              'Visual hierarchy guides the eye to what matters most, primarily through size, color/contrast, and position.',
+              'Alignment, consistency, proximity, and white space are core principles that separate intentional designs from accidental ones.',
+              'Training yourself to name specifically what works (not just "it looks nice") is what turns taste into a transferable skill.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'uxd-m2-quiz',
+          questions: [
+            {
+              id: 'uxd-m2-q1',
+              question: 'What does "visual hierarchy" describe?',
+              options: [
+                'A random arrangement of design elements',
+                'The deliberate arrangement of elements to guide the viewer\'s eye to what matters most',
+                'A type of color palette',
+                'A coding framework',
+              ],
+              correctIndex: 1,
+              explanation: 'Visual hierarchy uses size, color/contrast, and position to direct attention intentionally.',
+            },
+            {
+              id: 'uxd-m2-q2',
+              question: 'What does the "proximity" principle describe?',
+              options: [
+                'Putting all elements the same distance apart regardless of relationship',
+                'Grouping related items close together and separating unrelated items',
+                'Using only one color throughout a design',
+                'Avoiding any white space entirely',
+              ],
+              correctIndex: 1,
+              explanation: 'Proximity visually communicates relationships between elements through spacing.',
+            },
+            {
+              id: 'uxd-m2-q3',
+              question: 'How does this lesson describe white space?',
+              options: [
+                'Wasted space that should always be eliminated',
+                'Empty space that gives content room to breathe and reduces visual clutter',
+                'Only relevant for printed materials',
+                'Something that has no impact on design quality',
+              ],
+              correctIndex: 1,
+              explanation: 'White space is a deliberate design tool, not wasted area — it improves clarity and perceived quality.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'uxd-m3',
+        title: 'Module 3: Color Theory & Typography',
+        lessons: [
+          {
+            id: 'uxd-m3-l1',
+            title: 'Choosing Colors and Fonts With Purpose',
+            content: [
+              'Color carries emotional and psychological meaning that varies by context and culture, but some patterns are common enough to guide practical decisions: blue often signals trust and professionalism (common in finance and tech brands), green often signals growth, health, or money, red signals urgency or energy (and is often used in calls-to-action or sale promotions, though overuse can feel alarming), and neutral tones (black, white, gray) signal sophistication and let other accent colors stand out. A simple, reliable color system for any project uses one primary color (the dominant brand color), one or two accent colors (used sparingly for buttons and highlights), and a neutral palette (for text and backgrounds) — resist the temptation to use many colors at full saturation, which usually looks amateur rather than vibrant.',
+              'Typography (the selection and arrangement of fonts) follows a similar discipline: most professional designs use no more than two font families — one for headings (which can have more personality) and one for body text (which must prioritize readability above all else). Serif fonts (with small decorative strokes, like Georgia or Times New Roman) tend to feel traditional or editorial, while sans-serif fonts (clean, no decorative strokes, like Helvetica or Inter) tend to feel modern and are generally easier to read on screens, which is why most digital interfaces default to sans-serif body text.',
+              'Contrast between text and background is not just an aesthetic choice but an accessibility requirement — light gray text on a white background may look elegant but is genuinely difficult for many users to read, and accessibility guidelines (WCAG) specify minimum contrast ratios for exactly this reason. For your assignment, pick a hypothetical brand (a fictional coffee shop, fitness app, or fintech startup) and define its color system (primary, accent, neutral) and font pairing (heading font, body font), with one sentence justifying each choice based on the emotional associations covered in this lesson.',
+            ],
+            keyTakeaways: [
+              'A reliable color system uses one primary color, one or two sparing accent colors, and a neutral palette — not many colors at full saturation.',
+              'Most professional designs limit themselves to two font families: a heading font with personality and a highly readable body font.',
+              'Sufficient text-to-background contrast is an accessibility requirement, not just a stylistic preference.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'uxd-m3-quiz',
+          questions: [
+            {
+              id: 'uxd-m3-q1',
+              question: 'What does a reliable color system typically consist of?',
+              options: [
+                'As many bright colors as possible',
+                'One primary color, one or two accent colors, and a neutral palette',
+                'Only black and white, with no exceptions',
+                'A different color scheme on every page',
+              ],
+              correctIndex: 1,
+              explanation: 'A constrained, purposeful color system (primary, accent, neutral) avoids the amateur look of overusing saturated colors.',
+            },
+            {
+              id: 'uxd-m3-q2',
+              question: 'Why do most digital interfaces default to sans-serif fonts for body text?',
+              options: [
+                'Sans-serif fonts are required by law',
+                'They tend to feel modern and are generally easier to read on screens',
+                'They are the only fonts available digitally',
+                'There is no reason for this pattern',
+              ],
+              correctIndex: 1,
+              explanation: 'Sans-serif fonts are typically more legible on digital screens, especially at smaller sizes.',
+            },
+            {
+              id: 'uxd-m3-q3',
+              question: 'Why does text-to-background contrast matter beyond aesthetics?',
+              options: [
+                'It has no real importance',
+                'Sufficient contrast is an accessibility requirement so text remains readable for more users',
+                'High contrast is illegal in some countries',
+                'Contrast only matters for printed materials',
+              ],
+              correctIndex: 1,
+              explanation: 'Accessibility guidelines (WCAG) specify minimum contrast ratios to ensure readability for the widest range of users.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'uxd-m4',
+        title: 'Module 4: User Research & Personas',
+        lessons: [
+          {
+            id: 'uxd-m4-l1',
+            title: 'Designing for Real People, Not Guesses',
+            content: [
+              'Good design starts with understanding who you are actually designing for — without this, a designer is just guessing what users want, often based on their own preferences rather than the target audience\'s actual needs. User research can be as simple as a few structured conversations: ask potential users about their current process for solving the problem your product addresses, what frustrates them about existing solutions, and what an ideal outcome would look like for them — open-ended questions reveal far more than yes/no questions.',
+              'A persona is a semi-fictional profile representing a key user type, built from real research patterns rather than invented from imagination: it typically includes a name, role, goals, frustrations ("pain points"), and a short scenario describing how they would use the product. Personas keep design decisions grounded — instead of asking "what do I think looks good," a team can ask "would this actually help Ada, our busy small-business-owner persona, complete her task faster?"',
+              'For beginners without access to real interview subjects yet, secondary research is a legitimate starting point: reading reviews of competing products (what do users complain about? what do they love?), browsing relevant forums or social media groups where your target audience discusses their problems, and studying how successful competitor products solve similar problems. For your assignment, choose a hypothetical app idea (a budgeting app for young Nigerian professionals, for example), write one persona based on patterns you notice from real reviews or forum discussions of similar existing apps, and list three specific pain points that persona experiences with current solutions.',
+            ],
+            keyTakeaways: [
+              'User research grounds design decisions in real needs rather than the designer\'s personal guesses or preferences.',
+              'A persona is a research-based profile (goals, pain points, scenario) representing a key user type, used to keep decisions user-centered.',
+              'Secondary research — reviews, forums, competitor analysis — is a legitimate starting point when direct user interviews aren\'t yet available.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'uxd-m4-quiz',
+          questions: [
+            {
+              id: 'uxd-m4-q1',
+              question: 'Why is user research important before designing a product?',
+              options: [
+                'It is not actually important',
+                'It grounds design decisions in real user needs instead of the designer\'s personal guesses',
+                'It only matters for large companies',
+                'It replaces the need for any visual design',
+              ],
+              correctIndex: 1,
+              explanation: 'Without research, designers risk building based on assumptions that don\'t match actual user needs.',
+            },
+            {
+              id: 'uxd-m4-q2',
+              question: 'What is a persona in the context of UX design?',
+              options: [
+                'A random fictional character with no research basis',
+                'A semi-fictional profile representing a key user type, built from real research patterns',
+                'A type of font',
+                'A coding library',
+              ],
+              correctIndex: 1,
+              explanation: 'Personas are grounded in research findings, used to keep design decisions focused on real user needs.',
+            },
+            {
+              id: 'uxd-m4-q3',
+              question: 'What is an example of legitimate secondary research for a beginner without interview access?',
+              options: [
+                'Inventing user opinions without any source',
+                'Reading reviews and forum discussions about similar existing products',
+                'Ignoring users entirely',
+                'Only asking close friends with no relevant context',
+              ],
+              correctIndex: 1,
+              explanation: 'Reviews and forum discussions provide real, if indirect, insight into user needs and frustrations.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'uxd-m5',
+        title: 'Module 5: Wireframing & Prototyping in Figma',
+        lessons: [
+          {
+            id: 'uxd-m5-l1',
+            title: 'From Sketches to Clickable Prototypes',
+            content: [
+              'A wireframe is a simplified, low-detail sketch of a screen\'s layout — boxes and lines representing where content will go, deliberately stripped of color, real images, and fine visual detail so that everyone involved focuses purely on structure and flow rather than getting distracted by aesthetics too early. Wireframes can be drawn on paper in minutes, which is often the fastest way to explore several layout ideas before committing time to digital tools.',
+              'Figma is the current industry-standard tool for digital design, free to start, browser-based, and built specifically for the kind of collaborative, iterative work this field requires — frames represent individual screens, and within them you place shapes, text, and images using a toolset similar to other design software but with collaboration (multiple people editing simultaneously) built in natively. Components are one of Figma\'s most powerful features: define a button or navigation bar once as a reusable component, and every place you use it stays linked, so updating the master component updates every instance automatically — this single feature is why professional teams can maintain visual consistency (Module 2) across dozens of screens without manually fixing each one.',
+              'A prototype links multiple static frames together with clickable "hotspots," simulating real interaction — clicking a button on one frame jumps to another frame, letting you (and test users) click through a design as if it were a real, functioning app, before a single line of actual code is written. For your assignment, create a free Figma account, build three simple wireframe screens for a basic app idea (a home screen, a detail screen, and a confirmation screen), and link them together into a clickable prototype using Figma\'s prototype mode.',
+            ],
+            keyTakeaways: [
+              'Wireframes are deliberately low-detail layouts that let teams focus on structure and flow before visual polish.',
+              'Figma is the current industry-standard design tool, with reusable Components that maintain consistency across many screens automatically.',
+              'A prototype links static frames with clickable hotspots, simulating real app interaction before any code is written.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'uxd-m5-quiz',
+          questions: [
+            {
+              id: 'uxd-m5-q1',
+              question: 'Why are wireframes deliberately stripped of color and fine visual detail?',
+              options: [
+                'Color is too expensive to use',
+                'So everyone focuses on structure and flow rather than getting distracted by aesthetics too early',
+                'Wireframes cannot technically include color',
+                'There is no specific reason',
+              ],
+              correctIndex: 1,
+              explanation: 'Removing visual polish keeps early-stage feedback focused on layout and flow rather than color or imagery.',
+            },
+            {
+              id: 'uxd-m5-q2',
+              question: 'What is a key benefit of Figma\'s Components feature?',
+              options: [
+                'It prevents any collaboration between team members',
+                'A reusable element (like a button) updates everywhere it is used when the master component is edited',
+                'It only works for printed materials',
+                'It removes the need for any design at all',
+              ],
+              correctIndex: 1,
+              explanation: 'Components keep designs consistent by propagating updates from a single master element to every instance.',
+            },
+            {
+              id: 'uxd-m5-q3',
+              question: 'What does a Figma prototype simulate?',
+              options: [
+                'Permanent code deployment',
+                'Real app interaction, by linking static frames together with clickable hotspots',
+                'A spreadsheet of project costs',
+                'Nothing functional',
+              ],
+              correctIndex: 1,
+              explanation: 'Prototypes let users click through linked frames as if navigating a real, functioning application.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'uxd-m6',
+        title: 'Module 6: Designing for Mobile & Responsive Interfaces',
+        lessons: [
+          {
+            id: 'uxd-m6-l1',
+            title: 'Small Screens, Touch, and Thumb-Friendly Design',
+            content: [
+              'Designing for mobile screens requires different thinking than designing for desktop, primarily because of two constraints: far less screen space to work with, and touch-based interaction (fingers, not a precise mouse cursor) instead of a mouse. Touch targets (buttons, links, icons) need to be large enough to tap accurately — a widely used guideline is a minimum of 44x44 pixels — and important actions should sit within comfortable thumb reach, typically the lower half of the screen, since that is where a thumb naturally rests while holding a phone one-handed.',
+              'Navigation on mobile typically uses different patterns than desktop\'s horizontal menu bars — a bottom tab bar (icons for the 3-5 most important sections, always visible at the bottom of the screen) or a hamburger menu (a collapsible menu hidden behind a three-line icon, freeing up space for content) are the two most common solutions, each with tradeoffs: bottom tabs are faster to access but take up permanent space, while hamburger menus save space but hide navigation behind an extra tap.',
+              'Designing "responsively" within Figma means creating distinct layouts for distinct screen sizes (commonly a mobile frame at 375px wide, a tablet frame at 768px, and a desktop frame at 1440px) rather than assuming one design will automatically work everywhere — this mirrors the media-query thinking from web development, applied at the design stage before any code is written. For your assignment, take the prototype you built in Module 5 and create a mobile version (375px wide) of each screen, adjusting touch target sizes and choosing either a bottom tab bar or hamburger menu for navigation, with a one-sentence justification for your choice.',
+            ],
+            keyTakeaways: [
+              'Touch targets need adequate size (commonly 44x44px minimum) and should sit within comfortable thumb reach on mobile.',
+              'Bottom tab bars and hamburger menus are the two dominant mobile navigation patterns, each with real space-versus-accessibility tradeoffs.',
+              'Responsive design in Figma means deliberately creating distinct layouts per screen size, mirroring how developers later implement media queries.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'uxd-m6-quiz',
+          questions: [
+            {
+              id: 'uxd-m6-q1',
+              question: 'What is the commonly cited minimum size guideline for touch targets on mobile?',
+              options: ['1x1 pixels', '44x44 pixels', '500x500 pixels', 'There is no guideline'],
+              correctIndex: 1,
+              explanation: '44x44 pixels is a widely used minimum size to ensure touch targets are accurately tappable.',
+            },
+            {
+              id: 'uxd-m6-q2',
+              question: 'What is a key tradeoff between a bottom tab bar and a hamburger menu?',
+              options: [
+                'There is no real tradeoff',
+                'Bottom tabs are faster to access but take permanent space; hamburger menus save space but hide navigation behind a tap',
+                'Hamburger menus are always faster than bottom tabs',
+                'Bottom tabs cannot be used on phones',
+              ],
+              correctIndex: 1,
+              explanation: 'Each navigation pattern balances visibility/speed against screen space differently.',
+            },
+            {
+              id: 'uxd-m6-q3',
+              question: 'What does designing "responsively" in Figma typically involve?',
+              options: [
+                'Designing only one screen size and assuming it works everywhere',
+                'Creating distinct layouts for distinct screen sizes, such as mobile, tablet, and desktop frames',
+                'Avoiding mobile design entirely',
+                'Removing all touch targets',
+              ],
+              correctIndex: 1,
+              explanation: 'Deliberately designing for each major screen size ensures the interface works well across devices.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'uxd-m7',
+        title: 'Module 7: Branding & Graphic Design Fundamentals',
+        lessons: [
+          {
+            id: 'uxd-m7-l1',
+            title: 'Logos, Brand Identity, and Marketing Graphics',
+            content: [
+              'A brand identity is the consistent visual system (logo, colors, typography, imagery style) that makes a company instantly recognizable across every touchpoint — a strong identity means someone could recognize a brand\'s social media post or app icon even with the name covered, purely from familiar visual cues. A logo is just one piece of this system, but it carries outsized importance because it is usually the most repeated, most visible single element — effective logos tend to be simple enough to recognize at a tiny size (like a phone\'s app icon or a website favicon) and work in a single color, since they will often be reproduced without the full color palette available.',
+              'Beyond the logo, a basic brand identity package typically includes a defined color palette (Module 3), one or two brand fonts, and a simple style guide documenting how these elements should and shouldn\'t be used (minimum logo sizing, acceptable background colors, spacing rules) — this consistency is what separates a professional brand from one that looks different and disjointed every time it appears somewhere new. Common graphic design deliverables beyond logos include social media graphics (sized correctly for each platform\'s specific dimensions), business cards, flyers, and presentation templates — each applying the same visual hierarchy, color, and typography principles from earlier modules to a different format.',
+              'For your assignment, design a simple logo concept and a one-page mini brand guide for a hypothetical small business (a bakery, a tutoring service, anything realistic), specifying: the logo (a simple shape or wordmark, no need for advanced illustration skill), a 3-color palette, one heading font and one body font, and two rules for how the logo should be used (e.g., minimum size, acceptable backgrounds). This single exercise mirrors a real, sellable freelance deliverable — many small businesses pay specifically for exactly this kind of compact branding package.',
+            ],
+            keyTakeaways: [
+              'A brand identity is a consistent visual system across every touchpoint, with the logo as its most repeated, highest-visibility element.',
+              'Effective logos work at tiny sizes and in a single color, since they are often reproduced without the full brand palette.',
+              'A simple brand guide (palette, fonts, usage rules) is a real, sellable freelance deliverable that small businesses commonly pay for.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'uxd-m7-quiz',
+          questions: [
+            {
+              id: 'uxd-m7-q1',
+              question: 'What makes a logo design effective, according to this lesson?',
+              options: [
+                'It must use as many colors as possible',
+                'It works at a tiny size and in a single color',
+                'It should never be reused anywhere',
+                'It must be highly detailed and complex',
+              ],
+              correctIndex: 1,
+              explanation: 'Logos are reproduced at many sizes and contexts, so simplicity and single-color legibility matter greatly.',
+            },
+            {
+              id: 'uxd-m7-q2',
+              question: 'What does a basic brand identity package typically include?',
+              options: [
+                'Only a logo, with nothing else',
+                'A color palette, brand fonts, and a simple style guide documenting usage rules',
+                'A complete software application',
+                'Nothing beyond a company name',
+              ],
+              correctIndex: 1,
+              explanation: 'A coherent brand identity combines the logo with consistent color, typography, and usage guidelines.',
+            },
+            {
+              id: 'uxd-m7-q3',
+              question: 'Why is a "mini brand guide" a relevant freelance skill to practice?',
+              options: [
+                'It has no real-world application',
+                'It mirrors a real, commonly sellable freelance deliverable that small businesses pay for',
+                'Only large corporations ever need branding',
+                'It is purely an academic exercise with no client relevance',
+              ],
+              correctIndex: 1,
+              explanation: 'Small businesses frequently commission exactly this kind of compact branding package from freelance designers.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'uxd-m8',
+        title: 'Module 8: Building a Portfolio & Freelancing as a Designer',
+        lessons: [
+          {
+            id: 'uxd-m8-l1',
+            title: 'Turning Skills Into Paid Design Work',
+            content: [
+              'A design portfolio is the single most important asset for getting hired or hired-freelance — more than a resume, more than a certificate, clients and employers want to see real, finished (or realistic case-study) work that demonstrates you can solve actual design problems. For a beginner without paid client work yet, a portfolio can legitimately be built from course projects (like the ones in this course), self-initiated concept projects (redesigning an app you personally find frustrating, with a clear "before and after" and explanation of your reasoning), or low-cost pro-bono work for a friend\'s small business in exchange for a usable case study and testimonial.',
+              'Each portfolio piece should be presented as a brief case study, not just a final image: state the problem you were solving, briefly describe your process (research, wireframes, key decisions), and show the final result — this structure demonstrates your thinking, not just your aesthetic taste, which is what differentiates a hireable designer from someone who can only copy existing styles. A free portfolio site can be built using Figma\'s own portfolio/community features, a dedicated tool like Behance or Dribbble (popular specifically among designers for visual portfolios), or a simple personal website if you also have basic web development skills from this catalog\'s Web Development course.',
+              'For freelancing specifically, platforms like Upwork and Fiverr work for designers exactly as they do for other skills covered elsewhere in this catalog, but design work also benefits heavily from direct, visual outreach — sending a short message to a small business with a quick, unsolicited redesign concept of their current logo or homepage (clearly labeled as a concept, not implying you were hired) is a proven, attention-grabbing way to start a conversation that other generic cold outreach rarely achieves. For your final assignment in this course, compile the projects you have built throughout this course (wireframes, prototype, brand guide) into a simple portfolio page on Behance, Dribbble, or a personal site, writing a one-paragraph case study for at least one project.',
+            ],
+            keyTakeaways: [
+              'A portfolio of real or realistic case-study work matters more than credentials for getting hired or landing freelance clients.',
+              'Strong portfolio pieces are presented as case studies — problem, process, result — not just a final polished image.',
+              'Direct visual outreach (an unsolicited concept redesign) is a uniquely effective way for designers to start client conversations.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'uxd-m8-quiz',
+          questions: [
+            {
+              id: 'uxd-m8-q1',
+              question: 'What is described as the single most important asset for getting hired or landing freelance design work?',
+              options: [
+                'A university certificate',
+                'A portfolio demonstrating real or realistic design work',
+                'A list of software you own',
+                'None of these matter',
+              ],
+              correctIndex: 1,
+              explanation: 'Clients and employers prioritize seeing demonstrated problem-solving ability through a portfolio.',
+            },
+            {
+              id: 'uxd-m8-q2',
+              question: 'How should each portfolio piece ideally be presented?',
+              options: [
+                'As a single final image with no explanation',
+                'As a brief case study covering the problem, process, and result',
+                'As a list of software tools used',
+                'Portfolio presentation does not matter',
+              ],
+              correctIndex: 1,
+              explanation: 'Case studies demonstrate design thinking, not just visual output, which is what differentiates hireable designers.',
+            },
+            {
+              id: 'uxd-m8-q3',
+              question: 'What outreach approach is highlighted as uniquely effective for designers?',
+              options: [
+                'Sending only a generic resume with no visual work attached',
+                'Sending an unsolicited concept redesign of a business\'s logo or homepage',
+                'Avoiding any direct contact with potential clients',
+                'Waiting for clients to find you with no outreach at all',
+              ],
+              correctIndex: 1,
+              explanation: 'A clearly labeled concept redesign demonstrates tangible skill and grabs attention more effectively than generic cold messages.',
+            },
+          ],
+        },
+      },
+    ],
+  },
+
+  // ============================================================
+  // COURSE 8 — AI Tools & Automation
+  // ============================================================
+  {
+    id: 'ai-tools-automation-mastery',
+    slug: 'ai-tools-automation-mastery',
+    title: 'AI Tools & Automation: Build Workflows Businesses Will Pay For',
+    description:
+      'A hands-on course in prompt engineering, AI writing/image/video tools, no-code automation platforms, and AI-powered business workflows — built to help you sell automation services to global clients and businesses going digital.',
+    skillIds: ['ai-tools-automation'],
+    category: 'AI Tools & Automation',
+    estimatedHours: 18,
+    modules: [
+      {
+        id: 'aia-m1',
+        title: 'Module 1: Introduction to AI Tools & Automation',
+        lessons: [
+          {
+            id: 'aia-m1-l1',
+            title: 'What This Field Actually Is',
+            content: [
+              'AI tools and automation is the practice of using artificial intelligence and no-code/low-code platforms to do work faster, cheaper, or with less human effort than doing it entirely manually — writing content, generating images, answering customer questions, or moving data between business systems automatically. This field has exploded in demand because nearly every business, regardless of size or industry, now has repetitive tasks (data entry, follow-up emails, social media scheduling, customer support replies) that AI tools and automation platforms can handle with a fraction of the time a human would need.',
+              'Two distinct but complementary skill sets make up this field: AI tool fluency (knowing which AI tool solves which problem, and how to prompt it effectively to get useful output) and automation/workflow building (connecting different tools and apps together so data and tasks flow between them without manual copying and pasting). A business that needs both — say, an AI tool that drafts customer email replies, automatically triggered whenever a new support ticket arrives — needs someone who understands both halves, which is exactly the skill set this course builds.',
+              'For Nigerians and Africans entering this space, the appeal is strong: almost all of this work is done remotely, requires no expensive equipment beyond a laptop and internet connection, and the tools themselves are evolving so quickly that even six months of focused, current practice puts you ahead of most businesses still doing everything manually. This course assumes no prior technical background — only curiosity and a willingness to experiment with the tools as you go.',
+            ],
+            keyTakeaways: [
+              'AI tools and automation use AI plus no-code platforms to handle repetitive business work faster and cheaper than manual effort.',
+              'The field combines two skills: AI tool fluency (effective prompting) and automation/workflow building (connecting apps together).',
+              'This work is remote-friendly, low-cost to start, and rewards staying current, since the tools and best practices evolve quickly.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aia-m1-quiz',
+          questions: [
+            {
+              id: 'aia-m1-q1',
+              question: 'What is the core value proposition of AI tools and automation for businesses?',
+              options: [
+                'They make tasks more complicated and expensive',
+                'They handle repetitive tasks faster and cheaper than manual human effort',
+                'They are only useful for very large corporations',
+                'They have no real business application',
+              ],
+              correctIndex: 1,
+              explanation: 'AI tools and automation reduce time and cost on repetitive tasks across businesses of every size.',
+            },
+            {
+              id: 'aia-m1-q2',
+              question: 'What two complementary skill sets make up this field?',
+              options: [
+                'Accounting and legal compliance',
+                'AI tool fluency (effective prompting) and automation/workflow building (connecting apps)',
+                'Graphic design and video editing only',
+                'Hardware repair and networking',
+              ],
+              correctIndex: 1,
+              explanation: 'Knowing which AI tool to use, plus how to connect tools into automated workflows, together form this skill set.',
+            },
+            {
+              id: 'aia-m1-q3',
+              question: 'Why is this field described as especially accessible to Nigerians and Africans?',
+              options: [
+                'It requires expensive specialized hardware',
+                'It is remote-friendly, low-cost to start, and rewards staying current with fast-evolving tools',
+                'It is only available in certain countries',
+                'It requires an advanced computer science degree',
+              ],
+              correctIndex: 1,
+              explanation: 'Minimal equipment requirements and the remote nature of the work make this field broadly accessible.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aia-m2',
+        title: 'Module 2: Prompt Engineering Fundamentals',
+        lessons: [
+          {
+            id: 'aia-m2-l1',
+            title: 'Getting Useful Output From AI Models',
+            content: [
+              'Prompt engineering is the skill of writing instructions to an AI model that reliably produce useful, accurate, on-target output — and it matters because the exact same AI model can produce dramatically different quality results depending entirely on how the request is phrased. A vague prompt like "write about marketing" produces generic, unusable output, while a specific prompt like "write a 150-word Instagram caption for a Lagos-based skincare brand launching a vitamin C serum, targeting women aged 25-40, with a confident and friendly tone" produces something genuinely close to final, usable copy.',
+              'A reliable prompt structure includes four elements: Role (tell the AI what perspective to adopt — "You are an experienced email marketer"), Context (the specific situation or background it needs — your business, audience, or goal), Task (exactly what you want produced — a list, an email, a summary, a plan), and Format (how you want the output structured — bullet points, a specific word count, a particular tone). Including all four elements consistently turns AI tools from a novelty into a genuinely reliable working tool.',
+              'Iteration is just as important as the initial prompt — treating your first AI response as a draft, then giving specific feedback ("make this shorter," "add more urgency," "remove the third point and add an example instead") usually produces a far better final result than trying to perfect a single prompt on the first attempt. For your assignment, write one prompt using the Role-Context-Task-Format structure for a real task you might need (a business email, a product description, a social media post), run it in any free AI chat tool, and then iterate on the response at least twice with specific feedback.',
+            ],
+            keyTakeaways: [
+              'Prompt engineering is the skill of phrasing AI instructions to reliably get useful, specific output rather than generic results.',
+              'The Role-Context-Task-Format structure is a reliable framework for writing consistently effective prompts.',
+              'Treating the first AI response as a draft and iterating with specific feedback usually beats trying to perfect one single prompt.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aia-m2-quiz',
+          questions: [
+            {
+              id: 'aia-m2-q1',
+              question: 'Why does prompt phrasing matter so much when using AI tools?',
+              options: [
+                'It has no real effect on output quality',
+                'The same AI model can produce dramatically different quality results depending on how the request is phrased',
+                'AI models ignore the prompt entirely',
+                'Only the length of a prompt matters, not its content',
+              ],
+              correctIndex: 1,
+              explanation: 'Specific, well-structured prompts consistently produce more useful output than vague ones.',
+            },
+            {
+              id: 'aia-m2-q2',
+              question: 'What does the "Role" element of the Role-Context-Task-Format structure refer to?',
+              options: [
+                'The exact word count required',
+                'Telling the AI what perspective or expertise to adopt',
+                'The desired output formatting only',
+                'It refers to nothing meaningful',
+              ],
+              correctIndex: 1,
+              explanation: 'Specifying a role helps the AI frame its response from a relevant, consistent perspective.',
+            },
+            {
+              id: 'aia-m2-q3',
+              question: 'What does this lesson recommend doing with an AI\'s first response?',
+              options: [
+                'Always accept it as final without changes',
+                'Treat it as a draft and iterate with specific feedback',
+                'Discard it and never use AI tools again',
+                'Ignore the response entirely',
+              ],
+              correctIndex: 1,
+              explanation: 'Iterative feedback typically produces a significantly better final result than a single unrefined prompt.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aia-m3',
+        title: 'Module 3: AI Writing & Content Tools',
+        lessons: [
+          {
+            id: 'aia-m3-l1',
+            title: 'Using AI for Content at Scale',
+            content: [
+              'AI writing tools (general-purpose AI chat assistants, plus specialized content tools) can draft blog posts, social media captions, email sequences, product descriptions, and ad copy dramatically faster than writing everything from scratch — though the realistic, sustainable use case is "AI-assisted," not "fully automated and unsupervised," since AI-generated content still benefits significantly from human editing for accuracy, brand voice, and genuine insight that a generic model can\'t produce alone.',
+              'A practical workflow for content-at-scale looks like this: use AI to generate a first draft and several headline/caption variations quickly, select and edit the strongest option to match the specific brand\'s voice and add any real, specific details only a human would know (a genuine customer story, an accurate local reference, current pricing), and use AI again afterward to repurpose that one piece of content into multiple formats — turning one blog post into five social captions, for example, multiplies output without multiplying writing time.',
+              'For a business offering this as a service, the deliverable that actually sells is consistency and volume, not novelty — a small business owner who used to post once a week because writing captions felt exhausting can realistically post daily once an AI-assisted workflow is in place, and that increased consistency is what they are actually paying for. For your assignment, pick a real or hypothetical small business, and using the Role-Context-Task-Format prompting structure from Module 2, generate five different social media captions for the same product, then edit the strongest one to add a specific, believable human detail.',
+            ],
+            keyTakeaways: [
+              'AI writing tools draft content fast, but the sustainable approach is "AI-assisted," with human editing for voice, accuracy, and specific real details.',
+              'A repurposing workflow (one piece of content → multiple formats) multiplies output without multiplying writing time.',
+              'For business clients, the sellable value is consistency and volume, not novelty — AI-assisted workflows let businesses post far more often.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aia-m3-quiz',
+          questions: [
+            {
+              id: 'aia-m3-q1',
+              question: 'What is the realistic, sustainable approach to using AI writing tools, according to this lesson?',
+              options: [
+                'Fully automated with zero human review',
+                '"AI-assisted," with human editing for voice, accuracy, and specific real details',
+                'Avoiding AI tools for writing entirely',
+                'Using AI only for spelling correction',
+              ],
+              correctIndex: 1,
+              explanation: 'AI-assisted workflows combine speed with human judgment for accuracy and authentic brand voice.',
+            },
+            {
+              id: 'aia-m3-q2',
+              question: 'What does a "repurposing workflow" accomplish?',
+              options: [
+                'It deletes original content after one use',
+                'It turns one piece of content into multiple formats, multiplying output without multiplying writing time',
+                'It has no practical benefit',
+                'It only works for video content',
+              ],
+              correctIndex: 1,
+              explanation: 'Repurposing extends the value of a single piece of content across several formats efficiently.',
+            },
+            {
+              id: 'aia-m3-q3',
+              question: 'What does this lesson say businesses are actually paying for when they hire AI-assisted content help?',
+              options: [
+                'Pure novelty with no measurable benefit',
+                'Consistency and volume of content they couldn\'t sustain manually',
+                'A one-time deliverable with no ongoing value',
+                'Nothing of real value',
+              ],
+              correctIndex: 1,
+              explanation: 'Businesses value the ability to post consistently and at higher volume, which AI-assisted workflows enable.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aia-m4',
+        title: 'Module 4: AI Image, Video & Audio Generation',
+        lessons: [
+          {
+            id: 'aia-m4-l1',
+            title: 'Creating Visual and Audio Content With AI',
+            content: [
+              'AI image generation tools can create custom illustrations, product mockups, and marketing visuals from a text description alone, which is especially valuable for businesses that cannot afford traditional photography or illustration but still need visual content for ads, social media, or websites. Effective image prompts benefit from the same specificity principle as text prompts — describing subject, style, lighting, color palette, and composition produces far more usable results than a vague one-line description.',
+              'AI video and audio tools extend this same capability further: AI video tools can generate short clips or animate still images into simple motion graphics, and AI voice/audio tools can generate natural-sounding narration in multiple languages and tones from a text script, useful for explainer videos, ads, or audiobook-style content without hiring voice actors. Sound design tools can also generate background music or sound effects matched to a video\'s mood, rounding out a complete multimedia package without needing a production studio.',
+              'The realistic, sellable service built from these tools is "rapid content production" — a small business that needs five product images, a 30-second promotional video, and matching background music can realistically receive all three within a day or two using these AI tools combined, compared to weeks and significant cost using traditional production methods. For your assignment, use any free-tier AI image generation tool to create three variations of a product or brand visual for a hypothetical business, applying the specificity principle (subject, style, lighting, color) to your prompts, and note which specific details in your prompt most improved the result.',
+            ],
+            keyTakeaways: [
+              'AI image generation creates custom visuals from text descriptions, with specificity (subject, style, lighting, composition) producing far better results.',
+              'AI video and voice/audio tools extend this into motion graphics and natural narration without traditional production costs.',
+              'The realistic sellable service is rapid, affordable multimedia content production — delivering in days what traditional production takes weeks to produce.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aia-m4-quiz',
+          questions: [
+            {
+              id: 'aia-m4-q1',
+              question: 'What improves the quality of AI image generation results, according to this lesson?',
+              options: [
+                'Keeping prompts as vague as possible',
+                'Describing subject, style, lighting, color palette, and composition specifically',
+                'Avoiding any description of style',
+                'Using only one-word prompts',
+              ],
+              correctIndex: 1,
+              explanation: 'Specific prompts, similar to text prompting, produce significantly more usable image results.',
+            },
+            {
+              id: 'aia-m4-q2',
+              question: 'What can AI voice/audio tools generate from a text script?',
+              options: [
+                'Only silence',
+                'Natural-sounding narration in multiple languages and tones',
+                'Physical printed materials',
+                'Nothing useful',
+              ],
+              correctIndex: 1,
+              explanation: 'AI voice tools convert scripts into spoken narration without needing human voice actors.',
+            },
+            {
+              id: 'aia-m4-q3',
+              question: 'What is the realistic, sellable service this lesson describes building from AI multimedia tools?',
+              options: [
+                'Slow, expensive production matching traditional studios',
+                'Rapid, affordable content production delivering in days what traditional methods take weeks to produce',
+                'A service with no commercial value',
+                'Only academic research applications',
+              ],
+              correctIndex: 1,
+              explanation: 'Speed and affordability compared to traditional production are the core value proposition for clients.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aia-m5',
+        title: 'Module 5: No-Code Automation Platforms',
+        lessons: [
+          {
+            id: 'aia-m5-l1',
+            title: 'Connecting Apps Without Writing Code',
+            content: [
+              'No-code automation platforms (such as Zapier and Make) let you connect two or more apps together so that an action in one app automatically triggers an action in another, without writing any traditional programming code — for example, automatically saving every new email attachment to a cloud storage folder, or automatically adding every new form submission to a spreadsheet and sending a confirmation email, all without a human manually doing any of those steps.',
+              'Every automation (often called a "Zap" or "Scenario," depending on the platform) follows the same basic structure: a Trigger (the event that starts the automation, like "a new form is submitted") and one or more Actions (what happens as a result, like "add a row to a spreadsheet" then "send a Slack message"). Between trigger and action, you can add filters (only continue if a certain condition is met, like "only proceed if the form\'s budget field is above $500") and data mapping (telling the automation exactly which piece of data from the trigger should populate each field in the action).',
+              'Learning to think in this trigger-action structure is the core transferable skill in this module — once you can look at any repetitive business task and break it down into "what event should start this, and what should happen automatically as a result," you can build an automation for it regardless of which specific platform or apps are involved. For your assignment, create a free Zapier or Make account, and build one simple, real automation for your own use — for example, automatically saving form responses to a spreadsheet, or sending yourself an email summary when a new file appears in a folder — and document the trigger and action you used.',
+            ],
+            keyTakeaways: [
+              'No-code platforms like Zapier and Make connect apps so actions in one trigger automatic actions in another, with no traditional coding required.',
+              'Every automation follows a Trigger → (optional Filter) → Action structure, regardless of platform or specific apps involved.',
+              'Learning to break any repetitive task into "what triggers it, what should happen automatically" is the core transferable automation skill.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aia-m5-quiz',
+          questions: [
+            {
+              id: 'aia-m5-q1',
+              question: 'What do no-code automation platforms like Zapier and Make let you do?',
+              options: [
+                'Write traditional backend code from scratch',
+                'Connect apps so an action in one automatically triggers an action in another, without coding',
+                'Only send emails, with no other functionality',
+                'Replace the need for any software at all',
+              ],
+              correctIndex: 1,
+              explanation: 'These platforms automate workflows between apps using a visual, no-code interface.',
+            },
+            {
+              id: 'aia-m5-q2',
+              question: 'What is the basic structure every automation follows?',
+              options: [
+                'Random, unstructured steps with no pattern',
+                'A Trigger (the starting event) and one or more Actions (what happens as a result)',
+                'Only actions, with no trigger required',
+                'A structure unique to each individual platform with no common pattern',
+              ],
+              correctIndex: 1,
+              explanation: 'Trigger-then-action is the consistent underlying structure across automation platforms.',
+            },
+            {
+              id: 'aia-m5-q3',
+              question: 'What is described as the core transferable skill in this module?',
+              options: [
+                'Memorizing every feature of one specific platform',
+                'Breaking any repetitive task into "what triggers it, what should happen automatically"',
+                'Avoiding automation entirely',
+                'Writing complex programming code',
+              ],
+              correctIndex: 1,
+              explanation: 'This trigger-action thinking transfers across platforms and tasks, making it the most valuable underlying skill.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aia-m6',
+        title: 'Module 6: Building AI-Powered Business Workflows',
+        lessons: [
+          {
+            id: 'aia-m6-l1',
+            title: 'Combining AI and Automation Into Real Solutions',
+            content: [
+              'The most valuable, sellable workflows combine AI tools (Modules 2-4) with no-code automation (Module 5) into a single connected process — for example, automatically using AI to draft a personalized reply every time a new customer inquiry email arrives, then automatically sending that draft to a team member for quick approval before it goes out, removing the slowest, most repetitive part of customer response (drafting from scratch) while keeping a human in the loop for quality and judgment.',
+              'A useful way to identify which workflows are worth building is to look for tasks that are repetitive (done the same way many times), time-consuming (takes meaningful time each time it\'s done), and rule-based (follows a fairly consistent, describable pattern) — tasks meeting all three criteria are strong automation candidates, while highly creative, judgment-heavy, or rarely repeated tasks are usually poor candidates for full automation. Common examples across small businesses include: lead follow-up sequences (automatically sending a series of emails to new leads), social media content calendars (AI drafts a week of captions, automation schedules them), and customer support triage (AI categorizes incoming questions, automation routes urgent ones directly to a human).',
+              'For your assignment, pick a real or hypothetical small business and design (on paper, no need to build it yet) one complete AI-plus-automation workflow: identify the repetitive task, the trigger that starts it, the AI tool that handles the "thinking" part, the automation that handles the "connecting" part, and the point (if any) where a human should review before anything goes live. This kind of end-to-end workflow design, explained clearly, is exactly what you will be selling to clients in the modules ahead.',
+            ],
+            keyTakeaways: [
+              'The most valuable workflows combine AI (for drafting/thinking) with no-code automation (for connecting and triggering) into one connected process.',
+              'Strong automation candidates are tasks that are repetitive, time-consuming, and rule-based — not highly creative or rarely repeated tasks.',
+              'Designing a complete workflow (trigger, AI step, automation step, human review point) is the core deliverable you will sell to clients.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aia-m6-quiz',
+          questions: [
+            {
+              id: 'aia-m6-q1',
+              question: 'What makes the most valuable, sellable workflows according to this lesson?',
+              options: [
+                'Using only automation with no AI involved',
+                'Combining AI tools for drafting/thinking with no-code automation for connecting and triggering',
+                'Using only AI with no automation at all',
+                'Avoiding any human review entirely',
+              ],
+              correctIndex: 1,
+              explanation: 'Combining AI\'s generative capability with automation\'s connective capability creates the most complete solutions.',
+            },
+            {
+              id: 'aia-m6-q2',
+              question: 'Which three criteria identify a strong automation candidate task?',
+              options: [
+                'Creative, rare, and unpredictable',
+                'Repetitive, time-consuming, and rule-based',
+                'Expensive, slow, and inconsistent',
+                'None of these criteria matter',
+              ],
+              correctIndex: 1,
+              explanation: 'Tasks that are repetitive, time-consuming, and follow a consistent pattern are the best automation candidates.',
+            },
+            {
+              id: 'aia-m6-q3',
+              question: 'Why does this lesson recommend including a human review point in some workflows?',
+              options: [
+                'Human review is never necessary',
+                'It keeps quality and judgment in the loop even while automating the repetitive, slow parts',
+                'It eliminates the value of automation entirely',
+                'It is only relevant for very large companies',
+              ],
+              correctIndex: 1,
+              explanation: 'A review point balances automation\'s speed with the judgment a fully automated system might lack.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aia-m7',
+        title: 'Module 7: AI Chatbots & Customer Support Automation',
+        lessons: [
+          {
+            id: 'aia-m7-l1',
+            title: 'Automating the First Line of Customer Conversation',
+            content: [
+              'AI chatbots, built using tools that connect a language model to a business\'s website, WhatsApp, or social media inbox, can handle the high-volume, repetitive portion of customer support automatically — answering frequently asked questions (pricing, hours, shipping policies), collecting basic information before handing off to a human, and operating 24/7 without needing a human staffed around the clock. This matters enormously for small businesses that cannot afford a full-time support team but still lose customers to slow response times.',
+              'Building an effective support chatbot starts with a knowledge base — a clear, organized document of the business\'s most frequently asked questions and their correct answers, which the chatbot tool is then configured to draw from when responding (this is often called connecting the bot to a custom "knowledge source"). A well-scoped chatbot should also know its own limits and hand off gracefully to a human for anything outside its knowledge base, rather than guessing or giving an unhelpful generic answer — a chatbot that confidently gives wrong information damages trust faster than no chatbot at all.',
+              'For your assignment, choose a real or hypothetical small business, write out ten realistic frequently asked questions a customer might send (about pricing, delivery, returns, hours, etc.) along with accurate, concise answers, and organize this into a simple knowledge base document — this single document is the foundational deliverable behind almost every AI customer support chatbot project, regardless of which specific chatbot platform is eventually used to build it.',
+            ],
+            keyTakeaways: [
+              'AI chatbots handle high-volume, repetitive customer support questions 24/7, which is especially valuable for small businesses without a full support team.',
+              'An effective chatbot relies on a well-organized knowledge base of accurate, frequently asked questions and answers.',
+              'A chatbot should hand off gracefully to a human outside its knowledge — confidently giving wrong answers damages trust faster than having no chatbot.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aia-m7-quiz',
+          questions: [
+            {
+              id: 'aia-m7-q1',
+              question: 'What kind of customer support tasks are AI chatbots well-suited to handle?',
+              options: [
+                'Highly complex, unique legal disputes',
+                'High-volume, repetitive questions like pricing, hours, and shipping policies',
+                'Tasks requiring deep personal judgment with no patterns',
+                'Nothing — chatbots have no useful application',
+              ],
+              correctIndex: 1,
+              explanation: 'Chatbots excel at handling frequently repeated, predictable questions at scale.',
+            },
+            {
+              id: 'aia-m7-q2',
+              question: 'What does an effective chatbot rely on to answer accurately?',
+              options: [
+                'Random guessing',
+                'A well-organized knowledge base of frequently asked questions and accurate answers',
+                'No information source at all',
+                'Only the chatbot\'s general training with no business-specific data',
+              ],
+              correctIndex: 1,
+              explanation: 'A structured knowledge base lets the chatbot answer business-specific questions accurately.',
+            },
+            {
+              id: 'aia-m7-q3',
+              question: 'What should a well-scoped chatbot do when asked something outside its knowledge base?',
+              options: [
+                'Confidently guess an answer anyway',
+                'Hand off gracefully to a human rather than guessing',
+                'Shut down the entire support system',
+                'Repeat the same answer regardless of the question',
+              ],
+              correctIndex: 1,
+              explanation: 'Graceful human handoff prevents the trust damage caused by confidently wrong automated answers.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'aia-m8',
+        title: 'Module 8: Selling AI Automation Services & Freelancing',
+        lessons: [
+          {
+            id: 'aia-m8-l1',
+            title: 'Turning This Skill Into Client Income',
+            content: [
+              'The most effective way to sell AI automation services is not by describing the technology, but by describing the specific time or money the client will save — "I can save your team 5 hours a week on customer email replies" lands far better with a business owner than "I build AI workflows," because it speaks directly to a problem they already feel rather than a tool they may not understand or care about. Identifying this pitch requires asking the right discovery questions during a first conversation: what repetitive task takes up the most time each week, how is it currently being done, and what would it be worth to get that time back.',
+              'A realistic starting service menu for a beginner includes: setting up an AI-assisted content and social media workflow (Module 3), building one or two business automations (Module 5, like lead capture or follow-up emails), or building a simple FAQ chatbot (Module 7) — each of these is scoped, deliverable within days to a couple of weeks, and solves a problem most small businesses immediately recognize. Pricing can follow either a project-based model (a flat fee for a defined, scoped deliverable, which is usually easier for both you and the client to agree on when starting out) or a retainer model (an ongoing monthly fee for maintaining and improving workflows over time, which provides more stable income once you have a few satisfied clients).',
+              'For your final assignment in this course, write a short, specific service offer (3-4 sentences) describing one automation or AI-assisted service you could realistically deliver this month, framed entirely around the time or money it saves a business rather than the technology itself, and identify three real local or remote businesses you could send this offer to this week. Completing the modules in this course gives you the capability — sending that first offer is what actually turns it into income.',
+            ],
+            keyTakeaways: [
+              'Selling AI automation services works best when framed around specific time/money saved, not the underlying technology.',
+              'A realistic beginner service menu includes content/social automation, business workflow automation, and simple FAQ chatbots — each scoped and deliverable quickly.',
+              'Project-based pricing suits getting started; retainer pricing provides more stable income once you have satisfied repeat clients.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'aia-m8-quiz',
+          questions: [
+            {
+              id: 'aia-m8-q1',
+              question: 'What does this lesson recommend emphasizing when pitching AI automation services?',
+              options: [
+                'Technical details about the AI model used',
+                'The specific time or money the client will save',
+                'The number of tools involved in the solution',
+                'Nothing in particular — pitching doesn\'t matter',
+              ],
+              correctIndex: 1,
+              explanation: 'Clients respond more to concrete savings than to technical descriptions of the underlying tools.',
+            },
+            {
+              id: 'aia-m8-q2',
+              question: 'Which of these is listed as a realistic starting service for a beginner?',
+              options: [
+                'Building a full enterprise ERP system from scratch',
+                'Building a simple FAQ chatbot or a content/automation workflow',
+                'Only offering services to Fortune 500 companies',
+                'Avoiding any client work until years of experience',
+              ],
+              correctIndex: 1,
+              explanation: 'Scoped, quickly deliverable services like FAQ chatbots or simple automations are realistic starting offers.',
+            },
+            {
+              id: 'aia-m8-q3',
+              question: 'What is the difference between project-based and retainer pricing, as described in this lesson?',
+              options: [
+                'They are identical pricing models',
+                'Project-based is a flat fee for a defined deliverable; retainer is an ongoing monthly fee for continued maintenance/improvement',
+                'Retainer pricing is only for one-time projects',
+                'Project-based pricing cannot be used by beginners',
+              ],
+              correctIndex: 1,
+              explanation: 'Project-based pricing suits a defined scope, while retainers provide ongoing income for continued work.',
+            },
+          ],
+        },
+      },
+    ],
+  },
+];
 module.exports = { COURSES };
