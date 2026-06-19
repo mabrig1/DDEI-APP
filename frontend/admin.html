@@ -323,7 +323,7 @@
 
             const toggleBtn = document.createElement('button');
             toggleBtn.textContent = 'View Progress';
-            toggleBtn.className = 'text-[#0A66C2] text-xs font-semibold hover:underline';
+            toggleBtn.className = 'text-[#0A66C2] text-xs font-semibold hover:underline mr-3';
             toggleBtn.addEventListener('click', async () => {
                 const isHidden = detailTr.classList.contains('hidden');
                 if (!isHidden) {
@@ -334,6 +334,36 @@
                 const catalog = await getCourseCatalog();
                 detailTd.innerHTML = renderProgressDetail(user, catalog);
             });
+
+            const premiumCell = tr.children[3];
+            const premiumBtn = document.createElement('button');
+            premiumBtn.className = 'text-xs font-semibold hover:underline';
+            const renderPremiumBtn = () => {
+                premiumCell.textContent = user.isPremium ? 'Yes' : 'No';
+                premiumBtn.textContent = user.isPremium ? 'Revoke' : 'Grant';
+                premiumBtn.className = user.isPremium
+                    ? 'text-xs font-semibold text-red-600 hover:underline ml-2'
+                    : 'text-xs font-semibold text-[#0A66C2] hover:underline ml-2';
+                premiumCell.appendChild(premiumBtn);
+            };
+            premiumBtn.addEventListener('click', async () => {
+                const next = !user.isPremium;
+                premiumBtn.disabled = true;
+                try {
+                    await adminRequest(`/api/admin/users/${user._id}/premium`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ isPremium: next }),
+                    });
+                    user.isPremium = next;
+                    renderPremiumBtn();
+                } catch (err) {
+                    alert(`Failed to update premium status: ${err.message}`);
+                } finally {
+                    premiumBtn.disabled = false;
+                }
+            });
+            renderPremiumBtn();
+
             tr.children[6].appendChild(toggleBtn);
 
             const fragment = document.createDocumentFragment();

@@ -61,10 +61,31 @@ async function listSubscriptions(req, res) {
   res.json({ subscriptions });
 }
 
+async function setUserPremium(req, res) {
+  const { isPremium } = req.body;
+
+  if (typeof isPremium !== 'boolean') {
+    return res.status(400).json({ message: 'isPremium must be true or false' });
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.params.id,
+    { isPremium, premiumExpiresAt: null },
+    { new: true }
+  );
+
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  res.json({ user });
+}
+
 module.exports = {
   login,
   listApplications,
   updateApplicationStatus,
   listUsers,
   listSubscriptions,
+  setUserPremium,
 };
