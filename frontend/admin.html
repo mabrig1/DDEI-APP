@@ -67,6 +67,7 @@
                         <th class="px-4 py-3">Tier</th>
                         <th class="px-4 py-3">Why they want to join</th>
                         <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Scholarship</th>
                         <th class="px-4 py-3">Applied</th>
                     </tr>
                 </thead>
@@ -315,6 +316,8 @@
         }
 
         function accessStatusHTML(user) {
+            if (user.scholarship === 'full') return '<span class="text-emerald-600 font-medium">Full Scholarship</span>';
+            if (user.scholarship === 'limited') return '<span class="text-emerald-600 font-medium">Limited Scholarship</span>';
             if (user.isPremium) return '<span class="text-emerald-600 font-medium">Premium</span>';
             if (!user.trialExpiresAt) return '<span class="text-slate-400">—</span>';
             const daysLeft = Math.ceil((new Date(user.trialExpiresAt) - new Date()) / (24 * 60 * 60 * 1000));
@@ -444,6 +447,9 @@
             return tr;
         }
 
+        const SCHOLARSHIP_OPTIONS = ['none', 'limited', 'full'];
+        const SCHOLARSHIP_LABELS = { none: 'No scholarship', limited: 'Limited access', full: 'Full access' };
+
         function renderApplicationRow(app) {
             const tr = document.createElement('tr');
             tr.className = 'border-t';
@@ -472,6 +478,36 @@
                 }
             });
 
+            const scholarshipSelect = document.createElement('select');
+            scholarshipSelect.className = 'border rounded-lg px-2 py-1 text-xs';
+            SCHOLARSHIP_OPTIONS.forEach((level) => {
+                const opt = document.createElement('option');
+                opt.value = level;
+                opt.textContent = SCHOLARSHIP_LABELS[level];
+                if (level === (app.scholarship || 'none')) opt.selected = true;
+                scholarshipSelect.appendChild(opt);
+            });
+            scholarshipSelect.addEventListener('change', async () => {
+                scholarshipSelect.disabled = true;
+                try {
+                    const data = await adminRequest(`/api/admin/applications/${app._id}/scholarship`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ level: scholarshipSelect.value }),
+                    });
+                    app.scholarship = scholarshipSelect.value;
+                    if (data.tempPassword) {
+                        alert(
+                            `A new account was created for ${app.email}.\n\nTemporary password: ${data.tempPassword}\n\nShare this with the applicant — email delivery is not guaranteed in sandbox mode.`
+                        );
+                    }
+                } catch (err) {
+                    alert(`Failed to update scholarship: ${err.message}`);
+                    scholarshipSelect.value = app.scholarship || 'none';
+                } finally {
+                    scholarshipSelect.disabled = false;
+                }
+            });
+
             tr.innerHTML = `
                 <td class="px-4 py-3 font-medium">${escapeHtml(app.fullName)}</td>
                 <td class="px-4 py-3 text-slate-500">${escapeHtml(app.email)}<br>${escapeHtml(app.phone)}</td>
@@ -480,9 +516,11 @@
                 <td class="px-4 py-3">${escapeHtml(app.tier)}</td>
                 <td class="px-4 py-3 max-w-xs text-slate-500">${escapeHtml(app.motivation)}</td>
                 <td class="px-4 py-3"></td>
+                <td class="px-4 py-3"></td>
                 <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${new Date(app.createdAt).toLocaleDateString()}</td>
             `;
             tr.children[6].appendChild(select);
+            tr.children[7].appendChild(scholarshipSelect);
             return tr;
         }
 

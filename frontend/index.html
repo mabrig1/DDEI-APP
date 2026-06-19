@@ -706,6 +706,8 @@
         }
 
         function trialStatusHTML(user) {
+            if (user.scholarship === 'full') return '<p class="text-xs text-emerald-600 font-semibold mt-3">Full Scholarship — unlimited access to every tool.</p>';
+            if (user.scholarship === 'limited') return '<p class="text-xs text-emerald-600 font-semibold mt-3">Limited Scholarship — full access to all courses.</p>';
             if (user.isPremium) return '<p class="text-xs text-emerald-600 font-semibold mt-3">Premium — unlimited access.</p>';
             if (!user.trialExpiresAt) return '';
             const daysLeft = Math.ceil((new Date(user.trialExpiresAt) - new Date()) / (24 * 60 * 60 * 1000));

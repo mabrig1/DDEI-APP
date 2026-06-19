@@ -44,6 +44,7 @@ const userSchema = new mongoose.Schema(
     isPremium: { type: Boolean, default: false },
     premiumExpiresAt: { type: Date, default: null },
     trialExpiresAt: { type: Date, default: null },
+    scholarship: { type: String, enum: ['none', 'limited', 'full'], default: 'none' },
     portfolio: { type: portfolioSchema, default: null },
     courseProgress: { type: [courseProgressSchema], default: [] },
   },
@@ -65,10 +66,16 @@ userSchema.methods.trialEndsAt = function trialEndsAt() {
   return new Date(this.createdAt.getTime() + TRIAL_DURATION_MS);
 };
 
-userSchema.methods.hasActiveAccess = function hasActiveAccess() {
+userSchema.methods.hasPremiumAccess = function hasPremiumAccess() {
+  if (this.scholarship === 'full') return true;
   const now = new Date();
-  if (this.isPremium && (!this.premiumExpiresAt || this.premiumExpiresAt > now)) return true;
-  return this.trialEndsAt() > now;
+  return this.isPremium && (!this.premiumExpiresAt || this.premiumExpiresAt > now);
+};
+
+userSchema.methods.hasActiveAccess = function hasActiveAccess() {
+  if (this.scholarship === 'limited' || this.scholarship === 'full') return true;
+  if (this.hasPremiumAccess()) return true;
+  return this.trialEndsAt() > new Date();
 };
 
 userSchema.methods.toJSON = function toSafeJSON() {

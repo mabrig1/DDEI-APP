@@ -4,8 +4,10 @@ const crypto = require('crypto');
 const Application = require('../models/Application');
 const User = require('../models/User');
 const Subscription = require('../models/Subscription');
+const { sendScholarshipEmail } = require('../utils/mailer');
 
 const APPLICATION_STATUSES = ['pending', 'reviewing', 'accepted', 'rejected'];
+const SCHOLARSHIP_LEVELS = ['none', 'limited', 'full'];
 const ADMIN_PREVIEW_EMAIL = 'admin-preview@destinyskillsbridge.internal';
 
 async function login(req, res) {
@@ -83,6 +85,56 @@ async function setUserPremium(req, res) {
   res.json({ user });
 }
 
+async function grantScholarship(req, res) {
+  const { level } = req.body;
+
+  if (!SCHOLARSHIP_LEVELS.includes(level)) {
+    return res.status(400).json({ message: 'level must be one of: none, limited, full' });
+  }
+
+  const application = await Application.findById(req.params.id);
+
+  if (!application) {
+    return res.status(404).json({ message: 'Application not found' });
+  }
+
+  let user = null;
+  let tempPassword = null;
+
+  if (application.user) {
+    user = await User.findById(application.user);
+  }
+
+  if (!user) {
+    user = await User.findOne({ email: application.email });
+  }
+
+  if (!user && level !== 'none') {
+    tempPassword = crypto.randomBytes(6).toString('hex');
+    user = await User.create({
+      name: application.fullName,
+      email: application.email,
+      password: tempPassword,
+      track: application.track,
+    });
+    application.user = user._id;
+  }
+
+  if (user) {
+    user.scholarship = level;
+    await user.save();
+  }
+
+  application.scholarship = level;
+  await application.save();
+
+  if (level !== 'none') {
+    await sendScholarshipEmail(application, level, tempPassword);
+  }
+
+  res.json({ application, user, tempPassword });
+}
+
 async function createAccessLink(req, res) {
   let user = await User.findOne({ email: ADMIN_PREVIEW_EMAIL });
 
@@ -114,5 +166,6 @@ module.exports = {
   listUsers,
   listSubscriptions,
   setUserPremium,
+  grantScholarship,
   createAccessLink,
 };

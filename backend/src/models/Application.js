@@ -11,6 +11,7 @@ const applicationSchema = new mongoose.Schema(
     tier: { type: String, enum: ['tier1', 'tier2'], required: true },
     motivation: { type: String, required: true },
     status: { type: String, enum: ['pending', 'reviewing', 'accepted', 'rejected'], default: 'pending' },
+    scholarship: { type: String, enum: ['none', 'limited', 'full'], default: 'none' },
   },
   { timestamps: true }
 );
