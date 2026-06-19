@@ -5025,5 +5025,771 @@ const COURSES = [
       },
     ],
   },
+
+  // ============================================================
+  // COURSE 9 — AI Cinematic Video & Avatar Creation Mastery
+  // ============================================================
+  {
+    id: 'ai-cinematic-video-mastery',
+    slug: 'ai-cinematic-video-mastery',
+    title: 'AI Cinematic Video & Avatar Creation Mastery',
+    description:
+      'Direct cinematic AI video with Claude/ChatGPT, Veo 3, and Grok Imagine — prompting, avatars, sound, and sales.',
+    skillIds: [],
+    category: 'AI Video & Creative Production',
+    estimatedHours: 18,
+    modules: [
+      {
+        id: 'cvm-m1',
+        title: 'Module 1: The AI Video Revolution',
+        lessons: [
+          {
+            id: 'cvm-m1-l1',
+            title: 'How AI Video Models Actually Work',
+            content: [
+              'AI video generation models are trained on enormous quantities of video and learn to predict, frame by frame, what realistic motion, lighting, and physics should look like — when you give one a text prompt (or a starting image), it generates an entirely new video that did not exist before, rather than searching for and editing existing footage. This is fundamentally different from traditional video production: there is no camera, no actors, and no location — the entire scene is synthesized directly from your description.',
+              'Two prompting modes matter for nearly every tool in this course: text-to-video (you describe a scene in words and the model generates motion from nothing) and image-to-video (you provide a starting image — a character, a product shot, a piece of concept art — and the model animates it into motion, often giving you far more control over the final look than text alone). Most professional AI filmmakers combine both: generating a strong still image first with an AI image tool, then animating that exact image into video, since this produces far more consistent, controllable results than text-to-video alone.',
+              'Try this now as your first hands-on exercise: open any free-tier AI video tool you have access to, and generate one five-second clip from a simple text prompt describing a scene you can picture clearly (for example, "a cup of coffee steaming on a wooden table by a rainy window, morning light"). Watch closely for what the model gets right and what it gets wrong — noticing these patterns early is what separates someone who can prompt effectively from someone who is just guessing.',
+            ],
+            keyTakeaways: [
+              'AI video models synthesize entirely new motion from a text prompt or starting image — there is no camera, actor, or real location involved.',
+              'Text-to-video generates motion from words alone; image-to-video animates a specific starting image, usually with more control.',
+              'Combining a strong AI-generated still image with image-to-video animation is the most reliable, professional workflow.',
+            ],
+          },
+          {
+            id: 'cvm-m1-l2',
+            title: 'Mapping the Tool Landscape: Veo 3, Grok Imagine, and Beyond',
+            content: [
+              'This course focuses on two leading, currently prominent AI video tools, each with a distinct strength: Veo 3 (Google\'s cinematic video model) is known for strong physical realism, coherent motion, and — critically — generating native synchronized audio (dialogue, sound effects, and ambient sound) directly alongside the video itself, removing a step that used to require separate sound design entirely. Grok Imagine (xAI\'s video and image tool) is known for fast iteration, strong image-to-video animation, and dedicated avatar generation features that let you create and animate a consistent AI character across multiple scenes.',
+              'Rather than treating these as competitors to pick one of, professional AI video creators commonly use them for different jobs within the same project: Veo 3 for hero shots that need maximum realism and built-in audio, Grok Imagine for fast avatar-driven content and rapid concept iteration, and general-purpose AI chat assistants (Claude and ChatGPT, covered in depth in Module 2) for writing and refining the actual prompts that drive both tools. Treating your toolkit this way — as a set of specialists, not a single do-everything tool — is the mindset that separates efficient, professional output from slow trial-and-error.',
+              'For your assignment, write down, in your own words, one project idea (a 30-second product ad, a short character-driven story, anything realistic) and decide which tool from this lesson you would use for which specific shot or element, and why — this decision-making process, not any single tool\'s button-pressing, is the actual skill this course is building.',
+            ],
+            keyTakeaways: [
+              'Veo 3 is known for physical realism and native synchronized audio generated directly alongside the video.',
+              'Grok Imagine is known for fast iteration, strong image-to-video animation, and dedicated avatar generation.',
+              'Professional creators treat AI video tools as specialists for different jobs within one project, not a single all-purpose tool.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m1-quiz',
+          questions: [
+            {
+              id: 'cvm-m1-q1',
+              question: 'What is the key difference between text-to-video and image-to-video generation?',
+              options: [
+                'They are identical in every way',
+                'Text-to-video generates motion from words alone; image-to-video animates a specific starting image',
+                'Image-to-video cannot use any text at all',
+                'Text-to-video requires a physical camera',
+              ],
+              correctIndex: 1,
+              explanation: 'Text-to-video starts from a written description; image-to-video starts from and animates an existing image.',
+            },
+            {
+              id: 'cvm-m1-q2',
+              question: 'What is Veo 3 specifically noted for in this lesson?',
+              options: [
+                'Only generating still images',
+                'Physical realism and native synchronized audio generated alongside the video',
+                'Avatar creation exclusively',
+                'It has no distinguishing features',
+              ],
+              correctIndex: 1,
+              explanation: 'Veo 3 is highlighted for realistic motion and built-in audio generation, removing a separate sound design step.',
+            },
+            {
+              id: 'cvm-m1-q3',
+              question: 'What mindset does this lesson recommend for using multiple AI video tools on one project?',
+              options: [
+                'Pick exactly one tool and never use any others',
+                'Treat each tool as a specialist for different jobs within the same project',
+                'Avoid using more than one tool under any circumstances',
+                'Tools should never be combined',
+              ],
+              correctIndex: 1,
+              explanation: 'Using each tool for what it does best, within a single project, is more efficient than relying on one do-everything tool.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m2',
+        title: 'Module 2: Prompt Engineering for Cinematic Video',
+        lessons: [
+          {
+            id: 'cvm-m2-l1',
+            title: 'Writing Prompts That Direct, Not Just Describe',
+            content: [
+              'A weak video prompt simply describes a subject ("a woman walking on a beach"); a strong cinematic prompt directs a scene the way a film director would, specifying subject, action, setting, camera behavior, lighting, and mood in the same breath — for example: "Wide shot, a woman in a flowing red dress walks slowly along a golden-hour beach, camera tracking smoothly alongside her at eye level, warm backlighting, gentle ocean breeze moving her dress and hair, cinematic and contemplative mood." Every added, specific detail removes a decision the model would otherwise make randomly on your behalf.',
+              'A reliable structure for cinematic prompts is: Shot Type (wide, medium, close-up), Subject and Action (who, doing what), Setting (where, including relevant background detail), Camera Behavior (static, tracking, panning, zooming), Lighting and Mood (golden hour, harsh fluorescent, moody and dark, bright and cheerful), and any specific audio cues if your tool supports native sound. Locking this six-part structure into a personal habit, almost like a checklist, is what turns inconsistent, lucky-guess results into consistently directed footage.',
+              'Try this now: take the weak prompt "a woman walking on a beach" and rewrite it using all six elements of the structure above, then generate it in any video tool available to you and compare it against a version generated from the original weak prompt — the visible difference in quality and control is the entire point of this lesson.',
+            ],
+            keyTakeaways: [
+              'Strong cinematic prompts direct a scene like a film director, not just describe a subject in isolation.',
+              'The six-part structure — Shot Type, Subject/Action, Setting, Camera Behavior, Lighting/Mood, Audio — removes random guesswork from the model.',
+              'Comparing a weak prompt against its fully directed rewrite is the fastest way to internalize why specificity matters.',
+            ],
+          },
+          {
+            id: 'cvm-m2-l2',
+            title: 'Using Claude and ChatGPT as Your Co-Director',
+            content: [
+              'General-purpose AI chat assistants like Claude and ChatGPT are not video generators themselves, but they are exceptionally useful as a "co-director" that helps you plan, write, and refine prompts before you ever touch a video tool — describe your overall concept in plain language, and ask the assistant to expand it into a full six-part cinematic prompt using the structure from the previous lesson, or to generate five prompt variations exploring different camera angles or moods for the same scene.',
+              'A genuinely powerful workflow is to paste your raw idea into Claude or ChatGPT with a prompt like: "Act as a cinematographer. Turn this rough scene idea into a detailed Veo 3 prompt using shot type, subject/action, setting, camera movement, lighting, and mood: [your rough idea]." This Role-Context-Task-Format approach (introduced in the AI Tools & Automation course, and equally useful here) consistently produces far more usable, specific prompts than writing them entirely from scratch yourself, especially when you are still building your own cinematic vocabulary.',
+              'Try this now: pick a simple story beat (a character discovering something, a product reveal, an emotional reaction), describe it to Claude or ChatGPT in one casual sentence, and ask it to expand that sentence into three different fully-structured cinematic prompts — one wide establishing shot, one medium character shot, and one close-up detail shot — then save all three for use in Module 3.',
+            ],
+            keyTakeaways: [
+              'Claude and ChatGPT act as a "co-director," helping plan and expand rough ideas into fully structured cinematic prompts.',
+              'Asking an assistant to "act as a cinematographer" and apply the six-part structure produces consistently more usable prompts.',
+              'Generating multiple shot variations (wide, medium, close-up) from one idea builds a reusable prompt library for later modules.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m2-quiz',
+          questions: [
+            {
+              id: 'cvm-m2-q1',
+              question: 'What distinguishes a strong cinematic prompt from a weak one?',
+              options: [
+                'A strong prompt is always shorter',
+                'A strong prompt directs shot type, action, setting, camera behavior, lighting, and mood together',
+                'A weak prompt always produces better results',
+                'There is no real difference',
+              ],
+              correctIndex: 1,
+              explanation: 'Specificity across all six structural elements gives the model clear direction instead of leaving decisions random.',
+            },
+            {
+              id: 'cvm-m2-q2',
+              question: 'What role do Claude and ChatGPT play in this video production workflow?',
+              options: [
+                'They generate the final video directly',
+                'They act as a "co-director," helping expand rough ideas into structured cinematic prompts',
+                'They have no useful role in video production',
+                'They can only generate still images',
+              ],
+              correctIndex: 1,
+              explanation: 'These assistants help plan and write effective prompts, even though they don\'t generate video themselves.',
+            },
+            {
+              id: 'cvm-m2-q3',
+              question: 'Why is asking an assistant to "act as a cinematographer" a useful prompting technique?',
+              options: [
+                'It has no effect on the output',
+                'It frames the response from a relevant expert perspective, producing more specific, usable prompts',
+                'It only works for written essays',
+                'It prevents any video generation',
+              ],
+              correctIndex: 1,
+              explanation: 'Assigning a role (Module 2 of the AI Tools course) helps the assistant generate more targeted, professional output.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m3',
+        title: 'Module 3: Mastering Veo 3',
+        lessons: [
+          {
+            id: 'cvm-m3-l1',
+            title: "Veo 3's Capabilities and Native Audio",
+            content: [
+              'Veo 3\'s standout feature is native audio generation — when you describe dialogue, sound effects, or ambient sound directly in your prompt, it generates synchronized audio alongside the video itself, meaning a prompt like "a barista steams milk, the hiss of the steamer audible, soft cafe chatter in the background" produces video and matching sound in a single generation, rather than requiring you to add sound separately in editing later. This single capability can save hours of post-production work compared to silent-video tools.',
+              'To prompt dialogue specifically, describe the line of speech directly in quotes within your prompt along with the speaker and their tone — for example: "A young entrepreneur looks directly at the camera and says, with confident energy, \'This is how we change the game.\'" Veo 3 performs best with clear, realistic physical scenarios and natural human motion; it is generally less reliable with highly stylized, fantastical, or physically impossible scenes, so reserve it for the shots in your project that benefit most from grounded realism.',
+              'Try this now: write one Veo 3 prompt that includes a piece of spoken dialogue, a specific background sound, and the six-part cinematic structure from Module 2, then generate it if you have access, paying close attention to how well the lip movement, tone, and background sound match what you described.',
+            ],
+            keyTakeaways: [
+              'Veo 3 generates native synchronized audio (dialogue, sound effects, ambience) directly alongside the video from a single prompt.',
+              'Describing spoken dialogue in quotes, with speaker and tone, lets Veo 3 generate matching speech and lip movement.',
+              'Veo 3 performs best with grounded, realistic scenarios — reserve it for shots that benefit from physical realism.',
+            ],
+          },
+          {
+            id: 'cvm-m3-l2',
+            title: 'Advanced Veo 3 Prompting Techniques',
+            content: [
+              'Beyond the basic six-part structure, advanced Veo 3 prompting benefits from specifying lens and camera-equivalent language borrowed from real filmmaking — terms like "shot on 35mm," "shallow depth of field," "drone shot," or "handheld camera with slight shake" give the model strong, well-defined stylistic cues, since these terms appear consistently in the kind of professional footage the model was trained on. Specifying time of day and weather precisely ("overcast midday," "blue hour just after sunset") similarly produces far more controlled, predictable lighting than vague terms like "nice lighting."',
+              'When a generation doesn\'t match your intent, the most efficient fix is rarely to start over from scratch — instead, isolate exactly which part failed (the camera movement, the lighting, the action) and rewrite only that specific portion of your prompt with more precise language, keeping everything else the same; this targeted-iteration approach converges on a usable result far faster than repeatedly regenerating an entire prompt from zero. Keeping a running log of which specific phrases produced which specific results — your own personal "prompt dictionary" — is one of the most valuable habits a serious AI filmmaker can build over time.',
+              'Try this now: take the dialogue prompt you wrote in the previous lesson, and add one specific camera/lens term and one specific lighting/time-of-day term to it, then note (even without generating, just by reasoning through it) exactly what change you expect to see versus the original — this kind of deliberate, predictive thinking is what builds real prompting expertise faster than blind trial and error.',
+            ],
+            keyTakeaways: [
+              'Borrowing real filmmaking language (35mm, shallow depth of field, drone shot, handheld) gives the model strong, well-defined stylistic cues.',
+              'Precise time-of-day and weather terms produce far more controlled, predictable lighting than vague descriptions.',
+              'Targeted iteration — fixing only the specific failed element of a prompt — converges on usable results faster than full regeneration.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m3-quiz',
+          questions: [
+            {
+              id: 'cvm-m3-q1',
+              question: 'How does Veo 3 typically generate dialogue audio?',
+              options: [
+                'It cannot generate dialogue at all',
+                'By describing the spoken line in quotes along with speaker and tone, producing synchronized audio',
+                'Only by uploading a separate pre-recorded audio file',
+                'Dialogue is always added manually after generation',
+              ],
+              correctIndex: 1,
+              explanation: 'Quoted dialogue with speaker/tone context lets Veo 3 generate matching synchronized speech.',
+            },
+            {
+              id: 'cvm-m3-q2',
+              question: 'Why does specifying filmmaking terms like "35mm" or "shallow depth of field" help Veo 3 prompts?',
+              options: [
+                'These terms have no effect on output',
+                'They give the model strong, well-defined stylistic cues drawn from its training on real footage',
+                'They only work for still images, not video',
+                'They make generation slower with no quality benefit',
+              ],
+              correctIndex: 1,
+              explanation: 'Real filmmaking terminology maps to consistent patterns in the training data, producing more predictable styling.',
+            },
+            {
+              id: 'cvm-m3-q3',
+              question: 'What is the recommended approach when a Veo 3 generation doesn\'t match your intent?',
+              options: [
+                'Always discard the prompt entirely and start completely from scratch',
+                'Isolate and rewrite only the specific failed element of the prompt',
+                'Give up on prompting entirely',
+                'Generate the exact same prompt repeatedly with no changes',
+              ],
+              correctIndex: 1,
+              explanation: 'Targeted iteration on the specific failed element converges on a usable result more efficiently than full restarts.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m4',
+        title: 'Module 4: Grok Imagine for Video and Avatars',
+        lessons: [
+          {
+            id: 'cvm-m4-l1',
+            title: 'Generating Video and Image-to-Video With Grok Imagine',
+            content: [
+              'Grok Imagine is built for fast, iterative creation — it generates both still images and video, and its image-to-video mode is particularly strong for taking a single generated or uploaded image and bringing it to life with natural, controllable motion, making it an efficient choice when you already know exactly what your subject should look like and just need it moving. Because iteration is fast, it rewards a "generate many, select the best" workflow more than slower, single-shot tools do — generating three or four variations of the same prompt and picking the strongest is often faster than trying to perfect one single prompt.',
+              'When animating a still image into video with Grok Imagine, your prompt should focus specifically on motion and camera behavior rather than re-describing the subject (since the subject is already fixed in the source image) — for example, given a still photo of a product on a table, a strong animation prompt might be "camera slowly orbits around the product, soft studio lighting flickers gently, product rotates slightly" rather than re-describing what the product looks like. This focus on motion-only language, once you internalize it, makes image-to-video prompting noticeably faster to write than text-to-video prompting.',
+              'Try this now: generate (or find) one strong still image of a subject you want to animate, then write a motion-only prompt for it following the example above — focus entirely on camera behavior and subject movement, deliberately avoiding any re-description of what the subject looks like.',
+            ],
+            keyTakeaways: [
+              'Grok Imagine excels at fast iteration and image-to-video animation when you already have a clear starting image.',
+              'A "generate many, select the best" workflow is efficient given Grok Imagine\'s fast generation speed.',
+              'Image-to-video prompts should focus on motion and camera behavior, not re-describing a subject that is already fixed in the source image.',
+            ],
+          },
+          {
+            id: 'cvm-m4-l2',
+            title: 'Creating and Animating AI Avatars',
+            content: [
+              'An AI avatar is a consistent, reusable digital character — a virtual presenter, a branded mascot, or a stylized version of a real person — that can be animated to speak, gesture, and appear across multiple videos while maintaining the same recognizable appearance each time, which is essential for any content series, brand presence, or recurring character-driven project. Grok Imagine\'s avatar features let you generate a strong reference image of your character first, then animate that exact reference into talking, moving video, similar in principle to the image-to-video workflow from the previous lesson but optimized specifically for character performance.',
+              'A strong avatar reference image should be generated with deliberate attention to features that need to stay consistent: clothing, hairstyle, facial features, and any distinctive accessories, described with enough specific detail ("a young woman with shoulder-length curly black hair, round wire-frame glasses, wearing a navy blazer") that regenerating the same description produces a recognizably similar result each time — vague descriptions produce a different-looking "character" every single generation, breaking the illusion of a consistent presenter.',
+              'Try this now: write one detailed avatar description (following the specificity example above) for a hypothetical brand spokesperson or content creator persona, generate it if you have access to an avatar tool, and then write a short, separate animation prompt for that same avatar speaking a single line of dialogue — keeping the character description and the animation/dialogue instructions clearly separated, exactly as practiced in the previous lesson.',
+            ],
+            keyTakeaways: [
+              'An AI avatar is a consistent, reusable character that can be animated across multiple videos while keeping a recognizable appearance.',
+              'A strong avatar reference description specifies exact, stable features (hair, clothing, accessories) in enough detail to regenerate consistently.',
+              'Separating the character\'s fixed description from each scene\'s separate animation/dialogue prompt keeps avatar work organized and consistent.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m4-quiz',
+          questions: [
+            {
+              id: 'cvm-m4-q1',
+              question: 'What should an image-to-video prompt in Grok Imagine primarily focus on?',
+              options: [
+                'Re-describing exactly what the subject looks like',
+                'Motion and camera behavior, since the subject is already fixed in the source image',
+                'Nothing — image-to-video requires no prompt at all',
+                'Only the background music',
+              ],
+              correctIndex: 1,
+              explanation: 'Since the subject is fixed, the prompt should describe how it moves and how the camera behaves, not what it looks like.',
+            },
+            {
+              id: 'cvm-m4-q2',
+              question: 'What makes an AI avatar useful for ongoing content?',
+              options: [
+                'It looks completely different in every single video',
+                'It maintains a consistent, recognizable appearance across multiple videos',
+                'It cannot be animated at all',
+                'It has no practical use case',
+              ],
+              correctIndex: 1,
+              explanation: 'Consistency across appearances is what makes an avatar usable as a recurring presenter or character.',
+            },
+            {
+              id: 'cvm-m4-q3',
+              question: 'Why does a vague avatar description cause problems?',
+              options: [
+                'Vague descriptions have no effect on results',
+                'It produces a different-looking "character" each generation, breaking consistency',
+                'Vague descriptions always produce more consistent results',
+                'Avatar descriptions never need any detail',
+              ],
+              correctIndex: 1,
+              explanation: 'Specific, stable details are needed to regenerate a recognizably similar character across multiple generations.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m5',
+        title: 'Module 5: The Language of Cinema',
+        lessons: [
+          {
+            id: 'cvm-m5-l1',
+            title: 'Shot Types and Composition',
+            content: [
+              'Every shot type carries a specific emotional and informational purpose: a wide/establishing shot shows the full scene and setting, orienting the viewer to where they are; a medium shot (roughly waist-up) is the workhorse of most storytelling, balancing subject detail with surrounding context; and a close-up isolates a face or object, used specifically to convey emotion or draw attention to an important detail. Learning to specify the right shot type for the right moment — not just defaulting to the same shot repeatedly — is one of the fastest ways to make AI-generated video feel intentionally directed rather than randomly generated.',
+              'Composition rules borrowed directly from photography and film apply just as strongly to AI-prompted shots: the rule of thirds (placing key subjects off-center, roughly a third of the way into the frame, rather than dead-center, generally feels more dynamic and professional) and leading the eye (using lines, lighting, or motion within the frame to direct attention exactly where you want it) can both be explicitly requested in a prompt — for example, "subject positioned in the left third of frame, soft light leading the eye toward her face."',
+              'Try this now: pick any single subject (a person, a product, an animal) and write three separate prompts for the exact same subject — one wide shot, one medium shot, and one close-up — each correctly using the appropriate framing language from this lesson, and notice how differently each version would communicate the same scene.',
+            ],
+            keyTakeaways: [
+              'Wide, medium, and close-up shots each serve a distinct storytelling purpose — orienting, balancing, or emphasizing emotion/detail.',
+              'The rule of thirds and intentional eye-leading can be explicitly requested in prompts, not just left to chance.',
+              'Deliberately varying shot type across a project is what makes AI-generated video feel directed rather than randomly generated.',
+            ],
+          },
+          {
+            id: 'cvm-m5-l2',
+            title: 'Camera Movement and Lighting in Prompts',
+            content: [
+              'Camera movement adds energy and narrative meaning beyond what a static shot can convey: a slow push-in toward a subject builds tension or intimacy, a pull-back/reveal builds context or surprise, a tracking shot (camera moving alongside a moving subject) creates dynamic energy, and a static locked-off shot conveys stillness or stability — each of these should be chosen deliberately based on the emotional effect you want, then named explicitly in your prompt ("slow push-in," "smooth tracking shot alongside the subject").',
+              'Lighting is equally communicative: golden hour (warm, low-angle sunlight) feels nostalgic or romantic; harsh overhead fluorescent feels clinical, sterile, or unsettling; low-key lighting (mostly dark, with strong shadows) feels dramatic or suspenseful; and high-key lighting (bright, even, minimal shadow) feels cheerful or commercial. Matching your lighting description to the actual mood of your scene — rather than defaulting to generic "nice lighting" — is one of the highest-leverage, lowest-effort improvements you can make to any prompt.',
+              'Try this now: take one of the three shots you wrote in the previous lesson, and add a specific camera movement and a specific lighting description that reinforces the emotional tone you want that shot to carry — write one sentence explaining why you chose that particular combination, connecting your choice explicitly back to the mood concepts in this lesson.',
+            ],
+            keyTakeaways: [
+              'Camera movements (push-in, pull-back, tracking, static) each carry distinct narrative and emotional meaning that should be chosen deliberately.',
+              'Lighting styles (golden hour, harsh fluorescent, low-key, high-key) communicate mood and should match the scene\'s intended emotional tone.',
+              'Naming specific camera movement and lighting in a prompt, rather than defaulting to generic terms, meaningfully improves output quality.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m5-quiz',
+          questions: [
+            {
+              id: 'cvm-m5-q1',
+              question: 'What is the primary purpose of a close-up shot?',
+              options: [
+                'To show the full setting and orient the viewer',
+                'To isolate a face or object and convey emotion or important detail',
+                'To replace the need for any other shot type',
+                'Close-ups have no specific purpose',
+              ],
+              correctIndex: 1,
+              explanation: 'Close-ups focus attention tightly to emphasize emotion or a specific detail.',
+            },
+            {
+              id: 'cvm-m5-q2',
+              question: 'What emotional effect does a slow push-in camera movement typically create?',
+              options: [
+                'Confusion with no clear effect',
+                'Builds tension or intimacy',
+                'Always signals the end of a scene',
+                'It has the same effect as a static shot',
+              ],
+              correctIndex: 1,
+              explanation: 'A slow push toward a subject draws the viewer in, often building emotional intensity or closeness.',
+            },
+            {
+              id: 'cvm-m5-q3',
+              question: 'Why does low-key lighting typically feel dramatic or suspenseful?',
+              options: [
+                'It uses bright, even lighting with no shadows',
+                'It uses mostly dark tones with strong shadows',
+                'Lighting has no effect on mood',
+                'It is identical to high-key lighting',
+              ],
+              correctIndex: 1,
+              explanation: 'Strong shadows and limited light create a moody, tense visual atmosphere associated with drama and suspense.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m6',
+        title: 'Module 6: Character & Avatar Consistency',
+        lessons: [
+          {
+            id: 'cvm-m6-l1',
+            title: 'Solving the Consistency Problem',
+            content: [
+              'The single hardest technical challenge in AI video production is consistency — making the same character, product, or location look recognizably identical across multiple separate generations, since each generation is technically a brand-new creation with no inherent memory of previous ones. This matters enormously for any multi-shot project: a character whose face or outfit subtly shifts between shots breaks the viewer\'s sense of continuity and immediately signals "AI-generated" in a way that undermines the project\'s credibility.',
+              'The most reliable consistency technique covered already in this course is image-to-video animation from one single, carefully created reference image (Module 4) — since the subject\'s exact appearance is locked into that one image and only its motion changes across generations, this approach inherently avoids the consistency problem that text-to-video re-generation introduces every time. A second technique is maintaining an extremely detailed, copy-pasted description of your character or subject (the "character bible," covered in the next lesson) that you reuse word-for-word across every related prompt, minimizing the random variation a model introduces when given even slightly different wording each time.',
+              'Try this now: imagine a two-shot sequence featuring the same character (a wide shot, then a close-up), and write both prompts using the exact same word-for-word character description in each — notice how repeating identical language, rather than re-describing the character slightly differently each time, is itself a deliberate consistency technique.',
+            ],
+            keyTakeaways: [
+              'Consistency across generations is the hardest technical challenge in AI video, since each generation has no memory of previous ones.',
+              'Image-to-video animation from one fixed reference image is the most reliable consistency technique available.',
+              'Reusing an identical, detailed character description word-for-word across prompts minimizes random variation between generations.',
+            ],
+          },
+          {
+            id: 'cvm-m6-l2',
+            title: 'Building a Reusable Character Bible',
+            content: [
+              'A character bible is a single, detailed reference document describing every visually important attribute of a character or recurring subject — physical features, clothing, accessories, and even personality-driven mannerisms that might influence how they move or express emotion — written once and then reused, unedited, as the foundation of every prompt involving that character. Treating this document as fixed and non-negotiable, rather than rewriting the description slightly differently each time you need it, is what actually produces consistency in practice, not just in theory.',
+              'A practical character bible entry includes: a name (even for internal use only), age range and build, specific facial features (hair color/style, eye color, any distinguishing marks), a default outfit description, and a one-sentence personality note that might inform expression or posture (e.g., "confident and warm, tends to make direct eye contact"). Storing this in a simple text document or note that you copy from for every new prompt — rather than trying to remember or improvise the description from memory — removes the single biggest source of unintended inconsistency.',
+              'For your assignment, write a complete character bible entry (following the template above) for a hypothetical avatar or character you might use in a real project, then write two different scene prompts (a different setting and action for each) that both incorporate this exact character bible description word-for-word — confirming for yourself that the description transfers cleanly across different scenes.',
+            ],
+            keyTakeaways: [
+              'A character bible is a fixed, detailed reference document for a character\'s appearance, reused unedited across every related prompt.',
+              'A complete entry includes name, build, facial features, default outfit, and a personality note influencing expression or posture.',
+              'Copying the exact same character bible text into every new prompt, rather than improvising from memory, is what actually produces consistency.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m6-quiz',
+          questions: [
+            {
+              id: 'cvm-m6-q1',
+              question: 'Why is consistency the hardest technical challenge in AI video production?',
+              options: [
+                'It is not actually a real challenge',
+                'Each generation is a brand-new creation with no inherent memory of previous generations',
+                'Consistency only matters for audio, not visuals',
+                'AI video tools automatically guarantee perfect consistency',
+              ],
+              correctIndex: 1,
+              explanation: 'Without a shared memory between generations, subtle variations naturally creep in unless deliberately controlled for.',
+            },
+            {
+              id: 'cvm-m6-q2',
+              question: 'What is a "character bible" in this context?',
+              options: [
+                'A religious text',
+                'A fixed, detailed reference document describing a character\'s appearance, reused across prompts',
+                'A type of video editing software',
+                'A randomly generated character description used once',
+              ],
+              correctIndex: 1,
+              explanation: 'A character bible standardizes the description used across every prompt involving that character.',
+            },
+            {
+              id: 'cvm-m6-q3',
+              question: 'Why should a character bible be reused word-for-word rather than rewritten each time?',
+              options: [
+                'Rewriting it each time always improves consistency',
+                'Reusing identical language minimizes random variation introduced by slightly different wording',
+                'It has no effect on consistency either way',
+                'Word-for-word reuse is technically impossible',
+              ],
+              correctIndex: 1,
+              explanation: 'Identical input text reduces the chance of the model introducing unintended visual differences between generations.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m7',
+        title: 'Module 7: Storyboarding and Scene Sequencing',
+        lessons: [
+          {
+            id: 'cvm-m7-l1',
+            title: 'From Script to Storyboard',
+            content: [
+              'A storyboard is a sequence of simple sketches or descriptions representing each planned shot in order, created before any generation begins — its purpose is to work out story flow, pacing, and shot variety on paper (or in a simple document) where changes are free and instant, rather than discovering structural problems only after spending time and generation credits on finished AI clips. Even a rough storyboard — a numbered list with one sentence per shot describing what happens and what shot type/camera move is used — dramatically improves the coherence of the final video compared to generating shots one at a time with no overall plan.',
+              'A practical storyboarding process for AI video starts with a short script or outline (even three or four sentences describing what happens), then breaking that script into individual shots, assigning each shot a shot type and rough duration (most AI video clips currently run 5-10 seconds, so a 30-second final video might require three to six separate generated shots stitched together), and noting which shots reuse the same character or location (flagging where your character bible from Module 6 needs to be applied consistently).',
+              'For your assignment, write a simple four-sentence script for a short video concept (a product reveal, a brief story beat, anything realistic), then break it into a numbered shot list specifying shot type and rough action for each shot — this shot list is the direct blueprint you will generate from in the next lesson and turn into prompts using the techniques from Modules 2 and 5.',
+            ],
+            keyTakeaways: [
+              'A storyboard works out story flow and shot variety before any generation begins, where changes are free and instant.',
+              'Breaking a script into individual shots with assigned shot types and durations is the practical core of AI video storyboarding.',
+              'Flagging which shots reuse the same character or location connects storyboarding directly to the consistency techniques from Module 6.',
+            ],
+          },
+          {
+            id: 'cvm-m7-l2',
+            title: 'Sequencing Shots Into a Coherent Story',
+            content: [
+              'Shot sequencing is the deliberate ordering and pacing of your individual shots so the final video reads as one coherent story rather than a disconnected collection of clips — a common, effective pattern is establishing shot (wide, sets the scene) → medium shot (introduces the subject/action) → close-up (delivers the emotional or detail payoff), mirroring the classic wide-medium-close rhythm used throughout traditional filmmaking. Varying shot type between consecutive clips, rather than using the same framing repeatedly, is one of the simplest ways to make a sequence feel professionally edited rather than monotonous.',
+              'Transitions between AI-generated clips matter just as much as the clips themselves — a hard cut (an instant change between shots) works well when the energy or location changes abruptly, while maintaining consistent lighting and color tone across consecutive shots (even when shot type changes) makes the transition feel intentional rather than jarring; this is one more reason why locking lighting language into your prompts (Module 5) pays off at the sequencing stage, not just within a single shot. As you sequence shots, also consider pacing: a sequence of all very short shots feels frenetic and energetic, while longer-held shots feel calmer and more contemplative — match this rhythm to the mood of your overall project.',
+              'For your final assignment in this module, take the shot list you built in the previous lesson and write out the actual cinematic prompts for each shot (using the six-part structure from Module 2), explicitly noting consistent lighting/color language across all shots and a deliberate wide-medium-close (or similar) sequencing pattern — this complete shot-by-shot prompt set is what you would actually generate and assemble in Module 9.',
+            ],
+            keyTakeaways: [
+              'The wide-medium-close shot sequencing pattern mirrors classic film rhythm and creates a coherent, professional-feeling video.',
+              'Consistent lighting and color tone across consecutive shots makes transitions feel intentional rather than jarring.',
+              'Shot duration and pacing should match the intended mood — short shots feel energetic, longer shots feel calm and contemplative.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m7-quiz',
+          questions: [
+            {
+              id: 'cvm-m7-q1',
+              question: 'What is the main purpose of storyboarding before generating any AI video?',
+              options: [
+                'To waste time before production',
+                'To work out story flow and shot variety where changes are free, before spending time on generation',
+                'Storyboarding has no real benefit for AI video',
+                'To replace the need for any prompts at all',
+              ],
+              correctIndex: 1,
+              explanation: 'Planning on paper avoids discovering structural problems only after generating expensive, time-consuming clips.',
+            },
+            {
+              id: 'cvm-m7-q2',
+              question: 'What is the classic shot sequencing pattern described in this lesson?',
+              options: [
+                'Close-up, then close-up, then close-up',
+                'Establishing/wide shot, then medium shot, then close-up',
+                'Random ordering with no pattern',
+                'Only ever using one single shot type',
+              ],
+              correctIndex: 1,
+              explanation: 'Wide-medium-close mirrors traditional filmmaking rhythm and creates coherent visual storytelling.',
+            },
+            {
+              id: 'cvm-m7-q3',
+              question: 'Why does consistent lighting/color tone across shots matter for transitions?',
+              options: [
+                'It has no effect on how transitions feel',
+                'It makes cuts between shots feel intentional rather than jarring',
+                'Lighting consistency only matters within a single shot, never across shots',
+                'It is impossible to control lighting consistency in prompts',
+              ],
+              correctIndex: 1,
+              explanation: 'Matching lighting/color language across shots smooths transitions and reinforces a unified visual style.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m8',
+        title: 'Module 8: Sound, Voice and Music',
+        lessons: [
+          {
+            id: 'cvm-m8-l1',
+            title: 'Native Audio vs. Post-Production Sound',
+            content: [
+              'Some AI video tools (notably Veo 3, covered in Module 3) generate native audio directly alongside the video — dialogue, ambient sound, and sound effects all produced in the same generation step — while others (including most image-to-video tools like Grok Imagine) currently produce silent video that requires sound to be added afterward in a separate editing step. Knowing which category your chosen tool falls into changes your entire production plan: native-audio tools let you write sound directly into your cinematic prompts (Module 3), while silent-video tools require you to plan sound separately and add it during post-production (covered next in this module).',
+              'When working with silent AI video clips, a simple but effective sound layering approach covers most needs: a background ambience track (room tone, outdoor sound, music bed) sets the overall mood, sound effects (footsteps, a door closing, a notification sound) reinforce specific actions visible on screen, and voiceover or music (Module 8, Lesson 2) carries the primary information or emotional through-line. Even amateur sound layering dramatically improves perceived production quality — silent or poorly-matched audio is one of the fastest ways a video reveals itself as unfinished or low-effort, regardless of how strong the visuals are.',
+              'For your assignment, take one silent AI-generated clip (or imagine one based on a prompt you\'ve already written) and write out, in a simple list, the specific ambience, sound effects, and music/voiceover you would layer onto it to support the visual action — being this deliberate about sound planning, even before touching any audio software, is what separates polished AI video work from work that looks "almost there."',
+            ],
+            keyTakeaways: [
+              'Native-audio tools like Veo 3 generate sound directly with the video; other tools like Grok Imagine produce silent video requiring separate sound addition.',
+              'A simple sound layering approach — ambience, sound effects, voiceover/music — covers most silent-video sound needs.',
+              'Deliberate sound planning dramatically improves perceived production quality, even before any audio editing software is used.',
+            ],
+          },
+          {
+            id: 'cvm-m8-l2',
+            title: 'AI Voice and Music Tools',
+            content: [
+              'AI voice generation tools convert a written script into natural-sounding spoken narration in a chosen tone, accent, and language, making professional-sounding voiceover accessible without hiring a voice actor — useful for narration, explainer dialogue, or giving an avatar (Module 4) a consistent speaking voice across multiple videos. When writing a script for AI voice generation, punctuation matters more than people expect: commas and periods control pacing and breathing, and breaking long sentences into shorter ones generally produces more natural-sounding delivery than long, run-on sentences.',
+              'AI music generation tools can produce custom background music or short stings matched to a described mood and genre ("upbeat corporate background music, optimistic and energetic" or "tense, minimal ambient drone for a suspenseful reveal"), removing the licensing complications and cost of using existing copyrighted music while giving you a soundtrack tailored exactly to your video\'s pacing and mood. Matching music energy to your visual pacing (Module 7) — energetic music under fast cuts, sparse or quiet music under slow, contemplative shots — is a simple alignment check that meaningfully improves how professional a finished piece feels.',
+              'For your final assignment in this module, write a short voiceover script (3-4 sentences, with deliberate punctuation for pacing) for the video concept you have been developing throughout this course, and describe in one sentence the mood and genre of background music you would generate to accompany it — explicitly connecting your music choice back to the pacing and mood decisions made in Module 7.',
+            ],
+            keyTakeaways: [
+              'AI voice tools convert scripts into natural narration, with punctuation directly controlling pacing and delivery quality.',
+              'AI music generation produces custom, mood-matched soundtracks without the licensing complications of existing copyrighted music.',
+              'Matching music energy to visual pacing (fast cuts with energetic music, slow shots with sparse music) improves perceived production quality.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m8-quiz',
+          questions: [
+            {
+              id: 'cvm-m8-q1',
+              question: 'What distinguishes a native-audio video tool from a silent-video tool?',
+              options: [
+                'There is no real distinction',
+                'Native-audio tools generate sound directly with the video; silent tools require sound added separately afterward',
+                'Silent tools always produce better quality video',
+                'Native-audio tools cannot generate any visuals',
+              ],
+              correctIndex: 1,
+              explanation: 'This distinction determines whether sound is planned within the prompt or added in a separate post-production step.',
+            },
+            {
+              id: 'cvm-m8-q2',
+              question: 'Why does punctuation matter when writing a script for AI voice generation?',
+              options: [
+                'Punctuation has no effect on AI voice output',
+                'Commas and periods control pacing and breathing, affecting how natural the delivery sounds',
+                'AI voice tools ignore punctuation entirely',
+                'Punctuation only matters for written text, never for spoken audio',
+              ],
+              correctIndex: 1,
+              explanation: 'Punctuation directly shapes the rhythm and naturalness of AI-generated speech.',
+            },
+            {
+              id: 'cvm-m8-q3',
+              question: 'What is a key benefit of AI-generated background music over using existing copyrighted tracks?',
+              options: [
+                'It removes licensing complications while matching the exact mood and pacing needed',
+                'It is always lower quality than existing music',
+                'It cannot be customized in any way',
+                'There is no benefit at all',
+              ],
+              correctIndex: 0,
+              explanation: 'Custom AI music avoids licensing issues and can be tailored precisely to the video\'s mood and pacing.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m9',
+        title: 'Module 9: Editing and Post-Production',
+        lessons: [
+          {
+            id: 'cvm-m9-l1',
+            title: 'Assembling Your AI-Generated Clips',
+            content: [
+              'Once you have generated your individual AI video clips, assembling them into a final sequence requires a basic video editor — free, accessible options like CapCut and DaVinci Resolve (both have generous free tiers) handle everything a beginner needs: arranging clips in order on a timeline, trimming the start/end of each clip, and layering audio tracks (voiceover, music, sound effects from Module 8) underneath the visual sequence. Even simple, correctly-ordered assembly following your storyboard (Module 7) immediately elevates raw AI clips from "a pile of generated footage" to "a finished video."',
+              'Trimming matters more than beginners expect: most AI-generated clips have a slightly awkward beginning or end (motion not fully settled, an unintended artifact), and trimming even half a second off the start or end of a clip often improves perceived quality significantly, since it removes the rough edges visible in raw, untrimmed generations. Basic transitions (a simple cut is usually best and most professional; cross-dissolves can work for slower, more contemplative sequences, but are easy to overuse) and consistent audio levels (your voiceover should always be clearly audible over background music, never fighting with it for attention) round out the core, non-negotiable editing basics.',
+              'For your assignment, if you have access to any free video editor, import three placeholder clips (even simple smartphone clips work for practice) and assemble them in sequence, trim each one by a few frames at the start and end, and add a simple audio track underneath — if you don\'t yet have generated AI clips to work with, complete this exercise with any available footage purely to build comfort with the editing workflow itself before your first real AI project.',
+            ],
+            keyTakeaways: [
+              'Free tools like CapCut and DaVinci Resolve handle the core editing needs of arranging, trimming, and layering audio on AI-generated clips.',
+              'Trimming even small amounts off the start/end of AI clips often meaningfully improves perceived quality by removing rough edges.',
+              'Simple cuts are usually the most professional transition choice; voiceover should always remain clearly audible over background music.',
+            ],
+          },
+          {
+            id: 'cvm-m9-l2',
+            title: 'Color, Pacing, and Final Polish',
+            content: [
+              'Color grading — adjusting the overall color tone, contrast, and saturation of your assembled footage — is the step that makes AI-generated clips from different generations (and potentially different tools) feel like they belong to the same unified project, even when their raw color output varies slightly between generations; applying one consistent color preset or manual adjustment across your entire timeline is usually enough to achieve this, without needing advanced color theory knowledge. Most free editors include simple one-click color presets or basic sliders for warmth, contrast, and saturation that are more than sufficient for this purpose at a beginner level.',
+              'Final pacing review means watching your fully assembled video straight through, at least once, with fresh eyes (ideally after taking a short break from editing it) specifically checking whether any section drags, whether the overall length matches the platform you\'re publishing to (short-form platforms reward videos under 30-60 seconds; other platforms tolerate longer), and whether the opening 2-3 seconds are strong enough to stop someone from scrolling past — this opening-hook check matters disproportionately, since most viewers decide whether to keep watching within the first few seconds.',
+              'For your final assignment in this course\'s production modules, take the complete shot-by-shot prompt set you built in Module 7, and write a short post-production checklist (in your own words) covering trimming, color consistency, audio levels, and an opening-hook review — this checklist becomes your repeatable quality-control process for every future AI video project, not just this one course exercise.',
+            ],
+            keyTakeaways: [
+              'Consistent color grading across all clips makes footage from different generations feel like one unified project.',
+              'A final pacing review with fresh eyes catches dragging sections, length mismatches, and a weak opening hook.',
+              'The first 2-3 seconds of a video matter disproportionately, since most viewers decide whether to keep watching almost immediately.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m9-quiz',
+          questions: [
+            {
+              id: 'cvm-m9-q1',
+              question: 'Why does trimming the start/end of AI-generated clips matter?',
+              options: [
+                'Trimming has no effect on perceived quality',
+                'It removes rough edges like unsettled motion, often significantly improving perceived quality',
+                'Trimming always makes a clip worse',
+                'AI clips never need any trimming',
+              ],
+              correctIndex: 1,
+              explanation: 'Removing slightly awkward beginnings/endings polishes raw AI footage noticeably.',
+            },
+            {
+              id: 'cvm-m9-q2',
+              question: 'What does consistent color grading achieve across an assembled AI video?',
+              options: [
+                'It makes footage from different generations feel like one unified project',
+                'It has no visual effect at all',
+                'It is only relevant for traditional film, never AI video',
+                'It always makes footage look worse',
+              ],
+              correctIndex: 0,
+              explanation: 'Unified color tone smooths over natural variation between separate AI generations.',
+            },
+            {
+              id: 'cvm-m9-q3',
+              question: 'Why does the opening 2-3 seconds of a video matter disproportionately?',
+              options: [
+                'They have no special importance',
+                'Most viewers decide whether to keep watching within the first few seconds',
+                'Only the final seconds of a video matter',
+                'Opening seconds are always skipped automatically',
+              ],
+              correctIndex: 1,
+              explanation: 'A weak opening causes viewers to scroll away before the rest of the video is ever seen.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cvm-m10',
+        title: 'Module 10: Selling AI Video Services',
+        lessons: [
+          {
+            id: 'cvm-m10-l1',
+            title: 'Building a Demo Reel and Portfolio',
+            content: [
+              'A demo reel — a short, tightly edited compilation (60-90 seconds is usually plenty) showcasing your strongest individual shots and short sequences — is the single most persuasive asset for landing AI video clients, since it lets a potential client watch your actual capability in under two minutes rather than reading a description of it. Curate ruthlessly: a reel of five genuinely strong shots beats a reel of fifteen mediocre ones, since a demo reel is judged on its weakest moment as much as its strongest.',
+              'For a beginner without paid client work yet, a portfolio can legitimately be built from self-initiated concept projects covering a range of realistic client use cases: a product showcase, a brand mascot/avatar introduction, a short narrative ad, and a social-media-style talking-avatar clip — together, this range demonstrates versatility across the most common types of paid AI video work, rather than only proving you can do one narrow thing well. Organizing your portfolio by use case (rather than just a single undifferentiated reel) also makes it far easier for a potential client to immediately see themselves in your previous work.',
+              'For your assignment, using everything built across this course\'s modules (prompts, shot lists, character bibles, sound planning), produce a written production plan for one complete demo project — pick one use case (product showcase, avatar introduction, or narrative ad), and write the full set of deliverables: script, shot list, prompts, sound plan, and a one-sentence description of the finished piece — this plan is the direct blueprint for the actual demo reel piece you would produce next.',
+            ],
+            keyTakeaways: [
+              'A tight, 60-90 second demo reel showcasing your strongest work is the most persuasive asset for landing AI video clients.',
+              'A portfolio spanning multiple realistic use cases (product, avatar, narrative ad) demonstrates versatility better than one narrow reel.',
+              'Organizing a portfolio by use case helps potential clients immediately see themselves in your previous work.',
+            ],
+          },
+          {
+            id: 'cvm-m10-l2',
+            title: 'Pricing and Pitching AI Video Services',
+            content: [
+              'AI video services can realistically be priced and sold across several common deliverables: short social media ads or product videos (typically the fastest, most in-demand entry point for new clients), branded avatar creation and ongoing avatar-driven content (an attractive recurring/retainer service, since a consistent avatar requires regular new content), and full narrative short-form pieces for brands or creators wanting something more cinematic than a typical social ad. Pricing should reflect the value delivered (a usable, polished ad a client can run immediately) rather than the time spent generating, since AI tools have made production dramatically faster than traditional filming — undervaluing your work purely based on how quickly AI lets you produce it is a common, avoidable beginner mistake.',
+              'When pitching, lead with the demo reel and a specific, relevant example from your portfolio matching the client\'s exact use case (show them an avatar example if they need an avatar, a product ad example if they need a product ad) rather than a generic showreel — specificity in a pitch dramatically increases conversion compared to a one-size-fits-all approach, since it lets the client immediately picture their own project in your established style. A simple, confident pitch structure works well: state the specific deliverable you can produce, reference a relevant portfolio example, name a realistic turnaround time, and propose a clear price for a defined first project.',
+              'For your final assignment in this course, write a complete pitch (4-5 sentences) for one specific AI video service from this lesson, referencing a specific (even hypothetical, for now) portfolio piece matching that service, with a realistic turnaround time and price — then identify three real businesses, creators, or platforms you could realistically send this exact pitch to this month. Completing the modules in this course built the capability; sending that first pitch is what turns it into actual income.',
+            ],
+            keyTakeaways: [
+              'Social ads, branded avatar content, and cinematic narrative pieces are the main sellable AI video service categories, each with different pricing dynamics.',
+              'Pricing should reflect the value delivered to the client, not just how quickly AI tools let you produce the work.',
+              'A specific pitch referencing a relevant portfolio example converts far better than a generic, one-size-fits-all showreel pitch.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cvm-m10-quiz',
+          questions: [
+            {
+              id: 'cvm-m10-q1',
+              question: 'What is described as the most persuasive asset for landing AI video clients?',
+              options: [
+                'A long written resume with no video examples',
+                'A tight, curated demo reel showcasing your strongest work',
+                'A list of software you own',
+                'Nothing — clients never care about previous work',
+              ],
+              correctIndex: 1,
+              explanation: 'A demo reel lets clients quickly see actual capability, which is more persuasive than a written description.',
+            },
+            {
+              id: 'cvm-m10-q2',
+              question: 'What does this lesson say pricing should reflect?',
+              options: [
+                'Only the amount of time spent generating the content',
+                'The value delivered to the client, not just how quickly AI tools made production',
+                'Pricing should always be as low as possible regardless of value',
+                'Pricing has no real basis and should be random',
+              ],
+              correctIndex: 1,
+              explanation: 'Value-based pricing avoids undervaluing work simply because AI accelerated production speed.',
+            },
+            {
+              id: 'cvm-m10-q3',
+              question: 'Why does a specific pitch referencing a relevant portfolio example convert better than a generic pitch?',
+              options: [
+                'It does not convert better — generic pitches always perform the same',
+                'It lets the client immediately picture their own project in your established style',
+                'Specific pitches are illegal in some markets',
+                'Clients never read pitches regardless of specificity',
+              ],
+              correctIndex: 1,
+              explanation: 'Matching the example to the client\'s exact need makes the pitch immediately relevant and credible.',
+            },
+          ],
+        },
+      },
+    ],
+  },
 ];
 module.exports = { COURSES };
