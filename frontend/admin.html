@@ -82,6 +82,7 @@
                         <th class="px-4 py-3">Premium</th>
                         <th class="px-4 py-3">Lessons Completed</th>
                         <th class="px-4 py-3">Joined</th>
+                        <th class="px-4 py-3"></th>
                     </tr>
                 </thead>
                 <tbody id="usersBody"></tbody>
@@ -264,6 +265,37 @@
             }
         }
 
+        let courseCatalogPromise = null;
+
+        async function getCourseCatalog() {
+            if (courseCatalogPromise) return courseCatalogPromise;
+            courseCatalogPromise = (async () => {
+                const courseMap = {};
+                const lessonMap = {};
+                const quizMap = {};
+                try {
+                    const { courses } = await fetch(`${API_BASE_URL}/api/courses`).then((r) => r.json());
+                    for (const summary of courses || []) {
+                        const { course } = await fetch(`${API_BASE_URL}/api/courses/${summary.id}`).then((r) => r.json());
+                        if (!course) continue;
+                        courseMap[course.id] = course.title;
+                        (course.modules || []).forEach((mod) => {
+                            (mod.lessons || []).forEach((lesson) => {
+                                lessonMap[lesson.id] = { title: lesson.title, courseTitle: course.title };
+                            });
+                            if (mod.quiz) {
+                                quizMap[mod.quiz.id] = { title: `${mod.title} Quiz`, courseTitle: course.title };
+                            }
+                        });
+                    }
+                } catch (err) {
+                    // Catalog lookup is best-effort; fall back to raw ids if it fails.
+                }
+                return { courseMap, lessonMap, quizMap };
+            })();
+            return courseCatalogPromise;
+        }
+
         function renderUserRow(user) {
             const tr = document.createElement('tr');
             tr.className = 'border-t';
@@ -278,8 +310,65 @@
                 <td class="px-4 py-3">${user.isPremium ? 'Yes' : 'No'}</td>
                 <td class="px-4 py-3">${lessonsCompleted}</td>
                 <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${new Date(user.createdAt).toLocaleDateString()}</td>
+                <td class="px-4 py-3"></td>
             `;
-            return tr;
+
+            const detailTr = document.createElement('tr');
+            detailTr.className = 'border-t bg-slate-50 hidden';
+            const detailTd = document.createElement('td');
+            detailTd.colSpan = 7;
+            detailTd.className = 'px-4 py-4 text-sm';
+            detailTd.textContent = 'Loading progress…';
+            detailTr.appendChild(detailTd);
+
+            const toggleBtn = document.createElement('button');
+            toggleBtn.textContent = 'View Progress';
+            toggleBtn.className = 'text-[#0A66C2] text-xs font-semibold hover:underline';
+            toggleBtn.addEventListener('click', async () => {
+                const isHidden = detailTr.classList.contains('hidden');
+                if (!isHidden) {
+                    detailTr.classList.add('hidden');
+                    return;
+                }
+                detailTr.classList.remove('hidden');
+                const catalog = await getCourseCatalog();
+                detailTd.innerHTML = renderProgressDetail(user, catalog);
+            });
+            tr.children[6].appendChild(toggleBtn);
+
+            const fragment = document.createDocumentFragment();
+            fragment.appendChild(tr);
+            fragment.appendChild(detailTr);
+            return fragment;
+        }
+
+        function renderProgressDetail(user, catalog) {
+            const progress = user.courseProgress || [];
+            if (progress.length === 0) {
+                return '<span class="text-slate-500">No course activity yet.</span>';
+            }
+            return progress
+                .map((cp) => {
+                    const courseTitle = catalog.courseMap[cp.courseId] || cp.courseId;
+                    const lessons = (cp.completedLessons || [])
+                        .map((id) => escapeHtml(catalog.lessonMap[id]?.title || id))
+                        .join(', ') || 'None yet';
+                    const quizzes = (cp.quizAttempts || [])
+                        .map((qa) => {
+                            const title = escapeHtml(catalog.quizMap[qa.lessonId]?.title || qa.lessonId);
+                            const date = qa.attemptedAt ? new Date(qa.attemptedAt).toLocaleDateString() : '';
+                            return `${title}: ${qa.score}/${qa.total} (${date})`;
+                        })
+                        .join('<br>') || 'No quiz attempts yet';
+                    return `
+                        <div class="mb-3">
+                            <p class="font-semibold mb-1">${escapeHtml(courseTitle)}</p>
+                            <p class="text-slate-600"><strong>Completed lessons:</strong> ${lessons}</p>
+                            <p class="text-slate-600"><strong>Quiz attempts:</strong><br>${quizzes}</p>
+                        </div>
+                    `;
+                })
+                .join('');
         }
 
         function renderSubscriptionRow(sub) {
