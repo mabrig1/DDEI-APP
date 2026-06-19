@@ -182,7 +182,7 @@
                 <h2 class="text-4xl font-semibold tracking-tight mt-2">Unlock the Full Bridge</h2>
                 <p class="text-slate-300 mt-3 max-w-xl mx-auto">AI Portfolio Builder, priority opportunity matching, and 1:1 AI Advisor sessions.</p>
             </div>
-            <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            <div id="premiumPlans" class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                 <div class="bg-white text-slate-900 rounded-3xl p-8">
                     <h3 class="font-semibold text-xl mb-1">Premium Monthly</h3>
                     <p class="text-3xl font-bold mb-4">₦5,000<span class="text-base font-normal text-slate-500">/mo</span></p>
@@ -378,6 +378,32 @@
                 btn.textContent = 'Log In';
                 btn.onclick = () => openAuthModal('login');
             }
+            renderPremiumSection();
+        }
+
+        function renderPremiumSection() {
+            const plans = document.getElementById('premiumPlans');
+            if (!plans) return;
+            const user = authUser();
+            const alreadyPremium = user && (user.isPremium || user.scholarship === 'full');
+            const existingBanner = document.getElementById('premiumActiveBanner');
+            if (!alreadyPremium) {
+                plans.classList.remove('hidden');
+                if (existingBanner) existingBanner.classList.add('hidden');
+                return;
+            }
+            plans.classList.add('hidden');
+            let banner = existingBanner;
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'premiumActiveBanner';
+                banner.className = 'max-w-3xl mx-auto bg-emerald-500/10 border border-emerald-400 text-emerald-300 rounded-3xl p-8 text-center font-semibold';
+                plans.insertAdjacentElement('afterend', banner);
+            }
+            banner.classList.remove('hidden');
+            banner.textContent = user.scholarship === 'full'
+                ? "You're already on a Full Scholarship — every Premium tool is unlocked, free."
+                : "You're already a Premium member — every tool is unlocked.";
         }
 
         async function apiRequest(path, options = {}) {
