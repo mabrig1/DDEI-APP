@@ -2718,6 +2718,724 @@ const COURSES = [
       },
     ],
   },
+
+  // ============================================================
+  // COURSE 5 — Cybersecurity Fundamentals
+  // ============================================================
+  {
+    id: 'cybersecurity-fundamentals',
+    slug: 'cybersecurity-fundamentals',
+    title: 'Cybersecurity Fundamentals: Protect, Detect, and Defend',
+    description:
+      'A complete, hands-on introduction to cybersecurity — from how networks and attackers actually work to passwords, phishing, malware, ethical hacking basics, and the certifications and career paths that can turn this skill into global, remote income.',
+    skillIds: [],
+    category: 'Cybersecurity',
+    estimatedHours: 16,
+    modules: [
+      {
+        id: 'cyb-m1',
+        title: 'Module 1: Why Cybersecurity Matters',
+        lessons: [
+          {
+            id: 'cyb-m1-l1',
+            title: 'The Modern Threat Landscape',
+            content: [
+              'Every business, government, and individual that uses the internet is a potential target — and the cost of getting security wrong is rising every year, from stolen customer data to ransomware payments that can shut a company down overnight. Cybersecurity is the practice of protecting systems, networks, and data from unauthorized access, damage, or theft, and it sits at the intersection of technology, psychology, and risk management, because most successful attacks exploit human behavior just as much as technical flaws.',
+              'Three core principles, often called the CIA triad, anchor almost every security decision: Confidentiality (only authorized people can see the data), Integrity (the data has not been tampered with), and Availability (the data and systems are accessible when needed). A ransomware attack, for example, primarily violates Availability by locking you out of your own files, while a data breach primarily violates Confidentiality by exposing information to people who should never have seen it.',
+              'For Nigerians and Africans entering tech, cybersecurity is one of the fastest-growing, most remote-friendly fields available — companies worldwide are short-staffed on security talent and routinely hire remote analysts, testers, and engineers regardless of location, because the work (monitoring systems, testing defenses, responding to incidents) can be done entirely online. This course builds your foundation from the ground up, with no assumed prior technical background.',
+            ],
+            keyTakeaways: [
+              'Cybersecurity protects systems, networks, and data from unauthorized access, damage, or theft.',
+              'The CIA triad — Confidentiality, Integrity, Availability — frames almost every security decision and attack.',
+              'Cybersecurity is one of the most remote-friendly, globally in-demand tech fields, making it highly accessible from Nigeria.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m1-quiz',
+          questions: [
+            {
+              id: 'cyb-m1-q1',
+              question: 'What do the three letters in the CIA triad stand for?',
+              options: [
+                'Confidentiality, Integrity, Availability',
+                'Computers, Internet, Access',
+                'Control, Identity, Authorization',
+                'Cybersecurity, Information, Assets',
+              ],
+              correctIndex: 0,
+              explanation: 'The CIA triad — Confidentiality, Integrity, Availability — is the foundational model for security goals.',
+            },
+            {
+              id: 'cyb-m1-q2',
+              question: 'A ransomware attack that locks a company out of its own files primarily violates which principle?',
+              options: ['Confidentiality', 'Availability', 'Integrity', 'None of the three'],
+              correctIndex: 1,
+              explanation: 'Locking legitimate users out of their systems/data is primarily an attack on Availability.',
+            },
+            {
+              id: 'cyb-m1-q3',
+              question: 'Why is cybersecurity considered especially accessible to Nigerians entering tech?',
+              options: [
+                'It requires no internet connection',
+                'Much of the work can be done remotely and global demand for security talent far exceeds supply',
+                'It is only available to people with engineering degrees',
+                'It is not a real career field',
+              ],
+              correctIndex: 1,
+              explanation: 'Remote-friendly roles and a global talent shortage make cybersecurity highly accessible regardless of location.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m2',
+        title: 'Module 2: How Networks Actually Work',
+        lessons: [
+          {
+            id: 'cyb-m2-l1',
+            title: 'Networking Foundations for Security',
+            content: [
+              'You cannot defend a network you do not understand, so this lesson builds the minimum networking knowledge every security professional needs. Every device on the internet has an IP address (a numeric identifier, like a postal address for data), and data travels between devices in small packets, each carrying a destination address, a source address, and a piece of the overall message — much like a long letter cut into numbered envelopes and reassembled at the other end.',
+              'The OSI model breaks networking into seven layers, but as a beginner you only need to grasp the practical layers: the Network layer (where IP addresses and routing live), the Transport layer (where TCP and UDP manage how reliably data is delivered), and the Application layer (where the actual programs — web browsers, email clients — operate). Ports act like numbered doors on a device: port 80 is the standard door for unencrypted web traffic, port 443 for encrypted web traffic (HTTPS), and port 22 for secure remote login (SSH) — attackers scan for open, unguarded ports the same way a burglar checks for unlocked doors.',
+              'Firewalls, routers, and switches are the basic infrastructure that controls and directs this traffic: a firewall decides what traffic is allowed in or out based on rules, a router moves data between different networks, and a switch moves data between devices on the same local network. Understanding this flow — device, port, packet, firewall rule — is the lens through which almost every later module (attacks, defenses, tools) will make sense.',
+            ],
+            keyTakeaways: [
+              'Data travels across networks in packets, each tagged with source and destination IP addresses.',
+              'Ports function like numbered doors on a device — port 443 for HTTPS, port 22 for SSH, and so on — and attackers scan for open, unguarded ones.',
+              'Firewalls, routers, and switches form the basic infrastructure that controls how traffic moves and what is allowed through.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m2-quiz',
+          questions: [
+            {
+              id: 'cyb-m2-q1',
+              question: 'What is the main function of an IP address?',
+              options: [
+                'It encrypts all data automatically',
+                'It uniquely identifies a device on a network, like a postal address',
+                'It blocks all incoming traffic',
+                'It only matters for printers',
+              ],
+              correctIndex: 1,
+              explanation: 'IP addresses identify devices on a network so data knows where to go.',
+            },
+            {
+              id: 'cyb-m2-q2',
+              question: 'Which port is the standard for encrypted web traffic (HTTPS)?',
+              options: ['Port 21', 'Port 443', 'Port 25', 'Port 110'],
+              correctIndex: 1,
+              explanation: 'Port 443 is the standard port for HTTPS (encrypted web traffic); port 80 is for unencrypted HTTP.',
+            },
+            {
+              id: 'cyb-m2-q3',
+              question: 'What does a firewall do?',
+              options: [
+                'It physically destroys malware',
+                'It decides what network traffic is allowed in or out based on rules',
+                'It speeds up your internet connection',
+                'It replaces the need for a router',
+              ],
+              correctIndex: 1,
+              explanation: 'A firewall filters traffic according to security rules, allowing or blocking it accordingly.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m3',
+        title: 'Module 3: Malware — Know Your Enemy',
+        lessons: [
+          {
+            id: 'cyb-m3-l1',
+            title: 'Types of Malicious Software',
+            content: [
+              'Malware (malicious software) is any program designed to harm, exploit, or gain unauthorized access to a system, and recognizing the different categories helps you understand both how attacks happen and how to defend against them. Viruses attach themselves to legitimate files and spread when those files are shared or executed; worms are self-replicating and spread across networks without needing a human to click anything; trojans disguise themselves as legitimate software while secretly performing malicious actions in the background.',
+              'Ransomware encrypts a victim\'s files and demands payment (often in cryptocurrency) for the decryption key — one of the most financially destructive malware types for businesses today. Spyware quietly monitors and reports a victim\'s activity (keystrokes, browsing, even camera/microphone access) back to an attacker, while adware floods a system with unwanted advertisements, and rootkits bury themselves deep in a system to hide other malware and resist removal.',
+              'In practice, most malware infections start the same way regardless of type: an unsuspecting user clicks a malicious link, opens an infected attachment, downloads pirated software, or plugs in an infected USB drive. This is why later modules on phishing and social engineering matter just as much as technical defenses — the strongest firewall in the world cannot stop an employee from clicking a convincing fake invoice.',
+            ],
+            keyTakeaways: [
+              'Malware includes viruses, worms, trojans, ransomware, spyware, adware, and rootkits — each with a distinct method of spreading or causing harm.',
+              'Ransomware encrypts files and demands payment for the decryption key, making it especially damaging to businesses.',
+              'Most infections begin with human action — a clicked link, opened attachment, or infected USB — not a purely technical exploit.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m3-quiz',
+          questions: [
+            {
+              id: 'cyb-m3-q1',
+              question: 'What distinguishes a worm from a virus?',
+              options: [
+                'A worm cannot spread at all',
+                'A worm self-replicates and spreads across networks without needing a human to click anything',
+                'A worm only affects printers',
+                'There is no difference',
+              ],
+              correctIndex: 1,
+              explanation: 'Worms spread autonomously across networks, while viruses need a host file to be shared or run.',
+            },
+            {
+              id: 'cyb-m3-q2',
+              question: 'What does ransomware typically do?',
+              options: [
+                'It speeds up your computer',
+                'It encrypts files and demands payment for the decryption key',
+                'It only displays advertisements',
+                'It has no real effect on files',
+              ],
+              correctIndex: 1,
+              explanation: 'Ransomware locks victims out of their own files via encryption until a ransom is paid.',
+            },
+            {
+              id: 'cyb-m3-q3',
+              question: 'What is the most common starting point for a malware infection?',
+              options: [
+                'A purely technical, unavoidable exploit',
+                'Human action, such as clicking a malicious link or opening an infected attachment',
+                'Malware that appears with no cause at all',
+                'Malware can only infect systems without internet access',
+              ],
+              correctIndex: 1,
+              explanation: 'Most infections begin with a human action that a defender could otherwise have prevented through awareness.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m4',
+        title: 'Module 4: Social Engineering & Phishing',
+        lessons: [
+          {
+            id: 'cyb-m4-l1',
+            title: 'Hacking the Human, Not Just the Machine',
+            content: [
+              'Social engineering is the manipulation of human psychology to trick someone into giving up confidential information, access, or money — and it is consistently the single most effective attack technique because it bypasses technology entirely and targets trust, urgency, fear, and authority instead. Phishing, the most common form, uses fake emails, messages, or websites that impersonate a trusted source (a bank, an employer, a delivery company) to trick the victim into clicking a malicious link or entering credentials on a fake login page.',
+              'Variants worth knowing by name include spear phishing (a highly personalized attack targeting one specific person, often using real details scraped from social media), vishing (phishing conducted over a phone call), smishing (phishing via SMS text message), and pretexting (the attacker invents a believable fake scenario — "I\'m calling from IT support" — to extract information or access). Nigerian users are frequent targets of fake bank alert SMS messages and fraudulent job offers, both of which follow the exact same psychological playbook taught in this lesson.',
+              'The reliable defense against social engineering is a simple habit, not a piece of software: always verify the sender through a separate, trusted channel before acting on any urgent request involving money, credentials, or sensitive data. Hover over links before clicking to see the real destination URL, check sender email addresses character by character for subtle misspellings, and treat any message that creates artificial urgency ("act now or your account will be closed") as an immediate red flag.',
+            ],
+            keyTakeaways: [
+              'Social engineering manipulates human psychology and is the single most effective category of cyberattack.',
+              'Phishing, spear phishing, vishing, smishing, and pretexting are the core variants every defender should recognize by name.',
+              'Verifying requests through a separate trusted channel and treating urgency as a red flag are the most reliable human-level defenses.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m4-quiz',
+          questions: [
+            {
+              id: 'cyb-m4-q1',
+              question: 'What does social engineering primarily exploit?',
+              options: [
+                'Hardware failures',
+                'Human psychology — trust, urgency, fear, and authority',
+                'Weak encryption algorithms only',
+                'Outdated operating systems exclusively',
+              ],
+              correctIndex: 1,
+              explanation: 'Social engineering bypasses technical defenses by manipulating human behavior and decision-making.',
+            },
+            {
+              id: 'cyb-m4-q2',
+              question: 'What is "spear phishing"?',
+              options: [
+                'A generic mass email sent to thousands of random people',
+                'A highly personalized phishing attack targeting one specific person',
+                'A type of antivirus software',
+                'A firewall configuration setting',
+              ],
+              correctIndex: 1,
+              explanation: 'Spear phishing is tailored to a specific individual using personal details to increase believability.',
+            },
+            {
+              id: 'cyb-m4-q3',
+              question: 'What is the most reliable defense against social engineering described in this lesson?',
+              options: [
+                'Installing more antivirus software',
+                'Verifying urgent requests through a separate, trusted channel before acting',
+                'Ignoring all emails permanently',
+                'There is no reliable defense',
+              ],
+              correctIndex: 1,
+              explanation: 'Independently verifying a request before acting defeats most social engineering tactics, regardless of how convincing they appear.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m5',
+        title: 'Module 5: Password & Identity Security',
+        lessons: [
+          {
+            id: 'cyb-m5-l1',
+            title: 'Protecting Access to Your Accounts',
+            content: [
+              'Passwords remain the most common — and most commonly broken — line of defense protecting an account. Weak passwords fail in two main ways: they are easy to guess (birthdays, names, "123456", "password") or they are reused across multiple sites, meaning a single breach on one unrelated website can expose your login on every other site where you used the same password. A strong password is long (14+ characters), unique to each account, and ideally randomly generated rather than memorable, since memorable passwords are also the easiest for attackers to guess or crack.',
+              'A password manager (such as Bitwarden, 1Password, or the password manager built into most browsers) solves the practical problem of needing dozens of unique, complex passwords without memorizing them — you remember one strong master password, and the manager generates and recalls the rest. Multi-factor authentication (MFA) adds a second proof of identity beyond the password itself — typically a time-based code from an app like Google Authenticator, or a push notification to your phone — meaning that even if an attacker steals your password, they still cannot log in without also having your phone.',
+              'For anyone serious about security, the priority order is: enable MFA on every account that offers it (email, banking, and social media first), switch to a password manager and let it generate unique passwords for every account, and never reuse a password across more than one service. These three habits alone prevent the overwhelming majority of account takeovers, regardless of how sophisticated the attacker is.',
+            ],
+            keyTakeaways: [
+              'Weak passwords fail by being guessable or reused across multiple sites — a single breach can then compromise many accounts at once.',
+              'Password managers let you use long, unique, randomly generated passwords for every account while only memorizing one master password.',
+              'Multi-factor authentication (MFA) blocks most account takeovers even when a password is stolen, because it requires a second proof of identity.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m5-quiz',
+          questions: [
+            {
+              id: 'cyb-m5-q1',
+              question: 'Why is reusing the same password across multiple sites dangerous?',
+              options: [
+                'It is not actually dangerous',
+                'A breach on one site can expose your login credentials on every other site using that same password',
+                'It makes your password automatically longer',
+                'It only affects the original site',
+              ],
+              correctIndex: 1,
+              explanation: 'Credential reuse means a single breach can cascade into multiple compromised accounts.',
+            },
+            {
+              id: 'cyb-m5-q2',
+              question: 'What problem does a password manager solve?',
+              options: [
+                'It prevents you from ever needing the internet',
+                'It lets you use long, unique passwords for every account without having to memorize them all',
+                'It guarantees you will never be hacked',
+                'It replaces the need for any password at all',
+              ],
+              correctIndex: 1,
+              explanation: 'Password managers generate and recall unique credentials per site, removing the temptation to reuse simple passwords.',
+            },
+            {
+              id: 'cyb-m5-q3',
+              question: 'Why does multi-factor authentication (MFA) stop most account takeovers?',
+              options: [
+                'It makes passwords unnecessary',
+                'It requires a second proof of identity, so a stolen password alone is not enough to log in',
+                'It slows down your internet connection as a side effect',
+                'It has no real security benefit',
+              ],
+              correctIndex: 1,
+              explanation: 'MFA requires something beyond the password (like a phone-based code), blocking access even if the password is compromised.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m6',
+        title: 'Module 6: Cryptography Basics',
+        lessons: [
+          {
+            id: 'cyb-m6-l1',
+            title: 'How Encryption Protects Data',
+            content: [
+              'Cryptography is the practice of scrambling data so that only authorized parties can read it, and it underlies nearly every secure system you use daily — from HTTPS websites to encrypted messaging apps. Encryption transforms readable "plaintext" into unreadable "ciphertext" using a mathematical algorithm and a key; decryption reverses the process, but only for someone who holds the correct key.',
+              'Two broad categories matter at a foundational level: symmetric encryption uses the same key to encrypt and decrypt (fast, but the key must be shared securely between both parties beforehand), while asymmetric encryption uses a public key (which anyone can use to encrypt a message to you) paired with a private key (which only you hold, and which is the only thing that can decrypt it). HTTPS, the padlock icon you see in your browser, relies on asymmetric encryption to securely establish a connection, then switches to faster symmetric encryption for the actual data transfer — combining the strengths of both.',
+              'Hashing is a related but different concept worth distinguishing clearly: a hash is a one-way fingerprint of data (you cannot reverse a hash back into the original data), which is why websites store hashed passwords instead of the actual password — even if a database is stolen, the attacker gets scrambled fingerprints, not your real password. Understanding this distinction between encryption (reversible, with a key) and hashing (irreversible, used for verification) will make every later module on web security and data protection click into place.',
+            ],
+            keyTakeaways: [
+              'Encryption scrambles plaintext into ciphertext using a key, and can be reversed by decryption with the correct key.',
+              'Symmetric encryption uses one shared key; asymmetric encryption uses a public/private key pair, and HTTPS combines both.',
+              'Hashing is a one-way, irreversible fingerprint used to verify data (like stored passwords) without ever storing the original value.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m6-quiz',
+          questions: [
+            {
+              id: 'cyb-m6-q1',
+              question: 'What is the key difference between symmetric and asymmetric encryption?',
+              options: [
+                'Symmetric encryption uses one shared key; asymmetric encryption uses a public/private key pair',
+                'They are identical in every way',
+                'Asymmetric encryption cannot be used for HTTPS',
+                'Symmetric encryption is never used in practice',
+              ],
+              correctIndex: 0,
+              explanation: 'Symmetric encryption relies on one shared key, while asymmetric uses a public key for encryption and a private key for decryption.',
+            },
+            {
+              id: 'cyb-m6-q2',
+              question: 'Why do websites store hashed passwords instead of the actual password?',
+              options: [
+                'Hashing makes passwords load faster',
+                'A hash is a one-way fingerprint, so even a stolen database does not reveal the real password',
+                'Hashing is required by law in every country',
+                'There is no real reason for this practice',
+              ],
+              correctIndex: 1,
+              explanation: 'Hashing is irreversible, so a database breach exposes only scrambled fingerprints, not usable passwords.',
+            },
+            {
+              id: 'cyb-m6-q3',
+              question: 'What does the padlock icon in a browser (HTTPS) rely on to establish a secure connection?',
+              options: [
+                'No encryption at all',
+                'Asymmetric encryption to establish the connection, then symmetric encryption for the data transfer',
+                'A single password shared by all websites',
+                'Hashing alone, with no encryption involved',
+              ],
+              correctIndex: 1,
+              explanation: 'HTTPS uses asymmetric encryption to securely set up the connection, then symmetric encryption for fast ongoing data transfer.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m7',
+        title: 'Module 7: Web Application Security',
+        lessons: [
+          {
+            id: 'cyb-m7-l1',
+            title: 'Common Vulnerabilities in Websites and Apps',
+            content: [
+              'Websites and web apps are among the most attacked targets online, because they are publicly accessible by design and often built quickly without security as a priority. SQL injection is one of the oldest and most damaging vulnerabilities: it happens when an application inserts unfiltered user input directly into a database query, letting an attacker type malicious code into a form field (like a login box) to manipulate the database — potentially extracting an entire user table or bypassing login entirely.',
+              'Cross-Site Scripting (XSS) happens when an attacker injects malicious script into a webpage that other users then unknowingly execute in their own browser — for example, a comment field that does not sanitize input could let an attacker steal other visitors\' session cookies. Cross-Site Request Forgery (CSRF) tricks a logged-in user\'s browser into performing an unwanted action on a site they are authenticated to, by exploiting the fact that browsers automatically attach saved login credentials to requests.',
+              'The common thread across nearly all web vulnerabilities is unvalidated trust in user input — every one of these attacks works because the application trusted data it should have checked first. The practical defense, even for non-developers evaluating a site\'s security, is to look for HTTPS, check whether forms behave oddly when you input unusual characters (without ever testing this on a site you don\'t own or have permission to test), and understand that responsible developers validate and sanitize every piece of input before it touches a database or gets displayed to other users.',
+            ],
+            keyTakeaways: [
+              'SQL injection exploits unfiltered user input to manipulate or extract data directly from a database.',
+              'Cross-Site Scripting (XSS) and Cross-Site Request Forgery (CSRF) both exploit how browsers handle scripts and stored credentials.',
+              'Nearly all web vulnerabilities trace back to one root cause: unvalidated trust in user input.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m7-quiz',
+          questions: [
+            {
+              id: 'cyb-m7-q1',
+              question: 'What is SQL injection?',
+              options: [
+                'A way to speed up a database',
+                'Inserting malicious input into a query to manipulate or extract data from a database',
+                'A type of antivirus software',
+                'A method for encrypting passwords',
+              ],
+              correctIndex: 1,
+              explanation: 'SQL injection exploits unfiltered input to manipulate the underlying database query.',
+            },
+            {
+              id: 'cyb-m7-q2',
+              question: 'What does Cross-Site Scripting (XSS) typically allow an attacker to do?',
+              options: [
+                'Physically access a server',
+                'Inject malicious script that runs in other users\' browsers, potentially stealing session data',
+                'Permanently shut down the internet',
+                'Nothing of consequence',
+              ],
+              correctIndex: 1,
+              explanation: 'XSS lets attackers run malicious scripts in the context of other users\' browser sessions.',
+            },
+            {
+              id: 'cyb-m7-q3',
+              question: 'What is the common root cause behind most web application vulnerabilities described in this lesson?',
+              options: [
+                'Too much encryption',
+                'Unvalidated trust in user input',
+                'Using HTTPS',
+                'Having too many users',
+              ],
+              correctIndex: 1,
+              explanation: 'SQL injection, XSS, and CSRF all stem from applications trusting input they should have validated first.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m8',
+        title: 'Module 8: Network Defense & Security Tools',
+        lessons: [
+          {
+            id: 'cyb-m8-l1',
+            title: 'Building a Layered Defense',
+            content: [
+              'No single tool or control stops every attack, which is why security professionals build "defense in depth" — multiple overlapping layers, so that if one fails, another catches the threat. Firewalls (covered earlier) filter traffic at the network boundary; antivirus and endpoint detection software monitor individual devices for known malware signatures and suspicious behavior; and a VPN (Virtual Private Network) encrypts your internet traffic and masks your real IP address, protecting you especially on public or untrusted Wi-Fi networks.',
+              'Intrusion Detection Systems (IDS) and Intrusion Prevention Systems (IPS) monitor network traffic for suspicious patterns — an IDS alerts a human analyst when something looks wrong, while an IPS can automatically block the suspicious traffic in real time. Security Information and Event Management (SIEM) tools aggregate logs from across an entire organization\'s systems into one place, so analysts can spot patterns across thousands of events that would be invisible looking at any single log alone.',
+              'For a beginner building practical skill, free tools worth learning hands-on include Wireshark (captures and analyzes network traffic packet by packet), Nmap (scans networks to discover devices and open ports), and a virtual lab environment like VirtualBox running a deliberately vulnerable practice machine — always within a legal, isolated lab setup you control, never against systems you do not own or have explicit written permission to test.',
+            ],
+            keyTakeaways: [
+              '"Defense in depth" means layering firewalls, antivirus, VPNs, and monitoring tools so no single point of failure compromises the whole system.',
+              'IDS detects and alerts on suspicious traffic, while IPS can automatically block it in real time.',
+              'Wireshark, Nmap, and an isolated virtual lab are foundational free tools for hands-on practice — always within systems you own or are authorized to test.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m8-quiz',
+          questions: [
+            {
+              id: 'cyb-m8-q1',
+              question: 'What does "defense in depth" mean?',
+              options: [
+                'Relying on a single, very strong security tool',
+                'Layering multiple overlapping security controls so no single failure compromises the whole system',
+                'Ignoring network security entirely',
+                'Only securing physical office doors',
+              ],
+              correctIndex: 1,
+              explanation: 'Defense in depth combines multiple layers of protection so that if one fails, others still provide coverage.',
+            },
+            {
+              id: 'cyb-m8-q2',
+              question: 'What is the difference between an IDS and an IPS?',
+              options: [
+                'They are exactly the same thing',
+                'An IDS alerts analysts to suspicious traffic; an IPS can automatically block it in real time',
+                'An IDS blocks traffic; an IPS only logs it',
+                'Neither tool monitors network traffic',
+              ],
+              correctIndex: 1,
+              explanation: 'IDS is detection/alerting; IPS adds automatic, real-time blocking of detected threats.',
+            },
+            {
+              id: 'cyb-m8-q3',
+              question: 'Where should beginners practice tools like Nmap and Wireshark?',
+              options: [
+                'Against any random public website',
+                'Only within an isolated virtual lab or systems they own/are authorized to test',
+                'Against their employer\'s production servers without permission',
+                'It does not matter where you practice',
+              ],
+              correctIndex: 1,
+              explanation: 'Scanning or testing systems without explicit authorization is illegal — practice must stay within owned or authorized lab environments.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m9',
+        title: 'Module 9: Ethical Hacking & Penetration Testing',
+        lessons: [
+          {
+            id: 'cyb-m9-l1',
+            title: 'Thinking Like an Attacker, Legally',
+            content: [
+              'Ethical hacking means using the same techniques real attackers use, but with explicit written authorization, a defined scope, and the goal of finding and reporting vulnerabilities before a malicious actor does. The legal authorization is non-negotiable: testing any system without documented permission is a crime in virtually every country, regardless of your intentions — the entire profession exists because organizations formally hire testers to do this work safely and legally.',
+              'A typical penetration test follows five phases: Reconnaissance (gathering public information about the target), Scanning (identifying live systems, open ports, and services using tools like Nmap), Exploitation (attempting to actually use a discovered vulnerability to gain access, within the agreed scope), Post-Exploitation (assessing what an attacker could do once inside — escalate privileges, move to other systems, access sensitive data), and Reporting (the most important deliverable — a clear, actionable writeup explaining each vulnerability, its risk level, and exactly how to fix it).',
+              'A bug bounty program is a related, increasingly popular path: companies like those on HackerOne and Bugcrowd publicly invite ethical hackers to find vulnerabilities in their systems in exchange for a cash reward per valid finding, all within clearly published rules of engagement. For a beginner, the realistic entry path is: build foundational skills (Modules 1-8 of this course), practice extensively in legal lab environments (platforms like TryHackMe and HackTheBox offer beginner-friendly, fully legal practice targets), and only then attempt bug bounty programs or pursue a junior penetration testing role.',
+            ],
+            keyTakeaways: [
+              'Ethical hacking requires explicit written authorization and a defined scope — testing without permission is illegal everywhere.',
+              'A penetration test follows five phases: Reconnaissance, Scanning, Exploitation, Post-Exploitation, and Reporting — with Reporting being the most valuable deliverable to the client.',
+              'Legal practice platforms (TryHackTheBox, TryHackMe) and bug bounty programs (HackerOne, Bugcrowd) offer realistic, legitimate paths into the field.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m9-quiz',
+          questions: [
+            {
+              id: 'cyb-m9-q1',
+              question: 'What makes ethical hacking legal, where the same actions by someone else would be a crime?',
+              options: [
+                'Nothing — it is always illegal',
+                'Explicit written authorization and a clearly defined scope from the system owner',
+                'Using a VPN during the test',
+                'Only targeting small companies',
+              ],
+              correctIndex: 1,
+              explanation: 'Documented permission and scope are what legally distinguish ethical hacking from a criminal intrusion.',
+            },
+            {
+              id: 'cyb-m9-q2',
+              question: 'Which phase of a penetration test is described as the most important deliverable to the client?',
+              options: ['Reconnaissance', 'Scanning', 'Reporting', 'Post-Exploitation'],
+              correctIndex: 2,
+              explanation: 'A clear, actionable report explaining vulnerabilities and fixes is what the client actually pays for and acts on.',
+            },
+            {
+              id: 'cyb-m9-q3',
+              question: 'What is a bug bounty program?',
+              options: [
+                'An illegal hacking competition',
+                'A program where companies pay ethical hackers a reward for legally reported, valid vulnerabilities',
+                'A type of malware',
+                'A government surveillance tool',
+              ],
+              correctIndex: 1,
+              explanation: 'Bug bounty programs like those on HackerOne and Bugcrowd reward legitimate, authorized vulnerability reports.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m10',
+        title: 'Module 10: Cloud & Mobile Security',
+        lessons: [
+          {
+            id: 'cyb-m10-l1',
+            title: 'Securing Modern, Distributed Systems',
+            content: [
+              'Most modern businesses run on cloud platforms (AWS, Google Cloud, Microsoft Azure) rather than physical servers, which changes the security model significantly. The "shared responsibility model" is the key concept: the cloud provider secures the underlying infrastructure (physical data centers, hardware, core network), while the customer is responsible for securing what they put on top of it — configuring access permissions correctly, encrypting their own data, and patching their own applications. Most major cloud breaches happen not because the provider failed, but because a customer misconfigured something, such as leaving a storage bucket publicly accessible by mistake.',
+              'Mobile security has its own distinct concerns: apps requesting excessive permissions (a simple flashlight app asking for access to your contacts and location is a red flag), unofficial app stores and sideloaded apps that bypass official security review, and public Wi-Fi networks that can expose unencrypted mobile traffic to anyone else on the same network. Keeping a phone\'s operating system updated, only installing apps from official stores, and reviewing app permissions periodically are simple but effective mobile defenses.',
+              'For Nigerians specifically, mobile banking apps and USSD codes are common attack targets — SIM-swap fraud (where an attacker convinces a mobile carrier to transfer your phone number to their SIM card, then intercepts your one-time passwords) is a real, documented threat. Defenses include using an authenticator app instead of SMS for two-factor codes where possible, setting a PIN with your mobile carrier to prevent unauthorized SIM swaps, and never sharing OTPs (one-time passwords) with anyone, including someone claiming to be from your bank.',
+            ],
+            keyTakeaways: [
+              'The cloud "shared responsibility model" means the provider secures the infrastructure, but the customer must correctly secure their own configuration, data, and access permissions.',
+              'Mobile security risks include excessive app permissions, sideloaded apps, and unencrypted public Wi-Fi traffic.',
+              'SIM-swap fraud is a real, documented threat in Nigeria — authenticator apps, carrier PINs, and never sharing OTPs are key defenses.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m10-quiz',
+          questions: [
+            {
+              id: 'cyb-m10-q1',
+              question: 'In the cloud shared responsibility model, who is typically responsible for configuring access permissions correctly?',
+              options: [
+                'The cloud provider only',
+                'The customer using the cloud service',
+                'Nobody — it configures itself automatically',
+                'A random third party',
+              ],
+              correctIndex: 1,
+              explanation: 'The provider secures the infrastructure; the customer is responsible for their own configuration and data security.',
+            },
+            {
+              id: 'cyb-m10-q2',
+              question: 'What is a red flag regarding mobile app permissions?',
+              options: [
+                'A messaging app requesting access to contacts',
+                'A simple flashlight app requesting access to contacts and location',
+                'A navigation app requesting location access',
+                'There are no red flags with app permissions',
+              ],
+              correctIndex: 1,
+              explanation: 'Apps requesting permissions unrelated to their stated function are a common sign of overreach or malicious intent.',
+            },
+            {
+              id: 'cyb-m10-q3',
+              question: 'What is SIM-swap fraud?',
+              options: [
+                'Physically stealing a SIM card',
+                'Tricking a mobile carrier into transferring a victim\'s phone number to the attacker\'s SIM to intercept OTPs',
+                'A type of antivirus software',
+                'A legitimate banking feature',
+              ],
+              correctIndex: 1,
+              explanation: 'SIM-swap fraud lets attackers intercept one-time passwords by hijacking the victim\'s phone number.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m11',
+        title: 'Module 11: Incident Response & Recovery',
+        lessons: [
+          {
+            id: 'cyb-m11-l1',
+            title: 'What to Do When an Attack Happens',
+            content: [
+              'No defense is perfect, so every organization needs a plan for what happens after an attack succeeds — this is called incident response, and how well it is handled often determines whether a breach is a minor disruption or a business-ending event. The standard incident response lifecycle has six phases: Preparation (having a plan, tools, and trained people ready before anything happens), Identification (recognizing that an incident is actually occurring), Containment (stopping the attack from spreading further, such as isolating an infected device from the network), Eradication (removing the malware or closing the vulnerability that caused the incident), Recovery (safely restoring affected systems to normal operation), and Lessons Learned (documenting what happened and improving defenses to prevent a repeat).',
+              'Speed and discipline matter enormously during containment — disconnecting an infected machine from the network immediately can be the difference between losing one device and losing an entire company\'s data, but acting without a plan can also destroy evidence needed to understand what happened or accidentally tip off an attacker who is still active in the network. This is why "Preparation" is listed first: organizations that have already defined roles, contacts, and step-by-step procedures respond far faster and with far less damage than those improvising in the moment of a crisis.',
+              'For an individual (not just an organization), a personal incident response plan is just as valuable: know in advance which numbers to call if your bank card or phone is compromised, keep backups of important files completely separate from your main device (so ransomware on your laptop cannot also encrypt your backup), and change passwords immediately and from a different, trusted device if you suspect any account has been compromised — never from the potentially compromised device itself.',
+            ],
+            keyTakeaways: [
+              'The incident response lifecycle has six phases: Preparation, Identification, Containment, Eradication, Recovery, and Lessons Learned.',
+              'Fast, disciplined containment limits damage, but acting without a plan can destroy evidence or alert an attacker still active in the network.',
+              'Individuals benefit from their own informal incident response plan — known emergency contacts, separate backups, and changing passwords from a trusted, separate device.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m11-quiz',
+          questions: [
+            {
+              id: 'cyb-m11-q1',
+              question: 'Which phase of incident response comes first, before any incident even occurs?',
+              options: ['Recovery', 'Preparation', 'Eradication', 'Containment'],
+              correctIndex: 1,
+              explanation: 'Preparation — having plans, tools, and trained people ready in advance — is the foundation of effective incident response.',
+            },
+            {
+              id: 'cyb-m11-q2',
+              question: 'What does "Containment" aim to achieve during an incident?',
+              options: [
+                'Permanently delete all company data',
+                'Stop the attack from spreading further, such as isolating an infected device',
+                'Document lessons learned after the fact',
+                'Restore normal operations immediately without any other steps',
+              ],
+              correctIndex: 1,
+              explanation: 'Containment focuses on limiting the spread and impact of an ongoing incident.',
+            },
+            {
+              id: 'cyb-m11-q3',
+              question: 'Why should backups be kept separate from your main device?',
+              options: [
+                'It has no real benefit',
+                'So ransomware on the main device cannot also encrypt or destroy the backup',
+                'Separate backups are required by law',
+                'It makes your main device run faster',
+              ],
+              correctIndex: 1,
+              explanation: 'Keeping backups isolated prevents a single ransomware infection from destroying both the original and backup copies.',
+            },
+          ],
+        },
+      },
+      {
+        id: 'cyb-m12',
+        title: 'Module 12: Careers, Certifications, and Your Next 90 Days',
+        lessons: [
+          {
+            id: 'cyb-m12-l1',
+            title: 'Turning This Course Into a Career',
+            content: [
+              'Cybersecurity offers multiple realistic entry-level roles for someone who has completed a foundational course like this one: a Security Operations Center (SOC) Analyst monitors alerts and logs for suspicious activity around the clock; a Penetration Tester (building on Module 9) is hired to legally attack systems and report vulnerabilities; a GRC (Governance, Risk, and Compliance) Analyst focuses on policies, audits, and regulatory requirements rather than hands-on technical attacks; and a Security Awareness Trainer teaches employees at organizations to recognize phishing and social engineering, directly applying Module 4.',
+              'Industry-recognized certifications can accelerate hiring even without a four-year degree: CompTIA Security+ is the most common entry-level certification employers screen for; Certified Ethical Hacker (CEH) focuses specifically on offensive security skills; and for those leaning toward hands-on penetration testing, the OSCP (Offensive Security Certified Professional) is widely respected, though more advanced and typically pursued after some practical experience. Free practice platforms like TryHackMe and HackTheBox let you build real, demonstrable skills (and a portfolio of completed challenges) well before you can afford any paid certification exam.',
+              'For your 90-day roadmap: in Days 1-30, complete this course fully, set up a free TryHackMe or HackTheBox account, and complete at least five beginner-level rooms or challenges; in Days 31-60, study toward CompTIA Security+ using free or low-cost resources, and start documenting your practice work publicly (a simple blog or LinkedIn posts about what you are learning builds visibility with recruiters); in Days 61-90, take the Security+ exam if ready, apply to entry-level SOC analyst or security internship roles (many are remote-friendly), and continue building your practice platform portfolio as ongoing proof of skill. This course is a foundation, not a finish line — the field rewards continuous, hands-on learning far more than any single credential.',
+            ],
+            keyTakeaways: [
+              'Entry-level cybersecurity roles include SOC Analyst, Penetration Tester, GRC Analyst, and Security Awareness Trainer — each building on different modules of this course.',
+              'CompTIA Security+ is the most common entry-level certification, with CEH and OSCP as respected paths for more offensive-security-focused careers.',
+              'A 90-day roadmap of course completion, hands-on practice (TryHackMe/HackTheBox), certification study, and public skill documentation is a realistic path into the field.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cyb-m12-quiz',
+          questions: [
+            {
+              id: 'cyb-m12-q1',
+              question: 'Which role focuses on monitoring alerts and logs for suspicious activity?',
+              options: ['GRC Analyst', 'SOC Analyst', 'Security Awareness Trainer', 'None of these'],
+              correctIndex: 1,
+              explanation: 'A Security Operations Center (SOC) Analyst is responsible for ongoing monitoring and alert triage.',
+            },
+            {
+              id: 'cyb-m12-q2',
+              question: 'Which certification is described as the most common entry-level credential employers screen for?',
+              options: ['OSCP', 'CompTIA Security+', 'A university PhD', 'There is no common entry-level certification'],
+              correctIndex: 1,
+              explanation: 'CompTIA Security+ is widely recognized as a standard entry-level cybersecurity certification.',
+            },
+            {
+              id: 'cyb-m12-q3',
+              question: 'What is recommended for Days 1-30 of the 90-day roadmap?',
+              options: [
+                'Immediately apply for senior security roles',
+                'Complete this course, set up a free practice platform account, and complete beginner challenges',
+                'Take the OSCP exam first',
+                'Wait without taking any action',
+              ],
+              correctIndex: 1,
+              explanation: 'The roadmap starts with finishing the foundational course and beginning hands-on practice before pursuing certifications or jobs.',
+            },
+          ],
+        },
+      },
+    ],
+  },
 ];
 
 module.exports = { COURSES };
