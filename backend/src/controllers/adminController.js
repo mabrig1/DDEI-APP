@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const Application = require('../models/Application');
+const User = require('../models/User');
+const Subscription = require('../models/Subscription');
 
 const APPLICATION_STATUSES = ['pending', 'reviewing', 'accepted', 'rejected'];
 
@@ -47,4 +49,22 @@ async function updateApplicationStatus(req, res) {
   res.json({ application });
 }
 
-module.exports = { login, listApplications, updateApplicationStatus };
+async function listUsers(req, res) {
+  const users = await User.find().sort({ createdAt: -1 });
+  res.json({ users });
+}
+
+async function listSubscriptions(req, res) {
+  const subscriptions = await Subscription.find()
+    .populate('user', 'name email')
+    .sort({ createdAt: -1 });
+  res.json({ subscriptions });
+}
+
+module.exports = {
+  login,
+  listApplications,
+  updateApplicationStatus,
+  listUsers,
+  listSubscriptions,
+};

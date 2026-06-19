@@ -41,12 +41,19 @@
     <!-- Dashboard -->
     <div id="dashboard" class="hidden max-w-screen-xl mx-auto px-6 py-10">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="font-display text-2xl">Applications</h1>
+            <div class="flex items-center gap-x-2" id="tabBar">
+                <button data-tab="applications" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Applications</button>
+                <button data-tab="users" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Users</button>
+                <button data-tab="subscriptions" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Payments</button>
+            </div>
             <button id="refreshBtn" class="px-4 py-2 text-sm font-semibold border rounded-xl hover:bg-slate-50">Refresh</button>
         </div>
-        <div id="applicationsEmpty" class="hidden bg-white border rounded-3xl p-10 text-center text-slate-500">No applications yet.</div>
-        <div id="applicationsError" class="hidden text-red-600 text-sm mb-4"></div>
-        <div class="bg-white border rounded-3xl overflow-x-auto">
+
+        <div id="genericEmpty" class="hidden bg-white border rounded-3xl p-10 text-center text-slate-500"></div>
+        <div id="genericError" class="hidden text-red-600 text-sm mb-4"></div>
+
+        <!-- Applications tab -->
+        <div id="tab-applications" class="tab-panel bg-white border rounded-3xl overflow-x-auto">
             <table class="w-full text-sm text-left">
                 <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
                     <tr>
@@ -61,6 +68,40 @@
                     </tr>
                 </thead>
                 <tbody id="applicationsBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Users tab -->
+        <div id="tab-users" class="tab-panel hidden bg-white border rounded-3xl overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
+                    <tr>
+                        <th class="px-4 py-3">Name</th>
+                        <th class="px-4 py-3">Email</th>
+                        <th class="px-4 py-3">Track</th>
+                        <th class="px-4 py-3">Premium</th>
+                        <th class="px-4 py-3">Lessons Completed</th>
+                        <th class="px-4 py-3">Joined</th>
+                    </tr>
+                </thead>
+                <tbody id="usersBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Subscriptions tab -->
+        <div id="tab-subscriptions" class="tab-panel hidden bg-white border rounded-3xl overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
+                    <tr>
+                        <th class="px-4 py-3">User</th>
+                        <th class="px-4 py-3">Plan</th>
+                        <th class="px-4 py-3">Amount</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Reference</th>
+                        <th class="px-4 py-3">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="subscriptionsBody"></tbody>
             </table>
         </div>
     </div>
@@ -86,7 +127,7 @@
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('dashboard').classList.remove('hidden');
             document.getElementById('logoutBtn').classList.remove('hidden');
-            loadApplications();
+            switchTab(currentTab);
         }
 
         function showLogin() {
@@ -119,37 +160,143 @@
             showLogin();
         });
 
-        document.getElementById('refreshBtn').addEventListener('click', loadApplications);
+        let currentTab = 'applications';
+        const TABS = {
+            applications: { load: loadApplications },
+            users: { load: loadUsers },
+            subscriptions: { load: loadSubscriptions },
+        };
+
+        document.querySelectorAll('.tab-btn').forEach((btn) => {
+            btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach((btn) => {
+                const active = btn.dataset.tab === tab;
+                btn.classList.toggle('bg-[#0A66C2]', active);
+                btn.classList.toggle('text-white', active);
+                btn.classList.toggle('border', !active);
+                btn.classList.toggle('text-slate-600', !active);
+            });
+            document.querySelectorAll('.tab-panel').forEach((panel) => {
+                panel.classList.toggle('hidden', panel.id !== `tab-${tab}`);
+            });
+            TABS[tab].load();
+        }
+
+        document.getElementById('refreshBtn').addEventListener('click', () => TABS[currentTab].load());
 
         const STATUS_OPTIONS = ['pending', 'reviewing', 'accepted', 'rejected'];
 
-        async function loadApplications() {
-            const errorEl = document.getElementById('applicationsError');
-            const emptyEl = document.getElementById('applicationsEmpty');
-            const body = document.getElementById('applicationsBody');
+        function resetListUI() {
+            const errorEl = document.getElementById('genericError');
+            const emptyEl = document.getElementById('genericEmpty');
             errorEl.classList.add('hidden');
             emptyEl.classList.add('hidden');
+            return { errorEl, emptyEl };
+        }
+
+        function handleListError(err, errorEl) {
+            errorEl.textContent = err.message;
+            errorEl.classList.remove('hidden');
+            if (err.message === 'Invalid or expired token' || err.message === 'Authentication required') {
+                clearAdminToken();
+                showLogin();
+            }
+        }
+
+        async function loadApplications() {
+            const { errorEl, emptyEl } = resetListUI();
+            const body = document.getElementById('applicationsBody');
             body.innerHTML = '';
 
             try {
                 const data = await adminRequest('/api/admin/applications');
                 const applications = data.applications || [];
                 if (applications.length === 0) {
+                    emptyEl.textContent = 'No applications yet.';
                     emptyEl.classList.remove('hidden');
                     return;
                 }
-                applications.forEach((app) => body.appendChild(renderRow(app)));
+                applications.forEach((app) => body.appendChild(renderApplicationRow(app)));
             } catch (err) {
-                errorEl.textContent = err.message;
-                errorEl.classList.remove('hidden');
-                if (err.message === 'Invalid or expired token' || err.message === 'Authentication required') {
-                    clearAdminToken();
-                    showLogin();
-                }
+                handleListError(err, errorEl);
             }
         }
 
-        function renderRow(app) {
+        async function loadUsers() {
+            const { errorEl, emptyEl } = resetListUI();
+            const body = document.getElementById('usersBody');
+            body.innerHTML = '';
+
+            try {
+                const data = await adminRequest('/api/admin/users');
+                const users = data.users || [];
+                if (users.length === 0) {
+                    emptyEl.textContent = 'No registered users yet.';
+                    emptyEl.classList.remove('hidden');
+                    return;
+                }
+                users.forEach((user) => body.appendChild(renderUserRow(user)));
+            } catch (err) {
+                handleListError(err, errorEl);
+            }
+        }
+
+        async function loadSubscriptions() {
+            const { errorEl, emptyEl } = resetListUI();
+            const body = document.getElementById('subscriptionsBody');
+            body.innerHTML = '';
+
+            try {
+                const data = await adminRequest('/api/admin/subscriptions');
+                const subscriptions = data.subscriptions || [];
+                if (subscriptions.length === 0) {
+                    emptyEl.textContent = 'No payments yet.';
+                    emptyEl.classList.remove('hidden');
+                    return;
+                }
+                subscriptions.forEach((sub) => body.appendChild(renderSubscriptionRow(sub)));
+            } catch (err) {
+                handleListError(err, errorEl);
+            }
+        }
+
+        function renderUserRow(user) {
+            const tr = document.createElement('tr');
+            tr.className = 'border-t';
+            const lessonsCompleted = (user.courseProgress || []).reduce(
+                (sum, cp) => sum + (cp.completedLessons || []).length,
+                0
+            );
+            tr.innerHTML = `
+                <td class="px-4 py-3 font-medium">${escapeHtml(user.name)}</td>
+                <td class="px-4 py-3 text-slate-500">${escapeHtml(user.email)}</td>
+                <td class="px-4 py-3">${escapeHtml(user.track || '—')}</td>
+                <td class="px-4 py-3">${user.isPremium ? 'Yes' : 'No'}</td>
+                <td class="px-4 py-3">${lessonsCompleted}</td>
+                <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${new Date(user.createdAt).toLocaleDateString()}</td>
+            `;
+            return tr;
+        }
+
+        function renderSubscriptionRow(sub) {
+            const tr = document.createElement('tr');
+            tr.className = 'border-t';
+            tr.innerHTML = `
+                <td class="px-4 py-3 font-medium">${escapeHtml(sub.user ? sub.user.name : 'Unknown')}<br><span class="text-slate-500 text-xs">${escapeHtml(sub.user ? sub.user.email : '')}</span></td>
+                <td class="px-4 py-3">${escapeHtml(sub.plan)}</td>
+                <td class="px-4 py-3">${escapeHtml(String(sub.amount))} ${escapeHtml(sub.currency)}</td>
+                <td class="px-4 py-3">${escapeHtml(sub.status)}</td>
+                <td class="px-4 py-3 text-slate-500">${escapeHtml(sub.reference)}</td>
+                <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${new Date(sub.createdAt).toLocaleDateString()}</td>
+            `;
+            return tr;
+        }
+
+        function renderApplicationRow(app) {
             const tr = document.createElement('tr');
             tr.className = 'border-t';
 
