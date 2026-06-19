@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Destiny Skills Bridge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <nav class="bg-white border-b">
+        <div class="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-[#0A66C2] rounded-2xl flex items-center justify-center">
+                    <span class="text-white font-bold text-2xl">DS</span>
+                </div>
+                <span class="font-display text-xl font-semibold tracking-tighter">Admin Dashboard</span>
+            </div>
+            <button id="logoutBtn" class="hidden px-4 py-2 text-sm font-semibold border rounded-xl hover:bg-slate-50">Log Out</button>
+        </div>
+    </nav>
+
+    <!-- Login screen -->
+    <div id="loginScreen" class="max-w-sm mx-auto mt-24 bg-white border rounded-3xl p-8">
+        <h1 class="font-display text-2xl mb-1">Admin Login</h1>
+        <p class="text-slate-500 text-sm mb-6">Sign in to manage applications.</p>
+        <form id="loginForm">
+            <label class="block text-sm font-medium mb-1">Username</label>
+            <input id="loginUsername" type="text" required class="w-full border rounded-xl px-4 py-2 mb-4" autocomplete="username">
+            <label class="block text-sm font-medium mb-1">Password</label>
+            <input id="loginPassword" type="password" required class="w-full border rounded-xl px-4 py-2 mb-4" autocomplete="current-password">
+            <p id="loginError" class="text-red-600 text-sm mb-4 hidden"></p>
+            <button type="submit" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Log In</button>
+        </form>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="hidden max-w-screen-xl mx-auto px-6 py-10">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="font-display text-2xl">Applications</h1>
+            <button id="refreshBtn" class="px-4 py-2 text-sm font-semibold border rounded-xl hover:bg-slate-50">Refresh</button>
+        </div>
+        <div id="applicationsEmpty" class="hidden bg-white border rounded-3xl p-10 text-center text-slate-500">No applications yet.</div>
+        <div id="applicationsError" class="hidden text-red-600 text-sm mb-4"></div>
+        <div class="bg-white border rounded-3xl overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
+                    <tr>
+                        <th class="px-4 py-3">Name</th>
+                        <th class="px-4 py-3">Contact</th>
+                        <th class="px-4 py-3">Country</th>
+                        <th class="px-4 py-3">Track</th>
+                        <th class="px-4 py-3">Tier</th>
+                        <th class="px-4 py-3">Why they want to join</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Applied</th>
+                    </tr>
+                </thead>
+                <tbody id="applicationsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.DSB_API_BASE_URL || 'http://localhost:5000';
+
+        function adminToken() { return localStorage.getItem('dsb_admin_token'); }
+        function setAdminToken(token) { localStorage.setItem('dsb_admin_token', token); }
+        function clearAdminToken() { localStorage.removeItem('dsb_admin_token'); }
+
+        async function adminRequest(path, options = {}) {
+            const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
+            const token = adminToken();
+            if (token) headers.Authorization = `Bearer ${token}`;
+            const response = await fetch(`${API_BASE_URL}${path}`, Object.assign({}, options, { headers }));
+            const data = await response.json().catch(() => ({}));
+            if (!response.ok) throw new Error(data.message || 'Request failed');
+            return data;
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('dashboard').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+            loadApplications();
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('dashboard').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+            errorEl.classList.add('hidden');
+            try {
+                const data = await adminRequest('/api/admin/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password }),
+                });
+                setAdminToken(data.token);
+                showDashboard();
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            clearAdminToken();
+            showLogin();
+        });
+
+        document.getElementById('refreshBtn').addEventListener('click', loadApplications);
+
+        const STATUS_OPTIONS = ['pending', 'reviewing', 'accepted', 'rejected'];
+
+        async function loadApplications() {
+            const errorEl = document.getElementById('applicationsError');
+            const emptyEl = document.getElementById('applicationsEmpty');
+            const body = document.getElementById('applicationsBody');
+            errorEl.classList.add('hidden');
+            emptyEl.classList.add('hidden');
+            body.innerHTML = '';
+
+            try {
+                const data = await adminRequest('/api/admin/applications');
+                const applications = data.applications || [];
+                if (applications.length === 0) {
+                    emptyEl.classList.remove('hidden');
+                    return;
+                }
+                applications.forEach((app) => body.appendChild(renderRow(app)));
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+                if (err.message === 'Invalid or expired token' || err.message === 'Authentication required') {
+                    clearAdminToken();
+                    showLogin();
+                }
+            }
+        }
+
+        function renderRow(app) {
+            const tr = document.createElement('tr');
+            tr.className = 'border-t';
+
+            const select = document.createElement('select');
+            select.className = 'border rounded-lg px-2 py-1 text-xs';
+            STATUS_OPTIONS.forEach((status) => {
+                const opt = document.createElement('option');
+                opt.value = status;
+                opt.textContent = status;
+                if (status === app.status) opt.selected = true;
+                select.appendChild(opt);
+            });
+            select.addEventListener('change', async () => {
+                select.disabled = true;
+                try {
+                    await adminRequest(`/api/admin/applications/${app._id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ status: select.value }),
+                    });
+                } catch (err) {
+                    alert(`Failed to update status: ${err.message}`);
+                    select.value = app.status;
+                } finally {
+                    select.disabled = false;
+                }
+            });
+
+            tr.innerHTML = `
+                <td class="px-4 py-3 font-medium">${escapeHtml(app.fullName)}</td>
+                <td class="px-4 py-3 text-slate-500">${escapeHtml(app.email)}<br>${escapeHtml(app.phone)}</td>
+                <td class="px-4 py-3">${escapeHtml(app.country)}</td>
+                <td class="px-4 py-3">${escapeHtml(app.track)}</td>
+                <td class="px-4 py-3">${escapeHtml(app.tier)}</td>
+                <td class="px-4 py-3 max-w-xs text-slate-500">${escapeHtml(app.motivation)}</td>
+                <td class="px-4 py-3"></td>
+                <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${new Date(app.createdAt).toLocaleDateString()}</td>
+            `;
+            tr.children[6].appendChild(select);
+            return tr;
+        }
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value == null ? '' : String(value);
+            return div.innerHTML;
+        }
+
+        if (adminToken()) {
+            showDashboard();
+        } else {
+            showLogin();
+        }
+    </script>
+</body>
+</html>

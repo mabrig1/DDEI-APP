@@ -1,4 +1,5 @@
 const Application = require('../models/Application');
+const { sendApplicationNotification } = require('../utils/mailer');
 
 async function createApplication(req, res) {
   const { fullName, email, phone, country, track, tier, motivation } = req.body;
@@ -17,6 +18,8 @@ async function createApplication(req, res) {
     tier,
     motivation,
   });
+
+  await sendApplicationNotification(application);
 
   res.status(201).json({ application });
 }
