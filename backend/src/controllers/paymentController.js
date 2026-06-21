@@ -6,8 +6,8 @@ const User = require('../models/User');
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 
 const PLANS = {
-  'premium-monthly': { amountNGN: 5000, label: 'Premium Monthly' },
-  'premium-yearly': { amountNGN: 50000, label: 'Premium Yearly' },
+  'premium-monthly': { amountNGN: 2000, label: 'Premium Monthly' },
+  'premium-yearly': { amountNGN: 24000, label: 'Premium Yearly' },
 };
 
 function paystackClient() {
