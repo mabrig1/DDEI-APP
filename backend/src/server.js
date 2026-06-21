@@ -13,6 +13,7 @@ const opportunityRoutes = require('./routes/opportunityRoutes');
 const portfolioRoutes = require('./routes/portfolioRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const contentRoutes = require('./routes/contentRoutes');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/api/opportunities', opportunityRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/content', contentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

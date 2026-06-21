@@ -45,8 +45,10 @@
                 <button data-tab="applications" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Applications</button>
                 <button data-tab="users" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Users</button>
                 <button data-tab="subscriptions" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Payments</button>
+                <button data-tab="content" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Pages &amp; Posts</button>
             </div>
             <div class="flex items-center gap-x-2">
+                <button id="newContentBtn" class="hidden px-4 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-xl hover:opacity-90">+ New Page/Post</button>
                 <button id="fullAccessBtn" class="px-4 py-2 text-sm font-semibold bg-[#0A66C2] text-white rounded-xl hover:opacity-90">Full App Access</button>
                 <button id="refreshBtn" class="px-4 py-2 text-sm font-semibold border rounded-xl hover:bg-slate-50">Refresh</button>
             </div>
@@ -110,6 +112,74 @@
                 <tbody id="subscriptionsBody"></tbody>
             </table>
         </div>
+
+        <!-- Pages & Posts tab -->
+        <div id="tab-content" class="tab-panel hidden bg-white border rounded-3xl overflow-x-auto">
+            <table class="w-full text-sm text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
+                    <tr>
+                        <th class="px-4 py-3">Title</th>
+                        <th class="px-4 py-3">Type</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Slug</th>
+                        <th class="px-4 py-3">Updated</th>
+                        <th class="px-4 py-3"></th>
+                    </tr>
+                </thead>
+                <tbody id="contentBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Content editor modal -->
+    <div id="contentModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h2 id="contentModalTitle" class="font-display text-xl">New Page/Post</h2>
+                <button id="contentModalCloseBtn" class="text-slate-400 hover:text-slate-700">&times;</button>
+            </div>
+            <form id="contentForm">
+                <label class="block text-sm font-medium mb-1">Title</label>
+                <input id="contentTitleInput" type="text" required class="w-full border rounded-xl px-4 py-2 mb-4">
+
+                <label class="block text-sm font-medium mb-1">Slug</label>
+                <input id="contentSlugInput" type="text" class="w-full border rounded-xl px-4 py-2 mb-4" placeholder="Auto-generated from title">
+
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Type</label>
+                        <select id="contentTypeInput" class="w-full border rounded-xl px-4 py-2">
+                            <option value="page">Page</option>
+                            <option value="post">Post</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Status</label>
+                        <select id="contentStatusInput" class="w-full border rounded-xl px-4 py-2">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label class="block text-sm font-medium mb-1">Excerpt</label>
+                <textarea id="contentExcerptInput" rows="2" class="w-full border rounded-xl px-4 py-2 mb-4"></textarea>
+
+                <label class="block text-sm font-medium mb-1">Featured Image URL</label>
+                <input id="contentImageInput" type="text" class="w-full border rounded-xl px-4 py-2 mb-4" placeholder="https://...">
+
+                <label class="block text-sm font-medium mb-1">Body (HTML)</label>
+                <textarea id="contentBodyInput" rows="10" required class="w-full border rounded-xl px-4 py-2 mb-4 font-mono text-xs"></textarea>
+
+                <p id="contentFormError" class="text-red-600 text-sm mb-4 hidden"></p>
+
+                <div class="flex items-center justify-between">
+                    <button id="contentDeleteBtn" type="button" class="hidden text-red-600 text-sm font-semibold hover:underline">Delete</button>
+                    <div class="flex-1"></div>
+                    <button id="contentSaveBtn" type="submit" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -171,6 +241,7 @@
             applications: { load: loadApplications },
             users: { load: loadUsers },
             subscriptions: { load: loadSubscriptions },
+            content: { load: loadContent },
         };
 
         document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -189,6 +260,7 @@
             document.querySelectorAll('.tab-panel').forEach((panel) => {
                 panel.classList.toggle('hidden', panel.id !== `tab-${tab}`);
             });
+            document.getElementById('newContentBtn').classList.toggle('hidden', tab !== 'content');
             TABS[tab].load();
         }
 
@@ -283,6 +355,132 @@
                 handleListError(err, errorEl);
             }
         }
+
+        async function loadContent() {
+            const { errorEl, emptyEl } = resetListUI();
+            const body = document.getElementById('contentBody');
+            body.innerHTML = '';
+
+            try {
+                const data = await adminRequest('/api/content/admin/all');
+                const items = data.content || [];
+                if (items.length === 0) {
+                    emptyEl.textContent = 'No pages or posts yet.';
+                    emptyEl.classList.remove('hidden');
+                    return;
+                }
+                items.forEach((item) => body.appendChild(renderContentRow(item)));
+            } catch (err) {
+                handleListError(err, errorEl);
+            }
+        }
+
+        function renderContentRow(item) {
+            const tr = document.createElement('tr');
+            tr.className = 'border-t';
+            tr.innerHTML = `
+                <td class="px-4 py-3 font-medium">${escapeHtml(item.title)}</td>
+                <td class="px-4 py-3 capitalize">${escapeHtml(item.type)}</td>
+                <td class="px-4 py-3 capitalize">${escapeHtml(item.status)}</td>
+                <td class="px-4 py-3 text-slate-500">${escapeHtml(item.slug)}</td>
+                <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${new Date(item.updatedAt).toLocaleDateString()}</td>
+                <td class="px-4 py-3"></td>
+            `;
+            const editBtn = document.createElement('button');
+            editBtn.textContent = 'Edit';
+            editBtn.className = 'text-[#0A66C2] text-xs font-semibold hover:underline';
+            editBtn.addEventListener('click', () => openContentModal(item));
+            tr.children[5].appendChild(editBtn);
+            return tr;
+        }
+
+        let editingContentId = null;
+        let contentSlugTouched = false;
+
+        function openContentModal(item) {
+            editingContentId = item ? item._id : null;
+            contentSlugTouched = false;
+            document.getElementById('contentModalTitle').textContent = item ? 'Edit Page/Post' : 'New Page/Post';
+            document.getElementById('contentTitleInput').value = item ? item.title : '';
+            document.getElementById('contentSlugInput').value = item ? item.slug : '';
+            document.getElementById('contentTypeInput').value = item ? item.type : 'page';
+            document.getElementById('contentStatusInput').value = item ? item.status : 'draft';
+            document.getElementById('contentExcerptInput').value = item ? item.excerpt || '' : '';
+            document.getElementById('contentImageInput').value = item ? item.featuredImageUrl || '' : '';
+            document.getElementById('contentBodyInput').value = item ? item.body : '';
+            document.getElementById('contentFormError').classList.add('hidden');
+            document.getElementById('contentDeleteBtn').classList.toggle('hidden', !item);
+            document.getElementById('contentModal').classList.remove('hidden');
+        }
+
+        function closeContentModal() {
+            document.getElementById('contentModal').classList.add('hidden');
+        }
+
+        document.getElementById('newContentBtn').addEventListener('click', () => openContentModal(null));
+        document.getElementById('contentModalCloseBtn').addEventListener('click', closeContentModal);
+
+        document.getElementById('contentSlugInput').addEventListener('input', () => {
+            contentSlugTouched = true;
+        });
+        document.getElementById('contentTitleInput').addEventListener('input', (e) => {
+            if (!contentSlugTouched && !editingContentId) {
+                document.getElementById('contentSlugInput').value = e.target.value
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9]+/g, '-')
+                    .replace(/^-+|-+$/g, '');
+            }
+        });
+
+        document.getElementById('contentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorEl = document.getElementById('contentFormError');
+            errorEl.classList.add('hidden');
+            const payload = {
+                title: document.getElementById('contentTitleInput').value.trim(),
+                slug: document.getElementById('contentSlugInput').value.trim(),
+                type: document.getElementById('contentTypeInput').value,
+                status: document.getElementById('contentStatusInput').value,
+                excerpt: document.getElementById('contentExcerptInput').value,
+                featuredImageUrl: document.getElementById('contentImageInput').value.trim(),
+                body: document.getElementById('contentBodyInput').value,
+            };
+            const saveBtn = document.getElementById('contentSaveBtn');
+            saveBtn.disabled = true;
+            try {
+                if (editingContentId) {
+                    await adminRequest(`/api/content/admin/${editingContentId}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify(payload),
+                    });
+                } else {
+                    await adminRequest('/api/content/admin', {
+                        method: 'POST',
+                        body: JSON.stringify(payload),
+                    });
+                }
+                closeContentModal();
+                loadContent();
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+            } finally {
+                saveBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('contentDeleteBtn').addEventListener('click', async () => {
+            if (!editingContentId) return;
+            if (!confirm('Delete this page/post? This cannot be undone.')) return;
+            try {
+                await adminRequest(`/api/content/admin/${editingContentId}`, { method: 'DELETE' });
+                closeContentModal();
+                loadContent();
+            } catch (err) {
+                alert(`Failed to delete: ${err.message}`);
+            }
+        });
 
         let courseCatalogPromise = null;
 

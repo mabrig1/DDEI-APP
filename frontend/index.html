@@ -37,6 +37,7 @@
                 <a href="#courses" class="text-slate-600 hover:text-slate-900">Courses</a>
                 <a href="#earn-online" class="text-slate-600 hover:text-slate-900">Earn Now</a>
                 <a href="#opportunities" class="text-slate-600 hover:text-slate-900">Opportunities</a>
+                <a href="#blog" class="text-slate-600 hover:text-slate-900">Blog</a>
                 <a href="#premium" class="text-slate-600 hover:text-slate-900">Premium</a>
                 <a href="#ai" class="text-slate-600 hover:text-slate-900">AI Advisor</a>
             </div>
@@ -319,6 +320,28 @@
         <div id="opportunityList" class="grid md:grid-cols-3 gap-6"></div>
     </div>
 
+    <!-- Blog -->
+    <div id="blog" class="max-w-screen-xl mx-auto px-6 py-16">
+        <div id="blogListView">
+            <div class="text-center mb-10">
+                <span class="text-[#0A66C2] font-semibold text-sm tracking-widest">FROM THE BLOG</span>
+                <h2 class="text-4xl font-semibold tracking-tight mt-2">Tips, Guides &amp; Updates</h2>
+                <p class="text-slate-600 mt-3 max-w-xl mx-auto">Fresh advice on skills, freelancing, and earning online — no account needed to read.</p>
+            </div>
+            <div id="blogList" class="grid md:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div id="contentView" class="hidden max-w-2xl mx-auto">
+            <button onclick="closeContentView()" class="mb-6 text-sm font-semibold text-[#0A66C2] flex items-center gap-x-2">
+                <i class="fa-solid fa-arrow-left"></i> Back
+            </button>
+            <img id="contentViewImage" class="hidden w-full rounded-3xl mb-6" alt="">
+            <h1 id="contentViewTitle" class="text-3xl font-semibold tracking-tight mb-2"></h1>
+            <p id="contentViewDate" class="text-slate-400 text-sm mb-8"></p>
+            <div id="contentViewBody" class="prose max-w-none text-slate-700 leading-relaxed"></div>
+        </div>
+    </div>
+
     <!-- Premium / Payments -->
     <div id="premium" class="bg-slate-900 text-white py-16">
         <div class="max-w-screen-xl mx-auto px-6">
@@ -389,6 +412,7 @@
 
     <!-- Footer -->
     <footer class="bg-white border-t py-10 text-center text-sm text-slate-500">
+        <div id="footerPageLinks" class="flex items-center justify-center gap-x-6 mb-4"></div>
         © 2026 Destiny Skills Bridge. Bridging African youth to global opportunity.
     </footer>
 
@@ -627,6 +651,101 @@
 
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = value == null ? '' : String(value);
+            return div.innerHTML;
+        }
+
+        function blogCardHTML(item) {
+            const image = item.featuredImageUrl
+                ? `<img src="${escapeHtml(item.featuredImageUrl)}" class="w-full h-40 object-cover rounded-2xl mb-4" alt="">`
+                : '';
+            const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : '';
+            return `
+                <a href="?content=${encodeURIComponent(item.slug)}" onclick="return openContentBySlug('${escapeHtml(item.slug)}', event)"
+                   class="bg-white border rounded-3xl p-6 flex flex-col hover:shadow-lg transition">
+                    ${image}
+                    <span class="text-xs text-slate-400 mb-1">${date}</span>
+                    <h4 class="font-semibold text-base mb-2">${escapeHtml(item.title)}</h4>
+                    <p class="text-sm text-slate-500 flex-grow">${escapeHtml(item.excerpt || '')}</p>
+                    <span class="mt-4 text-sm font-semibold text-[#0A66C2]">Read More &rarr;</span>
+                </a>`;
+        }
+
+        async function loadBlogPosts() {
+            const container = document.getElementById('blogList');
+            try {
+                const data = await apiRequest('/api/content?type=post');
+                const posts = data.content || [];
+                container.innerHTML = posts.length
+                    ? posts.map(blogCardHTML).join('')
+                    : '<p class="text-slate-400 col-span-3 text-center text-sm">New posts are on the way — check back soon.</p>';
+            } catch (err) {
+                container.innerHTML = '<p class="text-slate-400 col-span-3 text-center text-sm">Posts will appear here once connected to the backend.</p>';
+            }
+        }
+
+        function openContentBySlug(slug, event) {
+            if (event) event.preventDefault();
+            const url = new URL(window.location.href);
+            url.searchParams.set('content', slug);
+            window.history.pushState({}, '', url);
+            showContentBySlug(slug);
+            return false;
+        }
+
+        async function showContentBySlug(slug) {
+            try {
+                const data = await apiRequest(`/api/content/${encodeURIComponent(slug)}`);
+                const item = data.content;
+                document.getElementById('blogListView').classList.add('hidden');
+                const imageEl = document.getElementById('contentViewImage');
+                if (item.featuredImageUrl) {
+                    imageEl.src = item.featuredImageUrl;
+                    imageEl.classList.remove('hidden');
+                } else {
+                    imageEl.classList.add('hidden');
+                }
+                document.getElementById('contentViewTitle').textContent = item.title;
+                document.getElementById('contentViewDate').textContent = item.publishedAt
+                    ? new Date(item.publishedAt).toLocaleDateString()
+                    : '';
+                document.getElementById('contentViewBody').innerHTML = item.body;
+                const contentView = document.getElementById('contentView');
+                contentView.classList.remove('hidden');
+                contentView.scrollIntoView({ behavior: 'smooth' });
+            } catch (err) {
+                closeContentView();
+            }
+        }
+
+        function closeContentView() {
+            document.getElementById('contentView').classList.add('hidden');
+            document.getElementById('blogListView').classList.remove('hidden');
+            const url = new URL(window.location.href);
+            url.searchParams.delete('content');
+            window.history.pushState({}, '', url);
+        }
+
+        function hydrateContentFromQuery() {
+            const slug = new URLSearchParams(window.location.search).get('content');
+            if (slug) showContentBySlug(slug);
+        }
+
+        async function loadFooterPages() {
+            const container = document.getElementById('footerPageLinks');
+            try {
+                const data = await apiRequest('/api/content?type=page');
+                const pages = data.content || [];
+                container.innerHTML = pages
+                    .map((p) => `<a href="?content=${encodeURIComponent(p.slug)}" onclick="return openContentBySlug('${escapeHtml(p.slug)}', event)" class="hover:text-slate-800 hover:underline">${escapeHtml(p.title)}</a>`)
+                    .join('');
+            } catch (err) {
+                container.innerHTML = '';
+            }
+        }
 
         function openAuthModal(mode) {
             authMode = mode;
@@ -1210,6 +1329,9 @@
         loadSkills();
         loadOpportunities();
         loadCourses();
+        loadBlogPosts();
+        loadFooterPages();
+        hydrateContentFromQuery();
         hydrateAdminAccess();
         appendChatMessage('advisor', "Hi, I'm your Destiny Skills Bridge AI Advisor. Ask me which skill to learn, how much you could earn, or how to build your portfolio.");
     </script>
