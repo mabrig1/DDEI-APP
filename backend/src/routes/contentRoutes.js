@@ -8,15 +8,15 @@ const {
   updateContent,
   deleteContent,
 } = require('../controllers/contentController');
-const { requireAdmin } = require('../middleware/adminAuth');
+const { requireContentWriteAccess } = require('../middleware/contentAccess');
 
 const router = express.Router();
 
-router.get('/admin/all', requireAdmin, listAdmin);
-router.get('/admin/:id', requireAdmin, getAdminById);
-router.post('/admin', requireAdmin, createContent);
-router.patch('/admin/:id', requireAdmin, updateContent);
-router.delete('/admin/:id', requireAdmin, deleteContent);
+router.get('/admin/all', requireContentWriteAccess, listAdmin);
+router.get('/admin/:id', requireContentWriteAccess, getAdminById);
+router.post('/admin', requireContentWriteAccess, createContent);
+router.patch('/admin/:id', requireContentWriteAccess, updateContent);
+router.delete('/admin/:id', requireContentWriteAccess, deleteContent);
 
 router.get('/', listPublic);
 router.get('/:slug', getPublicBySlug);
