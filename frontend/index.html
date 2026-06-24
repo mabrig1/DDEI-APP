@@ -792,8 +792,16 @@
                     openChooseCourseModal();
                 }
             } catch (err) {
-                errorEl.textContent = err.message;
-                errorEl.classList.remove('hidden');
+                if (authMode === 'register' && err.status === 409) {
+                    authMode = 'login';
+                    applyAuthMode();
+                    errorEl.textContent = 'You already have an account with this email — enter your password to log in.';
+                    errorEl.classList.remove('hidden');
+                    document.getElementById('authPassword').focus();
+                } else {
+                    errorEl.textContent = err.message;
+                    errorEl.classList.remove('hidden');
+                }
             }
             return false;
         }
