@@ -56,4 +56,31 @@ async function sendScholarshipEmail(application, level, tempPassword) {
   }
 }
 
-module.exports = { sendApplicationNotification, sendScholarshipEmail };
+async function sendPasswordResetEmail(user, resetUrl) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn(`RESEND_API_KEY not set — skipping password reset email. Reset URL for ${user.email}: ${resetUrl}`);
+    return;
+  }
+
+  try {
+    await axios.post(
+      'https://api.resend.com/emails',
+      {
+        from: 'Destiny Skills Bridge <onboarding@resend.dev>',
+        to: [user.email],
+        subject: 'Reset your Destiny Skills Bridge password',
+        html: `
+          <p>Hi ${user.name},</p>
+          <p>We received a request to reset your Destiny Skills Bridge password. Click below to choose a new one:</p>
+          <p><a href="${resetUrl}" style="display:inline-block;background:#0A66C2;color:#fff;padding:12px 24px;border-radius:12px;text-decoration:none;font-weight:600;">Reset my password</a></p>
+          <p>This link expires in 1 hour. If you didn't request this, you can safely ignore this email — your password will stay the same.</p>
+        `,
+      },
+      { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }
+    );
+  } catch (err) {
+    console.error('Failed to send password reset email:', err.response?.data || err.message);
+  }
+}
+
+module.exports = { sendApplicationNotification, sendScholarshipEmail, sendPasswordResetEmail };

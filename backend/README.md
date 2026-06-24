@@ -28,6 +28,8 @@ npm run dev
 ### Auth
 - `POST /api/auth/register` — `{ name, email, password, track? }` → `{ token, user }`
 - `POST /api/auth/login` — `{ email, password }` → `{ token, user }`
+- `POST /api/auth/forgot-password` — `{ email }` → `{ message }`; if the email matches an account, emails a reset link (`FRONTEND_URL` + `?resetToken=...`). Always returns the same response so the endpoint can't be used to discover registered emails.
+- `POST /api/auth/reset-password` — `{ token, password }` → `{ token, user }`; the reset token expires after 1 hour and is single-use.
 - `GET /api/auth/me` — requires `Authorization: Bearer <token>` → `{ user }`
 
 ### Skills & Opportunities

@@ -47,6 +47,8 @@ const userSchema = new mongoose.Schema(
     scholarship: { type: String, enum: ['none', 'limited', 'full'], default: 'none' },
     portfolio: { type: portfolioSchema, default: null },
     courseProgress: { type: [courseProgressSchema], default: [] },
+    resetPasswordToken: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
   },
   { timestamps: true }
 );
