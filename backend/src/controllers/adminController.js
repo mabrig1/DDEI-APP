@@ -85,6 +85,26 @@ async function setUserPremium(req, res) {
   res.json({ user });
 }
 
+async function setUserPassword(req, res) {
+  const { password } = req.body;
+
+  if (!password || password.length < 6) {
+    return res.status(400).json({ message: 'Password must be at least 6 characters' });
+  }
+
+  const user = await User.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' });
+  }
+
+  user.password = password;
+  user.resetPasswordToken = null;
+  user.resetPasswordExpires = null;
+  await user.save();
+
+  res.json({ user });
+}
+
 async function grantScholarship(req, res) {
   const { level } = req.body;
 
@@ -166,6 +186,7 @@ module.exports = {
   listUsers,
   listSubscriptions,
   setUserPremium,
+  setUserPassword,
   grantScholarship,
   createAccessLink,
 };

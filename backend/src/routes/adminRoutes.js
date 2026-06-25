@@ -6,6 +6,7 @@ const {
   listUsers,
   listSubscriptions,
   setUserPremium,
+  setUserPassword,
   grantScholarship,
   createAccessLink,
 } = require('../controllers/adminController');
@@ -19,6 +20,7 @@ router.patch('/applications/:id', requireAdmin, updateApplicationStatus);
 router.patch('/applications/:id/scholarship', requireAdmin, grantScholarship);
 router.get('/users', requireAdmin, listUsers);
 router.patch('/users/:id/premium', requireAdmin, setUserPremium);
+router.patch('/users/:id/password', requireAdmin, setUserPassword);
 router.get('/subscriptions', requireAdmin, listSubscriptions);
 router.post('/access-link', requireAdmin, createAccessLink);
 
