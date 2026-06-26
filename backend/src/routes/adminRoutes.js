@@ -9,6 +9,8 @@ const {
   setUserPassword,
   grantScholarship,
   createAccessLink,
+  messageUser,
+  broadcastMessage,
 } = require('../controllers/adminController');
 const { requireAdmin } = require('../middleware/adminAuth');
 
@@ -23,5 +25,7 @@ router.patch('/users/:id/premium', requireAdmin, setUserPremium);
 router.patch('/users/:id/password', requireAdmin, setUserPassword);
 router.get('/subscriptions', requireAdmin, listSubscriptions);
 router.post('/access-link', requireAdmin, createAccessLink);
+router.post('/users/:id/message', requireAdmin, messageUser);
+router.post('/broadcast', requireAdmin, broadcastMessage);
 
 module.exports = router;

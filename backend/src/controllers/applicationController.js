@@ -37,9 +37,13 @@ async function createApplication(req, res) {
           return res.status(409).json({ message: 'An account with this email already exists. Log in first, then submit your application.' });
         }
         user = existing;
+        if (!user.phone && phone) {
+          user.phone = phone;
+          await user.save();
+        }
       } else {
         const trialExpiresAt = new Date(Date.now() + TRIAL_DURATION_MS);
-        user = await User.create({ name: fullName, email, password, track, trialExpiresAt });
+        user = await User.create({ name: fullName, email, password, phone, track, trialExpiresAt });
       }
       userId = user._id;
       token = signToken(user);

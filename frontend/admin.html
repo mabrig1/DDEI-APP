@@ -49,6 +49,7 @@
             </div>
             <div class="flex items-center gap-x-2">
                 <button id="newContentBtn" class="hidden px-4 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-xl hover:opacity-90">+ New Page/Post</button>
+                <button id="broadcastBtn" class="px-4 py-2 text-sm font-semibold border rounded-xl hover:bg-slate-50">Broadcast Message</button>
                 <button id="fullAccessBtn" class="px-4 py-2 text-sm font-semibold bg-[#0A66C2] text-white rounded-xl hover:opacity-90">Full App Access</button>
                 <button id="refreshBtn" class="px-4 py-2 text-sm font-semibold border rounded-xl hover:bg-slate-50">Refresh</button>
             </div>
@@ -182,6 +183,58 @@
         </div>
     </div>
 
+    <!-- Message modal -->
+    <div id="messageModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl p-8 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <h2 id="messageModalTitle" class="font-display text-xl">Send Message</h2>
+                <button id="messageModalCloseBtn" type="button" class="text-slate-400 hover:text-slate-700">&times;</button>
+            </div>
+            <form id="messageForm">
+                <p id="messageRecipientLabel" class="mb-4 text-sm text-slate-600"></p>
+
+                <div id="messageAudienceField" class="hidden mb-4">
+                    <label class="block text-sm font-medium mb-1">Audience</label>
+                    <select id="messageAudienceInput" class="w-full border rounded-xl px-4 py-2">
+                        <option value="all">All users</option>
+                        <option value="trial">Trial users</option>
+                        <option value="premium">Premium users</option>
+                        <option value="scholarship">Scholarship users</option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Channel</label>
+                    <div class="flex items-center gap-x-6">
+                        <label class="flex items-center gap-x-2 text-sm">
+                            <input type="radio" name="messageChannel" value="email" checked> Email
+                        </label>
+                        <label class="flex items-center gap-x-2 text-sm">
+                            <input type="radio" name="messageChannel" value="whatsapp"> WhatsApp
+                        </label>
+                    </div>
+                </div>
+
+                <div id="messageSubjectField" class="mb-4">
+                    <label class="block text-sm font-medium mb-1">Subject</label>
+                    <input id="messageSubjectInput" type="text" class="w-full border rounded-xl px-4 py-2">
+                </div>
+
+                <label class="block text-sm font-medium mb-1">Message</label>
+                <textarea id="messageBodyInput" rows="6" required class="w-full border rounded-xl px-4 py-2 mb-4"></textarea>
+
+                <p id="messageFormError" class="text-red-600 text-sm mb-4 hidden"></p>
+                <p id="messageFormSuccess" class="text-emerald-600 text-sm mb-4 hidden"></p>
+
+                <div id="whatsappRecipientList" class="hidden mb-4 max-h-48 overflow-y-auto border rounded-xl p-3 text-sm space-y-2"></div>
+
+                <div class="flex items-center justify-end">
+                    <button id="messageSendBtn" type="submit" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const API_BASE_URL = window.DSB_API_BASE_URL || 'http://localhost:5000';
 
@@ -277,6 +330,119 @@
                 alert(`Could not generate access link: ${err.message}`);
             } finally {
                 btn.disabled = false;
+            }
+        });
+
+        let messageMode = 'single';
+        let messageTargetUser = null;
+
+        function updateMessageSubjectVisibility() {
+            const channel = document.querySelector('input[name="messageChannel"]:checked').value;
+            document.getElementById('messageSubjectField').classList.toggle('hidden', channel === 'whatsapp');
+        }
+
+        function openMessageModal(mode, user) {
+            messageMode = mode;
+            messageTargetUser = user || null;
+            document.getElementById('messageModalTitle').textContent =
+                mode === 'broadcast' ? 'Broadcast Message' : `Message ${user.name}`;
+            document.getElementById('messageRecipientLabel').textContent =
+                mode === 'broadcast' ? '' : `To: ${user.name} (${user.email})`;
+            document.getElementById('messageAudienceField').classList.toggle('hidden', mode !== 'broadcast');
+            document.getElementById('messageForm').reset();
+            document.getElementById('messageFormError').classList.add('hidden');
+            document.getElementById('messageFormSuccess').classList.add('hidden');
+            const listEl = document.getElementById('whatsappRecipientList');
+            listEl.classList.add('hidden');
+            listEl.innerHTML = '';
+            updateMessageSubjectVisibility();
+            document.getElementById('messageModal').classList.remove('hidden');
+        }
+
+        function closeMessageModal() {
+            document.getElementById('messageModal').classList.add('hidden');
+        }
+
+        document.querySelectorAll('input[name="messageChannel"]').forEach((radio) => {
+            radio.addEventListener('change', updateMessageSubjectVisibility);
+        });
+
+        document.getElementById('messageModalCloseBtn').addEventListener('click', closeMessageModal);
+        document.getElementById('broadcastBtn').addEventListener('click', () => openMessageModal('broadcast', null));
+
+        document.getElementById('messageForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const errorEl = document.getElementById('messageFormError');
+            const successEl = document.getElementById('messageFormSuccess');
+            const listEl = document.getElementById('whatsappRecipientList');
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+            listEl.classList.add('hidden');
+            listEl.innerHTML = '';
+
+            const channel = document.querySelector('input[name="messageChannel"]:checked').value;
+            const subject = document.getElementById('messageSubjectInput').value.trim();
+            const message = document.getElementById('messageBodyInput').value.trim();
+
+            if (!message) {
+                errorEl.textContent = 'Message is required.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+            if (channel === 'email' && !subject) {
+                errorEl.textContent = 'Subject is required for email.';
+                errorEl.classList.remove('hidden');
+                return;
+            }
+
+            const sendBtn = document.getElementById('messageSendBtn');
+            sendBtn.disabled = true;
+
+            try {
+                if (messageMode === 'single') {
+                    const data = await adminRequest(`/api/admin/users/${messageTargetUser._id}/message`, {
+                        method: 'POST',
+                        body: JSON.stringify({ channel, subject, message }),
+                    });
+                    if (channel === 'email') {
+                        successEl.textContent = 'Email sent.';
+                    } else {
+                        window.open(data.whatsappLink, '_blank');
+                        successEl.textContent = 'WhatsApp opened in a new tab — click send there to deliver the message.';
+                    }
+                    successEl.classList.remove('hidden');
+                } else {
+                    const audience = document.getElementById('messageAudienceInput').value;
+                    const data = await adminRequest('/api/admin/broadcast', {
+                        method: 'POST',
+                        body: JSON.stringify({ channel, subject, message, audience }),
+                    });
+                    if (channel === 'email') {
+                        successEl.textContent = `Sent to ${data.sent} of ${data.total} recipient(s)${data.failed ? ` (${data.failed} failed)` : ''}.`;
+                        successEl.classList.remove('hidden');
+                    } else {
+                        const recipients = data.recipients || [];
+                        if (recipients.length === 0) {
+                            successEl.textContent = `No recipients with a phone number on file (${data.skipped} skipped).`;
+                            successEl.classList.remove('hidden');
+                        } else {
+                            successEl.textContent = `${recipients.length} recipient(s) ready${data.skipped ? ` (${data.skipped} skipped — no phone on file)` : ''}. Click each link below to open WhatsApp and send.`;
+                            successEl.classList.remove('hidden');
+                            listEl.innerHTML = recipients
+                                .map(
+                                    (r) =>
+                                        `<div><a href="${r.whatsappLink}" target="_blank" class="text-[#0A66C2] hover:underline">${escapeHtml(r.name)} (${escapeHtml(r.email)})</a></div>`
+                                )
+                                .join('');
+                            listEl.classList.remove('hidden');
+                        }
+                    }
+                }
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+            } finally {
+                sendBtn.disabled = false;
             }
         });
 
@@ -618,6 +784,12 @@
                 }
             });
 
+            const messageBtn = document.createElement('button');
+            messageBtn.textContent = 'Message';
+            messageBtn.className = 'text-xs font-semibold text-[#0A66C2] hover:underline mr-3';
+            messageBtn.addEventListener('click', () => openMessageModal('single', user));
+
+            tr.children[7].appendChild(messageBtn);
             tr.children[7].appendChild(setPasswordBtn);
             tr.children[7].appendChild(toggleBtn);
 

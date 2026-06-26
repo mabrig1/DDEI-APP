@@ -83,4 +83,38 @@ async function sendPasswordResetEmail(user, resetUrl) {
   }
 }
 
-module.exports = { sendApplicationNotification, sendScholarshipEmail, sendPasswordResetEmail };
+async function sendCustomEmail(to, subject, message) {
+  if (!process.env.RESEND_API_KEY) {
+    return { ok: false, error: 'Email sending is not configured (RESEND_API_KEY is unset).' };
+  }
+
+  const html = `<p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>`;
+
+  try {
+    await axios.post(
+      'https://api.resend.com/emails',
+      {
+        from: 'Destiny Skills Bridge <onboarding@resend.dev>',
+        to: [to],
+        subject,
+        html,
+      },
+      { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }
+    );
+    return { ok: true };
+  } catch (err) {
+    console.error('Failed to send custom email:', err.response?.data || err.message);
+    return { ok: false, error: err.response?.data?.message || err.message };
+  }
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+module.exports = { sendApplicationNotification, sendScholarshipEmail, sendPasswordResetEmail, sendCustomEmail };
