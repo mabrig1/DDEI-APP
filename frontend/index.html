@@ -425,6 +425,33 @@
         <i class="fa-brands fa-whatsapp text-2xl"></i>
     </a>
 
+    <!-- Help Bot widget -->
+    <button id="helpBotToggleBtn" onclick="toggleHelpBot()"
+            class="fixed bottom-24 right-6 z-40 w-14 h-14 bg-[#0A66C2] text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform"
+            title="Ask a question about Destiny Skills Bridge">
+        <i id="helpBotToggleIcon" class="fa-solid fa-comment-dots text-2xl"></i>
+    </button>
+
+    <div id="helpBotPanel" class="hidden fixed bottom-40 right-6 z-40 w-[22rem] max-w-[90vw] bg-white border rounded-3xl shadow-2xl overflow-hidden">
+        <div class="bg-[#0A66C2] text-white px-5 py-4 flex items-center justify-between">
+            <div>
+                <p class="font-display font-semibold leading-tight">Ask Us Anything</p>
+                <p class="text-xs text-white/80">We'll help you understand the platform</p>
+            </div>
+            <button onclick="toggleHelpBot()" class="text-white/80 hover:text-white">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div id="helpBotMessages" class="chat-scroll h-72 overflow-y-auto p-4 space-y-3"></div>
+        <form id="helpBotForm" class="flex items-center gap-x-2 border-t p-3" onsubmit="return handleHelpBotSubmit(event)">
+            <input id="helpBotInput" type="text" placeholder="e.g. How much does it cost?"
+                   class="flex-1 border rounded-2xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]">
+            <button type="submit" class="w-10 h-10 bg-[#0A66C2] text-white rounded-2xl flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-paper-plane text-sm"></i>
+            </button>
+        </form>
+    </div>
+
     <!-- Auth Modal -->
     <div id="authModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center px-4">
         <div class="bg-white rounded-3xl p-8 max-w-md w-full relative">
@@ -1134,6 +1161,62 @@
                     return false;
                 }
                 appendChatMessage('advisor', "I'm having trouble connecting right now — please make sure the backend API is running and try again.");
+            }
+            return false;
+        }
+
+        let helpBotOpened = false;
+        const helpBotHistory = [];
+
+        function appendHelpBotMessage(role, text) {
+            const container = document.getElementById('helpBotMessages');
+            const bubble = document.createElement('div');
+            bubble.className = role === 'user' ? 'flex justify-end' : 'flex justify-start';
+            bubble.innerHTML = `
+                <div class="${role === 'user' ? 'bg-[#0A66C2] text-white' : 'bg-slate-100 text-slate-800'} rounded-2xl px-4 py-2.5 max-w-[85%] text-sm">
+                    ${escapeHtml(text)}
+                </div>`;
+            container.appendChild(bubble);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function toggleHelpBot() {
+            const panel = document.getElementById('helpBotPanel');
+            const icon = document.getElementById('helpBotToggleIcon');
+            const opening = panel.classList.contains('hidden');
+            panel.classList.toggle('hidden');
+            icon.className = opening ? 'fa-solid fa-xmark text-2xl' : 'fa-solid fa-comment-dots text-2xl';
+            if (opening) {
+                document.getElementById('helpBotInput').focus();
+                if (!helpBotOpened) {
+                    helpBotOpened = true;
+                    appendHelpBotMessage(
+                        'bot',
+                        "Hi! I'm here to help you understand Destiny Skills Bridge. Ask me about our skill tracks, pricing, the free trial, scholarships, or how to apply."
+                    );
+                }
+            }
+        }
+
+        async function handleHelpBotSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('helpBotInput');
+            const message = input.value.trim();
+            if (!message) return false;
+
+            appendHelpBotMessage('user', message);
+            helpBotHistory.push({ role: 'user', message });
+            input.value = '';
+
+            try {
+                const data = await apiRequest('/api/help/chat', {
+                    method: 'POST',
+                    body: JSON.stringify({ message, history: helpBotHistory }),
+                });
+                appendHelpBotMessage('bot', data.reply);
+                helpBotHistory.push({ role: 'bot', message: data.reply });
+            } catch (err) {
+                appendHelpBotMessage('bot', "I'm having trouble connecting right now — please try again, or message us on WhatsApp.");
             }
             return false;
         }
