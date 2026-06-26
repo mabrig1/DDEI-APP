@@ -40,6 +40,20 @@
 
     <!-- Dashboard -->
     <div id="dashboard" class="hidden max-w-screen-xl mx-auto px-6 py-10">
+        <div class="bg-white border rounded-3xl p-6 mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="font-display text-lg">Service Status Update</h2>
+                <p id="serviceUpdateMeta" class="text-xs text-slate-400">No update posted yet.</p>
+            </div>
+            <form id="serviceUpdateForm" class="flex items-center gap-x-3">
+                <input id="serviceUpdateInput" type="text" required
+                       placeholder="e.g. All systems operational. New scholarship applications now open."
+                       class="flex-1 border rounded-xl px-4 py-2 text-sm">
+                <button type="submit" class="px-5 py-2.5 text-sm font-semibold bg-[#0A66C2] text-white rounded-xl hover:opacity-90 flex-shrink-0">Post Update</button>
+            </form>
+            <p id="serviceUpdateError" class="text-red-600 text-sm mt-2 hidden"></p>
+        </div>
+
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-x-2" id="tabBar">
                 <button data-tab="applications" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Applications</button>
@@ -257,7 +271,48 @@
             document.getElementById('dashboard').classList.remove('hidden');
             document.getElementById('logoutBtn').classList.remove('hidden');
             switchTab(currentTab);
+            loadServiceUpdate();
         }
+
+        async function loadServiceUpdate() {
+            const metaEl = document.getElementById('serviceUpdateMeta');
+            try {
+                const data = await adminRequest('/api/admin/service-update');
+                if (data.update) {
+                    document.getElementById('serviceUpdateInput').value = data.update.message;
+                    metaEl.textContent = `Last updated: ${new Date(data.update.updatedAt).toLocaleString()}`;
+                } else {
+                    metaEl.textContent = 'No update posted yet.';
+                }
+            } catch (err) {
+                metaEl.textContent = '';
+            }
+        }
+
+        document.getElementById('serviceUpdateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const input = document.getElementById('serviceUpdateInput');
+            const errorEl = document.getElementById('serviceUpdateError');
+            const metaEl = document.getElementById('serviceUpdateMeta');
+            errorEl.classList.add('hidden');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            try {
+                const data = await adminRequest('/api/admin/service-update', {
+                    method: 'POST',
+                    body: JSON.stringify({ message }),
+                });
+                metaEl.textContent = `Last updated: ${new Date(data.update.updatedAt).toLocaleString()}`;
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
 
         function showLogin() {
             document.getElementById('loginScreen').classList.remove('hidden');

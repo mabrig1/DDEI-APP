@@ -12,6 +12,7 @@ const {
   messageUser,
   broadcastMessage,
 } = require('../controllers/adminController');
+const { getAdmin: getServiceUpdateAdmin, postUpdate: postServiceUpdate } = require('../controllers/serviceUpdateController');
 const { requireAdmin } = require('../middleware/adminAuth');
 
 const router = express.Router();
@@ -27,5 +28,7 @@ router.get('/subscriptions', requireAdmin, listSubscriptions);
 router.post('/access-link', requireAdmin, createAccessLink);
 router.post('/users/:id/message', requireAdmin, messageUser);
 router.post('/broadcast', requireAdmin, broadcastMessage);
+router.get('/service-update', requireAdmin, getServiceUpdateAdmin);
+router.post('/service-update', requireAdmin, postServiceUpdate);
 
 module.exports = router;

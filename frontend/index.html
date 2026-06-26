@@ -54,6 +54,11 @@
         </div>
     </nav>
 
+    <!-- Service status banner -->
+    <div id="serviceUpdateBanner" class="hidden bg-[#0A66C2] text-white text-sm text-center py-2 px-4">
+        <span id="serviceUpdateBannerText"></span>
+    </div>
+
     <!-- Hero -->
     <div class="hero-bg text-white">
         <div class="max-w-screen-xl mx-auto px-6 pt-20 pb-24">
@@ -840,6 +845,22 @@
             }
         }
 
+        async function loadServiceUpdateBanner() {
+            try {
+                const data = await apiRequest('/api/service-update');
+                if (!data.update) return;
+                const date = new Date(data.update.updatedAt).toLocaleDateString(undefined, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                });
+                document.getElementById('serviceUpdateBannerText').textContent = `Last updated ${date}: ${data.update.message}`;
+                document.getElementById('serviceUpdateBanner').classList.remove('hidden');
+            } catch (err) {
+                // Banner is best-effort; stay hidden if it can't be fetched.
+            }
+        }
+
         function openAuthModal(mode) {
             authMode = mode;
             applyAuthMode();
@@ -1616,6 +1637,7 @@
         hydrateContentFromQuery();
         hydrateAdminAccess();
         hydrateResetToken();
+        loadServiceUpdateBanner();
         appendChatMessage('advisor', "Hi, I'm your Destiny Skills Bridge AI Advisor. Ask me which skill to learn, how much you could earn, or how to build your portfolio.");
     </script>
 </body>
