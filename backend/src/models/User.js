@@ -60,6 +60,9 @@ const userSchema = new mongoose.Schema(
     },
     resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },
+    visitCount: { type: Number, default: 0 },
+    totalMinutes: { type: Number, default: 0 },
+    lastSeenAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
