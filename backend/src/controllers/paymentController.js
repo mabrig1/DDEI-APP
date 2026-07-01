@@ -6,8 +6,20 @@ const User = require('../models/User');
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 
 const PLANS = {
-  'premium-monthly': { amountNGN: 2000, label: 'Premium Monthly' },
-  'premium-yearly': { amountNGN: 24000, label: 'Premium Yearly' },
+  'premium-monthly': { amountNGN: 2000, label: 'Premium Monthly', type: 'subscription' },
+  'premium-yearly': { amountNGN: 24000, label: 'Premium Yearly', type: 'subscription' },
+  'prompt-engineering-full': {
+    amountNGN: 12000,
+    label: 'Mastering Prompt Engineering — Full Course + Certificate',
+    type: 'course',
+    courseId: 'mastering-prompt-engineering',
+  },
+  'prompt-engineering-earlybird': {
+    amountNGN: 10000,
+    label: 'Mastering Prompt Engineering — Early Bird + Certificate',
+    type: 'course',
+    courseId: 'mastering-prompt-engineering',
+  },
 };
 
 function paystackClient() {
@@ -77,9 +89,23 @@ async function verifyPayment(req, res) {
     }
 
     if (success && subscription.user) {
-      const expiresAt = new Date();
-      expiresAt.setMonth(expiresAt.getMonth() + (subscription.plan === 'premium-yearly' ? 12 : 1));
-      await User.findByIdAndUpdate(subscription.user, { isPremium: true, premiumExpiresAt: expiresAt });
+      const planConfig = PLANS[subscription.plan] || {};
+      if (planConfig.type === 'course' && planConfig.courseId) {
+        const user = await User.findById(subscription.user);
+        if (user) {
+          const alreadyPurchased = (user.purchasedCourses || []).some(
+            (p) => p.courseId === planConfig.courseId
+          );
+          if (!alreadyPurchased) {
+            user.purchasedCourses.push({ courseId: planConfig.courseId, purchasedAt: new Date() });
+            await user.save();
+          }
+        }
+      } else {
+        const expiresAt = new Date();
+        expiresAt.setMonth(expiresAt.getMonth() + (subscription.plan === 'premium-yearly' ? 12 : 1));
+        await User.findByIdAndUpdate(subscription.user, { isPremium: true, premiumExpiresAt: expiresAt });
+      }
     }
 
     res.json({ status: subscription.status, subscription });

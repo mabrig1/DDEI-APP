@@ -10,11 +10,15 @@ async function requireActiveAccess(req, res, next) {
   }
 
   if (!user.hasActiveAccess()) {
-    return res.status(402).json({
-      message: 'Your free 7-day trial has ended. Upgrade to Premium to keep learning.',
-      upgradeRequired: true,
-      trialExpiresAt: user.trialExpiresAt,
-    });
+    const courseId = req.params.id;
+    const hasPurchased = (user.purchasedCourses || []).some((p) => p.courseId === courseId);
+    if (!hasPurchased) {
+      return res.status(402).json({
+        message: 'Your free 7-day trial has ended. Upgrade to Premium or purchase this course to continue.',
+        upgradeRequired: true,
+        trialExpiresAt: user.trialExpiresAt,
+      });
+    }
   }
 
   next();

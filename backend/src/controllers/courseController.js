@@ -1,3 +1,4 @@
+const crypto = require('crypto');
 const User = require('../models/User');
 const { COURSES } = require('../data/courses');
 
@@ -34,6 +35,10 @@ function courseSummary(course) {
     estimatedHours: course.estimatedHours,
     moduleCount: course.modules.length,
     lessonCount,
+    isCertified: course.isCertified || false,
+    price: course.price || null,
+    earlyBirdPrice: course.earlyBirdPrice || null,
+    specialCourse: course.specialCourse || false,
   };
 }
 
@@ -180,4 +185,51 @@ async function selectCourse(req, res) {
   res.json({ user });
 }
 
-module.exports = { listCourses, getCourse, updateProgress, submitQuiz, getProgress, selectCourse };
+async function getCertificate(req, res) {
+  const course = findCourse(req.params.id);
+  if (!course || !course.isCertified) {
+    return res.status(404).json({ message: 'No certificate is available for this course.' });
+  }
+
+  const user = await User.findById(req.userId);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  const purchase = (user.purchasedCourses || []).find((p) => p.courseId === course.id);
+  if (!purchase && !user.hasPremiumAccess()) {
+    return res.status(402).json({ message: 'Purchase this course to receive a certificate.' });
+  }
+
+  const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
+  const progress = (user.courseProgress || []).find((p) => p.courseId === course.id);
+  const completed = progress ? progress.completedLessons : [];
+  const allDone = allLessonIds.every((id) => completed.includes(id));
+
+  if (!allDone) {
+    return res.status(400).json({
+      message: `Complete all ${allLessonIds.length} lessons to earn your certificate.`,
+      completedCount: completed.length,
+      totalCount: allLessonIds.length,
+    });
+  }
+
+  if (purchase && !purchase.certificateId) {
+    purchase.certificateId = `DSB-PE-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
+    await user.save();
+  }
+
+  const certificateId = (purchase && purchase.certificateId) ||
+    `DSB-PE-${user._id.toString().slice(-6).toUpperCase()}`;
+
+  res.json({
+    certificate: {
+      id: certificateId,
+      recipientName: user.name,
+      courseName: course.title,
+      courseCategory: course.category,
+      issuedAt: new Date(),
+      issuer: 'Destiny Skills Bridge',
+    },
+  });
+}
+
+module.exports = { listCourses, getCourse, updateProgress, submitQuiz, getProgress, selectCourse, getCertificate };

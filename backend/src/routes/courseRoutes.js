@@ -6,6 +6,7 @@ const {
   submitQuiz,
   getProgress,
   selectCourse,
+  getCertificate,
 } = require('../controllers/courseController');
 const { requireAuth } = require('../middleware/auth');
 const { requireActiveAccess } = require('../middleware/access');
@@ -18,5 +19,6 @@ router.get('/:id/progress', requireAuth, getProgress);
 router.post('/:id/select', requireAuth, requireActiveAccess, selectCourse);
 router.post('/:id/lessons/:lessonId/complete', requireAuth, requireActiveAccess, updateProgress);
 router.post('/:id/lessons/:lessonId/quiz', requireAuth, requireActiveAccess, submitQuiz);
+router.get('/:id/certificate', requireAuth, getCertificate);
 
 module.exports = router;

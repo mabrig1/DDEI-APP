@@ -48,6 +48,16 @@ const userSchema = new mongoose.Schema(
     scholarship: { type: String, enum: ['none', 'limited', 'full'], default: 'none' },
     portfolio: { type: portfolioSchema, default: null },
     courseProgress: { type: [courseProgressSchema], default: [] },
+    purchasedCourses: {
+      type: [
+        {
+          courseId: { type: String, required: true },
+          purchasedAt: { type: Date, default: Date.now },
+          certificateId: { type: String, default: null },
+        },
+      ],
+      default: [],
+    },
     resetPasswordToken: { type: String, default: null },
     resetPasswordExpires: { type: Date, default: null },
   },

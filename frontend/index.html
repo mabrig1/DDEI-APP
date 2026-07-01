@@ -1099,6 +1099,24 @@
             }
         }
 
+        async function startCoursePurchase(plan, courseId) {
+            const user = authUser();
+            if (!user) {
+                pendingCourseSelection = courseId;
+                openAuthModal('register');
+                return;
+            }
+            try {
+                const data = await apiRequest('/api/payments/initialize', {
+                    method: 'POST',
+                    body: JSON.stringify({ plan, email: user.email, callbackUrl: window.location.href }),
+                });
+                window.location.href = data.authorizationUrl;
+            } catch (err) {
+                alert(`Could not start payment: ${err.message}`);
+            }
+        }
+
         async function generatePortfolio() {
             const name = document.getElementById('pfName').value;
             const trackId = document.getElementById('pfTrack').value;
@@ -1269,7 +1287,48 @@
             return !!currentCourse._progress.quizResults[quizId];
         }
 
+        function specialCourseCardHTML(course) {
+            const user = authUser();
+            const hasPurchased = user && user.purchasedCourses && user.purchasedCourses.some(p => p.courseId === course.id);
+            const priceTag = hasPurchased
+                ? `<div class="text-center bg-white/10 rounded-2xl p-4"><p class="text-emerald-300 font-semibold text-sm"><i class="fa-solid fa-circle-check mr-1"></i>Enrolled</p><p class="text-white/60 text-xs mt-1">Full access + certificate</p></div>`
+                : `<div class="text-center bg-white/10 rounded-2xl p-4">
+                    ${course.earlyBirdPrice ? `<p class="text-white/60 text-xs line-through mb-1">₦${course.price ? course.price.toLocaleString() : ''}</p>` : ''}
+                    <p class="text-3xl font-bold">₦${(course.earlyBirdPrice || course.price || 0).toLocaleString()}</p>
+                    ${course.earlyBirdPrice ? '<p class="text-xs text-amber-300 font-semibold mt-1">Early Bird Price</p>' : ''}
+                    <p class="text-white/60 text-xs mt-1">Full course + certificate</p>
+                   </div>`;
+            const ctaButtons = hasPurchased
+                ? `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition">Continue Learning</button>`
+                : `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition"><i class="fa-solid fa-play mr-1"></i> Start Free Week</button>
+                   <button onclick="startCoursePurchase('prompt-engineering-earlybird', '${course.id}')" class="w-full py-3 bg-amber-400 text-slate-900 font-bold rounded-2xl hover:bg-amber-300 transition">Enroll for ₦${(course.earlyBirdPrice || course.price || 0).toLocaleString()}</button>`;
+            return `
+                <div class="md:col-span-2 skill-card bg-gradient-to-br from-[#0A66C2] to-[#07408a] text-white rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start">
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-3">
+                            <span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full">${course.category}</span>
+                            ${course.isCertified ? '<span class="text-xs font-bold bg-amber-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-certificate mr-1"></i>Certificate</span>' : ''}
+                            <span class="text-xs font-bold bg-emerald-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-gift mr-1"></i>1-Week Free Trial</span>
+                            <span class="text-xs font-bold bg-purple-400 text-white uppercase tracking-wide px-3 py-1 rounded-full">Featured</span>
+                        </div>
+                        <h4 class="font-bold text-2xl leading-snug">${course.title}</h4>
+                        <p class="text-white/80 mt-2 max-w-lg text-sm leading-relaxed">${course.description}</p>
+                        <div class="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-white/60 mt-4">
+                            <span><i class="fa-solid fa-layer-group mr-1"></i>${course.moduleCount} modules</span>
+                            <span><i class="fa-solid fa-book-open mr-1"></i>${course.lessonCount} lessons</span>
+                            <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
+                            <span><i class="fa-solid fa-trophy mr-1"></i>Verified certificate on completion</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-3 w-full md:w-52 shrink-0">
+                        ${priceTag}
+                        ${ctaButtons}
+                    </div>
+                </div>`;
+        }
+
         function courseCardHTML(course) {
+            if (course.specialCourse) return specialCourseCardHTML(course);
             return `
                 <div class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
                     <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">${course.category}</span>
@@ -1366,12 +1425,22 @@
         }
 
         function courseChooseCardHTML(course) {
+            const badges = [];
+            if (course.isCertified) badges.push('<span class="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-certificate mr-1"></i>Certificate</span>');
+            if (course.specialCourse) badges.push('<span class="text-xs font-bold bg-blue-100 text-[#0A66C2] px-2 py-0.5 rounded-full">1-Wk Free Trial</span>');
+            const priceHtml = course.price
+                ? `<p class="text-xs text-slate-500 mt-2">${course.earlyBirdPrice ? `<span class="line-through">₦${course.price.toLocaleString()}</span> <span class="text-amber-600 font-semibold">₦${course.earlyBirdPrice.toLocaleString()} early bird</span>` : `₦${course.price.toLocaleString()}`}</p>`
+                : '';
             return `
                 <div class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
-                    <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">${course.category}</span>
+                    <div class="flex items-center gap-x-2 flex-wrap">
+                        <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">${course.category}</span>
+                        ${badges.join('')}
+                    </div>
                     <h4 class="font-semibold text-lg mt-2">${course.title}</h4>
                     <p class="text-sm text-slate-500 mt-1 flex-1">${course.description}</p>
-                    <div class="flex items-center gap-x-4 text-xs text-slate-400 mt-4 mb-4">
+                    ${priceHtml}
+                    <div class="flex items-center gap-x-4 text-xs text-slate-400 mt-3 mb-4">
                         <span><i class="fa-solid fa-layer-group mr-1"></i>${course.moduleCount} modules</span>
                         <span><i class="fa-solid fa-book-open mr-1"></i>${course.lessonCount} lessons</span>
                         <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
