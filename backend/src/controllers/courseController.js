@@ -39,6 +39,9 @@ function courseSummary(course) {
     price: course.price || null,
     earlyBirdPrice: course.earlyBirdPrice || null,
     specialCourse: course.specialCourse || false,
+    paidOnly: course.paidOnly || false,
+    durationDays: course.durationDays || null,
+    purchasePlan: course.purchasePlan || null,
   };
 }
 
@@ -212,13 +215,14 @@ async function getCertificate(req, res) {
     });
   }
 
+  const certPrefix = `DSB-${course.certCode || 'PE'}`;
   if (purchase && !purchase.certificateId) {
-    purchase.certificateId = `DSB-PE-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
+    purchase.certificateId = `${certPrefix}-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
     await user.save();
   }
 
   const certificateId = (purchase && purchase.certificateId) ||
-    `DSB-PE-${user._id.toString().slice(-6).toUpperCase()}`;
+    `${certPrefix}-${user._id.toString().slice(-6).toUpperCase()}`;
 
   res.json({
     certificate: {

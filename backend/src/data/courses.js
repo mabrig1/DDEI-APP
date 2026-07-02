@@ -6573,6 +6573,7 @@ const COURSES = [
     price: 12000,
     earlyBirdPrice: 10000,
     trialDays: 7,
+    purchasePlan: 'prompt-engineering-earlybird',
     modules: [
       // ── MODULE 1 ────────────────────────────────────────────
       {
@@ -7217,6 +7218,563 @@ const COURSES = [
               ],
               correctIndex: 1,
               explanation: 'Clients hire you for business outcomes. Communicating what the system does, how reliably it works, and how to maintain it is often what closes a deal — the prompts themselves are the backend.',
+            },
+          ],
+        },
+      },
+    ],
+  },
+
+  // ============================================================
+  // SPECIAL EDITION — AI Cinematic Video & Avatar Creation Mastery
+  // 7-day intensive. Pay ₦4,000 and start instantly — no free trial.
+  // ============================================================
+  {
+    id: 'ai-cinematic-special-edition',
+    slug: 'ai-cinematic-special-edition',
+    title: 'AI Cinematic Video & Avatar Creation Mastery — SPECIAL EDITION',
+    description:
+      'A 7-day intensive: direct full cinematic AI films with Claude/ChatGPT, Veo 3, Seedance 2.0, Grok Imagine & CapCut — hyper-real avatars, voice cloning, sound design, and a vault of 50+ free AI tools. Pay once, start instantly, earn a certificate.',
+    skillIds: ['ai-tools-automation'],
+    category: 'AI Video & Creative Production',
+    estimatedHours: 12,
+    specialCourse: true,
+    isCertified: true,
+    certCode: 'CVM',
+    price: 4000,
+    paidOnly: true,
+    durationDays: 7,
+    purchasePlan: 'cinematic-special-edition',
+    modules: [
+      // ── DAY 1 ────────────────────────────────────────────────
+      {
+        id: 'cse-d1',
+        title: 'Day 1: Pre-Production — Script & Storyboard with AI',
+        lessons: [
+          {
+            id: 'cse-d1-l1',
+            title: 'Scriptwriting for AI Constraints (Write What the Camera Can See)',
+            content: [
+              'AI video engines cannot film feelings — they film physics. The single most important rule of AI scriptwriting is <strong>Visual Subtraction</strong>: strip out every abstract emotion and replace it with a physical, visible action. Wrong: "Marcus feels the weight of his past crimes." Right: "Extreme close-up on Marcus as a single tear rolls down his cheek, lit by harsh blue neon."',
+              'Two more non-negotiable rules. <strong>Modular Scene Partitioning</strong>: break your script into tight 3-to-5-second visual chunks — this matches the native generation length of every major AI video engine and minimises glitching. <strong>The Rule of Two</strong>: never put more than two active characters in one shot, or the AI will blend faces and swap clothing.',
+              'Practice now (10 minutes): take any movie scene you love and rewrite two lines of it AI-style — pure physical action, one camera direction, one lighting cue. Use <a href="https://chat.openai.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">ChatGPT</a> or <a href="https://claude.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Claude</a> (both free) to critique your rewrite.',
+            ],
+            keyTakeaways: [
+              'Replace abstract emotion with physical, visible action — if a camera cannot capture it, the AI cannot generate it.',
+              'Write in strict 3–5 second scene chunks to match AI generation limits.',
+              'Maximum two active characters per shot to prevent face-blending.',
+            ],
+          },
+          {
+            id: 'cse-d1-l2',
+            title: 'The Master AD Prompt — Claude/ChatGPT as Your Assistant Director',
+            content: [
+              'Copy this system prompt into <a href="https://claude.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Claude</a>, <a href="https://chat.openai.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">ChatGPT</a>, or <a href="https://gemini.google.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Gemini</a> and it becomes your Hollywood Assistant Director: <em>"You are an expert Hollywood Assistant Director and AI Video Producer. I will give you a raw story concept; transform it into an AI-optimized shot list as a Markdown table with columns: 1. Shot # (3–5s each), 2. Visual &amp; Camera Action (literal action + lens, e.g. 35mm/85mm/anamorphic + motion), 3. Lighting &amp; Environment, 4. Voiceover &amp; Sound FX. Here is my concept: [YOUR CONCEPT]"</em>',
+              'Before generating a single pixel, lock a <strong>Visual Style Guide</strong>: one genre, one strict color palette, one camera blueprint. Examples you can copy — Cyberpunk: "deep cyan shadows, saturated fluorescent pink, yellow neon accents." Neo-Noir: "high-contrast monochrome, charcoal blacks, wet asphalt textures." Cinematic Drama: "warm gold and deep teal grading, muted desaturated backgrounds."',
+              'Camera blueprint to keep in every prompt: aspect ratio 21:9 (2.39:1 letterbox), 85mm lens for shallow-depth close-ups, 24mm for establishing wides. Consistency across every shot is what makes your film look expensive.',
+            ],
+            keyTakeaways: [
+              'The Master AD Prompt turns any free LLM into a shot-by-shot storyboard generator.',
+              'Lock one color palette and one camera blueprint before generating anything.',
+              'Use 21:9 aspect ratio, 85mm for close-ups, 24mm for wide establishing shots.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cse-d1-quiz',
+          questions: [
+            {
+              id: 'cse-d1-q1',
+              question: 'Which script line is correctly written for an AI video engine?',
+              options: [
+                '"Marcus feels overwhelming guilt about his past."',
+                '"Extreme close-up on Marcus as a single tear rolls down his cheek, lit by harsh blue neon."',
+                '"Marcus remembers his childhood with sadness."',
+                '"The mood of the room is tense and uncomfortable."',
+              ],
+              correctIndex: 1,
+              explanation: 'AI engines need physical, visible actions with camera and lighting cues — not internal emotions.',
+            },
+            {
+              id: 'cse-d1-q2',
+              question: 'Why do we break scripts into 3–5 second chunks?',
+              options: [
+                'To make the script shorter to read',
+                'It matches the native generation length of AI video engines and minimises glitching',
+                'Because actors get tired',
+                'It is required by YouTube',
+              ],
+              correctIndex: 1,
+              explanation: 'Modular scene partitioning matches AI generation limits, producing stable, glitch-free clips.',
+            },
+            {
+              id: 'cse-d1-q3',
+              question: 'What is the "Rule of Two"?',
+              options: [
+                'Always generate two videos at once',
+                'Use only two prompts per day',
+                'Limit active onscreen characters to a maximum of two per shot',
+                'Every film needs two endings',
+              ],
+              correctIndex: 2,
+              explanation: 'More than two characters per shot causes AI models to blend faces and swap clothing.',
+            },
+          ],
+        },
+      },
+      // ── DAY 2 ────────────────────────────────────────────────
+      {
+        id: 'cse-d2',
+        title: 'Day 2: Cinematic Image Prompting (Grok Imagine & Midjourney)',
+        lessons: [
+          {
+            id: 'cse-d2-l1',
+            title: 'The 6-Part Cinematic Prompt Formula',
+            content: [
+              'Every professional cinematic prompt follows this exact structure: <strong>Shot Type/Lens + Core Subject + Action/Pose + Environment + Lighting Style + Color Grade/Film Stock</strong>. Amateur images look like plastic 3D renders because they skip the lens and lighting parts.',
+              'Lens cheat sheet — Medium close-up (character focus): "85mm lens, f/1.8, shallow depth of field." Wide establishing shot: "24mm wide-angle, deep depth of field." Film texture: "shot on 35mm anamorphic lens, cinematic film grain, raw photo."',
+              'Lighting cheat sheet — <strong>Chiaroscuro</strong>: dramatic noir, deep shadows, focused highlights. <strong>Rembrandt</strong>: a subtle light triangle on the shadowed cheek — classic portraiture. <strong>Volumetric</strong>: light beams through dust, smoke, or rain — sci-fi atmosphere. <strong>Golden Hour</strong>: warm low sun, emotional scenes. Never type "photorealistic, ultra-detailed" and hope — name the light.',
+              'Try it now in <a href="https://grok.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Grok Imagine</a> (free tier) or <a href="https://leonardo.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Leonardo.ai</a> (150 free credits daily): <em>"Cinematic portrait, medium close-up, 85mm lens f/1.8, a Nigerian tech founder in a rain-slicked Lagos street at night, volumetric neon light, teal and orange grade, shot on anamorphic, film grain --ar 21:9 --style raw"</em>.',
+            ],
+            keyTakeaways: [
+              'Formula: Shot/Lens + Subject + Action + Environment + Lighting + Color Grade.',
+              '85mm = close-ups with blurry background; 24mm = sweeping wides.',
+              'Name the lighting style (Chiaroscuro, Rembrandt, Volumetric, Golden Hour) instead of vague words like "photorealistic".',
+            ],
+          },
+          {
+            id: 'cse-d2-l2',
+            title: 'Consistency Is King — Same Face, Same Style, Every Shot',
+            content: [
+              'The hardest problem in AI filmmaking is keeping your character identical from shot to shot. In <a href="https://www.midjourney.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Midjourney</a>, use <strong>--cref [image URL]</strong> (Character Reference) after your prompt: <strong>--cw 100</strong> copies face + hair + clothing; <strong>--cw 0</strong> copies only the face (perfect for outfit changes between scenes).',
+              'For matching color and mood across every shot, use <strong>--sref [image URL]</strong> (Style Reference) pointing at your best previous frame. On free tools: <a href="https://www.seaart.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">SeaArt.ai</a> has built-in character-consistency tools, and Leonardo.ai offers character reference on its free daily credits.',
+              'Settings that matter: <strong>--ar 21:9</strong> (cinematic widescreen — never default square), <strong>--style raw</strong> (kills the fantasy filter), stylize between <strong>--s 150 and --s 250</strong> for realistic skin and clothing.',
+            ],
+            keyTakeaways: [
+              '--cref locks your character\'s face across shots; --cw controls how much is copied.',
+              '--sref locks your color grade and mood across the whole film.',
+              'Always: --ar 21:9, --style raw, stylize 150–250 for cinema-real output.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cse-d2-quiz',
+          questions: [
+            {
+              id: 'cse-d2-q1',
+              question: 'Which lens should you specify for a character close-up with a beautifully blurred background?',
+              options: ['24mm wide-angle', '85mm lens at f/1.8', 'Fisheye lens', 'No lens is needed'],
+              correctIndex: 1,
+              explanation: 'An 85mm portrait lens at a wide aperture creates the shallow depth of field that makes close-ups cinematic.',
+            },
+            {
+              id: 'cse-d2-q2',
+              question: 'What does --cref do in Midjourney?',
+              options: [
+                'Increases render speed',
+                'Keeps your character\'s appearance consistent across different prompts',
+                'Adds copyright protection',
+                'Makes the image brighter',
+              ],
+              correctIndex: 1,
+              explanation: 'Character Reference (--cref) points at your character image so the same face appears in every new scene.',
+            },
+            {
+              id: 'cse-d2-q3',
+              question: 'Which lighting keyword creates visible light beams through smoke, dust, or rain?',
+              options: ['Golden Hour', 'Rembrandt lighting', 'Volumetric light', 'Flat lighting'],
+              correctIndex: 2,
+              explanation: 'Volumetric light renders atmospheric beams — a signature of sci-fi and dramatic cinema.',
+            },
+          ],
+        },
+      },
+      // ── DAY 3 ────────────────────────────────────────────────
+      {
+        id: 'cse-d3',
+        title: 'Day 3: AI Video Generation (Veo 3 & Seedance 2.0)',
+        lessons: [
+          {
+            id: 'cse-d3-l1',
+            title: 'Multi-Modal Video Direction — Kill "Temporal Drift" Before It Starts',
+            content: [
+              '"Temporal drift" — faces morphing, clothes changing mid-shot — is the #1 amateur giveaway. The fix is <strong>multi-modal referencing</strong>: instead of raw text-to-video, feed the engine your Day-2 images. <a href="https://aistudio.google.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Veo 3 (free via Google AI Studio)</a> and <a href="https://seedance.tv" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Seedance 2.0 (free daily credits)</a> both support image-to-video.',
+              'Seedance 2.0 goes further: upload up to 9 images, 3 reference videos, and 3 audio files at once. Tag them in your prompt — <em>"Generate a cinematic scene using @Image1 as the main actor. The actor performs the exact motion from @Video1. Slow dramatic tracking push-in. 2.39:1 aspect ratio."</em> @Video references copy motion (a fight move, a walk style) onto YOUR character; @Audio aligns cuts to the beat.',
+              'Camera vocabulary that engines obey: <strong>"slow kinetic tracking push-in"</strong> (builds tension), <strong>"sweeping horizontal pan"</strong> (reveals environment), <strong>"high-angle crane shot descending to eye level"</strong> (epic opener). Say it like a director, not a viewer.',
+            ],
+            keyTakeaways: [
+              'Image-to-video with your Day-2 stills beats raw text-to-video for consistency every time.',
+              'Seedance 2.0 accepts up to 12 tagged reference assets (@Image1, @Video1, @Audio1) in one generation.',
+              'Direct the camera with industry terms: tracking push-in, horizontal pan, crane descend.',
+            ],
+          },
+          {
+            id: 'cse-d3-l2',
+            title: 'Controlling Physics, Glitches & the Surgical Fix',
+            content: [
+              'AI video hallucinates — limbs morph, objects teleport. Control it with <strong>motion weight</strong>: keep motion scale low (≈3/10) for close-ups so skin texture stays stable, and go high (≈7/10) only on wide action shots. If your tool supports seed locking or temporal guidance, keep temporal guidance HIGH.',
+              'Golden workflow rule: <strong>never delete a 90%-good clip</strong>. If seconds 8–10 of a 10-second clip glitch, use Seedance\'s Surgical Segment Editor (or regenerate just that segment) and keep the stable footage untouched.',
+              'Budget workflow: draft every test at 720p to save credits and data, and only upscale your final pick to 1080p/4K. Free engines with daily credits to rotate: <a href="https://klingai.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Kling AI</a> (6 free/day — best human motion), <a href="https://lumalabs.ai/dream-machine" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Luma Dream Machine</a> (30/month, no watermark), <a href="https://hailuoai.video" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Hailuo AI</a> (best camera tracking), <a href="https://pika.art" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Pika</a> (region animation).',
+            ],
+            keyTakeaways: [
+              'Low motion weight for close-ups, high only for wide action shots.',
+              'Regenerate only the glitched segment — never throw away a mostly-stable clip.',
+              'Draft at 720p, upscale only the final pick; rotate free daily credits across Kling, Luma, Hailuo, and Pika.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cse-d3-quiz',
+          questions: [
+            {
+              id: 'cse-d3-q1',
+              question: 'What is "temporal drift" in AI video?',
+              options: [
+                'The video plays too slowly',
+                'A character\'s face, clothes, or background morphing randomly between frames',
+                'The file size growing too large',
+                'Audio falling out of sync',
+              ],
+              correctIndex: 1,
+              explanation: 'Temporal drift is frame-to-frame inconsistency — fixed by feeding reference images instead of raw text.',
+            },
+            {
+              id: 'cse-d3-q2',
+              question: 'In Seedance 2.0, what does tagging @Video1 in your prompt do?',
+              options: [
+                'Deletes the video',
+                'Extracts the motion pattern from that clip and maps it onto your character',
+                'Adds a watermark',
+                'Converts it to audio',
+              ],
+              correctIndex: 1,
+              explanation: 'Video references transfer motion — choreography, walk styles, gestures — onto your generated actor.',
+            },
+            {
+              id: 'cse-d3-q3',
+              question: 'A 10-second clip is perfect except for a glitch in the last 2 seconds. What is the professional move?',
+              options: [
+                'Delete it and start over',
+                'Publish it with the glitch',
+                'Regenerate only the glitched segment and keep the stable footage',
+                'Slow the video down to hide it',
+              ],
+              correctIndex: 2,
+              explanation: 'Surgical segment editing regenerates only the broken timestamp, saving credits and preserving the good frames.',
+            },
+          ],
+        },
+      },
+      // ── DAY 4 ────────────────────────────────────────────────
+      {
+        id: 'cse-d4',
+        title: 'Day 4: Hyper-Real Avatars, Voice Cloning & Lip-Sync',
+        lessons: [
+          {
+            id: 'cse-d4-l1',
+            title: 'Crafting the Perfect AI Actor + Cinematic Voice (ElevenLabs)',
+            content: [
+              'Design your actor for animation from the start. Generate a <strong>neutral frontal or three-quarter portrait</strong> — lip-sync networks need to see both lips, the chin line, and the nose bridge. Use soft Rembrandt or ring lighting (harsh nose shadows cause warping), and a clean, non-distracting background. Formula: <em>"Cinematic portrait, medium close-up, [subject], looking directly at camera, neutral expression, soft Rembrandt lighting, 85mm lens, shallow depth of field, photorealistic --ar 16:9 --style raw"</em>.',
+              'Voice is 50% of believability. <a href="https://elevenlabs.io" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">ElevenLabs (10,000 free characters/month)</a> — direct it like an actor: ellipses (…) for dramatic pauses, dashes for tense breaks. <strong>Stability slider</strong>: 80–90% = calm narrator; 40–55% = emotional tremor and natural crackle for intense scenes.',
+              'Cloning your own voice? Feed it 5+ minutes of clean, noise-free speech — no music, no echo, or those artifacts merge into the clone forever. Recorded on your phone in a noisy room? Clean it free with <a href="https://podcast.adobe.com/enhance" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Adobe Enhance Speech</a> (1 free hour daily).',
+            ],
+            keyTakeaways: [
+              'Frontal/three-quarter portraits with soft lighting animate best — extreme profiles break lip-sync.',
+              'ElevenLabs stability: high = calm narrator, low (40–55%) = emotional dramatic delivery.',
+              'Voice clones need 5+ minutes of clean audio; clean noisy recordings free with Adobe Enhance Speech.',
+            ],
+          },
+          {
+            id: 'cse-d4-l2',
+            title: 'Flawless Lip-Sync — Bringing Your Avatar to Life',
+            content: [
+              'Lip-sync engines map audio phonemes to mouth positions. Your job: feed them matched inputs — video and audio both at 24 or 30 fps standard pacing, and a completely <strong>dry vocal track</strong> (no reverb or delay) before syncing.',
+              'The free avatar toolkit: <a href="https://www.hedra.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Hedra</a> (free daily minutes — best natural head tilt, blinks, shoulder motion), <a href="https://huggingface.co/spaces/KwaiVGI/LivePortrait" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">LivePortrait</a> (100% free open-source — maps YOUR facial performance from a webcam video onto any AI character), <a href="https://huggingface.co/spaces/vinthony/SadTalker" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">SadTalker</a> (free open-source photo-to-talking-head), <a href="https://www.heygen.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">HeyGen</a> (free plan, studio-grade clones), <a href="https://www.d-id.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">D-ID</a> (free trial credits).',
+              'Today\'s build: take your Day-2 hero portrait, write one dramatic line (e.g. <em>"We traveled across the void looking for life… but we only found the ruins of what we used to be."</em>), render it in ElevenLabs at 50% stability, upload both to Hedra, export a 16:9 or 21:9 talking clip. That is a portfolio piece — made for ₦0.',
+            ],
+            keyTakeaways: [
+              'Match framerates (24/30 fps) and use dry, effect-free vocals for perfect sync.',
+              'Hedra, LivePortrait, and SadTalker deliver professional lip-sync completely free.',
+              'One portrait + one ElevenLabs line + Hedra = a portfolio-grade talking avatar at zero cost.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cse-d4-quiz',
+          questions: [
+            {
+              id: 'cse-d4-q1',
+              question: 'Why should your AI actor portrait be frontal or three-quarter view?',
+              options: [
+                'It looks more artistic',
+                'Lip-sync networks need a clear view of both lips, the chin line, and the nose bridge',
+                'It renders faster',
+                'Side profiles are copyrighted',
+              ],
+              correctIndex: 1,
+              explanation: 'Sync engines track the mouth region — extreme profiles hide half of it and cause warping.',
+            },
+            {
+              id: 'cse-d4-q2',
+              question: 'For an intense, emotional dramatic scene, where should the ElevenLabs stability slider sit?',
+              options: ['100%', '80–90%', '40–55%', '0%'],
+              correctIndex: 2,
+              explanation: 'Lower stability (40–55%) allows emotional fluctuation, tremors, and natural voice crackle.',
+            },
+            {
+              id: 'cse-d4-q3',
+              question: 'What must your vocal track be before lip-syncing?',
+              options: [
+                'Heavily auto-tuned',
+                'Completely dry — no reverb or delay',
+                'Mixed with the music bed',
+                'Sped up 2x',
+              ],
+              correctIndex: 1,
+              explanation: 'Effects distort the phoneme wavelengths the sync engine reads — add reverb only after syncing.',
+            },
+          ],
+        },
+      },
+      // ── DAY 5 ────────────────────────────────────────────────
+      {
+        id: 'cse-d5',
+        title: 'Day 5: Cinematic Editing, Color Grading & Sound (CapCut AI)',
+        lessons: [
+          {
+            id: 'cse-d5-l1',
+            title: 'The Edit — J-Cuts, L-Cuts, AI Stabilization & the Widescreen Look',
+            content: [
+              'Amateurs hard-cut audio and video at the same millisecond. Professionals overlap: a <strong>J-Cut</strong> lets the next scene\'s audio start before its video appears; an <strong>L-Cut</strong> lets the old scene\'s audio linger under the new picture. These two cuts alone make AI clips feel like one continuous film.',
+              'In <a href="https://www.capcut.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">CapCut (free)</a>: apply <strong>AI Stabilization ("Most Stable")</strong> to smooth Veo/Seedance wobble, and <strong>AI Image Enhancer</strong> to upscale 720p drafts to crisp 4K. Then crop the canvas to <strong>2.39:1 (21:9 letterbox)</strong> and position your actor\'s eyes on the upper-third line — instant theatrical framing.',
+              'The Hollywood color trick: human skin lives in the orange spectrum, so push shadows toward <strong>teal</strong> to make faces pop. In CapCut: Adjust → HSL → raise orange saturation/luminance slightly, shift blue/cyan hue toward teal and darken it. Finish with 5–10% film grain to hide AI smoothness.',
+            ],
+            keyTakeaways: [
+              'J-cuts and L-cuts (audio/video overlap) are the fastest way to make AI clips feel like real cinema.',
+              'CapCut AI Stabilization + AI upscaling clean up and sharpen AI footage free.',
+              'Teal & Orange grading + 21:9 letterbox + eyes on the upper third = the theatrical look.',
+            ],
+          },
+          {
+            id: 'cse-d5-l2',
+            title: 'The Three-Layer Sound Design Blueprint',
+            content: [
+              'Sound is half the movie. Build every scene with exactly three layers. <strong>Layer 1 — Dialogue</strong> (your ElevenLabs track): peaks between −6 dB and −10 dB, with a high-pass filter at 80 Hz to remove rumble. <strong>Layer 2 — Ambient SFX</strong> (rain, wind, neon hum, room tone): quiet, −20 to −28 dB — even "silent" scenes need room tone or they sound dead. <strong>Layer 3 — Score</strong>: the emotional bed.',
+              'Use <strong>audio ducking</strong> (automatic in CapCut) to drop the music −6 to −10 dB whenever your actor speaks, letting it swell back in the gaps. Free cinematic music on demand: <a href="https://suno.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Suno</a> (50 free credits daily — describe "dark orchestral tension drone" and it composes it) and <a href="https://www.udio.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Udio</a> (free monthly credits).',
+              'Export spec for every deliverable: 1080p (or AI-upscaled 4K), 24 fps, high bitrate. Save this as your master. You now own a complete, zero-budget production pipeline: script → stills → motion → avatar → edit → sound.',
+            ],
+            keyTakeaways: [
+              'Three layers always: Dialogue (−6 to −10 dB), Ambient SFX (−20 to −28 dB), Music (ducked under speech).',
+              'Suno and Udio generate free custom cinematic scores from a text description.',
+              'Master export: 1080p/4K, 24 fps, high bitrate.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cse-d5-quiz',
+          questions: [
+            {
+              id: 'cse-d5-q1',
+              question: 'What is a J-Cut?',
+              options: [
+                'Cutting video and audio at the same moment',
+                'The next scene\'s audio starts playing before its video appears',
+                'Deleting the first frame of every clip',
+                'A jump scare edit',
+              ],
+              correctIndex: 1,
+              explanation: 'J-cuts lead with sound, pulling the viewer smoothly into the next scene before the picture changes.',
+            },
+            {
+              id: 'cse-d5-q2',
+              question: 'Why does Hollywood grade films Teal & Orange?',
+              options: [
+                'They are the cheapest colors to render',
+                'Skin tones are orange, so teal shadows make faces pop through complementary contrast',
+                'It is a legal requirement',
+                'Old cameras could only see those colors',
+              ],
+              correctIndex: 1,
+              explanation: 'Human skin sits in the orange spectrum; pushing backgrounds to the opposing teal maximises subject separation.',
+            },
+            {
+              id: 'cse-d5-q3',
+              question: 'At what level should ambient SFX sit relative to dialogue?',
+              options: [
+                'Louder than dialogue',
+                'Exactly equal to dialogue',
+                'Much quieter — around −20 to −28 dB',
+                'Ambient sound should never be used',
+              ],
+              correctIndex: 2,
+              explanation: 'Ambience supports the scene at −20 to −28 dB while dialogue leads at −6 to −10 dB.',
+            },
+          ],
+        },
+      },
+      // ── DAY 6 ────────────────────────────────────────────────
+      {
+        id: 'cse-d6',
+        title: 'Day 6: The Free Tools Vault — 50+ Tools, ₦0 Budget',
+        lessons: [
+          {
+            id: 'cse-d6-l1',
+            title: 'Vault 1 — 20 Free AI Video Generators (with Daily/Monthly Credits)',
+            content: [
+              'You do NOT need a dollar card to make cinema. Rotate these free tiers and you have effectively unlimited generation. <strong>Bookmark this page.</strong>',
+              '<strong>Cinematic engines:</strong><br>1. <a href="https://klingai.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Kling AI</a> — 6 free 1080p generations daily; best human motion &amp; physics.<br>2. <a href="https://aistudio.google.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Google Veo via AI Studio</a> — free monthly credits on every Google account; benchmark realism.<br>3. <a href="https://seedance.tv" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Seedance 2.0</a> — free daily credits, ~30-second renders, 1080p, no watermark.<br>4. <a href="https://lumalabs.ai/dream-machine" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Luma Dream Machine</a> — 30 free videos/month, no watermark on standard exports.<br>5. <a href="https://hailuoai.video" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Hailuo AI (MiniMax)</a> — generous free quota; industry-best camera tracking.<br>6. <a href="https://pika.art" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Pika</a> — ~30 daily credits; region animation (animate just the flame, keep the rest still).<br>7. <a href="https://runwayml.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Runway</a> — 125 signup credits; Motion Brush for surgical animation.<br>8. <a href="https://pixverse.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">PixVerse</a> — daily credits; dedicated anime/cyberpunk mode.<br>9. <a href="https://haiper.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Haiper AI</a> — rolling free HD credits; simplest interface for beginners.<br>10. <a href="https://www.vidu.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Vidu AI</a> — free trial generations; strong storytelling shots.',
+              '<strong>More engines &amp; wildcards:</strong><br>11. <a href="https://www.bing.com/create" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Bing Video Creator</a> — free short vertical video powered by Sora.<br>12. <a href="https://dreamina.capcut.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Dreamina (CapCut)</a> — free credits, tight CapCut integration.<br>13. <a href="https://vivago.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Vivago AI</a> — free text-to-video and image animation.<br>14. <a href="https://viggle.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Viggle AI</a> — free character rigging: map any person image onto any motion video.<br>15. <a href="https://www.meta.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Meta AI</a> — free image animation right inside WhatsApp/Instagram — perfect on mobile data.<br>16. <a href="https://chat.qwen.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Qwen Chat</a> — free sign-up text/image-to-video.<br>17. <a href="https://wan.video" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Wan (Alibaba)</a> — daily free credits + open weights for unlimited local runs.<br>18. <a href="https://creen.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Creen.ai</a> — no-login browser generation on multiple models.<br>19. <a href="https://giz.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">GizAI</a> — no-signup access to multiple video models with generous quotas.<br>20. <a href="https://ltx.studio" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">LTX Studio</a> — free tier of a full AI film studio (storyboard-to-video).',
+              '<strong>The rotation strategy:</strong> generate images free elsewhere first, then spend video credits on image-to-video (cheaper AND more consistent than text-to-video). Draft at 720p; upscale only winners.',
+            ],
+            keyTakeaways: [
+              'Rotating free daily/monthly credits across 20 engines = effectively unlimited generation at ₦0.',
+              'Image-to-video consumes fewer credits and gives cleaner results than text-to-video.',
+              'Kling for humans, Veo for realism, Seedance for speed, Luma for watermark-free exports.',
+            ],
+          },
+          {
+            id: 'cse-d6-l2',
+            title: 'Vault 2 — 16 Free Image & Avatar Creation Tools',
+            content: [
+              '<strong>AI image generators (your Midjourney replacements):</strong><br>21. <a href="https://leonardo.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Leonardo.ai</a> — 150 credits daily; AlbedoBase/AbsoluteReality models rival Midjourney v6.<br>22. <a href="https://www.bing.com/images/create" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Bing Image Creator</a> — free DALL·E 3, unlimited-ish boosts.<br>23. <a href="https://designer.microsoft.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Microsoft Designer</a> — free AI images + design layouts.<br>24. <a href="https://grok.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Grok Imagine</a> — free tier; grit, realism, complex human expressions.<br>25. <a href="https://lexica.art" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Lexica.art</a> — ~100 free images/month; dramatic cinematic lighting.<br>26. <a href="https://www.seaart.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">SeaArt.ai</a> — 150 daily stamina; built-in character consistency.<br>27. <a href="https://www.canva.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Canva AI</a> — free image gen + full design suite.<br>28. <a href="https://firefly.adobe.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Adobe Firefly</a> — free monthly generative credits.<br>29. <a href="https://ideogram.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Ideogram</a> — free daily credits; the best at rendering readable text inside images (posters, titles).',
+              '<strong>Avatar &amp; talking-head tools:</strong><br>30. <a href="https://www.hedra.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Hedra</a> — free daily minutes; most natural blinks and head motion.<br>31. <a href="https://huggingface.co/spaces/KwaiVGI/LivePortrait" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">LivePortrait</a> — 100% free open-source; act with your own face, map it to any character.<br>32. <a href="https://huggingface.co/spaces/vinthony/SadTalker" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">SadTalker</a> — free open-source photo-to-talking-head, no credit limits.<br>33. <a href="https://www.heygen.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">HeyGen</a> — free plan; studio-grade avatar clones with perfect lip-sync.<br>34. <a href="https://www.d-id.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">D-ID</a> — 14-day free trial credits; industry-standard news-style avatars.<br>35. <a href="https://www.synthesia.io" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Synthesia</a> — free basic plan; hyper-real corporate presenters.<br>36. <a href="https://vidifyaistudio.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">VidifyAI</a> — 3 free watermark-free exports/month with pre-loaded avatars.',
+              'Avatar pipeline reminder: generate the face (Leonardo/Grok) → clone the voice (ElevenLabs) → animate (Hedra/LivePortrait) → edit (CapCut). Four free tools, one professional digital human.',
+            ],
+            keyTakeaways: [
+              'Leonardo.ai + SeaArt cover consistent cinematic stills free every day.',
+              'LivePortrait and SadTalker are unlimited open-source avatar animators.',
+              'The full avatar pipeline (face → voice → animation → edit) costs exactly ₦0.',
+            ],
+          },
+          {
+            id: 'cse-d6-l3',
+            title: 'Vault 3 — 16 Free Voice, Music & Editing Tools + The Naija Money Setup',
+            content: [
+              '<strong>Voice &amp; music:</strong><br>37. <a href="https://elevenlabs.io" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">ElevenLabs</a> — 10,000 free characters/month, premium voices included.<br>38. <a href="https://www.capcut.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">CapCut AI Voice</a> — unlimited free text-to-speech, multiple accents, no watermark.<br>39. <a href="https://suno.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Suno</a> — 50 free credits daily ≈ 10 full songs or film scores.<br>40. <a href="https://www.udio.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Udio</a> — free monthly credits; high-fidelity cinematic soundscapes.<br>41. <a href="https://podcast.adobe.com/enhance" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Adobe Enhance Speech</a> — 1 free hour daily; makes phone recordings sound studio-grade.',
+              '<strong>Editing &amp; repurposing suites:</strong><br>42. <a href="https://www.capcut.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">CapCut</a> — the free master editor: AI cuts, stabilization, upscaling, captions, script-to-video.<br>43. <a href="https://www.blackmagicdesign.com/products/davinciresolve" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">DaVinci Resolve</a> — Hollywood-grade color grading, genuinely free desktop app.<br>44. <a href="https://invideo.io" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">InVideo AI</a> — 10 free AI minutes/week; prompt-to-finished-video.<br>45. <a href="https://www.opus.pro" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">OpusClip</a> — free credits; auto-extracts the 10 most viral clips from long video.<br>46. <a href="https://vidyo.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Vidyo.ai</a> — 75 free minutes/month; podcasts → Reels automatically.<br>47. <a href="https://www.veed.io" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">VEED.io</a> — free plan; auto-subtitles and AI voices in the browser.<br>48. <a href="https://pictory.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Pictory</a> — 3 free projects; blog-link-to-video.<br>49. <a href="https://www.flexclip.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">FlexClip</a> — free plan; marketing and explainer templates.<br>50. <a href="https://www.animaker.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Animaker</a> — free plan; cartoon and educational animation.<br>51. <a href="https://fliki.ai" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Fliki</a> — free plan; AI voice + video in one flow.<br>52. <a href="https://www.adobe.com/express" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Adobe Express</a> — free plan; fast social video + AI tools.',
+              '<strong>The Naija money setup:</strong> open a free virtual USD account with <a href="https://geegpay.africa" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Geegpay</a>, <a href="https://grey.co" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Grey.co</a>, or <a href="https://www.payoneer.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Payoneer</a> so you can receive dollars from global clients — and pay for premium tools later from earnings, never from savings. <strong>Data-saving rule:</strong> use browser-based editors (CapCut Online, Canva) so you only download the final cut, and always draft in low-res before upscaling.',
+            ],
+            keyTakeaways: [
+              'CapCut AI Voice = unlimited free voiceovers; Suno = free custom film scores daily.',
+              'DaVinci Resolve gives you genuine Hollywood color grading for free.',
+              'Geegpay, Grey.co, or Payoneer give you a free USD account to receive global client payments.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cse-d6-quiz',
+          questions: [
+            {
+              id: 'cse-d6-q1',
+              question: 'What is the smartest free-tier strategy for generating lots of video?',
+              options: [
+                'Pay for every tool immediately',
+                'Use only one tool until its credits run out forever',
+                'Rotate daily/monthly free credits across multiple engines and prefer image-to-video',
+                'Only generate at 4K to save time',
+              ],
+              correctIndex: 2,
+              explanation: 'Rotating Kling, Seedance, Luma, Pika and others — feeding them pre-made images — gives near-unlimited output at ₦0.',
+            },
+            {
+              id: 'cse-d6-q2',
+              question: 'Which tools give you UNLIMITED free avatar animation because they are open-source?',
+              options: [
+                'HeyGen and Synthesia',
+                'LivePortrait and SadTalker (via Hugging Face)',
+                'D-ID and Runway',
+                'Midjourney and Veo 3',
+              ],
+              correctIndex: 1,
+              explanation: 'LivePortrait and SadTalker are open-source Hugging Face apps with no credit limits at all.',
+            },
+            {
+              id: 'cse-d6-q3',
+              question: 'Why open a Geegpay, Grey.co, or Payoneer account?',
+              options: [
+                'To watch more videos',
+                'To receive USD payments from global clients with a free virtual dollar account',
+                'It is required to use CapCut',
+                'To get free data',
+              ],
+              correctIndex: 1,
+              explanation: 'A free virtual USD account lets Nigerian creators receive Upwork/Fiverr earnings and pay for tools from profit.',
+            },
+          ],
+        },
+      },
+      // ── DAY 7 ────────────────────────────────────────────────
+      {
+        id: 'cse-d7',
+        title: 'Day 7: Capstone Film + Turning Skills into Dollars',
+        lessons: [
+          {
+            id: 'cse-d7-l1',
+            title: 'Capstone: Produce the "Republic of Judas" Teaser',
+            content: [
+              'Your graduation project is a real movie teaser. <strong>Logline:</strong> when a corrupt shadow network hands a West African nation to a ruthless warlord, a disgraced elite operative returns home alone to wage a one-man war of liberation. Tone: John Wick meets Sicario — 8K look, anamorphic lenses, neon contrasts against rain-slicked African streets, deep shadows, volumetric smoke.',
+              '<strong>Your hero:</strong> Major Michael Chekwa, 34 — clean-shaven bald head, sharp jawline, athletic build, commanding military posture. <strong>Your villain:</strong> Al-Gamil "The Architect," who seized the state through cyber-terror and blackouts. Produce ONE of these three shots as a finished 5-second cinematic clip: (1) <em>The Descent</em> — night HALO jump through storm clouds onto a comms tower, close-up of rain on Michael\'s face; (2) <em>The Neon Corridor</em> — red emergency light, haze, one unbroken tracking shot of close-quarters combat; (3) <em>The Confrontation</em> — penthouse blackout, city burning through glass walls.',
+              'Use the master production prompt: <em>"8K cinematic film still, ultra-realistic. A powerful 34-year-old military officer, clean-shaven bald head, athletic muscular physique, intense disciplined expression, standing in a rain-slicked neon-lit West African city street at night. Volumetric smoke, anamorphic lens flare, high contrast shadows, photorealistic textures, dramatic cinematic lighting --ar 21:9 --style raw"</em> — then run the full pipeline: still → image-to-video → ElevenLabs VO → CapCut grade → three-layer sound. Export at 1080p/24fps. That clip IS your showreel opener.',
+            ],
+            keyTakeaways: [
+              'The capstone runs your complete pipeline: script → still → motion → voice → edit → sound.',
+              'Character consistency (--cref) and one locked style guide make a multi-shot teaser feel like one film.',
+              'A single polished 5-second cinematic shot is a legitimate portfolio piece for client pitches.',
+            ],
+          },
+          {
+            id: 'cse-d7-l2',
+            title: 'Monetization — Portfolio, Gigs & High-Ticket Retainers',
+            content: [
+              '<strong>Package the showreel:</strong> stitch your best 3–5 course clips into a 30-second reel (CapCut), post it on a free portfolio page, and pin it on your social profiles. Lead with your strongest 3 seconds — clients decide instantly.',
+              '<strong>Land the first gigs:</strong> on <a href="https://www.upwork.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Upwork</a> and <a href="https://www.fiverr.com" target="_blank" rel="noopener" class="text-[#0A66C2] underline font-semibold">Fiverr</a>, pitch three specific services: AI video ads, avatar brand presenters, and cinematic product teasers. Cold-outreach template: <em>"I make cinematic AI video ads that would cost $5,000 with a film crew — here is a 30-second sample I made for a brand like yours. First one for you is $150."</em> Local quick wins while international gigs build: Lagos/Abuja real-estate walk-through teasers, music visualizers for Nigerian artists, and faceless TikTok/YouTube channels (history, motivation, finance) powered by your free-tool pipeline.',
+              '<strong>Scale to retainers:</strong> after 2–3 one-off projects, offer the monthly package — "8 cinematic shorts per month for your brand" — a predictable retainer paid in USD to your Geegpay/Payoneer account. One-off gigs feed you today; retainers build the studio. You are no longer learning AI video. You are selling it.',
+            ],
+            keyTakeaways: [
+              'Lead every pitch with a 30-second showreel — your strongest 3 seconds first.',
+              'Three sellable services: AI video ads, avatar presenters, cinematic product teasers.',
+              'Graduate from one-off gigs to monthly USD retainers for predictable income.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'cse-d7-quiz',
+          questions: [
+            {
+              id: 'cse-d7-q1',
+              question: 'What does the capstone project require you to do?',
+              options: [
+                'Only write a script',
+                'Run the complete pipeline — still, motion, voice, edit, and sound — into one finished cinematic clip',
+                'Buy a camera',
+                'Hire actors',
+              ],
+              correctIndex: 1,
+              explanation: 'The Republic of Judas teaser exercises every skill from Days 1–5 in a single deliverable.',
+            },
+            {
+              id: 'cse-d7-q2',
+              question: 'Which three services should you pitch first as an AI video freelancer?',
+              options: [
+                'Logo design, data entry, translation',
+                'AI video ads, avatar brand presenters, and cinematic product teasers',
+                'Wedding photography only',
+                'Website hosting',
+              ],
+              correctIndex: 1,
+              explanation: 'These three map directly to the skills built in this course and command strong freelance rates.',
+            },
+            {
+              id: 'cse-d7-q3',
+              question: 'What is the path to stable monthly income from AI video?',
+              options: [
+                'Keep doing random one-off gigs forever',
+                'Transition clients to monthly retainer packages (e.g., 8 cinematic shorts per month)',
+                'Lower your price until it is free',
+                'Stop taking clients',
+              ],
+              correctIndex: 1,
+              explanation: 'Retainers convert one-off buyers into predictable recurring USD revenue.',
             },
           ],
         },

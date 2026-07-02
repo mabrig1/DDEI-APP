@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { COURSES } = require('../data/courses');
 
 async function requireActiveAccess(req, res, next) {
   const user = await User.findById(req.userId);
@@ -9,9 +10,24 @@ async function requireActiveAccess(req, res, next) {
     await user.save();
   }
 
+  const courseId = req.params.id;
+  const course = COURSES.find((c) => c.id === courseId);
+  const hasPurchased = (user.purchasedCourses || []).some((p) => p.courseId === courseId);
+
+  if (course && course.paidOnly) {
+    if (!hasPurchased && user.scholarship !== 'full') {
+      return res.status(402).json({
+        message: `This Special Edition course has no free trial. Pay ₦${(course.price || 0).toLocaleString()} once to unlock it instantly.`,
+        upgradeRequired: true,
+        purchaseRequired: true,
+        purchasePlan: course.purchasePlan || null,
+        courseId,
+      });
+    }
+    return next();
+  }
+
   if (!user.hasActiveAccess()) {
-    const courseId = req.params.id;
-    const hasPurchased = (user.purchasedCourses || []).some((p) => p.courseId === courseId);
     if (!hasPurchased) {
       return res.status(402).json({
         message: 'Your free 7-day trial has ended. Upgrade to Premium or purchase this course to continue.',

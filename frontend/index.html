@@ -1290,25 +1290,38 @@
         function specialCourseCardHTML(course) {
             const user = authUser();
             const hasPurchased = user && user.purchasedCourses && user.purchasedCourses.some(p => p.courseId === course.id);
+            const displayPrice = (course.earlyBirdPrice || course.price || 0).toLocaleString();
             const priceTag = hasPurchased
                 ? `<div class="text-center bg-white/10 rounded-2xl p-4"><p class="text-emerald-300 font-semibold text-sm"><i class="fa-solid fa-circle-check mr-1"></i>Enrolled</p><p class="text-white/60 text-xs mt-1">Full access + certificate</p></div>`
                 : `<div class="text-center bg-white/10 rounded-2xl p-4">
                     ${course.earlyBirdPrice ? `<p class="text-white/60 text-xs line-through mb-1">₦${course.price ? course.price.toLocaleString() : ''}</p>` : ''}
-                    <p class="text-3xl font-bold">₦${(course.earlyBirdPrice || course.price || 0).toLocaleString()}</p>
+                    <p class="text-3xl font-bold">₦${displayPrice}</p>
                     ${course.earlyBirdPrice ? '<p class="text-xs text-amber-300 font-semibold mt-1">Early Bird Price</p>' : ''}
-                    <p class="text-white/60 text-xs mt-1">Full course + certificate</p>
+                    <p class="text-white/60 text-xs mt-1">${course.paidOnly ? 'One-time payment — instant access' : 'Full course + certificate'}</p>
                    </div>`;
+            const purchaseBtn = course.purchasePlan
+                ? `<button onclick="startCoursePurchase('${course.purchasePlan}', '${course.id}')" class="w-full py-3 bg-amber-400 text-slate-900 font-bold rounded-2xl hover:bg-amber-300 transition">${course.paidOnly ? `<i class="fa-solid fa-bolt mr-1"></i> Pay ₦${displayPrice} &amp; Start Now` : `Enroll for ₦${displayPrice}`}</button>`
+                : '';
             const ctaButtons = hasPurchased
                 ? `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition">Continue Learning</button>`
-                : `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition"><i class="fa-solid fa-play mr-1"></i> Start Free Week</button>
-                   <button onclick="startCoursePurchase('prompt-engineering-earlybird', '${course.id}')" class="w-full py-3 bg-amber-400 text-slate-900 font-bold rounded-2xl hover:bg-amber-300 transition">Enroll for ₦${(course.earlyBirdPrice || course.price || 0).toLocaleString()}</button>`;
+                : course.paidOnly
+                    ? purchaseBtn
+                    : `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition"><i class="fa-solid fa-play mr-1"></i> Start Free Week</button>
+                       ${purchaseBtn}`;
+            const trialBadge = course.paidOnly
+                ? '<span class="text-xs font-bold bg-rose-400 text-white uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-bolt mr-1"></i>Pay &amp; Start — No Trial</span>'
+                : '<span class="text-xs font-bold bg-emerald-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-gift mr-1"></i>1-Week Free Trial</span>';
+            const durationBadge = course.durationDays
+                ? `<span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-regular fa-calendar mr-1"></i>${course.durationDays}-Day Intensive</span>`
+                : '';
             return `
                 <div class="md:col-span-2 skill-card bg-gradient-to-br from-[#0A66C2] to-[#07408a] text-white rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start">
                     <div class="flex-1">
                         <div class="flex flex-wrap items-center gap-2 mb-3">
                             <span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full">${course.category}</span>
                             ${course.isCertified ? '<span class="text-xs font-bold bg-amber-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-certificate mr-1"></i>Certificate</span>' : ''}
-                            <span class="text-xs font-bold bg-emerald-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-gift mr-1"></i>1-Week Free Trial</span>
+                            ${trialBadge}
+                            ${durationBadge}
                             <span class="text-xs font-bold bg-purple-400 text-white uppercase tracking-wide px-3 py-1 rounded-full">Featured</span>
                         </div>
                         <h4 class="font-bold text-2xl leading-snug">${course.title}</h4>
@@ -1395,6 +1408,9 @@
 
             if (user && user.activeCourseId) {
                 const active = cachedCourses.find((c) => c.id === user.activeCourseId);
+                const specialCards = cachedCourses
+                    .filter((c) => c.specialCourse && c.id !== user.activeCourseId)
+                    .map(specialCourseCardHTML).join('');
                 grid.innerHTML = `
                     <div class="md:col-span-2 bg-white border-2 border-[#0A66C2] rounded-3xl p-6">
                         <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">Your Active Course</span>
@@ -1406,18 +1422,21 @@
                         </div>
                         <p class="text-xs text-slate-400 mt-3">Staying focused on one course at a time helps you finish faster. Don't see the course you're looking for? Click "Browse Full Catalog &amp; Switch" above — your progress is saved per course, so switching back later won't lose anything.</p>
                         ${trialStatusHTML(user)}
-                    </div>`;
+                    </div>${specialCards}`;
                 return;
             }
 
             if (user) {
+                const specialCards = cachedCourses
+                    .filter((c) => c.specialCourse)
+                    .map(specialCourseCardHTML).join('');
                 grid.innerHTML = `
                     <div class="md:col-span-2 text-center bg-white border rounded-3xl p-8">
                         <h4 class="font-semibold text-lg mb-2">Choose your first course</h4>
                         <p class="text-sm text-slate-500 mb-4">Pick one course to focus on so you're not overwhelmed — you can switch later.</p>
                         <button onclick="openChooseCourseModal()" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Browse Complete Catalog &amp; Choose a Course</button>
                         ${trialStatusHTML(user)}
-                    </div>`;
+                    </div>${specialCards}`;
                 return;
             }
 
@@ -1427,9 +1446,13 @@
         function courseChooseCardHTML(course) {
             const badges = [];
             if (course.isCertified) badges.push('<span class="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-certificate mr-1"></i>Certificate</span>');
-            if (course.specialCourse) badges.push('<span class="text-xs font-bold bg-blue-100 text-[#0A66C2] px-2 py-0.5 rounded-full">1-Wk Free Trial</span>');
+            if (course.paidOnly) {
+                badges.push('<span class="text-xs font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-bolt mr-1"></i>Pay &amp; Start — No Trial</span>');
+            } else if (course.specialCourse) {
+                badges.push('<span class="text-xs font-bold bg-blue-100 text-[#0A66C2] px-2 py-0.5 rounded-full">1-Wk Free Trial</span>');
+            }
             const priceHtml = course.price
-                ? `<p class="text-xs text-slate-500 mt-2">${course.earlyBirdPrice ? `<span class="line-through">₦${course.price.toLocaleString()}</span> <span class="text-amber-600 font-semibold">₦${course.earlyBirdPrice.toLocaleString()} early bird</span>` : `₦${course.price.toLocaleString()}`}</p>`
+                ? `<p class="text-xs text-slate-500 mt-2">${course.earlyBirdPrice ? `<span class="line-through">₦${course.price.toLocaleString()}</span> <span class="text-amber-600 font-semibold">₦${course.earlyBirdPrice.toLocaleString()} early bird</span>` : `₦${course.price.toLocaleString()}${course.paidOnly ? ' one-time — instant access' : ''}`}</p>`
                 : '';
             return `
                 <div class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
@@ -1467,6 +1490,12 @@
             } catch (err) {
                 closeModal('chooseCourseModal');
                 if (err.status === 402) {
+                    if (err.data && err.data.purchaseRequired && err.data.purchasePlan) {
+                        if (confirm(`${err.message}\n\nProceed to secure payment now?`)) {
+                            startCoursePurchase(err.data.purchasePlan, err.data.courseId || courseId);
+                        }
+                        return;
+                    }
                     showUpgradePrompt(err.message);
                     return;
                 }
@@ -1489,6 +1518,12 @@
                 }
             } catch (err) {
                 if (err.status === 402) {
+                    if (err.data && err.data.purchaseRequired && err.data.purchasePlan) {
+                        if (confirm(`${err.message}\n\nProceed to secure payment now?`)) {
+                            startCoursePurchase(err.data.purchasePlan, err.data.courseId || courseId);
+                        }
+                        return;
+                    }
                     showUpgradePrompt(err.message);
                     return;
                 }
