@@ -7781,5 +7781,919 @@ const COURSES = [
       },
     ],
   },
+
+  // ============================================================
+  // COURSE — Master Class in Web3: Architecture, Development & Emerging Ecosystems
+  // 12-week project-driven master class for experienced engineers.
+  // ============================================================
+  {
+    id: 'web3-master-class',
+    slug: 'web3-master-class',
+    title: 'Master Class in Web3: Architecture, Development & Emerging Ecosystems',
+    description:
+      'A rigorous 12-week, project-driven master class for engineers: cryptographic foundations, Solidity & Foundry, full-stack dApps, security auditing, DeFi, DAOs, Layer 2 scaling, AI-agent economies, ZKML and DePIN — finishing with a shipped, audited capstone dApp.',
+    skillIds: ['web-development', 'ai-tools-automation'],
+    category: 'Web3 & Blockchain Development',
+    estimatedHours: 36,
+    modules: [
+      // ── WEEK 1 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w1',
+        title: 'Week 1: Paradigms of the Web & Distributed Consensus',
+        lessons: [
+          {
+            id: 'w3m-w1-l1',
+            title: 'From Web2 to Web3 — Architecture, P2P Networks & Consensus',
+            content: [
+              'The web has evolved through three paradigms: Web1 was read-only static pages; Web2 added read/write but concentrated data and power in centralised platforms; Web3 adds ownership — users hold their identity, assets, and data as cryptographic keys rather than rows in a company database. Architecturally this means replacing trusted cloud backends with peer-to-peer networks: distributed hash tables (DHTs) locate data across thousands of nodes, and gossip protocols propagate transactions and blocks so no single server is a point of failure or censorship.',
+              'Agreement without a central authority is achieved through consensus algorithms. Proof of Work (Nakamoto consensus) makes rewriting history economically irrational by requiring real energy expenditure per block; Proof of Stake (Ethereum\'s Casper FFG + LMD-GHOST fork choice) replaces energy with staked capital that can be slashed for dishonesty. A crucial distinction is finality: PoW offers probabilistic finality (a block is "final enough" after sufficient confirmations), while modern PoS systems add deterministic finality through checkpoints and finality gadgets — once finalised, a block cannot be reverted without destroying at least a third of all staked ETH.',
+              'The Ethereum Virtual Machine (EVM) is the execution environment you will target all course long. Its account model has two account types — externally owned accounts (controlled by private keys) and contract accounts (controlled by code) — and global state is stored in a Merkle-Patricia state trie whose root hash is committed into every block header. Understand this triad — accounts, transactions mutating state, and blocks batching transactions — and every later topic (gas, storage slots, rollups) falls into place.',
+            ],
+            keyTakeaways: [
+              'Web3 = read/write/own: users hold identity and assets as keys, not platform database rows.',
+              'PoW buys security with energy; PoS with slashable staked capital — and adds deterministic finality via checkpoints.',
+              'The EVM state is a Merkle-Patricia trie of accounts; transactions mutate it, blocks batch and commit it.',
+            ],
+          },
+          {
+            id: 'w3m-w1-l2',
+            title: 'Lab: Run a Local Chain with Foundry (anvil + cast + viem)',
+            content: [
+              'Set up your environment: on Windows use WSL, otherwise a native Unix shell. Install Node.js v20+ and Foundry via the official installer script (foundryup). Foundry gives you four tools you will live in for 12 weeks: forge (compile/test/deploy), cast (a Swiss-army CLI for chain interaction), anvil (a local Ethereum node), and chisel (a Solidity REPL).',
+              'Start a local chain with "anvil --port 8545" — it boots instantly with 10 funded test accounts and prints their private keys. Now interact with it using cast: "cast block-number --rpc-url http://localhost:8545" reads the tip, "cast balance <address>" checks an account, and "cast send --private-key <key> <to> --value 1ether" moves funds. Deploy a minimal HelloWorld contract with "forge create" and call it with "cast call" — congratulations, you have run the entire lifecycle of a blockchain application on your own machine.',
+              'Assignment: write a TypeScript script that connects to your local node with the viem library (createPublicClient + http transport), reads the latest block number, and prints it. This tiny script is the seed of every frontend you will build later — the pattern of "client connects to RPC, reads state, reacts" never changes, only the sophistication grows. Reading: Mastering Ethereum chapters 1–3 and 7, plus the "Introduction to Ethereum" page on ethereum.org.',
+            ],
+            keyTakeaways: [
+              'Foundry = forge (build/test), cast (CLI interaction), anvil (local node), chisel (REPL).',
+              'anvil gives you an instant local Ethereum with funded accounts — the fastest feedback loop in Web3.',
+              'The viem pattern (client → RPC → read state) is the foundation of every dApp frontend you will ever write.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w1-quiz',
+          questions: [
+            {
+              id: 'w3m-w1-q1',
+              question: 'What does the "own" in Web3\'s read/write/own paradigm refer to?',
+              options: [
+                'Owning shares in tech companies',
+                'Users holding identity, assets, and data as cryptographic keys instead of platform database entries',
+                'Owning physical servers',
+                'Owning a domain name',
+              ],
+              correctIndex: 1,
+              explanation: 'Web3 shifts custody of identity and assets from centralised platforms to user-held cryptographic keys.',
+            },
+            {
+              id: 'w3m-w1-q2',
+              question: 'What is the key difference between probabilistic and deterministic finality?',
+              options: [
+                'There is no difference',
+                'Probabilistic finality grows stronger with confirmations; deterministic finality makes finalised blocks irreversible via checkpoints',
+                'Deterministic finality is slower and weaker',
+                'Probabilistic finality only exists on testnets',
+              ],
+              correctIndex: 1,
+              explanation: 'PoW reorgs get exponentially unlikely with depth; PoS finality gadgets make checkpointed blocks irreversible without massive slashing.',
+            },
+            {
+              id: 'w3m-w1-q3',
+              question: 'Which Foundry tool runs a local Ethereum node with funded test accounts?',
+              options: ['forge', 'cast', 'anvil', 'chisel'],
+              correctIndex: 2,
+              explanation: 'anvil boots a local chain instantly with 10 funded accounts — your development sandbox.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 2 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w2',
+        title: 'Week 2: Cryptographic Primitives & Digital Identity',
+        lessons: [
+          {
+            id: 'w3m-w2-l1',
+            title: 'ECDSA, Keccak-256, HD Wallets & Transaction Anatomy',
+            content: [
+              'Ethereum identity rests on two primitives. Asymmetric cryptography (ECDSA over the secp256k1 curve) lets you sign with a private key and lets anyone verify with the matching public key — your address is simply the last 20 bytes of the Keccak-256 hash of your public key. Keccak-256 hashing also gives every transaction and block a unique, tamper-evident ID: change one byte anywhere and the hash changes completely.',
+              'Nobody manages raw keys by hand. BIP-39 encodes entropy as a human-readable mnemonic (12 or 24 words), and BIP-44 defines a hierarchical-deterministic derivation path — m/44\'/60\'/0\'/0/0 for the first Ethereum account — so one seed phrase deterministically regenerates unlimited accounts across chains. This is why "write down your seed phrase" IS the backup: the words are the wallet.',
+              'A raw Ethereum transaction has a precise anatomy: to (recipient), value (wei to transfer), data (calldata for contract calls), nonce (per-account ordering counter that prevents replay), gas parameters, and the v/r/s signature components. Since EIP-1559, gas pricing splits into a protocol-set base fee (burned) plus a priority fee (tip to the validator); your maxFeePerGas caps the total. Understanding every field pays off constantly — debugging failed transactions is 80% of early Web3 development.',
+            ],
+            keyTakeaways: [
+              'Your address = last 20 bytes of keccak256(publicKey); signatures prove control without revealing the private key.',
+              'BIP-39 mnemonics + BIP-44 derivation paths regenerate unlimited accounts from one seed phrase.',
+              'EIP-1559 gas = burned base fee + validator tip; the nonce orders transactions and prevents replays.',
+            ],
+          },
+          {
+            id: 'w3m-w2-l2',
+            title: 'Lab: Build a Wallet CLI in TypeScript',
+            content: [
+              'Build a command-line wallet tool in TypeScript with three commands. First: generate — use the bip39 package to create a fresh mnemonic and derive an Ethereum address from it with viem or ethers (HDNodeWallet.fromPhrase). Second: sign — take an arbitrary message, sign it with the derived private key, then recover the signer address from the signature and prove it matches. Third: hash — print the keccak-256 hash of any string input.',
+              'Then move from theory to reality: open Etherscan, pick any recent mainnet transaction, and map every field you see — from, to, value, input data, nonce, gas limit, base fee, priority fee, and the transaction hash — back to the anatomy from the previous lesson. Identify whether it was a plain ETH transfer (empty data) or a contract call (4-byte function selector followed by ABI-encoded arguments).',
+              'Assignment: extend your CLI so the hash command also explains, in a printed sentence, the role hashing plays in producing transaction IDs. Reading: the BIP-39 and BIP-44 specifications, and the ethereum.org "Gas and fees" page. By the end of this week you should be able to explain to a colleague exactly why a signature proves ownership and where a transaction fee actually goes.',
+            ],
+            keyTakeaways: [
+              'A signed message can be verified by recovering the signer address — this is how wallets prove ownership.',
+              'Contract calls are just transactions whose data field carries a function selector + ABI-encoded arguments.',
+              'Every transaction ID is a keccak-256 hash — tamper-evidence is built into the identifier itself.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w2-quiz',
+          questions: [
+            {
+              id: 'w3m-w2-q1',
+              question: 'How is an Ethereum address derived?',
+              options: [
+                'It is randomly assigned by the network',
+                'It is the last 20 bytes of the Keccak-256 hash of the public key',
+                'It is the private key encoded in hex',
+                'It is chosen by the user like a username',
+              ],
+              correctIndex: 1,
+              explanation: 'Address = last 20 bytes of keccak256(publicKey) — deterministically derived, never registered.',
+            },
+            {
+              id: 'w3m-w2-q2',
+              question: 'What does the nonce field in a transaction do?',
+              options: [
+                'Sets the transaction fee',
+                'Orders transactions per account and prevents replay attacks',
+                'Encrypts the payload',
+                'Selects which validator processes it',
+              ],
+              correctIndex: 1,
+              explanation: 'The nonce is a per-account counter — each transaction must use the next value, preventing reordering and replays.',
+            },
+            {
+              id: 'w3m-w2-q3',
+              question: 'Under EIP-1559, what happens to the base fee?',
+              options: [
+                'It is paid to the validator',
+                'It is refunded to the sender',
+                'It is burned (destroyed)',
+                'It funds the Ethereum Foundation',
+              ],
+              correctIndex: 2,
+              explanation: 'The base fee is burned; only the priority fee (tip) goes to the validator.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 3 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w3',
+        title: 'Week 3: Tokenization Standards & Asset Paradigms',
+        lessons: [
+          {
+            id: 'w3m-w3-l1',
+            title: 'ERC-20, ERC-721, ERC-1155 & Real-World Asset Tokenisation',
+            content: [
+              'Token standards are shared interfaces that make assets composable across every wallet, exchange, and protocol. ERC-20 defines fungible tokens with six core functions — totalSupply, balanceOf, transfer, approve, transferFrom, allowance — where the approve/transferFrom pattern is what lets smart contracts (like exchanges) move tokens on your behalf. ERC-721 defines non-fungible tokens: each token ID has exactly one owner (ownerOf), safeTransferFrom guards against tokens being stranded in contracts that cannot handle them, and a metadata URI points to the token\'s name, description, image and attributes. ERC-1155 unifies both: one contract manages many token types with batch transfers, slashing gas for game items and editions.',
+              'Real-world asset (RWA) tokenisation wraps off-chain assets — property, treasury bills, invoices — in on-chain tokens. The engineering is the easy part; the hard part is the legal wrapper (an entity that legally binds token ownership to asset claims), compliance mechanics (transfer restrictions, allowlists, KYC gates baked into the token contract), and fractionalisation (splitting one high-value asset into many affordable shares). Regulation varies sharply by jurisdiction, so production RWA systems are always co-designed with counsel.',
+              'NFT metadata should not live on a centralised server that can vanish. IPFS provides content addressing: a file\'s identifier (CID) is derived from its content hash, so the link is permanently verifiable — if the content changes, the CID changes. Because IPFS nodes only keep what someone pins, production projects use pinning services (Pinata, web3.storage) to guarantee persistence.',
+            ],
+            keyTakeaways: [
+              'ERC-20 = fungible (approve/transferFrom enables DeFi); ERC-721 = unique tokens; ERC-1155 = batch multi-token.',
+              'RWA tokenisation is 20% Solidity, 80% legal wrappers, compliance restrictions, and fractional structure.',
+              'IPFS CIDs are content hashes — verifiable forever, but persistence requires pinning.',
+            ],
+          },
+          {
+            id: 'w3m-w3-l2',
+            title: 'Lab: Ship a Generative NFT Collection on Sepolia',
+            content: [
+              'Design a small generative collection — ten profile-picture images with structured metadata JSON per token: name, description, image (an ipfs:// URI), and an attributes array of trait_type/value pairs. This attribute schema is what marketplaces like OpenSea parse to display rarity.',
+              'Upload the images to IPFS first via the Pinata SDK, capture their CIDs, write those CIDs into the metadata JSON files, then upload the metadata folder — one directory CID now addresses all ten token metadata files. This two-step dance (assets first, then metadata referencing them) is universal in NFT deployment.',
+              'Write an ERC-721 contract (inherit OpenZeppelin\'s implementation) that stores a base URI pointing at your metadata directory and appends the token ID per token. Deploy to Sepolia with forge script, mint token #1 to yourself, and complete the assignment: verify on a public IPFS gateway that your minted token\'s tokenURI resolves to the correct JSON and the JSON\'s image CID renders your artwork. Reading: the official ERC-20/721/1155 proposals and the IPFS docs on CIDs.',
+            ],
+            keyTakeaways: [
+              'Upload flow: images → CIDs → metadata JSON referencing them → directory CID → contract base URI.',
+              'The attributes array in metadata JSON is what marketplaces parse for traits and rarity.',
+              'Always verify end-to-end: minted token → tokenURI → IPFS gateway → correct JSON → rendered image.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w3-quiz',
+          questions: [
+            {
+              id: 'w3m-w3-q1',
+              question: 'What does the ERC-20 approve/transferFrom pattern enable?',
+              options: [
+                'Free transfers with no gas',
+                'Smart contracts (like exchanges) moving tokens on the holder\'s behalf up to an allowance',
+                'Minting unlimited tokens',
+                'Reversing mistaken transfers',
+              ],
+              correctIndex: 1,
+              explanation: 'approve grants an allowance; transferFrom lets the approved contract spend it — the foundation of all DeFi.',
+            },
+            {
+              id: 'w3m-w3-q2',
+              question: 'Why is IPFS preferred over a normal web server for NFT metadata?',
+              options: [
+                'It is always faster',
+                'Content addressing: the CID is derived from the content hash, so the link is permanently verifiable',
+                'It requires no internet connection',
+                'It automatically generates artwork',
+              ],
+              correctIndex: 1,
+              explanation: 'A CID changes if content changes — so an IPFS link can never silently serve different metadata.',
+            },
+            {
+              id: 'w3m-w3-q3',
+              question: 'What is usually the HARDEST part of real-world asset tokenisation?',
+              options: [
+                'Writing the ERC-20 contract',
+                'The legal wrapper, compliance restrictions, and jurisdiction-specific regulation',
+                'Choosing a token name',
+                'Deploying to testnet',
+              ],
+              correctIndex: 1,
+              explanation: 'The Solidity is standard; binding token ownership to legal asset claims under regulation is the real challenge.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 4 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w4',
+        title: 'Week 4: Smart Contract Engineering with Solidity',
+        lessons: [
+          {
+            id: 'w3m-w4-l1',
+            title: 'Production Solidity — Types, Data Locations, Access Control, Events & Errors',
+            content: [
+              'Solidity\'s core types map directly to EVM storage: uint (usually uint256), address, mapping (key-value storage with no iteration), struct (grouped fields), and enum (named constants). What separates professionals from tutorial-followers is mastery of data locations: storage is persistent contract state (expensive — ~20,000 gas per new slot write), memory is a temporary scratchpad per call, and calldata is the cheapest — a read-only view into the transaction input, ideal for external function parameters.',
+              'Access control has two layers. Visibility keywords (public, external, internal, private) control who can CALL a function — external is cheaper than public for functions never called internally. Custom modifiers control who is AUTHORISED: an onlyOwner modifier checks the caller before the function body runs. Never confuse private with secret: all contract state is publicly readable on-chain; private only prevents other contracts from accessing it directly.',
+              'Events are the contract\'s logbook: emitted events are stored cheaply in transaction logs (not contract storage), and indexed parameters make them searchable — frontends and indexers rebuild entire application state from event history. For failures, modern Solidity prefers custom errors (error NotOwner()) over require strings: they revert with a 4-byte selector instead of storing an ASCII message, saving significant deployment and revert gas.',
+            ],
+            keyTakeaways: [
+              'storage = persistent and expensive; memory = per-call scratchpad; calldata = cheapest read-only input.',
+              'Visibility controls who can call; modifiers control who is authorised; private is NOT secret on a public chain.',
+              'Events are the cheap, indexable logbook frontends rely on; custom errors beat require strings on gas.',
+            ],
+          },
+          {
+            id: 'w3m-w4-l2',
+            title: 'Lab: BuyMeACoffee — Build, Test & Deploy with Foundry',
+            content: [
+              'Implement a BuyMeACoffee contract: a payable buyCoffee(string message) function that accepts ETH and emits a NewCoffee event carrying the sender, message, and block timestamp; and a withdraw function restricted to the owner that transfers the full balance out. Initialise the owner in the constructor as the deployer.',
+              'Testing with forge test is where Foundry shines — tests are written in Solidity itself. Write positive tests (a contribution succeeds, the event is emitted with expected values via vm.expectEmit, the balance increases) and negative tests (withdraw from a non-owner address reverts — use vm.prank to impersonate callers and vm.expectRevert to assert the failure). Aim for both paths of every function.',
+              'Deploy to Sepolia with forge script and a CREATE2 salt for a deterministic address — the same bytecode and salt always produce the same address, which is how factories and cross-chain deployments keep addresses predictable. Assignment: add a rule that messages must be longer than 10 characters, enforced with a custom error MessageTooShort(uint256 provided, uint256 required), and cover it with a test. Reading: Solidity docs ("Layout of a source file", "Units and globals") and the Foundry Book chapter "Testing with Forge".',
+            ],
+            keyTakeaways: [
+              'Foundry tests are Solidity: vm.prank impersonates callers, vm.expectRevert and vm.expectEmit assert outcomes.',
+              'Every function needs positive AND negative tests — the negative ones catch access-control bugs.',
+              'CREATE2 gives deterministic deployment addresses from bytecode + salt.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w4-quiz',
+          questions: [
+            {
+              id: 'w3m-w4-q1',
+              question: 'Which data location is cheapest for a read-only external function parameter?',
+              options: ['storage', 'memory', 'calldata', 'stack'],
+              correctIndex: 2,
+              explanation: 'calldata is a read-only view into transaction input — no copying into memory, minimal gas.',
+            },
+            {
+              id: 'w3m-w4-q2',
+              question: 'Is a "private" state variable secret on Ethereum?',
+              options: [
+                'Yes, it is encrypted',
+                'No — all contract state is publicly readable; private only blocks direct access from other contracts',
+                'Yes, only the owner can read it',
+                'It depends on the wallet used',
+              ],
+              correctIndex: 1,
+              explanation: 'Anyone can read any storage slot off-chain; visibility keywords are not encryption.',
+            },
+            {
+              id: 'w3m-w4-q3',
+              question: 'Why prefer custom errors over require("message") strings?',
+              options: [
+                'They look nicer',
+                'They revert with a 4-byte selector instead of an ASCII string, saving deployment and revert gas',
+                'They cannot be triggered accidentally',
+                'require is deprecated entirely',
+              ],
+              correctIndex: 1,
+              explanation: 'Custom errors encode failures as compact selectors with optional typed parameters — significantly cheaper.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 5 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w5',
+        title: 'Week 5: Advanced Contract Design, Gas Optimisation & Upgradeability',
+        lessons: [
+          {
+            id: 'w3m-w5-l1',
+            title: 'Gas Golf & Contract Architecture — Packing, Loops, Yul, Inheritance',
+            content: [
+              'Gas optimisation starts with storage layout. The EVM stores state in 32-byte slots; declaring a uint128 next to a uint64 and an address lets the compiler pack them into fewer slots, and every avoided slot write saves thousands of gas. Next: use calldata for read-only external parameters, cache storage reads into local variables inside functions (each SLOAD costs 100+ gas), and never write unbounded loops over user-growable arrays — a loop that grows with users will eventually exceed the block gas limit and permanently brick the function. Replace with Merkle-tree claims or off-chain aggregation.',
+              'Since Solidity 0.8, arithmetic overflow checks are built in — delete legacy SafeMath imports; they only add overhead. For the hottest code paths, inline assembly (Yul) lets you hand-write EVM operations and skip compiler safety scaffolding, but treat it like a chainsaw: use it only where measurement proves the benefit, and document heavily.',
+              'Architecture tools: inheritance (is), override, and abstract contracts let you compose behaviour, and OpenZeppelin\'s audited library implementations (ERC-20, Ownable, AccessControl) should be your default building blocks — never hand-roll what a battle-tested library provides. Measure everything with forge snapshot, which records per-test gas usage so every optimisation claim is backed by numbers, not vibes.',
+            ],
+            keyTakeaways: [
+              'Pack small types into shared 32-byte slots; cache storage reads; kill unbounded loops before they brick your contract.',
+              'Solidity 0.8+ has built-in overflow checks — SafeMath is dead weight.',
+              'forge snapshot turns gas optimisation into measured engineering instead of guesswork.',
+            ],
+          },
+          {
+            id: 'w3m-w5-l2',
+            title: 'Lab: Upgradeable Contracts — UUPS Proxies Without Foot-Guns',
+            content: [
+              'Contracts are immutable, but systems need to evolve. The proxy pattern splits a contract into a proxy (holds all storage and the public address; delegatecalls every call) and an implementation (holds only logic). Upgrading = pointing the proxy at a new implementation. Two dominant flavors: Transparent proxies put upgrade logic in the proxy (simpler, heavier per-call), while UUPS puts the upgrade function in the implementation itself (cheaper calls, but forgetting the upgrade function in a new implementation bricks the system forever).',
+              'Two classic foot-guns. Storage slot collisions: the proxy and implementation share one storage space, so EIP-1967 standardises pseudo-random slots for proxy internals (implementation address, admin) far away from normal variables — and new implementation versions must only APPEND storage variables, never reorder or remove them. Constructor trap: constructors run at implementation deployment, not through the proxy, so proxied contracts use an initialize() function guarded by an initializer modifier instead — and it must be protected or anyone can re-initialise and seize ownership.',
+              'Lab: refactor a bloated ERC-20 — pack admin config fields into shared slots, switch external read functions to calldata, remove SafeMath — and record before/after gas with forge snapshot. Then implement a UUPS-upgradeable version with an initializer and a version() function; deploy V1 behind a proxy, upgrade to V2, and prove state (balances) survived the upgrade. Assignment: write a forge test reporting the percentage gas reduction from your optimisation pass. Reading: OpenZeppelin "Writing Upgradeable Contracts" and EIP-1967.',
+            ],
+            keyTakeaways: [
+              'Proxy holds storage + address; implementation holds logic; upgrading repoints the delegatecall target.',
+              'Only APPEND storage variables across versions — reordering causes silent, catastrophic slot collisions.',
+              'Proxied contracts use guarded initialize() instead of constructors — an unprotected initializer is a takeover vector.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w5-quiz',
+          questions: [
+            {
+              id: 'w3m-w5-q1',
+              question: 'Why are unbounded loops over user-growable arrays dangerous?',
+              options: [
+                'They are hard to read',
+                'Gas cost grows with the array until it exceeds the block gas limit, permanently bricking the function',
+                'They cause integer overflow',
+                'Solidity forbids all loops',
+              ],
+              correctIndex: 1,
+              explanation: 'A loop whose iterations grow with adoption will eventually exceed block gas limits — use Merkle claims or aggregation.',
+            },
+            {
+              id: 'w3m-w5-q2',
+              question: 'In a proxy pattern, where does state live?',
+              options: [
+                'In the implementation contract',
+                'In the proxy contract, which delegatecalls logic from the implementation',
+                'Split evenly between both',
+                'Off-chain in IPFS',
+              ],
+              correctIndex: 1,
+              explanation: 'delegatecall executes implementation code in the proxy\'s storage context — the proxy owns all state.',
+            },
+            {
+              id: 'w3m-w5-q3',
+              question: 'Why do upgradeable contracts use initialize() instead of a constructor?',
+              options: [
+                'Constructors are slower',
+                'Constructors run at implementation deployment, not through the proxy — so proxy state would never be initialised',
+                'initialize() is free of gas costs',
+                'It is only a naming convention',
+              ],
+              correctIndex: 1,
+              explanation: 'The proxy never runs the implementation\'s constructor; a guarded initializer sets up state through the proxy.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 6 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w6',
+        title: 'Week 6: Full-Stack dApp Integration',
+        lessons: [
+          {
+            id: 'w3m-w6-l1',
+            title: 'The Modern dApp Stack — Viem, Wagmi, RainbowKit & RPC Strategy',
+            content: [
+              'The 2024+ frontend stack has largely converged: Viem is the low-level TypeScript client (typed, tree-shakeable, faster than ethers.js), Wagmi wraps it in React hooks, and RainbowKit (or ConnectKit) provides the polished wallet-connection UI supporting MetaMask, Coinbase Wallet, WalletConnect and more. Choose ethers.js only when maintaining legacy code — new projects should default to Viem + Wagmi.',
+              'The core hooks map to everything a dApp does: useAccount (who is connected), useReadContract (view calls — free, no wallet popup), useWriteContract (state-changing transactions — triggers wallet signature), and useWaitForTransactionReceipt (transaction lifecycle: pending → confirmed). Wagmi ships with React Query built in, so blockchain reads are cached, deduplicated, and refetched on a schedule — treat chain state like any other server state.',
+              'RPC strategy matters in production: public endpoints are rate-limited and unreliable under load, so real dApps use dedicated providers (Alchemy, Infura) with API keys — but never expose write-critical keys client-side; the frontend key should be read-mostly and domain-restricted. The transaction UX pattern to internalise: optimistic UI is dangerous on-chain — always show pending state from the wallet signature until useWaitForTransactionReceipt confirms, then refetch reads.',
+            ],
+            keyTakeaways: [
+              'Default stack: Viem (client) + Wagmi (React hooks) + RainbowKit (wallet UI) + React Query caching built in.',
+              'useReadContract is free; useWriteContract costs gas and needs a signature; always await the receipt before declaring success.',
+              'Use dedicated RPC keys (Alchemy/Infura) in production — domain-restricted and read-scoped on the client.',
+            ],
+          },
+          {
+            id: 'w3m-w6-l2',
+            title: 'Lab: The BuyMeACoffee dApp — Next.js Frontend on Sepolia',
+            content: [
+              'Scaffold a Next.js app and wire up RainbowKit + Wagmi configured for Sepolia. Build the read layer first: display the connected wallet\'s ETH balance (useBalance) and the coffee contract\'s balance — reads work before any transaction code exists, which is the right build order.',
+              'Add the write path: a form with a message input calling buyCoffee via useWriteContract with 0.001 ETH attached, a disabled state while the wallet popup is open, a pending spinner keyed to useWaitForTransactionReceipt, and a success toast when confirmed. Then render the contribution feed by reading NewCoffee events — either live with useWatchContractEvent or by fetching historical logs with getLogs and merging new events on top.',
+              'Assignment: add a Withdraw button that renders ONLY when the connected address equals the contract owner (read owner via useReadContract and compare), executes the withdrawal, and refreshes both balances after confirmation. This owner-gated UI pattern — read on-chain permission state, conditionally render controls, refetch after writes — is the skeleton of every admin panel in Web3.',
+            ],
+            keyTakeaways: [
+              'Build reads first, writes second, events last — each layer verifies the one before it.',
+              'Transaction UX: disable on signature request, spin on pending, toast on confirmed receipt, then refetch.',
+              'Owner-gated UI = read permission state on-chain, conditionally render, never trust the frontend alone.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w6-quiz',
+          questions: [
+            {
+              id: 'w3m-w6-q1',
+              question: 'Which hook combination correctly handles a state-changing transaction?',
+              options: [
+                'useReadContract alone',
+                'useWriteContract to send, then useWaitForTransactionReceipt to confirm before updating UI',
+                'useBalance twice',
+                'useAccount then reload the page',
+              ],
+              correctIndex: 1,
+              explanation: 'Writes need a signature and confirmation — declare success only after the receipt arrives.',
+            },
+            {
+              id: 'w3m-w6-q2',
+              question: 'Why do production dApps avoid public RPC endpoints?',
+              options: [
+                'They cost too much',
+                'They are rate-limited and unreliable under load — dedicated keys from Alchemy/Infura are used instead',
+                'They only support Bitcoin',
+                'They cannot read events',
+              ],
+              correctIndex: 1,
+              explanation: 'Public endpoints throttle heavy usage; production apps use dedicated, domain-restricted provider keys.',
+            },
+            {
+              id: 'w3m-w6-q3',
+              question: 'Is hiding the Withdraw button from non-owners sufficient security?',
+              options: [
+                'Yes, hidden UI cannot be called',
+                'No — the contract\'s onlyOwner check is the real security; UI gating is just UX',
+                'Yes, if the code is minified',
+                'Only on mobile',
+              ],
+              correctIndex: 1,
+              explanation: 'Anyone can call the contract directly — on-chain access control is the enforcement, UI is convenience.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 7 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w7',
+        title: 'Week 7: Defensive Programming & Vulnerability Auditing',
+        lessons: [
+          {
+            id: 'w3m-w7-l1',
+            title: 'The Attack Vector Catalogue — Re-entrancy, Front-Running, Flash Loans',
+            content: [
+              'Re-entrancy remains the most famous exploit class (The DAO, 2016): a contract sends ETH to an attacker contract whose fallback re-enters the victim before balances update, draining it in a loop. The defence is the Checks-Effects-Interactions (CEI) pattern — validate inputs, update ALL state, and only then make external calls — belt-and-braces with OpenZeppelin\'s ReentrancyGuard modifier.',
+              'Front-running exploits the public mempool: attackers see your pending transaction and pay higher fees to execute before you (sandwich attacks around DEX trades are the classic). Mitigations include commit-reveal schemes (submit a hash first, reveal later) and private mempools/order flow. Flash-loan attacks weaponise uncollateralised loans available within a single transaction: borrow millions, manipulate a thin on-chain price source, exploit a protocol that trusted that price, repay the loan — all atomically. The root cause is almost always using a manipulable spot price instead of a robust oracle.',
+              'Round out the catalogue: access-control mistakes (missing onlyOwner on privileged functions — depressingly common in real audits), selfdestruct misuse, and custom math that bypasses 0.8\'s built-in overflow checks with unchecked blocks. Study each vector until you can both exploit it and defend it — auditors think like attackers first.',
+            ],
+            keyTakeaways: [
+              'CEI (Checks-Effects-Interactions) + ReentrancyGuard kills re-entrancy; update state BEFORE external calls.',
+              'The public mempool is adversarial — commit-reveal and private order flow defend against front-running.',
+              'Flash-loan exploits almost always reduce to "protocol trusted a manipulable spot price".',
+            ],
+          },
+          {
+            id: 'w3m-w7-l2',
+            title: 'Lab: Exploit, Patch & Fuzz a Vulnerable Vault (Mid-Term)',
+            content: [
+              'You are given a deliberately vulnerable DeFi vault with a re-entrancy hole and a missing access-control check. Phase one — attack: write an attacker contract whose receive() re-enters withdraw, and a forge test proving the vault can be drained. Making the exploit work is the point: you never truly understand a vulnerability until you have written one.',
+              'Phase two — patch: apply CEI ordering, add ReentrancyGuard, add the missing onlyOwner, then confirm your exploit test now FAILS (keep it in the suite permanently as a regression test). Phase three — tooling: run Slither static analysis and confirm the findings disappear; then run a mainnet fork test (forge test --fork-url) so your vault logic executes against real live token state instead of mocks.',
+              'Assignment (mid-term, 20% of grade): define an invariant for your own contract — e.g. "the vault\'s token balance always equals the sum of recorded deposits" — and run Echidna property-based fuzzing against it. Echidna throws thousands of random call sequences at the contract hunting for a violation; find one, fix it, and document the failing sequence. Test pyramid going forward: unit tests for edge cases, integration tests across contracts, fork tests against reality, fuzzing for the cases you did not think of. Reading: ConsenSys Smart Contract Security Best Practices; Trail of Bits guidelines.',
+            ],
+            keyTakeaways: [
+              'Write the exploit first — a patched bug you never triggered is a bug you never understood.',
+              'Keep exploit tests forever as regression tests; verify fixes with Slither and mainnet fork tests.',
+              'Fuzzing (Echidna) checks invariants against thousands of random call sequences — it finds what you cannot imagine.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w7-quiz',
+          questions: [
+            {
+              id: 'w3m-w7-q1',
+              question: 'What is the correct order in the Checks-Effects-Interactions pattern?',
+              options: [
+                'External calls, then validation, then state updates',
+                'Validate inputs, update all state, THEN make external calls',
+                'Update state only after external calls succeed',
+                'Order does not matter in Solidity',
+              ],
+              correctIndex: 1,
+              explanation: 'State must be finalised before any external call, so a re-entrant call sees updated balances.',
+            },
+            {
+              id: 'w3m-w7-q2',
+              question: 'What is the root cause of most flash-loan attacks?',
+              options: [
+                'Flash loans being illegal',
+                'A protocol trusting a manipulable on-chain spot price instead of a robust oracle',
+                'Wallets with weak passwords',
+                'Slow block times',
+              ],
+              correctIndex: 1,
+              explanation: 'Atomic uncollateralised capital lets attackers distort thin spot prices; robust oracles are the defence.',
+            },
+            {
+              id: 'w3m-w7-q3',
+              question: 'What does Echidna do?',
+              options: [
+                'Deploys contracts to mainnet',
+                'Property-based fuzzing: throws thousands of random call sequences at a contract hunting for invariant violations',
+                'Formats Solidity code',
+                'Generates NFT artwork',
+              ],
+              correctIndex: 1,
+              explanation: 'Echidna hunts for sequences that break stated invariants — catching bugs no hand-written test imagined.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 8 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w8',
+        title: 'Week 8: Decentralised Finance (DeFi) Architectures',
+        lessons: [
+          {
+            id: 'w3m-w8-l1',
+            title: 'AMMs, Lending Protocols, Oracles & Yield — the DeFi Money Legos',
+            content: [
+              'Automated Market Makers replace order books with a pricing formula. The constant-product rule x*y=k means a pool of two assets always quotes a price from its reserve ratio, and every trade moves the price along the curve — large trades relative to pool depth pay quadratic slippage. Liquidity providers earn fees but face impermanent loss: if relative prices diverge after depositing, LPs end up worse than simply holding. Uniswap v3 adds concentrated liquidity — LPs choose a price range and fee tier, multiplying capital efficiency but requiring active management.',
+              'Lending protocols like Aave are the second lego. Depositors receive interest-bearing receipt tokens (aTokens) whose balance grows in real time; borrowers post over-collateral, and each asset\'s collateral factor caps borrowing power. Interest rates float algorithmically with pool utilisation. When collateral value falls below the liquidation threshold, anyone may repay part of the debt and seize discounted collateral (the liquidation bonus) — this open liquidation market is what keeps the protocol solvent without any manager.',
+              'Both legos need honest prices, and using a DEX spot price is the flash-loan trap from Week 7. Chainlink price feeds aggregate many independent node operators reporting exchange data, updating on-chain when price deviates beyond a threshold or a heartbeat elapses — your contract reads latestRoundData() and should sanity-check staleness before trusting it. On top of these primitives sit yield aggregators (Yearn-style vaults) that auto-compound and rotate strategies — composability is DeFi\'s superpower and, when a lego in the stack breaks, its systemic risk.',
+            ],
+            keyTakeaways: [
+              'x*y=k prices assets from reserve ratios; slippage scales with trade size; LPs face impermanent loss for fee income.',
+              'Lending = over-collateralised borrowing + algorithmic rates + open liquidation markets keeping the pool solvent.',
+              'Read prices from aggregated oracles (Chainlink latestRoundData) and always check staleness — never DEX spot prices.',
+            ],
+          },
+          {
+            id: 'w3m-w8-l2',
+            title: 'Lab: Oracle-Priced Swaps & a Liquidation Engine on a Mainnet Fork',
+            content: [
+              'Build a contract that reads the ETH/USD Chainlink feed on Sepolia (AggregatorV3Interface.latestRoundData, respecting the feed\'s 8-decimal format) and exposes a swap function converting a fixed ETH amount to USDC through a Uniswap v3 pool or a simplified AMM you write. Use the oracle price to compute a minimum acceptable output (slippage guard): if the pool quotes worse than oracle-price-minus-tolerance, revert. This oracle-checked swap is exactly how production protocols defend against manipulated pools.',
+              'Test on a mainnet fork: forge\'s --fork-url snapshots real chain state, so your tests run against the actual Uniswap pool and real Chainlink feed — then use vm.mockCall or fork-block selection to simulate price movement scenarios.',
+              'Assignment: implement a liquidation check — given a stored loan position (collateral amount, debt amount), read the latest oracle price, compute the health factor, and if it is below 1.0 allow a liquidator to repay debt and claim collateral plus a 5% bonus. Write fork tests for healthy, borderline, and underwater positions. Reading: the Uniswap v3 whitepaper and Chainlink Data Feeds documentation.',
+            ],
+            keyTakeaways: [
+              'Slippage guards compare pool quotes against oracle prices and revert on manipulation-sized deviations.',
+              'Fork testing runs your logic against REAL pool and oracle state — the closest thing to production without risk.',
+              'Health factor = collateral value vs debt; below 1.0 opens permissionless liquidation with a bonus incentive.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w8-quiz',
+          questions: [
+            {
+              id: 'w3m-w8-q1',
+              question: 'In a constant-product AMM (x*y=k), what happens to price impact as trade size grows relative to pool depth?',
+              options: [
+                'It stays constant',
+                'It grows — large trades move further along the curve and pay more slippage',
+                'It shrinks',
+                'Price impact only exists on order books',
+              ],
+              correctIndex: 1,
+              explanation: 'The product constraint means each additional unit bought costs more — slippage scales with trade/depth ratio.',
+            },
+            {
+              id: 'w3m-w8-q2',
+              question: 'What keeps a lending protocol like Aave solvent without a manager?',
+              options: [
+                'Government insurance',
+                'Open liquidation markets: anyone can repay underwater debt and seize discounted collateral',
+                'Borrowers pinky-promising to repay',
+                'Weekly manual audits',
+              ],
+              correctIndex: 1,
+              explanation: 'The liquidation bonus incentivises a permissionless market of liquidators to close risky positions.',
+            },
+            {
+              id: 'w3m-w8-q3',
+              question: 'Why should a contract check the timestamp on Chainlink\'s latestRoundData?',
+              options: [
+                'To calculate time zones',
+                'To detect stale prices — a feed that stopped updating must not be trusted for live decisions',
+                'Chainlink requires it legally',
+                'To save gas',
+              ],
+              correctIndex: 1,
+              explanation: 'Staleness checks guard against acting on an outdated price during feed disruptions.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 9 ─────────────────────────────────────────────
+      {
+        id: 'w3m-w9',
+        title: 'Week 9: Governance, DAOs & Corporate Logic On-Chain',
+        lessons: [
+          {
+            id: 'w3m-w9-l1',
+            title: 'DAO Patterns — Governor Contracts, Timelocks & Multisig Treasuries',
+            content: [
+              'A DAO encodes organisational decision-making in contracts. The dominant pattern is OpenZeppelin\'s Governor (descended from Compound\'s Governor Alpha/Bravo): an ERC-20 governance token with a votes extension (ERC20Votes) snapshots voting power via checkpoints, so buying tokens after a proposal starts confers no votes on it — a critical flash-loan-governance defence. Key parameters: voting delay (time between proposal and voting start), voting period, proposal threshold (minimum tokens to propose), and quorum (minimum participation for validity).',
+              'The proposal lifecycle is propose → vote → queue → execute. The queue step routes through a Timelock contract that owns the treasury and enforces a delay (e.g. 48 hours) between a proposal passing and executing — the community\'s exit window if governance is captured. The Governor is the timelock\'s only proposer; the timelock, not the Governor, holds the assets.',
+              'Alongside token voting, Safe (formerly Gnosis Safe) multisigs are the workhorse of treasury management: an m-of-n signer scheme (e.g. 3-of-5) with no single point of key failure. Mature DAOs combine both — broad token governance for direction, a small elected multisig for operational spending — trading some decentralisation for execution speed.',
+            ],
+            keyTakeaways: [
+              'ERC20Votes checkpoints voting power at proposal time — defeating buy-vote-dump and flash-loan governance attacks.',
+              'Lifecycle: propose → vote → queue (timelock delay) → execute; the timelock owns the treasury, not the Governor.',
+              'Safe multisigs (m-of-n) handle operational treasury; token voting handles direction — most real DAOs use both.',
+            ],
+          },
+          {
+            id: 'w3m-w9-l2',
+            title: 'Lab: Deploy a Mini-DAO End to End',
+            content: [
+              'Deploy the full stack: (1) an ERC-20 governance token with the ERC20Votes extension — remember holders must call delegate() (even to themselves) to activate voting power, the most commonly forgotten step in DAO setups; (2) a TimelockController holding 1 ETH of treasury; (3) a Governor wired to the token with a 1-day voting period and a quorum of 4%.',
+              'Run a complete proposal through the machine: propose sending 0.1 ETH from the timelock treasury to a target address (encode the call with abi.encodeWithSignature), advance time past the voting delay with vm.warp in tests, cast votes from multiple accounts via vm.prank, pass the vote, queue it into the timelock, warp past the delay, and execute. Watching the ETH actually move because token holders voted is the moment DAOs click.',
+              'Also deploy a Safe multisig on Sepolia as a second treasury layer and practice a 2-of-3 signing flow. Assignment: extend the DAO so a proposal can upgrade a UUPS proxy from Week 5 — governance-gated upgrades are the gold standard for production protocol management, closing the loop between Weeks 5 and 9. Reading: OpenZeppelin Governor docs and the Safe documentation.',
+            ],
+            keyTakeaways: [
+              'No delegate() call = zero voting power, even for token holders — always delegate, even to yourself.',
+              'Proposals execute encoded calldata from the timelock — votes literally become transactions.',
+              'Governance-gated UUPS upgrades = decentralised control over protocol evolution.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w9-quiz',
+          questions: [
+            {
+              id: 'w3m-w9-q1',
+              question: 'Why does ERC20Votes snapshot voting power via checkpoints?',
+              options: [
+                'To save storage',
+                'So tokens bought (or flash-loaned) after a proposal starts confer no voting power on it',
+                'To make transfers faster',
+                'Snapshots are only decorative',
+              ],
+              correctIndex: 1,
+              explanation: 'Checkpointed power at proposal creation defeats vote-buying and flash-loan governance attacks.',
+            },
+            {
+              id: 'w3m-w9-q2',
+              question: 'What is the purpose of the timelock between queue and execute?',
+              options: [
+                'To slow down the blockchain',
+                'To give the community an exit/reaction window before a passed proposal takes effect',
+                'To collect extra fees',
+                'To let validators vote twice',
+              ],
+              correctIndex: 1,
+              explanation: 'The enforced delay is the safety valve against captured or malicious governance.',
+            },
+            {
+              id: 'w3m-w9-q3',
+              question: 'A user holds 1,000 governance tokens but has never called delegate(). Their voting power is:',
+              options: ['1,000 votes', 'Zero — undelegated tokens carry no active voting power', '500 votes', 'Determined by the multisig'],
+              correctIndex: 1,
+              explanation: 'ERC20Votes only counts delegated balances; self-delegation activates your own power.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 10 ────────────────────────────────────────────
+      {
+        id: 'w3m-w10',
+        title: 'Week 10: Layer 2 Scaling & Cross-Chain Interoperability',
+        lessons: [
+          {
+            id: 'w3m-w10-l1',
+            title: 'Rollups, Bridges & Chain Abstraction',
+            content: [
+              'The scalability trilemma says a chain struggles to maximise decentralisation, security, and throughput simultaneously. Rollups resolve it by executing transactions off-chain and posting compressed data plus a state commitment back to Ethereum, inheriting its security. Optimistic rollups (Arbitrum, Optimism) assume state transitions are valid and allow a ~7-day challenge window in which anyone can submit a fraud proof — hence the withdrawal delay to L1. ZK-rollups (zkSync, Starknet) post a validity proof (zkSNARK/zkSTARK) with every batch: mathematically verified, no challenge window, near-instant L1 finality — at the cost of prover complexity. EIP-4844 (proto-danksharding) gave rollups cheap "blob" data space, slashing L2 fees dramatically.',
+              'Moving assets between chains requires bridges, and bridges are where the industry\'s worst hacks live. Canonical bridges (the rollup\'s own) inherit rollup security but are slow for withdrawals; third-party bridges are faster but add their own trust assumptions — validator sets, multisigs, or light clients that each become attack surfaces. Generalised messaging protocols (LayerZero, Axelar) carry arbitrary data cross-chain: the pattern is a source-chain contract emitting a message, an off-chain relay layer transporting it, and a destination-chain contract verifying and executing it. Always ask: who can forge a message, and what does it cost?',
+              'The frontier is chain abstraction — making multichain complexity invisible. ERC-4337 account abstraction turns wallets into smart contracts (enabling gas sponsorship, batched operations, session keys, social recovery), and intent-based architectures let users sign a desired OUTCOME ("swap X for at least Y") while a competitive solver network figures out the optimal cross-chain execution.',
+            ],
+            keyTakeaways: [
+              'Optimistic rollups = fraud proofs + challenge window; ZK-rollups = validity proofs + instant finality.',
+              'Bridges are the biggest hack surface in Web3 — always identify who can forge a cross-chain message.',
+              'Account abstraction (ERC-4337) and intents are making the multichain world invisible to end users.',
+            ],
+          },
+          {
+            id: 'w3m-w10-l2',
+            title: 'Lab: Deploy to L2, Bridge Assets & Send a Cross-Chain Message',
+            content: [
+              'Deploy your Week 4 contract to Arbitrum Sepolia or Optimism Sepolia — with Foundry it is exactly the same forge script command with a different --rpc-url, which is itself the lesson: EVM-equivalent L2s need zero code changes. Bridge Sepolia ETH to the L2 through the network\'s native bridge and interact with your deployment.',
+              'Then implement the cross-chain messaging pattern with a mock bridge (or LayerZero testnet endpoints): a sender contract on chain A emits a message, a relayer (your script) transports it, and a receiver contract on chain B verifies the caller and executes. Even mocked, wiring sender → transport → verified receiver teaches you exactly where trust lives in every bridge design.',
+              'Assignment: deploy the identical contract to Sepolia (L1), Arbitrum Sepolia, and Optimism Sepolia; measure deployment gas, a representative function call\'s cost, and confirmation feel on each; write a one-page report comparing costs and finality trade-offs. Numbers you gathered yourself will anchor your L2 intuition better than any benchmark blog post. Reading: Arbitrum and Optimism docs; an EIP-4844 explainer.',
+            ],
+            keyTakeaways: [
+              'EVM-equivalent L2 deployment = same Foundry script, different RPC URL.',
+              'Every bridge reduces to: sender emits → transport relays → receiver VERIFIES then executes.',
+              'Measure L1 vs L2 gas and finality yourself — owned numbers beat borrowed benchmarks.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w10-quiz',
+          questions: [
+            {
+              id: 'w3m-w10-q1',
+              question: 'Why do optimistic rollup withdrawals to L1 take about 7 days?',
+              options: [
+                'Slow servers',
+                'The challenge window in which anyone can submit a fraud proof against the posted state',
+                'Regulatory review',
+                'They batch withdrawals monthly',
+              ],
+              correctIndex: 1,
+              explanation: 'Optimistic rollups assume validity but leave a window for fraud proofs — withdrawals wait it out.',
+            },
+            {
+              id: 'w3m-w10-q2',
+              question: 'How do ZK-rollups avoid the challenge window?',
+              options: [
+                'They trust validators completely',
+                'Each batch posts a cryptographic validity proof that is verified on L1 immediately',
+                'They have no withdrawals',
+                'They use longer block times',
+              ],
+              correctIndex: 1,
+              explanation: 'A zkSNARK/zkSTARK proves the state transition is correct — no need to wait for challenges.',
+            },
+            {
+              id: 'w3m-w10-q3',
+              question: 'What is the single most important question to ask about any cross-chain bridge?',
+              options: [
+                'What color is the logo?',
+                'Who can forge a message — what trust assumptions secure the transport layer?',
+                'How many tokens it supports',
+                'Whether it has a mobile app',
+              ],
+              correctIndex: 1,
+              explanation: 'Bridge security = message authenticity; forged messages are how the largest hacks happened.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 11 ────────────────────────────────────────────
+      {
+        id: 'w3m-w11',
+        title: 'Week 11: The Convergence of AI and Web3',
+        lessons: [
+          {
+            id: 'w3m-w11-l1',
+            title: 'The Machine Economy — Autonomous Agents, ZKML & Agentic Workflows',
+            content: [
+              'Blockchains are the first financial rails where software can be a first-class economic actor: an AI agent holding its own private key can custody funds, sign transactions, pay for services, and earn income — no bank account, no human in the loop. This "machine economy" thesis powers agent-run DeFi (arbitrage bots, yield rebalancers, automated liquidity managers) and machine-to-machine commerce. The engineering challenge is guardrails: an autonomous key that can sign anything is an unbounded liability, so production agents operate through permission-scoped smart wallets — spending caps, allow-listed protocols, revocable session keys — typically built on ERC-4337 account abstraction.',
+              'ZKML (zero-knowledge machine learning) answers "how do you trust a model\'s output on-chain?" — a prover runs inference and produces a succinct proof that the committed model produced this output for this input, without revealing weights or training data. Use cases: private credit scoring (prove score > threshold without exposing financials), verifiable risk models, and provably-fair AI judgments. Proving costs currently limit model size, but the trajectory is steep.',
+              'Agentic workflows connect language models to contracts: an LLM parses a natural-language request ("move half my USDC into the highest-yield stable pool"), plans a sequence of protocol actions, and emits structured transaction calldata — with the smart wallet\'s permission layer as the final enforcement boundary. The LLM proposes; the wallet\'s scoped permissions dispose.',
+            ],
+            keyTakeaways: [
+              'On-chain, an AI agent with a key is a full economic actor — wallets, payments, income, no intermediary.',
+              'Autonomous keys need scoped permissions (caps, allowlists, session keys) — never unbounded signing power.',
+              'ZKML proves a committed model produced an output without revealing weights; LLM agents propose, scoped wallets enforce.',
+            ],
+          },
+          {
+            id: 'w3m-w11-l2',
+            title: 'Lab: Build a Trading Agent with an On-Chain Wallet (Python)',
+            content: [
+              'Build the minimal viable agent in Python: create or load a wallet with eth_account, fetch the live ETH/USD price from a free API, run a simple rule-based strategy (e.g. moving-average crossover deciding buy/sell/hold), and submit the decision as a transaction to a mock DecisionLog contract on a testnet — creating a permanent, auditable on-chain record of the agent\'s behaviour. The loop — perceive (price), decide (strategy), act (signed transaction) — is the skeleton of every on-chain agent regardless of sophistication.',
+              'Then upgrade perception with an LLM: feed recent market headlines to an LLM (OpenAI or Claude API) prompted to return a strict JSON sentiment verdict, and blend it with your rule-based signal. Handle the failure modes explicitly — malformed JSON, hedged non-answers, API timeouts — because production agents die on unhandled edge cases, not on strategy quality.',
+              'Assignment: connect the agent to a smart wallet using account abstraction and let it autonomously execute a real swap on a Uniswap testnet deployment with dummy funds, logging every transaction hash. Constrain it: cap per-trade size and total daily volume in the wallet\'s permission layer. An agent whose worst-case loss is bounded by design is an engineering artifact; one without bounds is a time bomb. Reading: industry AI-and-blockchain reports plus a ZKML systems paper.',
+            ],
+            keyTakeaways: [
+              'Every on-chain agent is perceive → decide → act(signed tx); log decisions on-chain for auditability.',
+              'LLM integrations must handle malformed output and timeouts — edge cases kill agents, not strategy.',
+              'Bound the blast radius in the wallet permission layer: per-trade caps, daily volume limits, allowlisted targets.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w11-quiz',
+          questions: [
+            {
+              id: 'w3m-w11-q1',
+              question: 'Why must autonomous agents use permission-scoped smart wallets rather than raw private keys?',
+              options: [
+                'Raw keys are slower',
+                'An unconstrained key is unbounded liability — scoped wallets cap spending, allowlist targets, and stay revocable',
+                'Smart wallets earn interest',
+                'Regulators require it everywhere',
+              ],
+              correctIndex: 1,
+              explanation: 'Guardrails in the wallet layer bound the worst case no matter what the agent\'s logic decides.',
+            },
+            {
+              id: 'w3m-w11-q2',
+              question: 'What does a ZKML proof demonstrate?',
+              options: [
+                'That a model is open source',
+                'That a committed model produced a specific output for an input — without revealing weights or training data',
+                'That the model is unbiased',
+                'That inference was fast',
+              ],
+              correctIndex: 1,
+              explanation: 'ZKML = verifiable inference with privacy — trust the output without seeing the model.',
+            },
+            {
+              id: 'w3m-w11-q3',
+              question: 'In an LLM-driven agent architecture, what is the final enforcement boundary?',
+              options: [
+                'The LLM prompt',
+                'The smart wallet\'s scoped permission layer — the LLM proposes, the wallet disposes',
+                'The user\'s good intentions',
+                'The RPC provider',
+              ],
+              correctIndex: 1,
+              explanation: 'LLM output is untrusted input; hard permission limits in the wallet are what actually constrain actions.',
+            },
+          ],
+        },
+      },
+      // ── WEEK 12 ────────────────────────────────────────────
+      {
+        id: 'w3m-w12',
+        title: 'Week 12: DePIN, Capstone Projects & Assessment',
+        lessons: [
+          {
+            id: 'w3m-w12-l1',
+            title: 'DePIN — Crowdsourcing Physical Infrastructure with Token Incentives',
+            content: [
+              'DePIN (Decentralised Physical Infrastructure Networks) uses token incentives to crowdsource real-world infrastructure that would otherwise need massive corporate capital: compute, storage, wireless coverage, mapping. Contributors deploy hardware, prove their contribution cryptographically, and earn tokens — flipping infrastructure build-out from capex-first to incentive-first.',
+              'Each network invents a proof for its physical resource: proof-of-coverage (Helium hotspots challenge each other over radio to verify claimed LoRaWAN coverage), proof-of-location, proof-of-bandwidth, proof-of-render. Case studies: Render Network pays GPU owners in RNDR for rendering jobs (idle GPUs become supply); Helium bootstrapped a global IoT wireless network from individually-owned hotspots; Hivemapper rewards dashcam drivers for fresh street-level imagery, rebuilding a Google-Street-View-class dataset as a network.',
+              'The recurring engineering challenges are exactly your course toolkit: oracles for physical-world data (Week 8), fair token distribution and governance (Week 9), and hardware verification — defeating spoofed GPS, simulated devices, and gaming of rewards. DePIN tokenomics must survive adversarial contributors; assume every proof will be attacked the way you attacked contracts in Week 7.',
+            ],
+            keyTakeaways: [
+              'DePIN flips infrastructure: token incentives crowdsource hardware instead of corporate capex.',
+              'Every DePIN needs a cryptographic proof of physical contribution — coverage, location, bandwidth, render.',
+              'Hardware verification is adversarial security engineering: assume spoofed devices and gamed rewards.',
+            ],
+          },
+          {
+            id: 'w3m-w12-l2',
+            title: 'Capstone Options, Deliverables & Grading',
+            content: [
+              'Choose one capstone (solo or team of up to 3). OPTION 1 — Autonomous AI Yield Optimizer: an on-chain vault executing strategies proposed by a permissioned off-chain Python agent that analyses rates via on-chain data and oracles, plus a monitoring dashboard; deliver vault contract, agent code, frontend, and 3-page documentation. OPTION 2 — Fractionalised RWA Marketplace: an NFT representing an asset, a fractionalisation contract selling ERC-20 shares (bonding curve or fixed price), a governance layer where fractional holders vote on asset decisions, and a frontend for listing, buying, and voting. OPTION 3 — DePIN Token Dashboard: an on-chain registry recording node heartbeats via an oracle or trusted signer, proportional token payouts, a backend node simulator, and a dashboard showing node health, earnings, and payout history.',
+              'Every capstone must ship four things: a working smart contract deployed on testnet, a frontend (or documented CLI), a real test suite, and a 10–15 minute presentation covering architecture, security considerations, and possible extensions. Grading: weekly assignments 30%, the Week 7 audit mid-term 20%, capstone 40%, participation and peer reviews 10%. Evaluation criteria: correctness and robustness (tests, edge cases), security awareness, technical clarity of docs and code, presentation quality, and depth of exploration.',
+              'You finish this master class having shipped multiple audited contracts, a full-stack dApp, and a capstone spanning the modern Web3 stack — with working exposure to the frontiers (AI agents, ZKML, DePIN) where the next generation of decentralised systems is being built. The paradigm you have internalised — trust-minimised, verifiable, composable systems — is the durable skill; the tools will keep evolving, and now you can evolve with them.',
+            ],
+            keyTakeaways: [
+              'Capstone = deployed contract + frontend/CLI + test suite + 10–15 min architecture-and-security presentation.',
+              'Grading: assignments 30%, Week-7 audit mid-term 20%, capstone 40%, participation 10%.',
+              'The durable skill is thinking in trust-minimised, verifiable, composable systems — tools change, the paradigm compounds.',
+            ],
+          },
+        ],
+        quiz: {
+          id: 'w3m-w12-quiz',
+          questions: [
+            {
+              id: 'w3m-w12-q1',
+              question: 'What is the core economic idea of DePIN?',
+              options: [
+                'Governments fund all infrastructure',
+                'Token incentives crowdsource physical infrastructure (compute, wireless, mapping) from individual contributors',
+                'Cloud providers cut prices',
+                'Hardware is replaced by simulations',
+              ],
+              correctIndex: 1,
+              explanation: 'DePIN replaces capex-first build-out with incentive-first crowdsourcing, verified by cryptographic proofs.',
+            },
+            {
+              id: 'w3m-w12-q2',
+              question: 'What does Helium\'s proof-of-coverage verify?',
+              options: [
+                'Insurance coverage',
+                'That hotspots genuinely provide the wireless coverage they claim, via radio challenges between devices',
+                'Code test coverage',
+                'Cloud uptime',
+              ],
+              correctIndex: 1,
+              explanation: 'Hotspots cryptographically challenge each other over radio to prove real physical coverage.',
+            },
+            {
+              id: 'w3m-w12-q3',
+              question: 'Which four deliverables must every capstone include?',
+              options: [
+                'A whitepaper, a token sale, a logo, a Discord',
+                'A testnet-deployed contract, a frontend or documented CLI, a test suite, and a 10–15 minute presentation',
+                'Only a slide deck',
+                'A mainnet deployment with real funds',
+              ],
+              correctIndex: 1,
+              explanation: 'Working code, an interface, tests, and an architecture/security presentation — proof of end-to-end proficiency.',
+            },
+          ],
+        },
+      },
+    ],
+  },
 ];
 module.exports = { COURSES };
