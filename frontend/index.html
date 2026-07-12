@@ -958,6 +958,15 @@
             return false;
         }
 
+        function paymentErrorMessage(err) {
+            const isNetworkError = err instanceof TypeError || /failed to fetch|networkerror|load failed/i.test(err.message || '');
+            if (isNetworkError) {
+                return 'Could not reach the payment server. Please check your internet connection and try again in a moment. '
+                    + 'If it keeps happening, message us on WhatsApp (green button at the bottom right) and we will help you enroll.';
+            }
+            return `Could not start payment: ${err.message}`;
+        }
+
         async function startUpgrade(plan) {
             const user = authUser();
             const email = user ? user.email : prompt('Enter your email to continue to payment:');
@@ -970,7 +979,7 @@
                 });
                 window.location.href = data.authorizationUrl;
             } catch (err) {
-                alert(`Could not start payment: ${err.message}`);
+                alert(paymentErrorMessage(err));
             }
         }
 
@@ -988,7 +997,7 @@
                 });
                 window.location.href = data.authorizationUrl;
             } catch (err) {
-                alert(`Could not start payment: ${err.message}`);
+                alert(paymentErrorMessage(err));
             }
         }
 

@@ -23,6 +23,18 @@ const app = express();
 app.use(cors({ origin: process.env.CLIENT_ORIGIN || '*' }));
 app.use(express.json());
 
+// Safety net: never leave a request hanging without a response — a hung
+// request surfaces in the browser as a bare "Failed to fetch" with no
+// explanation. Guarantee a JSON error (with CORS headers) within 25s.
+app.use((req, res, next) => {
+  res.setTimeout(25000, () => {
+    if (!res.headersSent) {
+      res.status(504).json({ message: 'The server took too long to respond. Please try again in a moment.' });
+    }
+  });
+  next();
+});
+
 app.get('/api/health', (req, res) => res.json({ status: 'ok', service: 'destiny-skills-bridge-backend' }));
 
 app.use('/api/auth', authRoutes);
