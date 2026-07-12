@@ -484,12 +484,12 @@
         const API_BASE_URL = window.DSB_API_BASE_URL || 'http://localhost:5000';
 
         const FALLBACK_SKILLS = [
-            { id: 'digital-marketing', tier: 'tier1', name: 'Digital Marketing', description: 'Work with global clients on Upwork & Fiverr', earningPotential: { ngnMonthly: '₦150,000 – ₦800,000', usdMonthly: '$400 – $2,000+' } },
-            { id: 'virtual-assistance', tier: 'tier1', name: 'Virtual Assistance & Customer Support', description: 'Support international teams remotely', earningPotential: { ngnMonthly: '₦120,000 – ₦600,000', usdMonthly: '$350 – $1,500+' } },
-            { id: 'content-writing', tier: 'tier1', name: 'Content Writing & Copywriting', description: 'Write for brands around the world', earningPotential: { ngnMonthly: '₦130,000 – ₦700,000', usdMonthly: '$350 – $1,800+' } },
-            { id: 'ai-tools-automation', tier: 'tier2', name: 'AI Tools & Automation', description: 'High-demand skill for global remote work', earningPotential: { ngnMonthly: '₦300,000 – ₦1,600,000', usdMonthly: '$800 – $4,000+' } },
-            { id: 'ui-ux-design', tier: 'tier2', name: 'UI/UX & Graphic Design', description: 'Design for international startups', earningPotential: { ngnMonthly: '₦250,000 – ₦1,400,000', usdMonthly: '$700 – $3,500+' } },
-            { id: 'web-development', tier: 'tier2', name: 'Web Development Fundamentals', description: 'Build sites and apps for global clients', earningPotential: { ngnMonthly: '₦350,000 – ₦2,000,000', usdMonthly: '$900 – $5,000+' } },
+            { id: 'digital-marketing', tier: 'tier1', name: 'Digital Marketing', description: 'Work with global clients on Upwork & Fiverr', earningPotential: { ngnMonthly: '₦150,000 – ₦800,000' } },
+            { id: 'virtual-assistance', tier: 'tier1', name: 'Virtual Assistance & Customer Support', description: 'Support international teams remotely', earningPotential: { ngnMonthly: '₦120,000 – ₦600,000' } },
+            { id: 'content-writing', tier: 'tier1', name: 'Content Writing & Copywriting', description: 'Write for brands around the world', earningPotential: { ngnMonthly: '₦130,000 – ₦700,000' } },
+            { id: 'ai-tools-automation', tier: 'tier2', name: 'AI Tools & Automation', description: 'High-demand skill for global remote work', earningPotential: { ngnMonthly: '₦300,000 – ₦1,600,000' } },
+            { id: 'ui-ux-design', tier: 'tier2', name: 'UI/UX & Graphic Design', description: 'Design for international startups', earningPotential: { ngnMonthly: '₦250,000 – ₦1,400,000' } },
+            { id: 'web-development', tier: 'tier2', name: 'Web Development Fundamentals', description: 'Build sites and apps for global clients', earningPotential: { ngnMonthly: '₦350,000 – ₦2,000,000' } },
         ];
 
         let cachedSkills = FALLBACK_SKILLS;
@@ -576,8 +576,7 @@
                 <div class="skill-card bg-white p-6 rounded-3xl border">
                     <h4 class="font-semibold">${skill.name}</h4>
                     <p class="text-sm text-slate-500 mt-1">${skill.description}</p>
-                    <div class="mt-4 text-${color}-600 text-sm font-medium">${skill.earningPotential.usdMonthly}/month</div>
-                    <div class="text-slate-400 text-xs mt-1">${skill.earningPotential.ngnMonthly}/month locally</div>
+                    <div class="mt-4 text-${color}-600 text-sm font-medium">${skill.earningPotential.ngnMonthly}/month</div>
                 </div>`;
         }
 
