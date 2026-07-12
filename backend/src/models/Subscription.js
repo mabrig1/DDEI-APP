@@ -2,8 +2,12 @@ const mongoose = require('mongoose');
 
 const subscriptionSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    plan: { type: String, enum: ['premium-monthly', 'premium-yearly'], required: true },
+    // user is optional: /api/payments/initialize uses optionalAuth, so
+    // anonymous visitors can pay with just an email address.
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    // Plan names are validated against PLANS in paymentController — an enum
+    // here silently breaks payments every time a new plan is added.
+    plan: { type: String, required: true },
     reference: { type: String, required: true, unique: true },
     amount: { type: Number, required: true },
     currency: { type: String, default: 'NGN' },
