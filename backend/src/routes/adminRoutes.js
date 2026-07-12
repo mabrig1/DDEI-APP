@@ -13,7 +13,14 @@ const {
   broadcastMessage,
 } = require('../controllers/adminController');
 const { getAdmin: getServiceUpdateAdmin, postUpdate: postServiceUpdate } = require('../controllers/serviceUpdateController');
+const {
+  overview,
+  courseAnalytics,
+  userAnalytics,
+  activityFeed,
+} = require('../controllers/analyticsController');
 const { requireAdmin } = require('../middleware/adminAuth');
+const { asyncHandler } = require('../middleware/asyncHandler');
 
 const router = express.Router();
 
@@ -30,5 +37,9 @@ router.post('/users/:id/message', requireAdmin, messageUser);
 router.post('/broadcast', requireAdmin, broadcastMessage);
 router.get('/service-update', requireAdmin, getServiceUpdateAdmin);
 router.post('/service-update', requireAdmin, postServiceUpdate);
+router.get('/analytics/overview', requireAdmin, asyncHandler(overview));
+router.get('/analytics/courses', requireAdmin, asyncHandler(courseAnalytics));
+router.get('/analytics/user/:id', requireAdmin, asyncHandler(userAnalytics));
+router.get('/analytics/feed', requireAdmin, asyncHandler(activityFeed));
 
 module.exports = router;

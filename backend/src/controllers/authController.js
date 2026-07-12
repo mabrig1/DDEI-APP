@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
 const { sendPasswordResetEmail } = require('../utils/mailer');
+const { logActivity, requestClientInfo } = require('../utils/activityLogger');
 
 const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 const RESET_TOKEN_DURATION_MS = 60 * 60 * 1000;
@@ -31,6 +32,7 @@ async function register(req, res) {
     const trialExpiresAt = new Date(Date.now() + TRIAL_DURATION_MS);
     const user = await User.create({ name, email, password, track: track || null, trialExpiresAt });
     const token = signToken(user);
+    logActivity(user._id, user.name, 'signup', requestClientInfo(req));
     res.status(201).json({ token, user });
   } catch (err) {
     if (err.code === 11000) {
@@ -54,6 +56,7 @@ async function login(req, res) {
     }
 
     const token = signToken(user);
+    logActivity(user._id, user.name, 'login', requestClientInfo(req));
     res.json({ token, user });
   } catch (err) {
     console.error('Login failed:', err);

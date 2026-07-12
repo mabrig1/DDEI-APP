@@ -2,6 +2,7 @@ const axios = require('axios');
 const crypto = require('crypto');
 const Subscription = require('../models/Subscription');
 const User = require('../models/User');
+const { logActivity } = require('../utils/activityLogger');
 
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 
@@ -119,12 +120,24 @@ async function verifyPayment(req, res) {
           if (!alreadyPurchased) {
             user.purchasedCourses.push({ courseId: planConfig.courseId, purchasedAt: new Date() });
             await user.save();
+            logActivity(user._id, user.name, 'payment', {
+              plan: subscription.plan,
+              label: planConfig.label,
+              amountNGN: subscription.amount,
+            });
           }
         }
       } else {
         const expiresAt = new Date();
         expiresAt.setMonth(expiresAt.getMonth() + (subscription.plan === 'premium-yearly' ? 12 : 1));
-        await User.findByIdAndUpdate(subscription.user, { isPremium: true, premiumExpiresAt: expiresAt });
+        const user = await User.findByIdAndUpdate(subscription.user, { isPremium: true, premiumExpiresAt: expiresAt });
+        if (user) {
+          logActivity(user._id, user.name, 'payment', {
+            plan: subscription.plan,
+            label: planConfig.label || subscription.plan,
+            amountNGN: subscription.amount,
+          });
+        }
       }
     }
 

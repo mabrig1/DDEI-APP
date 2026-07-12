@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const User = require('../models/User');
 const { COURSES } = require('../data/courses');
+const { logActivity } = require('../utils/activityLogger');
 
 function findCourse(id) {
   return COURSES.find((c) => c.id === id) || null;
@@ -107,9 +108,11 @@ async function updateProgress(req, res) {
   if (!result) return res.status(404).json({ message: 'User not found' });
   const { user, progress } = result;
 
+  let newlyCompleted = false;
   if (completed) {
     if (!progress.completedLessons.includes(lessonId)) {
       progress.completedLessons.push(lessonId);
+      newlyCompleted = true;
     }
   } else {
     progress.completedLessons = progress.completedLessons.filter((id) => id !== lessonId);
@@ -117,6 +120,23 @@ async function updateProgress(req, res) {
   progress.updatedAt = new Date();
 
   await user.save();
+
+  if (newlyCompleted) {
+    logActivity(user._id, user.name, 'lesson_completed', {
+      courseId: course.id,
+      courseTitle: course.title,
+      lessonId,
+      lessonTitle: found.lesson.title,
+    });
+    const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0);
+    if (progress.completedLessons.length >= totalLessons) {
+      logActivity(user._id, user.name, 'course_completed', {
+        courseId: course.id,
+        courseTitle: course.title,
+      });
+    }
+  }
+
   res.json({ lessonId, completed, progress });
 }
 
@@ -157,6 +177,14 @@ async function submitQuiz(req, res) {
       });
       progress.updatedAt = new Date();
       await user.save();
+      logActivity(user._id, user.name, 'quiz_attempt', {
+        courseId: course.id,
+        courseTitle: course.title,
+        quizId: quiz.id,
+        score,
+        total,
+        passed,
+      });
     }
   }
 
@@ -219,6 +247,11 @@ async function getCertificate(req, res) {
   if (purchase && !purchase.certificateId) {
     purchase.certificateId = `${certPrefix}-${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
     await user.save();
+    logActivity(user._id, user.name, 'certificate_issued', {
+      courseId: course.id,
+      courseTitle: course.title,
+      certificateId: purchase.certificateId,
+    });
   }
 
   const certificateId = (purchase && purchase.certificateId) ||

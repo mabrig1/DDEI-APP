@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { logActivity, requestClientInfo } = require('../utils/activityLogger');
 
 async function ping(req, res) {
   const { event } = req.body;
@@ -10,7 +11,12 @@ async function ping(req, res) {
     update.$inc = { totalMinutes: 2 };
   }
 
-  await User.findByIdAndUpdate(req.userId, update);
+  const user = await User.findByIdAndUpdate(req.userId, update, { new: true });
+
+  if (event === 'visit' && user) {
+    logActivity(user._id, user.name, 'visit', requestClientInfo(req));
+  }
+
   res.json({ ok: true });
 }
 
