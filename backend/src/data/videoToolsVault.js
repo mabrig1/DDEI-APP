@@ -2,6 +2,21 @@
 // (Special Edition) students and admins. Each entry: how to use + example prompt.
 const VAULT_CATEGORIES = [
   {
+    id: 'native-audio',
+    title: 'Video + Audio in One Shot (Native Sound Generation)',
+    icon: '🔊',
+    tools: [
+      { name: 'Google Veo 3.1 (AI Studio)', url: 'https://aistudio.google.com', free: 'Free monthly credits on every Google account', how: 'The gold standard for native audio: describe the picture, the camera, AND the sound (dialogue in quotes, then SFX, then music mood) in one prompt — Veo generates 48kHz synchronized audio with the video. No separate voiceover or lip-sync step needed.', prompt: 'A bald African officer freefalls through a storm, lightning flashing, 9:16. AUDIO: roaring wind, a radio voice says "The Republic has fallen," he replies "Then I\'ll bring it back," then one massive thunder crack.' },
+      { name: 'Google Flow', url: 'https://labs.google/flow', free: 'Free tier with monthly Veo generations', how: 'Google\'s filmmaking app built on Veo: scene-by-scene project builder with native audio, shot extension, and ingredient (character) consistency across shots.', prompt: 'Scene 2, same character: he lands on a rooftop in the rain. AUDIO: boots hitting wet concrete, parachute fabric flapping, distant sirens.' },
+      { name: 'Kling 3.0 Omni (Audio ON)', url: 'https://klingai.com', free: 'Daily free quota + new-user bonus points', how: 'Turn audio generation ON: Kling 3.0 Omni generates synchronized ambience, sound effects, and lip-synced character dialogue in 5 languages, understanding which sounds match the on-screen action.', prompt: 'A market woman laughs and calls out "Fresh pepper, one hundred naira!" as customers pass, bustling market. AUDIO: her voice lip-synced, crowd chatter, distant okada horns.' },
+      { name: 'Seedance 2.0 (Audio by Default)', url: 'https://seedance.tv', free: 'Free daily credits, no watermark', how: 'Generates audio by default — footsteps, ambience, and soft music ship inside every clip. Supports multi-shot narrative sequences with sound in a single pass; add @Audio references to sync to your own track.', prompt: 'Two-shot sequence: (1) a sprinter settles into blocks, stadium hushes; (2) the gun fires and she explodes forward. AUDIO: crowd murmur dropping to silence, starter pistol crack, roaring cheer.' },
+      { name: 'Grok Imagine (Video + Audio)', url: 'https://grok.com', free: 'Free tier', how: 'Generates 6–10 second videos with synchronized audio automatically — background music, sound effects, dialogue, even singing — from one prompt. Fastest route from idea to a complete sounding clip.', prompt: 'A choir of children sings one joyful note as sunrise breaks over a village church, camera rising. AUDIO: the sung note swelling with soft strings, birdsong, gentle wind.' },
+      { name: 'PixVerse V5.5 (Native Audio)', url: 'https://pixverse.ai', free: 'Daily free credits', how: 'Multi-shot 1080p videos up to 10s with music, sound effects, and dialogue generated together in one go — plus multi-image fusion to keep your character consistent across shots.', prompt: 'Multi-shot: a chef plates a dish, wipes the rim, slides it across the counter. AUDIO: kitchen sizzle, plate sliding, a satisfied "Order up!", light jazz underneath.' },
+      { name: 'Wan 2.5/2.6 (Native Audio)', url: 'https://wan.video', free: 'Daily free credits + open weights', how: 'Alibaba\'s Wan added native audio from version 2.5: describe the soundscape in your prompt and it renders synchronized sound with hyperrealistic motion. 2.6 adds multi-shot with audio.', prompt: 'Rain hammers a zinc roof as a man writes by candlelight, camera drifts closer. AUDIO: heavy rain, pen scratching paper, low thunder rolling, no music.' },
+      { name: 'LTX-2 (LTXV, Native Audio)', url: 'https://ltx.studio', free: 'Free tier; open weights for local use', how: 'Lightricks\' LTX-2 generates video with native synchronized audio and is also open-weight — the free way to run audio-native generation locally on your own GPU.', prompt: 'A blacksmith strikes glowing metal, sparks flying with each hit, forge interior. AUDIO: rhythmic hammer clangs, fire roar, metal hiss in water at the end.' },
+    ],
+  },
+  {
     id: 'text-to-video',
     title: 'Text & Image-to-Video Generators',
     icon: '🎬',
