@@ -1186,7 +1186,10 @@
 
         function specialCourseCardHTML(course) {
             const user = authUser();
-            const hasPurchased = user && user.purchasedCourses && user.purchasedCourses.some(p => p.courseId === course.id);
+            const hasPurchased = user && (
+                (user.purchasedCourses && user.purchasedCourses.some(p => p.courseId === course.id)) ||
+                user.scholarship === 'full'
+            );
             const displayPrice = (course.earlyBirdPrice || course.price || 0).toLocaleString();
             const priceTag = hasPurchased
                 ? `<div class="text-center bg-white/10 rounded-2xl p-4"><p class="text-emerald-300 font-semibold text-sm"><i class="fa-solid fa-circle-check mr-1"></i>Enrolled</p><p class="text-white/60 text-xs mt-1">Full access + certificate</p></div>`

@@ -230,7 +230,7 @@ async function getCertificate(req, res) {
     // Paid special-edition courses include the certificate in the course
     // price, and premium members keep that inclusion. Standard certified
     // courses charge a one-time certificate fee instead.
-    if (course.certificateFee && !course.specialCourse) {
+    if (course.certificateFee && !course.specialCourse && user.scholarship !== 'full') {
       return res.status(402).json({
         message: `Your verified certificate for "${course.title}" costs a one-time ₦${course.certificateFee.toLocaleString()} processing fee.`,
         certificateRequired: true,

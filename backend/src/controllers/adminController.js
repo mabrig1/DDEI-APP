@@ -191,10 +191,14 @@ async function createAccessLink(req, res) {
       password: crypto.randomBytes(16).toString('hex'),
       isPremium: true,
       premiumExpiresAt: null,
+      scholarship: 'full',
     });
-  } else if (!user.isPremium) {
+  } else if (!user.isPremium || user.scholarship !== 'full') {
+    // Full scholarship = unrestricted: bypasses trial gates, paid-only
+    // (pay-and-start) courses, the Tools Vault, and certificate fees.
     user.isPremium = true;
     user.premiumExpiresAt = null;
+    user.scholarship = 'full';
     await user.save();
   }
 
