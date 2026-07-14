@@ -27,6 +27,11 @@ const PLANS = {
     type: 'course',
     courseId: 'ai-cinematic-special-edition',
   },
+  'certificate-fee': {
+    amountNGN: 5000,
+    label: 'Verified Course Certificate',
+    type: 'certificate',
+  },
 };
 
 function paystackClient() {
@@ -38,7 +43,7 @@ function paystackClient() {
 }
 
 async function initializePayment(req, res) {
-  const { plan, email } = req.body;
+  const { plan, email, courseId } = req.body;
   const planConfig = PLANS[plan];
   if (!planConfig) {
     return res.status(400).json({ message: 'Invalid or unknown payment plan.' });
@@ -52,16 +57,30 @@ async function initializePayment(req, res) {
     });
   }
 
+  // Certificate fees are per-course: validate the course and stamp its id
+  // into the stored plan string so verification can credit the right course.
+  let storedPlan = plan;
+  let amountNGN = planConfig.amountNGN;
+  if (planConfig.type === 'certificate') {
+    const { COURSES } = require('../data/courses');
+    const course = COURSES.find((c) => c.id === courseId);
+    if (!course || !course.certificateFee) {
+      return res.status(400).json({ message: 'This course does not offer a paid certificate.' });
+    }
+    storedPlan = `certificate-fee:${course.id}`;
+    amountNGN = course.certificateFee;
+  }
+
   const reference = `dsb_${crypto.randomBytes(8).toString('hex')}`;
-  const amountKobo = planConfig.amountNGN * 100;
+  const amountKobo = amountNGN * 100;
 
   let subscription;
   try {
     subscription = await Subscription.create({
       user: req.userId || null,
-      plan,
+      plan: storedPlan,
       reference,
-      amount: planConfig.amountNGN,
+      amount: amountNGN,
       currency: 'NGN',
       status: 'pending',
     });
@@ -110,6 +129,27 @@ async function verifyPayment(req, res) {
     }
 
     if (success && subscription.user) {
+      // Certificate fees are stored as "certificate-fee:<courseId>"
+      if (subscription.plan.startsWith('certificate-fee:')) {
+        const certCourseId = subscription.plan.split(':')[1];
+        const user = await User.findById(subscription.user);
+        if (user && certCourseId) {
+          const alreadyPurchased = (user.purchasedCourses || []).some(
+            (p) => p.courseId === certCourseId
+          );
+          if (!alreadyPurchased) {
+            user.purchasedCourses.push({ courseId: certCourseId, purchasedAt: new Date() });
+            await user.save();
+            logActivity(user._id, user.name, 'payment', {
+              plan: subscription.plan,
+              label: 'Verified Course Certificate',
+              amountNGN: subscription.amount,
+            });
+          }
+        }
+        return res.json({ status: subscription.status, subscription });
+      }
+
       const planConfig = PLANS[subscription.plan] || {};
       if (planConfig.type === 'course' && planConfig.courseId) {
         const user = await User.findById(subscription.user);

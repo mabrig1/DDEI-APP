@@ -226,8 +226,22 @@ async function getCertificate(req, res) {
   if (!user) return res.status(404).json({ message: 'User not found' });
 
   const purchase = (user.purchasedCourses || []).find((p) => p.courseId === course.id);
-  if (!purchase && !user.hasPremiumAccess()) {
-    return res.status(402).json({ message: 'Purchase this course to receive a certificate.' });
+  if (!purchase) {
+    // Paid special-edition courses include the certificate in the course
+    // price, and premium members keep that inclusion. Standard certified
+    // courses charge a one-time certificate fee instead.
+    if (course.certificateFee && !course.specialCourse) {
+      return res.status(402).json({
+        message: `Your verified certificate for "${course.title}" costs a one-time ₦${course.certificateFee.toLocaleString()} processing fee.`,
+        certificateRequired: true,
+        purchasePlan: 'certificate-fee',
+        courseId: course.id,
+        feeNGN: course.certificateFee,
+      });
+    }
+    if (!user.hasPremiumAccess()) {
+      return res.status(402).json({ message: 'Purchase this course to receive a certificate.' });
+    }
   }
 
   const allLessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));

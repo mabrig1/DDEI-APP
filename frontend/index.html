@@ -164,9 +164,10 @@
             </button>
             <h3 id="courseDetailTitle" class="text-2xl font-semibold mb-1"></h3>
             <p id="courseDetailDescription" class="text-slate-500 text-sm mb-4"></p>
-            <div class="w-full bg-slate-100 rounded-full h-2 mb-8">
+            <div class="w-full bg-slate-100 rounded-full h-2 mb-4">
                 <div id="courseProgressBar" class="bg-[#0A66C2] h-2 rounded-full transition-all" style="width:0%"></div>
             </div>
+            <div id="courseCapstonePanel" class="mb-8"></div>
             <div class="grid md:grid-cols-[300px_1fr] gap-8">
                 <div id="courseSidebar" class="space-y-6"></div>
                 <div id="courseMainPanel" class="bg-slate-50 border rounded-3xl p-6 min-h-[300px]"></div>
@@ -460,6 +461,13 @@
                 <p id="appSuccess" class="hidden text-emerald-600 text-sm mb-4"></p>
                 <button type="submit" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Submit Application</button>
             </form>
+        </div>
+    </div>
+
+    <!-- Certificate Modal -->
+    <div id="certificateModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center px-4">
+        <div class="bg-white rounded-3xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div id="certificateModalContent"></div>
         </div>
     </div>
 
@@ -983,7 +991,7 @@
             }
         }
 
-        async function startCoursePurchase(plan, courseId) {
+        async function startCoursePurchase(plan, courseId, certCourseId) {
             const user = authUser();
             if (!user) {
                 pendingCourseSelection = courseId;
@@ -993,7 +1001,12 @@
             try {
                 const data = await apiRequest('/api/payments/initialize', {
                     method: 'POST',
-                    body: JSON.stringify({ plan, email: user.email, callbackUrl: window.location.href }),
+                    body: JSON.stringify({
+                        plan,
+                        email: user.email,
+                        courseId: certCourseId || courseId,
+                        callbackUrl: window.location.href.split('?')[0],
+                    }),
                 });
                 window.location.href = data.authorizationUrl;
             } catch (err) {
@@ -1424,9 +1437,101 @@
             document.getElementById('courseDetailView').classList.remove('hidden');
             document.getElementById('courseDetailTitle').textContent = currentCourse.title;
             document.getElementById('courseDetailDescription').textContent = currentCourse.description;
+            renderCapstonePanel();
 
             const firstModule = currentCourse.modules[0];
             selectLesson(firstModule.id, firstModule.lessons[0].id);
+        }
+
+        function renderCapstonePanel() {
+            const panel = document.getElementById('courseCapstonePanel');
+            if (!currentCourse) { panel.innerHTML = ''; return; }
+            const totalLessons = currentCourse.modules.reduce((s, m) => s + m.lessons.length, 0);
+            const done = currentCourse._progress.completedLessons.length;
+            const allDone = totalLessons > 0 && done >= totalLessons;
+            const cap = currentCourse.capstone;
+            const certified = currentCourse.isCertified;
+            if (!cap && !certified) { panel.innerHTML = ''; return; }
+
+            const capstoneHtml = cap ? `
+                <div class="bg-gradient-to-br from-amber-50 to-white border border-amber-200 rounded-3xl p-6 mb-4">
+                    <div class="flex items-center gap-x-2 mb-2">
+                        <span class="text-xl">🎓</span>
+                        <h4 class="font-semibold">${cap.title}</h4>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">${cap.brief}</p>
+                    <p class="text-xs font-bold uppercase tracking-wide text-amber-700 mb-2">Your Deliverables</p>
+                    <ul class="text-sm text-slate-700 space-y-1 list-none mb-3">
+                        ${cap.deliverables.map((d, i) => `<li class="flex gap-x-2"><span class="font-bold text-amber-600">${i + 1}.</span><span>${d}</span></li>`).join('')}
+                    </ul>
+                    <p class="text-xs text-slate-500"><strong>How to submit:</strong> ${cap.submission}</p>
+                </div>` : '';
+
+            let certHtml = '';
+            if (certified) {
+                certHtml = allDone
+                    ? `<div class="bg-emerald-50 border border-emerald-200 rounded-3xl p-5 flex flex-col md:flex-row items-center justify-between gap-4">
+                           <div>
+                               <p class="font-semibold text-emerald-800">🏆 You have completed all ${totalLessons} lessons!</p>
+                               <p class="text-sm text-emerald-700 mt-1">Claim your verified certificate${currentCourse.certificateFee && !currentCourse.specialCourse ? ` — one-time ₦${currentCourse.certificateFee.toLocaleString()} processing fee` : ' — included with your enrollment'}.</p>
+                           </div>
+                           <button onclick="claimCertificate()" class="px-6 py-3 bg-emerald-600 text-white font-bold rounded-2xl hover:bg-emerald-700 whitespace-nowrap">
+                               <i class="fa-solid fa-certificate mr-1"></i> Claim Certificate
+                           </button>
+                       </div>`
+                    : `<div class="bg-slate-50 border rounded-3xl p-4 text-sm text-slate-500">
+                           <i class="fa-solid fa-lock mr-1"></i> Verified certificate available: complete all ${totalLessons} lessons (${done} done)${cap ? ' and submit your capstone project' : ''} to unlock it${currentCourse.certificateFee && !currentCourse.specialCourse ? ` (₦${currentCourse.certificateFee.toLocaleString()} processing fee)` : ''}.
+                       </div>`;
+            }
+            panel.innerHTML = capstoneHtml + certHtml;
+        }
+
+        async function claimCertificate() {
+            if (!currentCourse) return;
+            try {
+                const data = await apiRequest(`/api/courses/${currentCourse.id}/certificate`);
+                showCertificateModal(data.certificate);
+            } catch (err) {
+                if (err.status === 401) { openAuthModal('login'); return; }
+                if (err.status === 402 && err.data && err.data.certificateRequired) {
+                    if (confirm(`${err.message}\n\nPay now with Paystack? After payment you will return here to claim your certificate.`)) {
+                        startCoursePurchase(err.data.purchasePlan, err.data.courseId, err.data.courseId);
+                    }
+                    return;
+                }
+                alert(err.message);
+            }
+        }
+
+        function showCertificateModal(cert) {
+            const issued = new Date(cert.issuedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById('certificateModalContent').innerHTML = `
+                <div id="certificatePrintArea" class="border-4 border-double border-[#0A66C2] rounded-2xl p-8 text-center bg-white">
+                    <p class="text-[10px] tracking-[0.3em] text-slate-400 uppercase">Destiny Skills Bridge</p>
+                    <h2 class="font-display text-2xl mt-2 text-[#0A66C2]">Certificate of Completion</h2>
+                    <p class="text-sm text-slate-500 mt-4">This certifies that</p>
+                    <p class="font-display text-3xl mt-1">${escapeHtml(cert.recipientName)}</p>
+                    <p class="text-sm text-slate-500 mt-3">has successfully completed</p>
+                    <p class="font-semibold text-lg mt-1">${escapeHtml(cert.courseName)}</p>
+                    <p class="text-xs text-slate-400 mt-4">Issued ${issued} · Certificate ID: <strong>${escapeHtml(cert.id)}</strong></p>
+                    <p class="text-xs text-slate-400 mt-1">Issued by ${escapeHtml(cert.issuer)} · Verify at ddei.online</p>
+                </div>
+                <div class="flex gap-3 mt-4">
+                    <button onclick="printCertificate()" class="flex-1 px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl"><i class="fa-solid fa-print mr-1"></i> Print / Save as PDF</button>
+                    <button onclick="closeModal('certificateModal')" class="px-6 py-3 border font-semibold rounded-2xl">Close</button>
+                </div>`;
+            openModal('certificateModal');
+        }
+
+        function printCertificate() {
+            const content = document.getElementById('certificatePrintArea').outerHTML;
+            const win = window.open('', '_blank');
+            win.document.write(`<!DOCTYPE html><html><head><title>Certificate — Destiny Skills Bridge</title>
+                <script src="https://cdn.tailwindcss.com"><\/script>
+                <style>body{font-family:Inter,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;} .font-display{font-family:'Space Grotesk',Inter,sans-serif;font-weight:600;}</style>
+                </head><body>${content}</body></html>`);
+            win.document.close();
+            setTimeout(() => win.print(), 600);
         }
 
         function closeCourseDetail() {
@@ -1544,6 +1649,7 @@
             setLocalCourseProgress(currentCourse.id, progress);
             updateProgressBar();
             renderSidebar();
+            renderCapstonePanel();
 
             const mod = currentCourse.modules.find((m) => m.lessons.some((l) => l.id === lessonId));
             const lesson = mod.lessons.find((l) => l.id === lessonId);
@@ -1631,6 +1737,31 @@
             if (params.get('apply') === '1') openApplicationModal();
             else if (params.get('login') === '1') openAuthModal('login');
             else if (params.get('register') === '1') openAuthModal('register');
+        })();
+
+        // When Paystack redirects back with ?reference=..., verify the payment
+        // so the account is actually credited (premium / course / certificate).
+        (async function hydratePaymentResult() {
+            const params = new URLSearchParams(window.location.search);
+            const reference = params.get('reference') || params.get('trxref');
+            if (!reference) return;
+            window.history.replaceState({}, '', window.location.pathname);
+            try {
+                const data = await apiRequest(`/api/payments/verify/${encodeURIComponent(reference)}`);
+                if (data.status === 'success') {
+                    try {
+                        const me = await apiRequest('/api/auth/me');
+                        setSession(authToken(), me.user);
+                        refreshNavAuth();
+                        renderCoursesSection();
+                    } catch (e) { /* session refresh is best-effort */ }
+                    alert('✅ Payment confirmed! Your access has been unlocked. If you paid for a certificate, open your course and click "Claim Certificate".');
+                } else {
+                    alert('Your payment could not be confirmed as successful. If you were debited, contact us on WhatsApp with your payment receipt and we will resolve it quickly.');
+                }
+            } catch (err) {
+                alert('We could not verify your payment automatically. If you were debited, contact us on WhatsApp with your receipt — your access will be granted manually.');
+            }
         })();
         appendChatMessage('advisor', "Hi, I'm your Destiny Skills Bridge AI Advisor. Ask me which skill to learn, how much you could earn, or how to build your portfolio.");
 

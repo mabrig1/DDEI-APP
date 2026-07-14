@@ -1478,6 +1478,24 @@ const COURSES = [
     skillIds: ['entrepreneurship'],
     category: 'Business',
     estimatedHours: 16,
+    isCertified: true,
+    certCode: 'EKB',
+    certificateFee: 5000,
+    capstone: {
+      title: 'Capstone Project: Launch Your Micro-Business in 14 Days',
+      brief:
+        'Put every module to work by launching a real, small-scale version of your business idea. You will validate a product, make at least one real sale (any amount), and present simple business records — proving you can move from knowledge to income. Complete this capstone to qualify for your verified certificate.',
+      deliverables: [
+        'A one-page Business Model summary: who you serve, what you sell, your price, and your unique angle',
+        'Proof of validation: screenshots of at least 10 real conversations or comments from potential customers about your offer',
+        'One live sales channel: a WhatsApp Business catalogue, Selar/Paystack storefront, or social media business page',
+        'Evidence of at least ONE real sale (payment screenshot or receipt — any amount counts)',
+        'A simple income & expense record covering your first 14 days (template from Module 4)',
+        'A half-page reflection: what worked, what failed, and your next 90-day plan',
+      ],
+      submission:
+        'Send all six deliverables in one message to the Destiny Skills Bridge WhatsApp (green button on the homepage) or reply to any of our emails. Reviews take 2–3 working days.',
+    },
     modules: [
       {
         id: 'ebm-m1',
@@ -4534,6 +4552,24 @@ const COURSES = [
     skillIds: ['ai-tools-automation'],
     category: 'AI Tools & Automation',
     estimatedHours: 18,
+    isCertified: true,
+    certCode: 'AIA',
+    certificateFee: 5000,
+    capstone: {
+      title: 'Capstone Project: Build & Deliver a Client-Ready Automation',
+      brief:
+        'Prove you can do the work businesses pay for: pick a real small business (a shop, a church, a school, a freelancer you know), identify one repetitive task that wastes their time, and build a working AI-powered automation that fixes it. Complete this capstone to qualify for your verified certificate.',
+      deliverables: [
+        'A one-page Problem Statement: the business, the repetitive task, and the time/money it currently costs them',
+        'A working automation built with the tools from this course (e.g. an AI content workflow, a Zapier/Make scenario, a WhatsApp auto-responder, or a custom GPT assistant)',
+        'A 2–3 minute screen recording demonstrating the automation running end-to-end',
+        'A simple "client handover" document: how the business switches it on, uses it, and what to do if it breaks',
+        'A proposed price: what you would charge a client for this build (one-time fee or monthly retainer)',
+        'A half-page reflection: what you would automate next for this client, and your next 90-day plan',
+      ],
+      submission:
+        'Send all deliverables (links + recording) in one message to the Destiny Skills Bridge WhatsApp (green button on the homepage) or reply to any of our emails. Reviews take 2–3 working days.',
+    },
     modules: [
       {
         id: 'aia-m1',
