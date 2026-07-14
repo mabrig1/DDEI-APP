@@ -3,6 +3,6 @@
   "outputDirectory": "dist",
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/course/:slug", "destination": "/index.html" }
+    { "source": "/course/:slug", "destination": "/" }
   ]
 }
