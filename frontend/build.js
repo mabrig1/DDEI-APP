@@ -3,7 +3,7 @@ const path = require('path');
 
 const apiBaseUrl = process.env.API_BASE_URL || '';
 const outDir = path.join(__dirname, 'dist');
-const pages = ['index.html', 'admin.html', 'earn-online.html'];
+const pages = ['index.html', 'admin.html', 'earn-online.html', 'tools-vault.html'];
 
 fs.mkdirSync(outDir, { recursive: true });
 
