@@ -1339,7 +1339,35 @@
             messageBtn.className = 'text-xs font-semibold text-[#0A66C2] hover:underline mr-3';
             messageBtn.addEventListener('click', () => openMessageModal('single', user));
 
+            const GRANTABLE_COURSES = [
+                { id: 'ai-cinematic-special-edition', label: 'AI Video Mastery — Special Edition (includes Tools Vault)' },
+                { id: 'mastering-prompt-engineering', label: 'Mastering Prompt Engineering' },
+            ];
+            const grantCourseBtn = document.createElement('button');
+            grantCourseBtn.textContent = 'Grant Course';
+            grantCourseBtn.className = 'text-xs font-semibold text-emerald-600 hover:underline mr-3';
+            grantCourseBtn.addEventListener('click', async () => {
+                const menu = GRANTABLE_COURSES.map((c, i) => `${i + 1} — ${c.label}`).join('\n');
+                const choice = prompt(`Grant ${user.name} free access to which course?\n\n${menu}\n\nEnter a number:`);
+                const idx = parseInt(choice, 10) - 1;
+                if (isNaN(idx) || !GRANTABLE_COURSES[idx]) return;
+                grantCourseBtn.disabled = true;
+                try {
+                    const data = await adminRequest(`/api/admin/users/${user._id}/grant-course`, {
+                        method: 'POST',
+                        body: JSON.stringify({ courseId: GRANTABLE_COURSES[idx].id }),
+                    });
+                    user.purchasedCourses = data.user.purchasedCourses;
+                    alert(data.message);
+                } catch (err) {
+                    alert(`Failed to grant course: ${err.message}`);
+                } finally {
+                    grantCourseBtn.disabled = false;
+                }
+            });
+
             tr.children[8].appendChild(messageBtn);
+            tr.children[8].appendChild(grantCourseBtn);
             tr.children[8].appendChild(setPasswordBtn);
             tr.children[8].appendChild(toggleBtn);
 

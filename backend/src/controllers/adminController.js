@@ -209,6 +209,28 @@ async function createAccessLink(req, res) {
   res.json({ token });
 }
 
+// Grant a user free access to a paid course (also unlocks any resources
+// tied to that enrollment, e.g. the Tools Vault for the AI video course).
+async function grantCourseAccess(req, res) {
+  const { courseId } = req.body;
+  const { COURSES } = require('../data/courses');
+  const course = COURSES.find((c) => c.id === courseId);
+  if (!course) {
+    return res.status(400).json({ message: 'Unknown courseId' });
+  }
+
+  const user = await User.findById(req.params.id);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+
+  const already = (user.purchasedCourses || []).some((p) => p.courseId === courseId);
+  if (!already) {
+    user.purchasedCourses.push({ courseId, purchasedAt: new Date() });
+    await user.save();
+  }
+
+  res.json({ message: already ? 'User already had access.' : `Granted "${course.title}" to ${user.name}.`, user });
+}
+
 async function messageUser(req, res) {
   const { channel, subject, message } = req.body;
 
@@ -294,6 +316,7 @@ module.exports = {
   setUserPassword,
   grantScholarship,
   createAccessLink,
+  grantCourseAccess,
   messageUser,
   broadcastMessage,
 };

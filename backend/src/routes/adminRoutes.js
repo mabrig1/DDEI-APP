@@ -9,6 +9,7 @@ const {
   setUserPassword,
   grantScholarship,
   createAccessLink,
+  grantCourseAccess,
   messageUser,
   broadcastMessage,
 } = require('../controllers/adminController');
@@ -32,6 +33,7 @@ router.patch('/applications/:id/scholarship', requireAdmin, grantScholarship);
 router.get('/users', requireAdmin, listUsers);
 router.patch('/users/:id/premium', requireAdmin, setUserPremium);
 router.patch('/users/:id/password', requireAdmin, setUserPassword);
+router.post('/users/:id/grant-course', requireAdmin, asyncHandler(grantCourseAccess));
 router.get('/subscriptions', requireAdmin, listSubscriptions);
 router.post('/access-link', requireAdmin, createAccessLink);
 router.post('/users/:id/message', requireAdmin, messageUser);
