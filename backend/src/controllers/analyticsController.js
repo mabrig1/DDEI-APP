@@ -293,6 +293,80 @@ async function userAnalytics(req, res) {
   });
 }
 
+// ── GET /api/admin/analytics/learners ────────────────────────
+// Every learner by name with status + current course stage, so the
+// admin can see WHO is active/inactive/completed, not just counts.
+async function learnerBoard(req, res) {
+  const now = Date.now();
+  const counts = courseLessonCounts();
+  const users = await User.find(
+    {},
+    'name email lastSeenAt visitCount totalMinutes isPremium scholarship activeCourseId courseProgress purchasedCourses createdAt'
+  ).lean();
+
+  const learners = users.map((u) => {
+    const lastSeen = u.lastSeenAt ? new Date(u.lastSeenAt).getTime() : 0;
+    let status = 'never';
+    if (lastSeen >= now - 5 * 60 * 1000) status = 'online';
+    else if (lastSeen >= now - 7 * DAY_MS) status = 'active';
+    else if (lastSeen > 0) status = 'inactive';
+
+    // Current course = the most recently touched courseProgress entry
+    // (falls back to activeCourseId with no progress yet).
+    let current = null;
+    let latestTouch = 0;
+    const completedCourses = [];
+    for (const cp of u.courseProgress || []) {
+      const info = counts[cp.courseId];
+      if (!info) continue;
+      const done = (cp.completedLessons || []).length;
+      const pct = info.lessonCount ? Math.min(100, Math.round((done / info.lessonCount) * 100)) : 0;
+      const touched = cp.updatedAt ? new Date(cp.updatedAt).getTime() : 0;
+      if (pct >= 100) completedCourses.push(info.title);
+      if (touched >= latestTouch) {
+        latestTouch = touched;
+        current = {
+          courseId: cp.courseId,
+          courseTitle: info.title,
+          completedLessons: done,
+          totalLessons: info.lessonCount,
+          pct,
+          lastActivity: cp.updatedAt || null,
+        };
+      }
+    }
+    if (!current && u.activeCourseId && counts[u.activeCourseId]) {
+      current = {
+        courseId: u.activeCourseId,
+        courseTitle: counts[u.activeCourseId].title,
+        completedLessons: 0,
+        totalLessons: counts[u.activeCourseId].lessonCount,
+        pct: 0,
+        lastActivity: null,
+      };
+    }
+
+    return {
+      id: u._id,
+      name: u.name,
+      email: u.email,
+      status,
+      lastSeenAt: u.lastSeenAt || null,
+      totalMinutes: u.totalMinutes || 0,
+      visitCount: u.visitCount || 0,
+      isPremium: !!u.isPremium,
+      scholarship: u.scholarship || 'none',
+      currentCourse: current,
+      completedCourses,
+      certificates: (u.purchasedCourses || []).filter((p) => p.certificateId).length,
+      joinedAt: u.createdAt,
+    };
+  });
+
+  learners.sort((a, b) => new Date(b.lastSeenAt || 0) - new Date(a.lastSeenAt || 0));
+  res.json({ learners });
+}
+
 // ── GET /api/admin/analytics/feed ────────────────────────────
 async function activityFeed(req, res) {
   const limit = Math.min(parseInt(req.query.limit, 10) || 30, 100);
@@ -303,4 +377,4 @@ async function activityFeed(req, res) {
   res.json({ feed: logs });
 }
 
-module.exports = { overview, courseAnalytics, userAnalytics, activityFeed };
+module.exports = { overview, courseAnalytics, userAnalytics, activityFeed, learnerBoard };

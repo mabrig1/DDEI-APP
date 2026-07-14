@@ -18,6 +18,7 @@ const {
   courseAnalytics,
   userAnalytics,
   activityFeed,
+  learnerBoard,
 } = require('../controllers/analyticsController');
 const { requireAdmin } = require('../middleware/adminAuth');
 const { asyncHandler } = require('../middleware/asyncHandler');
@@ -41,5 +42,6 @@ router.get('/analytics/overview', requireAdmin, asyncHandler(overview));
 router.get('/analytics/courses', requireAdmin, asyncHandler(courseAnalytics));
 router.get('/analytics/user/:id', requireAdmin, asyncHandler(userAnalytics));
 router.get('/analytics/feed', requireAdmin, asyncHandler(activityFeed));
+router.get('/analytics/learners', requireAdmin, asyncHandler(learnerBoard));
 
 module.exports = router;

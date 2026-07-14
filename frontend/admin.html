@@ -78,6 +78,29 @@
         <!-- Overview tab -->
         <div id="tab-overview" class="tab-panel hidden">
             <div id="overviewStats" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6"></div>
+
+            <!-- Learner Status Board: WHO is active / inactive / completed, by name -->
+            <div class="bg-white border rounded-3xl p-6 mb-6">
+                <div class="flex items-center justify-between mb-1">
+                    <h3 class="font-semibold text-sm text-slate-700">👥 Learner Status Board — Who Is Doing What</h3>
+                    <span id="learnerBoardCount" class="text-[10px] text-slate-400"></span>
+                </div>
+                <p class="text-xs text-slate-400 mb-4">Every learner by name, with their current course and exact stage. Green dot = online right now.</p>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wide text-emerald-600 mb-3">🟢 Active (last 7 days) <span id="activeCount" class="text-slate-400 font-normal"></span></h4>
+                        <div id="activeLearners" class="space-y-3 max-h-[28rem] overflow-y-auto pr-1"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wide text-red-500 mb-3">⚪ Inactive (7+ days) <span id="inactiveCount" class="text-slate-400 font-normal"></span></h4>
+                        <div id="inactiveLearners" class="space-y-3 max-h-[28rem] overflow-y-auto pr-1"></div>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wide text-purple-600 mb-3">🏁 Completed a Course <span id="completedCount" class="text-slate-400 font-normal"></span></h4>
+                        <div id="completedLearners" class="space-y-3 max-h-[28rem] overflow-y-auto pr-1"></div>
+                    </div>
+                </div>
+            </div>
             <div class="grid lg:grid-cols-3 gap-6 mb-6">
                 <div class="lg:col-span-2 bg-white border rounded-3xl p-6">
                     <h3 class="font-semibold text-sm text-slate-700 mb-1">Growth &amp; Engagement — Last 30 Days</h3>
@@ -556,11 +579,83 @@
             }
         }
 
+        function learnerCardHTML(l, variant) {
+            const onlineDot = l.status === 'online'
+                ? '<span class="inline-block w-2 h-2 bg-emerald-500 rounded-full mr-1 align-middle" title="Online now"></span>'
+                : '';
+            const badges = [];
+            if (l.isPremium) badges.push('<span class="text-[9px] font-bold bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">PREMIUM</span>');
+            if (l.scholarship && l.scholarship !== 'none') badges.push(`<span class="text-[9px] font-bold bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded-full">${l.scholarship.toUpperCase()} SCHOLAR</span>`);
+            if (l.certificates > 0) badges.push(`<span class="text-[9px] font-bold bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full">🏆 ${l.certificates} CERT</span>`);
+
+            let stageHtml;
+            if (variant === 'completed') {
+                stageHtml = `<p class="text-xs text-purple-700 mt-1">✓ ${l.completedCourses.map(escapeHtml).join('<br>✓ ')}</p>`;
+            } else if (l.currentCourse) {
+                const c = l.currentCourse;
+                const barColor = c.pct >= 100 ? 'bg-purple-500' : c.pct >= 50 ? 'bg-emerald-500' : 'bg-[#0A66C2]';
+                stageHtml = `
+                    <p class="text-xs text-slate-600 mt-1 truncate" title="${escapeHtml(c.courseTitle)}">📘 ${escapeHtml(c.courseTitle)}</p>
+                    <div class="flex items-center gap-x-2 mt-1">
+                        <div class="flex-1 bg-slate-100 rounded-full h-1.5"><div class="${barColor} h-1.5 rounded-full" style="width:${c.pct}%"></div></div>
+                        <span class="text-[10px] font-semibold text-slate-500 whitespace-nowrap">Lesson ${c.completedLessons}/${c.totalLessons} — ${c.pct}%</span>
+                    </div>`;
+            } else {
+                stageHtml = '<p class="text-xs text-slate-400 mt-1 italic">No course started yet</p>';
+            }
+
+            return `
+                <div class="border rounded-2xl p-3 ${variant === 'inactive' ? 'bg-slate-50' : 'bg-white'}">
+                    <div class="flex items-center justify-between gap-x-2">
+                        <p class="font-semibold text-sm truncate">${onlineDot}${escapeHtml(l.name)}</p>
+                        <span class="text-[10px] text-slate-400 whitespace-nowrap">${timeAgo(l.lastSeenAt)}</span>
+                    </div>
+                    <p class="text-[11px] text-slate-400 truncate">${escapeHtml(l.email)}</p>
+                    ${badges.length ? `<div class="flex flex-wrap gap-1 mt-1">${badges.join('')}</div>` : ''}
+                    ${stageHtml}
+                </div>`;
+        }
+
+        async function loadLearnerBoard() {
+            const activeEl = document.getElementById('activeLearners');
+            const inactiveEl = document.getElementById('inactiveLearners');
+            const completedEl = document.getElementById('completedLearners');
+            activeEl.innerHTML = inactiveEl.innerHTML = completedEl.innerHTML =
+                '<p class="text-xs text-slate-400 animate-pulse">Loading…</p>';
+
+            try {
+                const data = await adminRequest('/api/admin/analytics/learners');
+                const learners = data.learners || [];
+                const active = learners.filter((l) => l.status === 'online' || l.status === 'active');
+                const inactive = learners.filter((l) => l.status === 'inactive' || l.status === 'never');
+                const completed = learners.filter((l) => l.completedCourses.length > 0);
+
+                activeEl.innerHTML = active.length
+                    ? active.map((l) => learnerCardHTML(l, 'active')).join('')
+                    : '<p class="text-xs text-slate-400">No one active in the last 7 days.</p>';
+                inactiveEl.innerHTML = inactive.length
+                    ? inactive.map((l) => learnerCardHTML(l, 'inactive')).join('')
+                    : '<p class="text-xs text-slate-400">Nobody is inactive — great engagement!</p>';
+                completedEl.innerHTML = completed.length
+                    ? completed.map((l) => learnerCardHTML(l, 'completed')).join('')
+                    : '<p class="text-xs text-slate-400">No completed courses yet.</p>';
+
+                document.getElementById('activeCount').textContent = `(${active.length})`;
+                document.getElementById('inactiveCount').textContent = `(${inactive.length})`;
+                document.getElementById('completedCount').textContent = `(${completed.length})`;
+                document.getElementById('learnerBoardCount').textContent = `${learners.length} learners total`;
+            } catch (err) {
+                activeEl.innerHTML = `<p class="text-xs text-red-500">${escapeHtml(err.message)}</p>`;
+                inactiveEl.innerHTML = completedEl.innerHTML = '';
+            }
+        }
+
         async function loadOverview() {
             resetListUI();
             const statsEl = document.getElementById('overviewStats');
             statsEl.innerHTML = skeletonCards(12);
             loadActivityFeed();
+            loadLearnerBoard();
 
             let data;
             try {
@@ -633,7 +728,10 @@
 
             if (overviewTimer) clearInterval(overviewTimer);
             overviewTimer = setInterval(() => {
-                if (currentTab === 'overview' && adminToken()) loadActivityFeed();
+                if (currentTab === 'overview' && adminToken()) {
+                    loadActivityFeed();
+                    loadLearnerBoard();
+                }
             }, 60000);
         }
 
