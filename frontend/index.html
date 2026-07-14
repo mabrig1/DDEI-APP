@@ -159,9 +159,14 @@
         </div>
 
         <div id="courseDetailView" class="hidden">
-            <button onclick="closeCourseDetail()" class="mb-6 text-sm font-semibold text-[#0A66C2] flex items-center gap-x-2">
-                <i class="fa-solid fa-arrow-left"></i> Back to Courses
-            </button>
+            <div class="mb-6 flex items-center justify-between">
+                <button onclick="closeCourseDetail()" class="text-sm font-semibold text-[#0A66C2] flex items-center gap-x-2">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Courses
+                </button>
+                <button id="shareCourseBtn" onclick="copyCourseLink(this)" class="text-sm font-semibold text-slate-500 border rounded-xl px-4 py-2 hover:bg-slate-50">
+                    <i class="fa-solid fa-link mr-1"></i> Copy Course Link
+                </button>
+            </div>
             <h3 id="courseDetailTitle" class="text-2xl font-semibold mb-1"></h3>
             <p id="courseDetailDescription" class="text-slate-500 text-sm mb-4"></p>
             <div class="w-full bg-slate-100 rounded-full h-2 mb-4">
@@ -1218,7 +1223,7 @@
                 ? `<span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-regular fa-calendar mr-1"></i>${course.durationDays}-Day Intensive</span>`
                 : '';
             return `
-                <div class="md:col-span-2 skill-card bg-gradient-to-br from-[#0A66C2] to-[#07408a] text-white rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start">
+                <div data-course-id="${course.id}" class="md:col-span-2 skill-card bg-gradient-to-br from-[#0A66C2] to-[#07408a] text-white rounded-3xl p-8 flex flex-col md:flex-row gap-8 items-start">
                     <div class="flex-1">
                         <div class="flex flex-wrap items-center gap-2 mb-3">
                             <span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full">${course.category}</span>
@@ -1246,7 +1251,7 @@
         function courseCardHTML(course) {
             if (course.specialCourse) return specialCourseCardHTML(course);
             return `
-                <div class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
+                <div data-course-id="${course.id}" class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
                     <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">${course.category}</span>
                     <h4 class="font-semibold text-lg mt-2">${course.title}</h4>
                     <p class="text-sm text-slate-500 mt-1 flex-1">${course.description}</p>
@@ -1557,6 +1562,20 @@
             currentCourse = null;
         }
 
+        function courseShareSlug(course) {
+            const alias = Object.entries(COURSE_LINK_ALIASES).find(([, id]) => id === course.id);
+            return alias ? alias[0] : (course.slug || course.id);
+        }
+
+        function copyCourseLink(btn) {
+            if (!currentCourse) return;
+            const url = `${window.location.origin}/course/${courseShareSlug(currentCourse)}`;
+            navigator.clipboard.writeText(url).then(() => {
+                btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Link Copied!';
+                setTimeout(() => { btn.innerHTML = '<i class="fa-solid fa-link mr-1"></i> Copy Course Link'; }, 2000);
+            });
+        }
+
         function renderSidebar() {
             const sidebar = document.getElementById('courseSidebar');
             sidebar.innerHTML = currentCourse.modules.map((mod) => {
@@ -1742,7 +1761,7 @@
         refreshNavAuth();
         loadSkills();
         loadOpportunities();
-        loadCourses();
+        loadCourses().then(hydrateCourseFromLink);
         loadBlogPosts();
         loadFooterPages();
         hydrateContentFromQuery();
@@ -1755,6 +1774,52 @@
             else if (params.get('login') === '1') openAuthModal('login');
             else if (params.get('register') === '1') openAuthModal('register');
         })();
+
+        // ── Direct course links ──
+        // ddei.online/course/<slug-or-alias> (or ?course=<slug>) scrolls to the
+        // course and highlights it; add ?enroll=1 to jump straight into the
+        // enrollment/purchase flow. Short aliases keep promo links clean.
+        const COURSE_LINK_ALIASES = {
+            'ai-video': 'ai-cinematic-special-edition',
+            'ai-video-mastery': 'ai-cinematic-special-edition',
+            'prompt-engineering': 'mastering-prompt-engineering',
+            'web3': 'web3-master-class',
+            'entrepreneurship': 'entrepreneurship-mastery',
+            'ai-tools': 'ai-tools-automation-mastery',
+        };
+
+        function resolveCourseFromLink() {
+            const pathMatch = window.location.pathname.match(/^\/course\/([^/]+)\/?$/);
+            const raw = pathMatch ? pathMatch[1] : new URLSearchParams(window.location.search).get('course');
+            if (!raw) return null;
+            const key = decodeURIComponent(raw).toLowerCase();
+            const id = COURSE_LINK_ALIASES[key] || key;
+            return cachedCourses.find((c) => c.id === id || c.slug === id) || null;
+        }
+
+        async function hydrateCourseFromLink() {
+            await ensureCoursesLoaded();
+            const course = resolveCourseFromLink();
+            if (!course) return;
+            const wantsEnroll = new URLSearchParams(window.location.search).get('enroll') === '1';
+
+            document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                const card = document.querySelector(`[data-course-id="${course.id}"]`);
+                if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    card.classList.add('ring-4', 'ring-amber-400');
+                    setTimeout(() => card.classList.remove('ring-4', 'ring-amber-400'), 6000);
+                }
+                if (wantsEnroll) {
+                    if (course.paidOnly && course.purchasePlan) {
+                        startCoursePurchase(course.purchasePlan, course.id, course.id);
+                    } else {
+                        handleStartCourseClick(course.id);
+                    }
+                }
+            }, 700);
+        }
 
         // When Paystack redirects back with ?reference=..., verify the payment
         // so the account is actually credited (premium / course / certificate).
