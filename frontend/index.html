@@ -1459,6 +1459,17 @@
             const certified = currentCourse.isCertified;
             if (!cap && !certified) { panel.innerHTML = ''; return; }
 
+            const vaultBanner = currentCourse.id === 'ai-cinematic-special-edition' ? `
+                <div class="bg-gradient-to-r from-[#0A66C2] to-[#07408a] text-white rounded-3xl p-5 mb-4 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div>
+                        <p class="font-semibold">🎬 Student Exclusive: The 100 Free AI Video Tools Vault</p>
+                        <p class="text-sm text-white/80 mt-1">Every tool from this course + 50 more — each with how-to-use steps and a copy-paste example prompt.</p>
+                    </div>
+                    <a href="tools-vault.html" class="px-6 py-3 bg-amber-400 text-slate-900 font-bold rounded-2xl hover:bg-amber-300 whitespace-nowrap">
+                        Open the Vault <i class="fa-solid fa-arrow-right ml-1"></i>
+                    </a>
+                </div>` : '';
+
             const capstoneHtml = cap ? `
                 <div class="bg-gradient-to-br from-amber-50 to-white border border-amber-200 rounded-3xl p-6 mb-4">
                     <div class="flex items-center gap-x-2 mb-2">
@@ -1489,7 +1500,7 @@
                            <i class="fa-solid fa-lock mr-1"></i> Verified certificate available: complete all ${totalLessons} lessons (${done} done)${cap ? ' and submit your capstone project' : ''} to unlock it${currentCourse.certificateFee && !currentCourse.specialCourse ? ` (₦${currentCourse.certificateFee.toLocaleString()} processing fee)` : ''}.
                        </div>`;
             }
-            panel.innerHTML = capstoneHtml + certHtml;
+            panel.innerHTML = vaultBanner + capstoneHtml + certHtml;
         }
 
         async function claimCertificate() {
