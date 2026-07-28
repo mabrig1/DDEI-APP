@@ -42,8 +42,14 @@ on:
         required: false
 
   schedule:
-    # 02:00 UTC daily. Scheduled runs always perform a plain `sync`.
-    - cron: '0 2 * * *'
+    # Every 6 hours. Scheduled runs always perform a plain `sync`.
+    #
+    # This is the mirror's real safety net on serverless. A Vercel function can
+    # freeze the moment it sends its response, so the fire-and-forget mirror
+    # writes in the request path are not guaranteed to finish, and there is no
+    # long-running process for the 15-minute reconciler to live in. This job is
+    # what actually keeps Appwrite current.
+    - cron: '0 */6 * * *'
 
 # Never let two syncs write to Appwrite at the same time.
 concurrency:

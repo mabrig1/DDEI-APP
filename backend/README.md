@@ -73,6 +73,10 @@ See [../docs/APPWRITE_BACKUP.md](../docs/APPWRITE_BACKUP.md) for setup, the `app
 
 ## Deployment
 
+**Deploying to Vercel as serverless functions?** See
+[../docs/DEPLOY_BACKEND_VERCEL.md](../docs/DEPLOY_BACKEND_VERCEL.md) — the steps below
+describe a long-running host (a VM or container).
+
 1. Provision a managed MongoDB instance (e.g. MongoDB Atlas) and grab its connection string for `MONGODB_URI`.
 2. On your host (Render, Railway, Fly.io, etc.), set the environment variables below — do not reuse the placeholder values from `.env.example`:
    - `NODE_ENV=production`

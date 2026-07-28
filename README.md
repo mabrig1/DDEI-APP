@@ -64,5 +64,6 @@ npm run appwrite:sync        # seed it from MongoDB
 The build (`node build.js`) also bakes in the Appwrite failover config and copies `dsb-backup.js` into `dist/`,
 so a deployed frontend can still serve public content when the backend is unreachable.
 
-See `backend/README.md` for the full API reference, and [docs/APPWRITE_BACKUP.md](docs/APPWRITE_BACKUP.md)
-for the backup backend.
+See `backend/README.md` for the full API reference,
+[docs/DEPLOY_BACKEND_VERCEL.md](docs/DEPLOY_BACKEND_VERCEL.md) for running the API on Vercel,
+and [docs/APPWRITE_BACKUP.md](docs/APPWRITE_BACKUP.md) for the backup backend.
