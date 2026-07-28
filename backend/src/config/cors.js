@@ -32,8 +32,13 @@ function isOriginAllowed(origin) {
 function corsOptions() {
   return {
     origin(origin, callback) {
-      if (isOriginAllowed(origin)) return callback(null, true);
-      return callback(new Error(`Origin ${origin} is not allowed by CLIENT_ORIGIN`));
+      // Reject by withholding the CORS headers, never by throwing. Passing an
+      // Error here surfaces as a 500, which is wrong twice over: a request from
+      // an unlisted origin is not a server fault, and burying it among real
+      // errors makes genuine failures harder to spot. Returning false lets the
+      // response complete normally without Access-Control-Allow-Origin — the
+      // browser then blocks it, which is where that decision belongs.
+      callback(null, isOriginAllowed(origin));
     },
   };
 }
