@@ -1,8 +1,8 @@
 /**
  * Destiny Skills Bridge — read-only failover to the Appwrite backup backend.
  *
- * Project: destiny-skills-bridge (Frankfurt) —
- * https://cloud.appwrite.io/console/project-fra-destiny-skills-bridge
+ * Project: "destiny-skills-bridge" (Frankfurt), ID 6a686f78003e74fe1826 —
+ * https://cloud.appwrite.io/console/project-fra-6a686f78003e74fe1826
  *
  * When the primary API (Express + MongoDB) is unreachable or returning 5xx,
  * `apiRequest` hands the failed GET to `DSB_BACKUP.resolve()`. If the path is
@@ -27,7 +27,7 @@
 
   var cfg = window.DSB_APPWRITE || {};
   var ENDPOINT = (cfg.endpoint || 'https://fra.cloud.appwrite.io/v1').replace(/\/+$/, '');
-  var PROJECT = cfg.projectId || 'destiny-skills-bridge';
+  var PROJECT = cfg.projectId || '6a686f78003e74fe1826';
   var DATABASE = cfg.databaseId || 'dsb-backup';
   var ENABLED = cfg.enabled !== false;
 

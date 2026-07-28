@@ -1,12 +1,14 @@
 /**
  * Appwrite Cloud client — the backup backend.
  *
- * Project: destiny-skills-bridge (Frankfurt / `fra` region)
- * Console: https://cloud.appwrite.io/console/project-fra-destiny-skills-bridge
+ * Project: "destiny-skills-bridge" (Frankfurt / `fra` region)
+ * Console: https://cloud.appwrite.io/console/project-fra-6a686f78003e74fe1826
  *
  * The console path is `project-<region>-<projectId>`, so the region is `fra`
- * and the project ID is `destiny-skills-bridge`. Appwrite serves each region on
- * its own host, hence the `fra.cloud.appwrite.io` default endpoint.
+ * and the project ID is `6a686f78003e74fe1826` — Appwrite generated that ID;
+ * "destiny-skills-bridge" is only the display name and is not accepted by the
+ * API. Appwrite serves each region on its own host, hence the
+ * `fra.cloud.appwrite.io` default endpoint.
  *
  * Everything here degrades to a no-op when APPWRITE_API_KEY is unset, so the
  * primary backend runs exactly as before on a machine with no Appwrite
@@ -16,7 +18,7 @@
 const { Client, TablesDB, Query, Permission, Role, ID } = require('node-appwrite');
 
 const DEFAULT_ENDPOINT = 'https://fra.cloud.appwrite.io/v1';
-const DEFAULT_PROJECT_ID = 'destiny-skills-bridge';
+const DEFAULT_PROJECT_ID = '6a686f78003e74fe1826';
 const DEFAULT_DATABASE_ID = 'dsb-backup';
 
 function readConfig() {

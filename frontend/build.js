@@ -7,14 +7,15 @@ const pages = ['index.html', 'admin.html', 'earn-online.html', 'tools-vault.html
 
 // ── Appwrite backup backend ──
 // Read-only failover for the public pages when the primary API is unreachable.
-// Console: https://cloud.appwrite.io/console/project-fra-destiny-skills-bridge
-// (path is project-<region>-<projectId>, so region=fra, project=destiny-skills-bridge)
+// Console: https://cloud.appwrite.io/console/project-fra-6a686f78003e74fe1826
+// (path is project-<region>-<projectId>; the ID is Appwrite-generated —
+// "destiny-skills-bridge" is just the display name and the API rejects it)
 // Only public identifiers are baked in here — the Appwrite API key stays on the
 // server. Set APPWRITE_BACKUP_ENABLED=false at build time to ship the pages with
 // failover switched off.
 const appwriteConfig = {
   endpoint: process.env.APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1',
-  projectId: process.env.APPWRITE_PROJECT_ID || 'destiny-skills-bridge',
+  projectId: process.env.APPWRITE_PROJECT_ID || '6a686f78003e74fe1826',
   databaseId: process.env.APPWRITE_DATABASE_ID || 'dsb-backup',
   enabled: process.env.APPWRITE_BACKUP_ENABLED !== 'false',
 };

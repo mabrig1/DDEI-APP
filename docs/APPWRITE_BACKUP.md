@@ -7,9 +7,10 @@ down.
 
 | | |
 |---|---|
-| Console | https://cloud.appwrite.io/console/project-fra-destiny-skills-bridge |
+| Console | https://cloud.appwrite.io/console/project-fra-6a686f78003e74fe1826 |
 | Region | Frankfurt (`fra`) |
-| Project ID | `destiny-skills-bridge` |
+| Project name | destiny-skills-bridge |
+| Project ID | `6a686f78003e74fe1826` (Appwrite-generated — the display name is not a valid ID) |
 | API endpoint | `https://fra.cloud.appwrite.io/v1` |
 | Database ID | `dsb-backup` (default, override with `APPWRITE_DATABASE_ID`) |
 
@@ -76,7 +77,28 @@ MongoDB.
 
 ## Setup
 
-### 1. Create an API key
+### 1. Register the web platform
+
+Console → **Overview → Connect your platform → Web** (or **Settings → Platforms →
+Add platform → Web**). Add a hostname entry for every origin the site is served
+from:
+
+```
+ddei.online
+www.ddei.online
+*.vercel.app        # Vercel preview deployments
+localhost           # local development
+```
+
+**This step is required for the browser failover.** Appwrite checks the request's
+`Origin` against the registered platforms and rejects browser calls from anywhere
+else — so without it, `dsb-backup.js` gets a CORS/platform error and the site
+shows its normal "can't reach the backend" state instead of the mirror.
+
+The server-side mirror does *not* need this: it authenticates with an API key,
+not an origin.
+
+### 2. Create an API key
 
 In the Appwrite console → **Overview → Integrations → API keys → Create API key**.
 Scopes required:
@@ -88,13 +110,13 @@ collections.read collections.write
 documents.read   documents.write
 ```
 
-### 2. Configure the backend
+### 3. Configure the backend
 
 In `backend/.env`:
 
 ```bash
 APPWRITE_ENDPOINT=https://fra.cloud.appwrite.io/v1
-APPWRITE_PROJECT_ID=destiny-skills-bridge
+APPWRITE_PROJECT_ID=6a686f78003e74fe1826
 APPWRITE_DATABASE_ID=dsb-backup
 APPWRITE_API_KEY=<the key you just created>
 APPWRITE_BACKUP_ENABLED=true
@@ -104,7 +126,7 @@ APPWRITE_SYNC_INTERVAL_MINUTES=15
 Leaving `APPWRITE_API_KEY` empty disables the backup entirely — the app runs
 exactly as it did before, with no Appwrite calls and no startup cost.
 
-### 3. Provision the database
+### 4. Provision the database
 
 ```bash
 cd backend
@@ -116,7 +138,7 @@ Creates the database, six tables, their columns, indexes and permissions. It's
 idempotent: re-run it after adding a field to `src/config/appwriteSchema.js` and
 only the missing pieces get created.
 
-### 4. Seed the mirror
+### 5. Seed the mirror
 
 ```bash
 npm run appwrite:sync
@@ -125,7 +147,7 @@ npm run appwrite:sync
 Copies all existing MongoDB data plus the static catalogs into Appwrite. From
 then on the live mirror and the periodic sync keep it current.
 
-### 5. Build the frontend with failover on
+### 6. Build the frontend with failover on
 
 `frontend/build.js` bakes the public Appwrite config into each page:
 
@@ -171,7 +193,7 @@ npm run appwrite:restore -- --models=Content --confirm
   "backup": {
     "configured": true, "enabled": true, "degraded": false,
     "endpoint": "https://fra.cloud.appwrite.io/v1",
-    "projectId": "destiny-skills-bridge", "databaseId": "dsb-backup",
+    "projectId": "6a686f78003e74fe1826", "databaseId": "dsb-backup",
     "queued": 0, "writes": 1284, "failures": 0,
     "lastSuccessAt": "2026-07-28T09:11:04.220Z",
     "lastError": null, "lastSyncAt": "2026-07-28T09:05:00.001Z"

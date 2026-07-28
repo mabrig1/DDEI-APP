@@ -23,7 +23,7 @@ npm run dev
 | `PAYSTACK_PUBLIC_KEY` | Paystack public key (used by the frontend) |
 | `CLIENT_ORIGIN` | Allowed CORS origin for the frontend |
 | `APPWRITE_ENDPOINT` | Appwrite backup backend API endpoint (default `https://fra.cloud.appwrite.io/v1`) |
-| `APPWRITE_PROJECT_ID` | Appwrite project ID (default `destiny-skills-bridge`) |
+| `APPWRITE_PROJECT_ID` | Appwrite project ID (default `6a686f78003e74fe1826`) |
 | `APPWRITE_DATABASE_ID` | Appwrite database ID (default `dsb-backup`) |
 | `APPWRITE_API_KEY` | Appwrite server API key — **leave empty to disable the backup backend** |
 | `APPWRITE_BACKUP_ENABLED` | Set `false` to pause mirroring while keeping credentials configured |
