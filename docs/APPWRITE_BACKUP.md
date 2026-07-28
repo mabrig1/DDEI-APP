@@ -162,6 +162,37 @@ The Appwrite values default to the project above; override with
 off. On Vercel these are project environment variables — the build command is
 already `node build.js`.
 
+## Running it from GitHub (no local machine needed)
+
+`.github/workflows/appwrite-backup.yml` runs every one of the scripts below on a
+GitHub runner, so none of this requires a development environment.
+
+1. **Repo → Settings → Secrets and variables → Actions → Secrets**, add:
+   - `MONGODB_URI`
+   - `APPWRITE_API_KEY`
+
+   Optionally add `APPWRITE_ENDPOINT`, `APPWRITE_PROJECT_ID` or
+   `APPWRITE_DATABASE_ID` under **Variables** to override the built-in defaults.
+
+2. **If MongoDB is on Atlas**, set Network Access to allow `0.0.0.0/0`. GitHub's
+   runners have no fixed IP to allowlist, so a restricted list blocks them.
+
+3. **Actions → "Appwrite backup" → Run workflow.** Pick `provision` the first
+   time, then `sync`.
+
+> The **Run workflow** button only appears once the workflow file exists on the
+> repository's **default branch** — that's a GitHub rule, not a config option.
+> Merge the branch carrying this file before expecting to see it.
+
+Available actions: `provision`, `sync` (with an optional `since` like `24h`),
+`sync-catalog-only`, `restore-dry-run`, and `restore-apply` — which overwrites
+MongoDB and refuses to run unless you type `RESTORE` in the confirm field.
+
+A daily `sync` also runs at 02:00 UTC. That matters most when the primary API is
+offline: the server's own 15-minute reconciler stops with it, and this becomes
+the only thing keeping the mirror current. Delete the `schedule:` block to
+disable it.
+
 ## Operations
 
 ```bash
