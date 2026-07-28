@@ -22,6 +22,12 @@ npm run dev
 | `PAYSTACK_SECRET_KEY` | Paystack secret key (server-side) |
 | `PAYSTACK_PUBLIC_KEY` | Paystack public key (used by the frontend) |
 | `CLIENT_ORIGIN` | Allowed CORS origin for the frontend |
+| `APPWRITE_ENDPOINT` | Appwrite backup backend API endpoint (default `https://fra.cloud.appwrite.io/v1`) |
+| `APPWRITE_PROJECT_ID` | Appwrite project ID (default `6a686f78003e74fe1826`) |
+| `APPWRITE_DATABASE_ID` | Appwrite database ID (default `dsb-backup`) |
+| `APPWRITE_API_KEY` | Appwrite server API key — **leave empty to disable the backup backend** |
+| `APPWRITE_BACKUP_ENABLED` | Set `false` to pause mirroring while keeping credentials configured |
+| `APPWRITE_SYNC_INTERVAL_MINUTES` | Background reconciliation interval (default 15, `0` disables) |
 
 ## API Reference
 
@@ -57,7 +63,19 @@ npm run dev
 - `POST /api/payments/initialize` — `{ plan: "premium-monthly" | "premium-yearly", email, callbackUrl? }` → `{ authorizationUrl, reference }`
 - `GET /api/payments/verify/:reference` — verifies the transaction and activates premium on success
 
+### Health & backup backend
+- `GET /api/health` — `{ status, service, backup }`, where `backup` reports the Appwrite mirror's state
+  (`configured`, `enabled`, `degraded`, queue depth, write/failure counts, last error, last sync)
+- `GET /api/config/backup` — public Appwrite config the frontend failover uses (never includes the API key)
+
+See [../docs/APPWRITE_BACKUP.md](../docs/APPWRITE_BACKUP.md) for setup, the `appwrite:provision` /
+`appwrite:sync` / `appwrite:restore` scripts, and the security model.
+
 ## Deployment
+
+**Deploying to Vercel as serverless functions?** See
+[../docs/DEPLOY_BACKEND_VERCEL.md](../docs/DEPLOY_BACKEND_VERCEL.md) — the steps below
+describe a long-running host (a VM or container).
 
 1. Provision a managed MongoDB instance (e.g. MongoDB Atlas) and grab its connection string for `MONGODB_URI`.
 2. On your host (Render, Railway, Fly.io, etc.), set the environment variables below — do not reuse the placeholder values from `.env.example`:
@@ -70,3 +88,6 @@ npm run dev
    - Leave `PORT` unset on platforms that inject their own port
 3. Deploy with `npm install && npm start`.
 4. Point the frontend's `window.DSB_API_BASE_URL` (see `frontend/index.html`) at this service's public URL.
+5. Optionally enable the Appwrite backup backend: set `APPWRITE_API_KEY` (plus the other `APPWRITE_*`
+   variables if you aren't using the defaults), then run `npm run appwrite:provision` and
+   `npm run appwrite:sync` once. See [../docs/APPWRITE_BACKUP.md](../docs/APPWRITE_BACKUP.md).

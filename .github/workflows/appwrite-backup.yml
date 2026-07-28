@@ -1,0 +1,140 @@
+name: Appwrite backup
+
+# Runs the Appwrite backup scripts from GitHub, so no local machine or
+# development environment is needed. Setup:
+#
+#   1. Repo → Settings → Secrets and variables → Actions → Secrets:
+#        MONGODB_URI       your MongoDB connection string
+#        APPWRITE_API_KEY  Appwrite server API key
+#      (Optionally under Variables, to override the built-in defaults:
+#        APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, APPWRITE_DATABASE_ID)
+#
+#   2. If MongoDB is on Atlas, allow access from anywhere (0.0.0.0/0) under
+#      Network Access — GitHub's runners have no fixed IP to allowlist.
+#
+#   3. Actions → "Appwrite backup" → Run workflow → choose `provision` once,
+#      then `sync`.
+#
+# The daily schedule keeps the mirror current even if the primary API is
+# offline. Delete the `schedule:` block below to turn that off.
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: What to run
+        type: choice
+        required: true
+        default: sync
+        options:
+          - provision          # create the database, tables, columns, indexes
+          - sync               # mirror MongoDB + catalogs into Appwrite
+          - sync-catalog-only  # only the static catalogs (no MongoDB needed)
+          - restore-dry-run    # report what a restore would change, write nothing
+          - restore-apply      # WRITE Appwrite data back into MongoDB
+      since:
+        description: 'sync only — limit to recent changes, e.g. 24h or 7d (blank = everything)'
+        type: string
+        required: false
+      confirm:
+        description: 'restore-apply only — type RESTORE to allow writing to MongoDB'
+        type: string
+        required: false
+
+  schedule:
+    # Every 6 hours. Scheduled runs always perform a plain `sync`.
+    #
+    # This is the mirror's real safety net on serverless. A Vercel function can
+    # freeze the moment it sends its response, so the fire-and-forget mirror
+    # writes in the request path are not guaranteed to finish, and there is no
+    # long-running process for the 15-minute reconciler to live in. This job is
+    # what actually keeps Appwrite current.
+    - cron: '0 */6 * * *'
+
+# Never let two syncs write to Appwrite at the same time.
+concurrency:
+  group: appwrite-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      - name: Check required secrets are set
+        env:
+          ACTION: ${{ inputs.action || 'sync' }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_KEY }}
+        run: |
+          if [ -z "$APPWRITE_API_KEY" ]; then
+            echo "::error::APPWRITE_API_KEY secret is not set (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+          # Only the catalog path can run without a database connection.
+          if [ "$ACTION" != "sync-catalog-only" ] && [ "$ACTION" != "provision" ] && [ -z "$MONGODB_URI" ]; then
+            echo "::error::MONGODB_URI secret is not set — required for '$ACTION'."
+            exit 1
+          fi
+
+      - name: Run
+        env:
+          # Inputs go through the environment rather than being interpolated
+          # into the script, so nothing a user types can run as shell.
+          ACTION: ${{ inputs.action || 'sync' }}
+          SINCE: ${{ inputs.since }}
+          CONFIRM: ${{ inputs.confirm }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          APPWRITE_API_KEY: ${{ secrets.APPWRITE_API_KEY }}
+          # Unset repository variables arrive as "", which the app treats as
+          # absent and falls back to its built-in defaults.
+          APPWRITE_ENDPOINT: ${{ vars.APPWRITE_ENDPOINT }}
+          APPWRITE_PROJECT_ID: ${{ vars.APPWRITE_PROJECT_ID }}
+          APPWRITE_DATABASE_ID: ${{ vars.APPWRITE_DATABASE_ID }}
+        run: |
+          set -euo pipefail
+          echo "Action: $ACTION"
+
+          case "$ACTION" in
+            provision)
+              npm run appwrite:provision
+              ;;
+            sync)
+              if [ -n "$SINCE" ]; then
+                npm run appwrite:sync -- --since="$SINCE"
+              else
+                npm run appwrite:sync
+              fi
+              ;;
+            sync-catalog-only)
+              npm run appwrite:sync -- --catalog-only
+              ;;
+            restore-dry-run)
+              npm run appwrite:restore
+              ;;
+            restore-apply)
+              if [ "$CONFIRM" != "RESTORE" ]; then
+                echo "::error::restore-apply overwrites MongoDB. Re-run and type RESTORE in the confirm field."
+                exit 1
+              fi
+              npm run appwrite:restore -- --confirm
+              ;;
+            *)
+              echo "::error::Unknown action '$ACTION'"
+              exit 1
+              ;;
+          esac

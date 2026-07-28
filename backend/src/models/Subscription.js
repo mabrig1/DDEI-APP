@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { attachAppwriteMirror } = require('../utils/appwriteMirrorHooks');
 
 const subscriptionSchema = new mongoose.Schema(
   {
@@ -16,5 +17,8 @@ const subscriptionSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// Mirror every write to the Appwrite backup backend (no-op unless configured).
+attachAppwriteMirror(subscriptionSchema, 'Subscription');
 
 module.exports = mongoose.model('Subscription', subscriptionSchema);

@@ -1,65 +1,22 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
+/**
+ * Long-running server entrypoint — `npm start` / `npm run dev`.
+ *
+ * Connects to MongoDB, starts the Appwrite backup reconciler, then listens.
+ * The Express app itself lives in src/app.js so the Vercel serverless
+ * entrypoint (api/index.js) can reuse it without binding a port.
+ */
+
+const app = require('./app');
 const connectDB = require('./config/db');
-const { notFound, errorHandler } = require('./middleware/errorHandler');
-
-const authRoutes = require('./routes/authRoutes');
-const applicationRoutes = require('./routes/applicationRoutes');
-const advisorRoutes = require('./routes/advisorRoutes');
-const paymentRoutes = require('./routes/paymentRoutes');
-const skillsRoutes = require('./routes/skillsRoutes');
-const opportunityRoutes = require('./routes/opportunityRoutes');
-const portfolioRoutes = require('./routes/portfolioRoutes');
-const courseRoutes = require('./routes/courseRoutes');
-const adminRoutes = require('./routes/adminRoutes');
-const contentRoutes = require('./routes/contentRoutes');
-const helpRoutes = require('./routes/helpRoutes');
-const serviceUpdateRoutes = require('./routes/serviceUpdateRoutes');
-const activityRoutes = require('./routes/activityRoutes');
-const vaultRoutes = require('./routes/vaultRoutes');
-
-const app = express();
-
-app.use(cors({ origin: process.env.CLIENT_ORIGIN || '*' }));
-app.use(express.json());
-
-// Safety net: never leave a request hanging without a response — a hung
-// request surfaces in the browser as a bare "Failed to fetch" with no
-// explanation. Guarantee a JSON error (with CORS headers) within 25s.
-app.use((req, res, next) => {
-  res.setTimeout(25000, () => {
-    if (!res.headersSent) {
-      res.status(504).json({ message: 'The server took too long to respond. Please try again in a moment.' });
-    }
-  });
-  next();
-});
-
-app.get('/api/health', (req, res) => res.json({ status: 'ok', service: 'destiny-skills-bridge-backend' }));
-
-app.use('/api/auth', authRoutes);
-app.use('/api/applications', applicationRoutes);
-app.use('/api/advisor', advisorRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/skills', skillsRoutes);
-app.use('/api/opportunities', opportunityRoutes);
-app.use('/api/portfolio', portfolioRoutes);
-app.use('/api/courses', courseRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/content', contentRoutes);
-app.use('/api/help', helpRoutes);
-app.use('/api/service-update', serviceUpdateRoutes);
-app.use('/api/activity', activityRoutes);
-app.use('/api/tools-vault', vaultRoutes);
-
-app.use(notFound);
-app.use(errorHandler);
+const { startAppwriteSync } = require('./utils/appwriteScheduler');
 
 const PORT = process.env.PORT || 5000;
 
 async function start() {
   await connectDB();
+  // Backup mirroring is started after the primary DB is up: the reconciler
+  // reads from MongoDB. It is a no-op when Appwrite is not configured.
+  startAppwriteSync();
   app.listen(PORT, () => console.log(`Destiny Skills Bridge API listening on port ${PORT}`));
 }
 
