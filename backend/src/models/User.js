@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { attachAppwriteMirror } = require('../utils/appwriteMirrorHooks');
 const bcrypt = require('bcryptjs');
 
 const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
@@ -99,5 +100,8 @@ userSchema.methods.toJSON = function toSafeJSON() {
   delete obj.password;
   return obj;
 };
+
+// Mirror every write to the Appwrite backup backend (no-op unless configured).
+attachAppwriteMirror(userSchema, 'User');
 
 module.exports = mongoose.model('User', userSchema);

@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { attachAppwriteMirror } = require('../utils/appwriteMirrorHooks');
 
 function slugify(text) {
   return text
@@ -24,5 +25,8 @@ const contentSchema = new mongoose.Schema(
 );
 
 contentSchema.statics.slugify = slugify;
+
+// Mirror every write to the Appwrite backup backend (no-op unless configured).
+attachAppwriteMirror(contentSchema, 'Content');
 
 module.exports = mongoose.model('Content', contentSchema);

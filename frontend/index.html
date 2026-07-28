@@ -493,6 +493,8 @@
       e.g. <script>window.DSB_API_BASE_URL = "https://api.yourdomain.com";</script>
       placed before the script block below. Defaults to localhost for local development.
     -->
+    <!-- DSB_RUNTIME_CONFIG -->
+    <script src="/dsb-backup.js"></script>
     <script>
         const API_BASE_URL = window.DSB_API_BASE_URL || 'http://localhost:5000';
 
@@ -562,16 +564,44 @@
                 : "You're already a Premium member — every tool is unlocked.";
         }
 
+        // Last resort when the primary API is down: read the same data from the
+        // Appwrite mirror (see dsb-backup.js). Read-only and public data only —
+        // anything the mirror can't answer rethrows the original error, so a
+        // failed login still looks like a failed login.
+        async function tryBackup(path, options, originalError) {
+            if (!window.DSB_BACKUP) throw originalError;
+            let data;
+            try {
+                data = await window.DSB_BACKUP.resolve(path, options);
+            } catch (backupError) {
+                throw originalError;
+            }
+            if (data === null || data === undefined) throw originalError;
+            return data;
+        }
+
         async function apiRequest(path, options = {}) {
             const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
             const token = authToken();
             if (token) headers.Authorization = `Bearer ${token}`;
-            const response = await fetch(`${API_BASE_URL}${path}`, Object.assign({}, options, { headers }));
+
+            let response;
+            try {
+                response = await fetch(`${API_BASE_URL}${path}`, Object.assign({}, options, { headers }));
+            } catch (networkError) {
+                // Host unreachable, DNS/TLS failure, connection refused.
+                return tryBackup(path, options, networkError);
+            }
+
             const data = await response.json().catch(() => ({}));
             if (!response.ok) {
                 const err = new Error(data.message || 'Request failed');
                 err.status = response.status;
                 err.data = data;
+                // 5xx means the primary is unhealthy (including its own 504
+                // timeout guard), so the mirror is worth a try. A 4xx is a real
+                // answer — bad input, expired session — and must not be masked.
+                if (response.status >= 500) return tryBackup(path, options, err);
                 throw err;
             }
             return data;

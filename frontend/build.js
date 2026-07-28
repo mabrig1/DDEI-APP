@@ -5,19 +5,50 @@ const apiBaseUrl = process.env.API_BASE_URL || '';
 const outDir = path.join(__dirname, 'dist');
 const pages = ['index.html', 'admin.html', 'earn-online.html', 'tools-vault.html', 'links.html'];
 
+// ── Appwrite backup backend ──
+// Read-only failover for the public pages when the primary API is unreachable.
+// Console: https://cloud.appwrite.io/console/project-fra-destiny-skills-bridge
+// (path is project-<region>-<projectId>, so region=fra, project=destiny-skills-bridge)
+// Only public identifiers are baked in here — the Appwrite API key stays on the
+// server. Set APPWRITE_BACKUP_ENABLED=false at build time to ship the pages with
+// failover switched off.
+const appwriteConfig = {
+  endpoint: process.env.APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1',
+  projectId: process.env.APPWRITE_PROJECT_ID || 'destiny-skills-bridge',
+  databaseId: process.env.APPWRITE_DATABASE_ID || 'dsb-backup',
+  enabled: process.env.APPWRITE_BACKUP_ENABLED !== 'false',
+};
+
+// Replaces the <!-- DSB_RUNTIME_CONFIG --> marker in each page. The marker sits
+// above the backup script tag so the config is defined before it runs.
+const RUNTIME_CONFIG_MARKER = '<!-- DSB_RUNTIME_CONFIG -->';
+
 fs.mkdirSync(outDir, { recursive: true });
+
+const runtimeConfig = [
+  '<script>',
+  apiBaseUrl ? `        window.DSB_API_BASE_URL = ${JSON.stringify(apiBaseUrl)};` : null,
+  `        window.DSB_APPWRITE = ${JSON.stringify(appwriteConfig)};`,
+  '    </script>',
+].filter(Boolean).join('\n    ');
 
 for (const page of pages) {
   const srcPath = path.join(__dirname, page);
   let html = fs.readFileSync(srcPath, 'utf8');
 
-  if (apiBaseUrl) {
-    const inject = `<script>window.DSB_API_BASE_URL = ${JSON.stringify(apiBaseUrl)};</script>\n    `;
-    html = html.replace('<script>\n        const API_BASE_URL', `${inject}<script>\n        const API_BASE_URL`);
+  if (html.includes(RUNTIME_CONFIG_MARKER)) {
+    html = html.replace(RUNTIME_CONFIG_MARKER, runtimeConfig);
+  } else if (apiBaseUrl) {
+    // links.html has no API layer, so it carries no marker — nothing to inject.
+    console.warn(`${page}: no ${RUNTIME_CONFIG_MARKER} marker found, skipping runtime config injection.`);
   }
 
   fs.writeFileSync(path.join(outDir, page), html);
 }
+
+// The failover client is loaded by <script src="/dsb-backup.js"> on the public
+// pages, so it has to land in dist alongside them.
+fs.copyFileSync(path.join(__dirname, 'dsb-backup.js'), path.join(outDir, 'dsb-backup.js'));
 
 // ── Direct course links ──
 // Generate a real static stub for every /course/<slug> URL. With cleanUrls,
@@ -69,4 +100,5 @@ let courseLinkCount = 0;
   }
 }
 
-console.log(`Built frontend/dist (${pages.join(', ')} + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — defaults to http://localhost:5000)'}`);
+console.log(`Built frontend/dist (${pages.join(', ')} + dsb-backup.js + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — defaults to http://localhost:5000)'}`);
+console.log(`Appwrite backup failover: ${appwriteConfig.enabled ? 'enabled' : 'disabled'} (project ${appwriteConfig.projectId}, ${appwriteConfig.endpoint})`);

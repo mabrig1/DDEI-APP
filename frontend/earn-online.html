@@ -255,17 +255,42 @@
       e.g. <script>window.DSB_API_BASE_URL = "https://api.yourdomain.com";</script>
       placed before the script block below. Defaults to localhost for local development.
     -->
+    <!-- DSB_RUNTIME_CONFIG -->
+    <script src="/dsb-backup.js"></script>
     <script>
         const API_BASE_URL = window.DSB_API_BASE_URL || 'http://localhost:5000';
 
+        // Read-only failover to the Appwrite mirror when the primary API is
+        // down — see dsb-backup.js. Requests it can't serve rethrow the
+        // original error.
+        async function tryBackup(path, options, originalError) {
+            if (!window.DSB_BACKUP) throw originalError;
+            let data;
+            try {
+                data = await window.DSB_BACKUP.resolve(path, options);
+            } catch (backupError) {
+                throw originalError;
+            }
+            if (data === null || data === undefined) throw originalError;
+            return data;
+        }
+
         async function apiRequest(path, options = {}) {
             const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
-            const response = await fetch(`${API_BASE_URL}${path}`, Object.assign({}, options, { headers }));
+
+            let response;
+            try {
+                response = await fetch(`${API_BASE_URL}${path}`, Object.assign({}, options, { headers }));
+            } catch (networkError) {
+                return tryBackup(path, options, networkError);
+            }
+
             const data = await response.json().catch(() => ({}));
             if (!response.ok) {
                 const err = new Error(data.message || 'Request failed');
                 err.status = response.status;
                 err.data = data;
+                if (response.status >= 500) return tryBackup(path, options, err);
                 throw err;
             }
             return data;

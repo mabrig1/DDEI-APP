@@ -3,6 +3,9 @@ const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
+const { publicConfig, isBackupEnabled } = require('./config/appwrite');
+const { backupStatus } = require('./utils/appwriteBackup');
+const { startAppwriteSync } = require('./utils/appwriteScheduler');
 
 const authRoutes = require('./routes/authRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
@@ -36,7 +39,32 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/api/health', (req, res) => res.json({ status: 'ok', service: 'destiny-skills-bridge-backend' }));
+app.get('/api/health', (req, res) => res.json({
+  status: 'ok',
+  service: 'destiny-skills-bridge-backend',
+  backup: backupStatus(),
+}));
+
+// Tells the frontend where the read-only Appwrite failover lives. Everything
+// here is public (the Appwrite project ID is a public identifier, like a
+// Firebase config) — the API key never leaves the server. Served from the
+// primary so the frontend can discover the backup while the primary is healthy
+// and cache it for when it isn't; build.js can also bake the same values in at
+// build time for hosts where the primary is already unreachable on first load.
+app.get('/api/config/backup', (req, res) => {
+  const { endpoint, projectId, databaseId } = publicConfig();
+  res.json({
+    backup: {
+      provider: 'appwrite',
+      enabled: isBackupEnabled(),
+      endpoint,
+      projectId,
+      databaseId,
+      // Only these tables are world-readable; see src/config/appwriteSchema.js.
+      tables: { catalog: 'catalog', content: 'content', serviceUpdates: 'service_updates' },
+    },
+  });
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/applications', applicationRoutes);
@@ -60,6 +88,9 @@ const PORT = process.env.PORT || 5000;
 
 async function start() {
   await connectDB();
+  // Backup mirroring is started after the primary DB is up: the reconciler
+  // reads from MongoDB. It is a no-op when Appwrite is not configured.
+  startAppwriteSync();
   app.listen(PORT, () => console.log(`Destiny Skills Bridge API listening on port ${PORT}`));
 }
 

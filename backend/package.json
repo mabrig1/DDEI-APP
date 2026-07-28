@@ -5,10 +5,14 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "appwrite:provision": "node src/scripts/provisionAppwrite.js",
+    "appwrite:sync": "node src/scripts/syncToAppwrite.js",
+    "appwrite:restore": "node src/scripts/restoreFromAppwrite.js"
   },
   "dependencies": {
     "express": "^4.19.2",
+    "node-appwrite": "^27.1.0",
     "mongoose": "^8.5.0",
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
