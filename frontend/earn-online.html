@@ -258,7 +258,16 @@
     <!-- DSB_RUNTIME_CONFIG -->
     <script src="/dsb-backup.js"></script>
     <script>
-        const API_BASE_URL = window.DSB_API_BASE_URL || 'http://localhost:5000';
+        // Never let a production build talk to localhost. build.js injects
+        // DSB_API_BASE_URL from the API_BASE_URL build variable, but if that
+        // variable isn't exposed to the build the page would silently target
+        // the developer's own machine — which is exactly how a deployed site
+        // ends up showing "Failed to fetch" with a perfectly healthy API.
+        // Only an actually-local hostname gets the localhost default.
+        const API_BASE_URL = window.DSB_API_BASE_URL
+            || (/^(localhost|127\.0\.0\.1|\[::1\])?$/.test(window.location.hostname)
+                ? 'http://localhost:5000'
+                : 'https://ddei-app-backend.vercel.app');
 
         // Read-only failover to the Appwrite mirror when the primary API is
         // down — see dsb-backup.js. Requests it can't serve rethrow the
