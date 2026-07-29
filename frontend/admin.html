@@ -367,10 +367,14 @@
         // the developer's own machine — which is exactly how a deployed site
         // ends up showing "Failed to fetch" with a perfectly healthy API.
         // Only an actually-local hostname gets the localhost default.
+        //
+        // The default below is the backend's real .vercel.app alias, which
+        // Vercel assigned when the project was created and did NOT change when
+        // the project was later renamed. Setting API_BASE_URL overrides it.
         const API_BASE_URL = window.DSB_API_BASE_URL
             || (/^(localhost|127\.0\.0\.1|\[::1\])?$/.test(window.location.hostname)
                 ? 'http://localhost:5000'
-                : 'https://ddei-app-backend.vercel.app');
+                : 'https://ddei-app-kh6q.vercel.app');
 
         function adminToken() { return localStorage.getItem('dsb_admin_token'); }
         function setAdminToken(token) { localStorage.setItem('dsb_admin_token', token); }
