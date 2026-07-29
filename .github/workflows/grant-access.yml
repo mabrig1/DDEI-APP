@@ -1,0 +1,94 @@
+name: Grant access
+
+# Sets a learner's access level directly in MongoDB, from the GitHub UI — no
+# local machine or terminal needed.
+#
+# Setup (once):
+#   Repo → Settings → Secrets and variables → Actions → Secrets:
+#     MONGODB_URI   your MongoDB Atlas connection string
+#   Atlas → Network Access must allow 0.0.0.0/0; GitHub runners have no fixed IP.
+#
+# To run:
+#   Actions → "Grant access" → Run workflow → enter the email, pick a level.
+#
+# Levels:
+#   show     Report the account's current access. Changes nothing.
+#   full     Full scholarship + permanent Premium. Everything: Premium features,
+#            every course including the paid Special Editions, the Tools Vault,
+#            the Grants Directory, no trial expiry.
+#   premium  Permanent Premium only — Grants Directory, AI Advisor, Portfolio
+#            Builder. Not the paid Special Edition courses or the Vault.
+#   limited  Limited scholarship — standard courses free, no Premium extras.
+#   none     Revoke back to a plain trial account.
+
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: Account email address
+        type: string
+        required: true
+      level:
+        description: Access level to set
+        type: choice
+        required: true
+        default: show
+        options:
+          - show
+          - full
+          - premium
+          - limited
+          - none
+      create_if_missing:
+        description: Create the account if that email has never signed up
+        type: boolean
+        required: false
+        default: false
+
+# Two runs writing to the same account would race.
+concurrency:
+  group: grant-access
+  cancel-in-progress: false
+
+jobs:
+  grant:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      - name: Grant
+        env:
+          # Inputs travel through the environment rather than being interpolated
+          # into the script, so nothing typed into the form can run as shell.
+          EMAIL: ${{ inputs.email }}
+          LEVEL: ${{ inputs.level }}
+          CREATE: ${{ inputs.create_if_missing }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "$MONGODB_URI" ]; then
+            echo "::error::MONGODB_URI secret is not set (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+
+          if [ "$LEVEL" = "show" ]; then
+            node src/scripts/grantAccess.js --email "$EMAIL" --show
+          elif [ "$CREATE" = "true" ]; then
+            node src/scripts/grantAccess.js --email "$EMAIL" --level "$LEVEL" --create
+          else
+            node src/scripts/grantAccess.js --email "$EMAIL" --level "$LEVEL"
+          fi

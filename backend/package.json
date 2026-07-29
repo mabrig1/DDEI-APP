@@ -9,10 +9,11 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "test": "node tests/ai.test.js",
+    "test": "node tests/ai.test.js && node tests/grants.test.js",
     "appwrite:provision": "node src/scripts/provisionAppwrite.js",
     "appwrite:sync": "node src/scripts/syncToAppwrite.js",
-    "appwrite:restore": "node src/scripts/restoreFromAppwrite.js"
+    "appwrite:restore": "node src/scripts/restoreFromAppwrite.js",
+    "grant-access": "node src/scripts/grantAccess.js"
   },
   "dependencies": {
     "express": "^4.19.2",

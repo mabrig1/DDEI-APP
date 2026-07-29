@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Skills Grants Directory — Destiny Skills Bridge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', system-ui, sans-serif; }
+        .font-display { font-family: 'Space Grotesk', 'Inter', sans-serif; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b sticky top-0 z-50">
+        <div class="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-x-3">
+                <div class="w-10 h-10 bg-[#0A66C2] rounded-2xl flex items-center justify-center">
+                    <span class="text-white font-bold text-2xl">DS</span>
+                </div>
+                <div>
+                    <span class="font-display text-2xl font-semibold tracking-tighter">Destiny Skills</span>
+                    <span class="font-display text-2xl font-semibold tracking-tighter text-[#0A66C2]">Bridge</span>
+                </div>
+            </a>
+            <div class="flex items-center gap-x-3">
+                <a href="index.html" class="px-5 py-2.5 text-sm font-semibold border border-slate-300 rounded-2xl hover:bg-slate-50">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-screen-xl mx-auto px-6 py-10">
+        <div class="text-center mb-8">
+            <span class="text-xs font-bold bg-emerald-100 text-emerald-700 uppercase tracking-widest px-3 py-1 rounded-full">Premium Resource</span>
+            <h1 class="font-display text-4xl mt-3">💰 Digital Skills Grants Directory</h1>
+            <p class="text-slate-600 mt-2 text-sm max-w-2xl mx-auto">
+                Funding, paid fellowships, fully-funded training, cloud credits and seed capital that Nigerians can
+                actually apply to — for learners, developers, AI engineers and founders.
+            </p>
+            <p id="freshness" class="text-xs text-slate-400 mt-2"></p>
+        </div>
+
+        <!-- Closing soon banner: shown to everyone, paid or not. -->
+        <div id="urgentBanner" class="hidden bg-rose-50 border border-rose-200 rounded-3xl p-5 mb-6">
+            <p class="text-xs font-bold uppercase tracking-widest text-rose-600 mb-2">
+                <i class="fa-solid fa-clock mr-1"></i> Closing this week
+            </p>
+            <div id="urgentList" class="space-y-1 text-sm text-rose-900"></div>
+        </div>
+
+        <!-- Locked notice for free accounts -->
+        <div id="lockedNotice" class="hidden bg-gradient-to-br from-[#0A66C2] to-[#07408a] text-white rounded-3xl p-6 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+                <div>
+                    <h3 class="font-display text-lg mb-1">🔒 You're seeing the preview</h3>
+                    <p id="upgradeMessage" class="text-white/80 text-sm max-w-2xl"></p>
+                </div>
+                <div class="flex flex-col gap-2 shrink-0">
+                    <a href="index.html#premium" class="px-6 py-3 bg-amber-400 text-slate-900 font-bold rounded-2xl hover:bg-amber-300 text-center whitespace-nowrap">
+                        <i class="fa-solid fa-bolt mr-1"></i> Unlock — ₦2,000/month
+                    </a>
+                    <a href="index.html?login=1" class="px-6 py-2 border border-white/40 text-sm font-semibold rounded-2xl hover:bg-white/10 text-center">
+                        Already Premium? Log in
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="sticky top-[73px] z-40 bg-slate-50 py-3 mb-6">
+            <div class="flex flex-wrap gap-3 items-center">
+                <input id="grantSearch" type="text" placeholder="Search grants… (e.g. AI fellowship, cloud credits, stipend)"
+                       class="flex-1 min-w-[240px] border rounded-2xl px-5 py-3 text-sm bg-white shadow-sm">
+                <select id="levelFilter" class="border rounded-2xl px-4 py-3 text-sm bg-white shadow-sm">
+                    <option value="">All levels</option>
+                </select>
+                <div id="categoryChips" class="flex flex-wrap gap-2"></div>
+            </div>
+        </div>
+
+        <div id="loadingView" class="py-20 text-center text-slate-400">
+            <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3"></i>
+            <p class="text-sm">Loading the directory…</p>
+        </div>
+
+        <div id="errorView" class="hidden py-16 text-center">
+            <p class="text-slate-500 text-sm">Could not reach the server. Check your connection and refresh this page.</p>
+        </div>
+
+        <div id="grantGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <p id="emptyState" class="hidden text-center text-slate-400 text-sm py-16">No grants match that search.</p>
+
+        <div class="bg-white border rounded-3xl p-6 mt-10 text-sm text-slate-600">
+            <h3 class="font-display text-lg text-slate-900 mb-2">Before you apply — read this</h3>
+            <ul class="space-y-2 list-disc pl-5">
+                <li><strong>Always confirm on the official page.</strong> Grant rounds open and close constantly. We date every listing so you can see how fresh it is.</li>
+                <li><strong>A listing marked "unconfirmed" means exactly that.</strong> The programme is real, but at least one detail — usually an amount or a deadline — could not be checked against an official source. We show you which.</li>
+                <li><strong>No legitimate grant asks you to pay to apply.</strong> If a "grant" wants an application fee, processing fee or your bank details up front, it is a scam. Every listing here applies through the organisation's own website.</li>
+            </ul>
+        </div>
+    </div>
+
+    <footer class="text-center text-xs text-slate-400 py-8 border-t mt-8 bg-white">
+        Destiny Skills Bridge · Developed and operated by <strong class="font-semibold text-slate-500">Mabrig Technologies LTD</strong>
+    </footer>
+
+    <!-- DSB_RUNTIME_CONFIG -->
+    <script>
+        // Same host-aware fallback as the other pages: never let a production
+        // build silently target localhost when API_BASE_URL doesn't reach the build.
+        const API_BASE_URL = window.DSB_API_BASE_URL
+            || (/^(localhost|127\.0\.0\.1|\[::1\])?$/.test(window.location.hostname)
+                ? 'http://localhost:5000'
+                : 'https://ddei-app-kh6q.vercel.app');
+
+        function escapeHtml(v) {
+            const d = document.createElement('div');
+            d.textContent = v == null ? '' : String(v);
+            return d.innerHTML;
+        }
+
+        function getAccessToken() {
+            return localStorage.getItem('dsb_token') || localStorage.getItem('dsb_admin_token');
+        }
+
+        let data = null;
+        let activeCategory = 'all';
+
+        const CATEGORY_STYLE = {
+            stipend: 'bg-emerald-100 text-emerald-700',
+            training: 'bg-sky-100 text-sky-700',
+            credits: 'bg-violet-100 text-violet-700',
+            capital: 'bg-amber-100 text-amber-700',
+            institutional: 'bg-slate-200 text-slate-700',
+        };
+
+        function deadlineBadge(grant) {
+            if (grant.deadlineState === 'closing-soon') {
+                const d = grant.daysLeft;
+                const text = d <= 0 ? 'Closes today' : d === 1 ? 'Closes tomorrow' : `${d} days left`;
+                return `<span class="text-[10px] font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full whitespace-nowrap">⏰ ${text}</span>`;
+            }
+            if (grant.deadlineState === 'closed') {
+                return '<span class="text-[10px] font-bold bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full whitespace-nowrap">Closed</span>';
+            }
+            if (grant.deadlineState === 'open') {
+                return `<span class="text-[10px] font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full whitespace-nowrap">Open · ${grant.daysLeft} days</span>`;
+            }
+            return '<span class="text-[10px] font-bold bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full whitespace-nowrap">Rolling</span>';
+        }
+
+        function grantCardHTML(grant) {
+            const catStyle = CATEGORY_STYLE[grant.category] || 'bg-slate-100 text-slate-700';
+            const cat = (data.categories.find((c) => c.id === grant.category) || {});
+
+            // Locked cards deliberately still carry the deadline — a learner
+            // must never miss a closing date because they haven't paid.
+            const lockedBody = `
+                <p class="text-xs text-slate-500 mb-3 flex-1">
+                    Full eligibility rules, what it pays, our verification notes and the application link are part of Premium.
+                </p>
+                <a href="index.html#premium" class="text-center text-xs font-semibold text-white bg-[#0A66C2] rounded-xl py-2.5 hover:bg-[#07408a]">
+                    <i class="fa-solid fa-lock-open mr-1"></i> Unlock full details
+                </a>`;
+
+            const unlockedBody = `
+                <p class="text-xs text-slate-600 mb-3">${escapeHtml(grant.summary)}</p>
+                ${grant.whatYouGet && grant.whatYouGet.length ? `
+                <ul class="text-xs text-slate-600 space-y-1 mb-3 list-disc pl-4">
+                    ${grant.whatYouGet.slice(0, 4).map((w) => `<li>${escapeHtml(w)}</li>`).join('')}
+                </ul>` : ''}
+                <div class="bg-slate-50 border rounded-2xl p-3 mb-3">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1">Who can apply</p>
+                    <p class="text-xs text-slate-700">${escapeHtml(grant.eligibility)}</p>
+                </div>
+                ${grant.caveat ? `
+                <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 mb-3">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-amber-700 mb-1">⚠ Unconfirmed detail</p>
+                    <p class="text-xs text-amber-900">${escapeHtml(grant.caveat)}</p>
+                </div>` : ''}
+                ${grant.deadlineNote ? `<p class="text-[11px] text-slate-500 mb-3"><strong>Timing:</strong> ${escapeHtml(grant.deadlineNote)}</p>` : ''}
+                <div class="text-[11px] text-slate-500 space-y-0.5 mb-3">
+                    ${grant.location ? `<p><i class="fa-solid fa-location-dot w-4"></i> ${escapeHtml(grant.location)}</p>` : ''}
+                    ${grant.effort ? `<p><i class="fa-regular fa-clock w-4"></i> ${escapeHtml(grant.effort)}</p>` : ''}
+                    ${grant.contact ? `<p><i class="fa-regular fa-envelope w-4"></i> ${escapeHtml(grant.contact)}</p>` : ''}
+                </div>
+                <a href="${escapeHtml(grant.applyUrl || grant.url)}" target="_blank" rel="noopener noreferrer"
+                   class="mt-auto text-center text-xs font-semibold text-white bg-[#0A66C2] rounded-xl py-2.5 hover:bg-[#07408a]">
+                    Apply on the official site <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+                </a>`;
+
+            return `
+                <div class="grant-card bg-white border rounded-3xl p-5 flex flex-col" data-cat="${escapeHtml(grant.category)}"
+                     data-levels="${escapeHtml((grant.levels || []).join(' '))}"
+                     data-search="${escapeHtml((grant.name + ' ' + grant.provider + ' ' + grant.value).toLowerCase())}">
+                    <div class="flex items-start justify-between gap-2 mb-2">
+                        <span class="text-[10px] font-bold ${catStyle} px-2 py-0.5 rounded-full">${cat.icon || ''} ${escapeHtml(cat.title || grant.category)}</span>
+                        ${deadlineBadge(grant)}
+                    </div>
+                    <h4 class="font-semibold leading-snug mb-1">${escapeHtml(grant.name)}</h4>
+                    <p class="text-[11px] text-slate-400 mb-2">${escapeHtml(grant.provider)}</p>
+                    <p class="text-xs font-semibold text-emerald-700 mb-3">${escapeHtml(grant.value)}</p>
+                    ${grant.verified
+                        ? '<p class="text-[10px] text-slate-400 mb-2"><i class="fa-solid fa-circle-check text-emerald-500 mr-1"></i>Checked ' + escapeHtml(grant.verifiedOn) + '</p>'
+                        : '<p class="text-[10px] text-amber-600 mb-2"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Some details unconfirmed</p>'}
+                    ${data.unlocked ? unlockedBody : lockedBody}
+                </div>`;
+        }
+
+        function renderUrgent() {
+            const urgent = data.grants.filter((g) => g.deadlineState === 'closing-soon');
+            if (!urgent.length) return;
+            document.getElementById('urgentBanner').classList.remove('hidden');
+            document.getElementById('urgentList').innerHTML = urgent.map((g) => {
+                const d = g.daysLeft;
+                const when = d <= 0 ? 'closes today' : d === 1 ? 'closes tomorrow' : `${d} days left`;
+                return `<p><strong>${escapeHtml(g.name)}</strong> — ${escapeHtml(g.value)} · <strong>${when}</strong></p>`;
+            }).join('');
+        }
+
+        function renderFilters() {
+            const chips = document.getElementById('categoryChips');
+            chips.innerHTML = `<button data-cat="all" class="cat-chip px-3 py-1.5 text-xs font-semibold rounded-xl bg-[#0A66C2] text-white">All ${data.grants.length}</button>`
+                + data.categories.map((c) =>
+                    `<button data-cat="${c.id}" class="cat-chip px-3 py-1.5 text-xs font-semibold rounded-xl border bg-white text-slate-600 hover:bg-slate-100">${c.icon} ${escapeHtml(c.title)}</button>`
+                ).join('');
+            chips.querySelectorAll('.cat-chip').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    activeCategory = btn.dataset.cat;
+                    chips.querySelectorAll('.cat-chip').forEach((b) => {
+                        const on = b.dataset.cat === activeCategory;
+                        b.classList.toggle('bg-[#0A66C2]', on);
+                        b.classList.toggle('text-white', on);
+                        b.classList.toggle('bg-white', !on);
+                        b.classList.toggle('text-slate-600', !on);
+                    });
+                    applyFilters();
+                });
+            });
+
+            const levelSelect = document.getElementById('levelFilter');
+            levelSelect.innerHTML = '<option value="">All levels</option>'
+                + data.levels.map((l) => `<option value="${l.id}">${escapeHtml(l.label)}</option>`).join('');
+            levelSelect.addEventListener('change', applyFilters);
+            document.getElementById('grantSearch').addEventListener('input', applyFilters);
+        }
+
+        function applyFilters() {
+            const q = document.getElementById('grantSearch').value.trim().toLowerCase();
+            const level = document.getElementById('levelFilter').value;
+            let visible = 0;
+            document.querySelectorAll('.grant-card').forEach((card) => {
+                const matchCat = activeCategory === 'all' || card.dataset.cat === activeCategory;
+                const matchLevel = !level || card.dataset.levels.split(' ').includes(level);
+                const matchQ = !q || card.dataset.search.includes(q);
+                const show = matchCat && matchLevel && matchQ;
+                card.classList.toggle('hidden', !show);
+                if (show) visible += 1;
+            });
+            document.getElementById('emptyState').classList.toggle('hidden', visible > 0);
+        }
+
+        async function loadGrants() {
+            const token = getAccessToken();
+            const headers = token ? { Authorization: `Bearer ${token}` } : {};
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/grants`, { headers });
+                data = await response.json();
+                document.getElementById('loadingView').classList.add('hidden');
+                if (!response.ok) throw new Error(data.message || 'Request failed');
+
+                document.getElementById('freshness').textContent =
+                    `${data.total} listings · last checked ${data.directoryVerifiedOn} · always confirm on the official page before applying`;
+
+                if (!data.unlocked) {
+                    document.getElementById('lockedNotice').classList.remove('hidden');
+                    document.getElementById('upgradeMessage').textContent = data.upgradeMessage || '';
+                }
+
+                renderUrgent();
+                document.getElementById('grantGrid').innerHTML = data.grants.map(grantCardHTML).join('');
+                renderFilters();
+            } catch (err) {
+                document.getElementById('loadingView').classList.add('hidden');
+                document.getElementById('errorView').classList.remove('hidden');
+            }
+        }
+
+        loadGrants();
+    </script>
+</body>
+</html>

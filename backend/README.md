@@ -63,6 +63,12 @@ npm run dev
 - `POST /api/help/chat` — `{ message, history? }` → `{ reply, source, model }`. Same agent loop, unauthenticated,
   with a smaller tool set. Vault links are never exposed on this endpoint.
 
+### Grants Directory
+- `GET /api/grants` — `{ unlocked, total, matched, directoryVerifiedOn, categories, levels, grants, upgradeMessage }`.
+  Optional `?category=`, `?level=`, `?q=`. Auth optional. Premium (or admin) returns the full record — eligibility,
+  what you get, verification caveats and the apply link. Free accounts get name, provider, value **and the deadline**:
+  the paywall covers curation, never a closing date. Results are ordered by what closes soonest.
+
 ### AI Video Tools Vault
 - `GET /api/tools-vault` — `{ viewer, toolCount, categories }`. 123 free AI video, avatar, image, voice and
   editing tools, each with a direct link, its free-tier terms, how to use it and a starter prompt.
@@ -89,6 +95,9 @@ See [../docs/APPWRITE_BACKUP.md](../docs/APPWRITE_BACKUP.md) for setup, the `app
 
 See [../docs/OPENROUTER_AI.md](../docs/OPENROUTER_AI.md) for the agentic AI integration: choosing a model,
 the tool definitions, how entitlements are enforced, and cost control.
+
+See [../docs/GRANTS_DIRECTORY.md](../docs/GRANTS_DIRECTORY.md) for the grants dataset, its verification rules, and
+how to grant a learner Premium or full access.
 
 ## Deployment
 

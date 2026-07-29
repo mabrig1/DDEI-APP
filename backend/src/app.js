@@ -32,6 +32,7 @@ const helpRoutes = require('./routes/helpRoutes');
 const serviceUpdateRoutes = require('./routes/serviceUpdateRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const vaultRoutes = require('./routes/vaultRoutes');
+const grantRoutes = require('./routes/grantRoutes');
 
 const app = express();
 
@@ -106,6 +107,7 @@ app.use('/api/help', helpRoutes);
 app.use('/api/service-update', serviceUpdateRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/tools-vault', vaultRoutes);
+app.use('/api/grants', grantRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

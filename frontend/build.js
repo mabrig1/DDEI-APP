@@ -3,7 +3,7 @@ const path = require('path');
 
 const apiBaseUrl = process.env.API_BASE_URL || '';
 const outDir = path.join(__dirname, 'dist');
-const pages = ['index.html', 'admin.html', 'earn-online.html', 'tools-vault.html', 'links.html'];
+const pages = ['index.html', 'admin.html', 'earn-online.html', 'tools-vault.html', 'grants.html', 'links.html'];
 
 // ── Appwrite backup backend ──
 // Read-only failover for the public pages when the primary API is unreachable.

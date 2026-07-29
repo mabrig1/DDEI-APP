@@ -25,6 +25,10 @@ function optionalAuth(req, res, next) {
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = payload.sub;
+    // Admin tokens carry isAdmin and no `sub`, so a route that only reads
+    // req.userId sees an admin as anonymous. Surfacing the flag lets a route
+    // treat staff as entitled without a second token check.
+    req.isAdmin = Boolean(payload.isAdmin);
   } catch (err) {
     // ignore invalid token, treat as anonymous
   }

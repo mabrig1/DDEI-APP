@@ -29,7 +29,9 @@ async function chat(req, res) {
     req,
     message,
     history: turns,
-    toolContext: { vaultAccess: await hasVaultAccess(req.userId) },
+    // requirePremium guards this route, so every caller here is entitled to the
+    // full grants directory. The vault is a separate, narrower purchase.
+    toolContext: { premium: true, vaultAccess: await hasVaultAccess(req.userId) },
     fallback: () => buildReply(message, turns),
   });
 

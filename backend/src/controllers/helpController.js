@@ -14,9 +14,10 @@ async function chat(req, res) {
     req,
     message,
     history: turns,
-    // This endpoint is public, so the caller is never entitled to the vault
-    // links. They still get names and free-tier terms, plus the upsell.
-    toolContext: { vaultAccess: false },
+    // This endpoint is public, so the caller is entitled to neither the vault
+    // links nor the full grant records. They still get names, free-tier terms
+    // and — deliberately — grant deadlines, plus the upsell.
+    toolContext: { premium: false, vaultAccess: false },
     fallback: () => buildHelpReply(message, turns),
   });
 

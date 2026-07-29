@@ -40,6 +40,9 @@ ddei-app/
   Falls back to the built-in rule-based replies when no key is set. See [docs/OPENROUTER_AI.md](docs/OPENROUTER_AI.md)
 - **Payments** — Paystack integration for Premium subscriptions (monthly/yearly)
 - **Premium features** — AI-powered Portfolio Builder, Opportunity Matching (sample global gigs & remote jobs)
+- **Digital Skills Grants Directory** — a Premium directory of paid AI fellowships, fully-funded government training,
+  cloud/AI credits and seed capital open to Nigerians. Every listing is dated and carries its verification status;
+  deadlines stay visible even to free accounts. See [docs/GRANTS_DIRECTORY.md](docs/GRANTS_DIRECTORY.md)
 - **AI Video Tools Vault** — 123 curated free AI video, avatar, voice and editing tools, each with a direct
   link, its free-tier limits and a starter prompt. Included with the Special Edition course; the AI Advisor
   can search it for entitled learners
@@ -74,4 +77,5 @@ so a deployed frontend can still serve public content when the backend is unreac
 See `backend/README.md` for the full API reference,
 [docs/DEPLOY_BACKEND_VERCEL.md](docs/DEPLOY_BACKEND_VERCEL.md) for running the API on Vercel,
 [docs/APPWRITE_BACKUP.md](docs/APPWRITE_BACKUP.md) for the backup backend,
-and [docs/OPENROUTER_AI.md](docs/OPENROUTER_AI.md) for the agentic AI integration.
+[docs/OPENROUTER_AI.md](docs/OPENROUTER_AI.md) for the agentic AI integration,
+and [docs/GRANTS_DIRECTORY.md](docs/GRANTS_DIRECTORY.md) for the grants directory and access management.

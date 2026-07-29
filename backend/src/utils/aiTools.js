@@ -21,6 +21,7 @@ const { SKILLS } = require('../data/skills');
 const { COURSES } = require('../data/courses');
 const { OPPORTUNITIES } = require('../data/opportunities');
 const { VAULT_CATEGORIES, VAULT_TOOL_COUNT } = require('../data/videoToolsVault');
+const { GRANTS, GRANT_COUNT, deadlineState } = require('../data/grants');
 
 const VAULT_COURSE_ID = 'ai-cinematic-special-edition';
 
@@ -259,6 +260,84 @@ const TOOL_DEFINITIONS = {
           howToUse: hit.tool.how,
           starterPrompt: hit.tool.prompt,
         })),
+      };
+    },
+  },
+
+  search_grants: {
+    definition: {
+      type: 'function',
+      function: {
+        name: 'search_grants',
+        description:
+          'Search the Digital Skills Grants Directory — verified funding, paid fellowships, fully-funded training, cloud credits and seed capital that Nigerians can apply to. Call this whenever someone asks about grants, scholarships, funding, free training, stipends or how to learn without paying.',
+        parameters: {
+          type: 'object',
+          properties: {
+            query: { type: 'string', description: 'Keywords, e.g. "AI fellowship", "cloud credits", "seed funding".' },
+            level: {
+              type: 'string',
+              enum: ['beginner', 'intermediate', 'expert', 'founder'],
+              description: "Optional. The learner's stage.",
+            },
+            category: {
+              type: 'string',
+              enum: ['stipend', 'training', 'credits', 'capital', 'institutional'],
+              description: 'Optional kind of support.',
+            },
+            closingSoon: { type: 'boolean', description: 'Only return grants closing within 7 days.' },
+          },
+        },
+      },
+    },
+    run({ query, level, category, closingSoon }, context = {}) {
+      const now = new Date();
+      let found = GRANTS.filter((grant) => {
+        if (level && !grant.levels.includes(level)) return false;
+        if (category && grant.category !== category) return false;
+        return matches(`${grant.name} ${grant.provider} ${grant.summary} ${grant.tags.join(' ')}`, query);
+      }).map((grant) => ({ grant, ...deadlineState(grant, now) }));
+
+      if (closingSoon) found = found.filter((hit) => hit.state === 'closing-soon');
+      found.sort((a, b) => (a.daysLeft ?? 9999) - (b.daysLeft ?? 9999));
+
+      // Same shape of gate as the vault: the deadline is never hidden (missing
+      // a closing date because of a paywall is not an acceptable outcome), but
+      // the eligibility detail and apply link are what Premium pays for.
+      const unlocked = Boolean(context.premium);
+
+      return {
+        locked: !unlocked,
+        totalInDirectory: GRANT_COUNT,
+        matches: found.length,
+        grants: found.slice(0, MAX_RESULTS).map(({ grant, state, daysLeft }) => {
+          const base = {
+            name: grant.name,
+            provider: grant.provider,
+            category: grant.category,
+            value: grant.value,
+            deadline: grant.deadline,
+            deadlineState: state,
+            daysLeft,
+            verified: grant.verified,
+          };
+          if (!unlocked) return base;
+          return {
+            ...base,
+            summary: grant.summary,
+            eligibility: grant.eligibility,
+            whatYouGet: grant.whatYouGet,
+            applyAt: grant.url,
+            caveat: grant.caveat || null,
+            deadlineNote: grant.deadlineNote || null,
+          };
+        }),
+        guidance: unlocked
+          ? 'Give the deadline and the apply link. If a grant is marked verified:false or carries a caveat, say so plainly — '
+            + 'do not present an unconfirmed amount or date as certain. Always tell them to confirm on the official page.'
+          : 'This learner is not on Premium, so you have names and deadlines but not the eligibility rules or apply links. '
+            + 'Tell them what is closing soon, then explain that Premium (₦2,000/month) opens the full directory. '
+            + 'Do not invent the application links.',
       };
     },
   },

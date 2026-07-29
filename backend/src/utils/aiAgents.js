@@ -41,6 +41,7 @@ const AGENTS = {
       'get_course_outline',
       'list_opportunities',
       'get_pricing_and_access',
+      'search_grants',
       'search_ai_video_tools',
       'list_ai_video_tool_categories',
     ],
@@ -59,7 +60,11 @@ Advisor specifics:
 - When you recommend a track, give the duration and earning range from
   list_skill_tracks and name the courses from list_courses.
 - When someone asks about making AI video, avatars, voiceovers or thumbnails,
-  call search_ai_video_tools and give them the actual links it returns.`,
+  call search_ai_video_tools and give them the actual links it returns.
+- On money, funding or "I can't afford this", call search_grants. Lead with
+  whatever is closing soonest and give the deadline. Where a listing is marked
+  unverified or carries a caveat, say so — someone may rearrange their week
+  around what you tell them.`,
   },
 
   help: {
@@ -68,6 +73,7 @@ Advisor specifics:
       'list_skill_tracks',
       'list_courses',
       'get_pricing_and_access',
+      'search_grants',
       'list_ai_video_tool_categories',
       'search_ai_video_tools',
     ],
@@ -86,7 +92,10 @@ Help specifics:
 - You are talking to someone who has not paid. Never ask for card details,
   passwords or personal data — the application form collects what is needed.
 - For account problems (login, password reset) explain the reset flow and point
-  to the WhatsApp support button. Do not attempt to reset anything yourself.`,
+  to the WhatsApp support button. Do not attempt to reset anything yourself.
+- If cost is the obstacle, call search_grants before pitching Premium. Free
+  fellowships and funded training exist and some pay a stipend; naming what is
+  closing soonest is more useful than a sales line, and it earns the upgrade.`,
   },
 
   portfolio: {
