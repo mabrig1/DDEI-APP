@@ -26,6 +26,19 @@ const RUNTIME_CONFIG_MARKER = '<!-- DSB_RUNTIME_CONFIG -->';
 
 fs.mkdirSync(outDir, { recursive: true });
 
+// A missing API_BASE_URL used to sail through silently and leave every page
+// resolving to its localhost default — a deployed site quietly calling the
+// developer's own machine. Say so loudly in the build log instead.
+if (!apiBaseUrl) {
+  console.warn('');
+  console.warn('  ⚠  API_BASE_URL is not set for this build.');
+  console.warn('     Pages will fall back to their built-in default API URL.');
+  console.warn('     On Vercel: Settings -> Environment Variables. Note that a variable');
+  console.warn('     marked "Sensitive" is withheld from the build, so this one must be');
+  console.warn('     a plain (non-sensitive) variable to take effect.');
+  console.warn('');
+}
+
 const runtimeConfig = [
   '<script>',
   apiBaseUrl ? `        window.DSB_API_BASE_URL = ${JSON.stringify(apiBaseUrl)};` : null,
