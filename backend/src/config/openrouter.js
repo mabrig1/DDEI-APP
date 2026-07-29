@@ -90,6 +90,15 @@ function openRouterConfig() {
 
     // Per-caller ceiling, counted in this process only — see utils/aiRateLimit.js.
     rateLimitPerMinute: num(process.env.OPENROUTER_RATE_LIMIT_PER_MINUTE, 12),
+
+    // Results requested from OpenRouter's web plugin. Billed per result on top
+    // of tokens, so only the daily grants agent turns it on — the chat agents
+    // answer from local tools and never need it.
+    webResults: num(process.env.OPENROUTER_WEB_RESULTS, 5),
+
+    // Listings the daily agent may research per run. The ceiling is the spend
+    // control that matters for a job that runs unattended every morning.
+    grantsMaxResearch: num(process.env.GRANTS_AGENT_MAX_RESEARCH, 6),
   };
 }
 

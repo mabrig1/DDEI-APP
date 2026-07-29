@@ -63,6 +63,7 @@
                 <button data-tab="users" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Users</button>
                 <button data-tab="subscriptions" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Payments</button>
                 <button data-tab="content" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Pages &amp; Posts</button>
+                <button data-tab="grants" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">💰 Grants Review <span id="grantsPendingBadge" class="hidden ml-1 text-[10px] bg-rose-500 text-white px-1.5 py-0.5 rounded-full"></span></button>
             </div>
             <div class="flex items-center gap-x-2">
                 <button id="newContentBtn" class="hidden px-4 py-2 text-sm font-semibold bg-emerald-600 text-white rounded-xl hover:opacity-90">+ New Page/Post</button>
@@ -75,6 +76,26 @@
 
         <div id="genericEmpty" class="hidden bg-white border rounded-3xl p-10 text-center text-slate-500"></div>
         <div id="genericError" class="hidden text-red-600 text-sm mb-4"></div>
+
+        <!-- Grants review tab: the human half of the daily agent's loop. -->
+        <div id="tab-grants" class="tab-panel hidden">
+            <div class="bg-white border rounded-3xl p-5 mb-4">
+                <h3 class="font-semibold mb-1">Daily grants agent</h3>
+                <p class="text-sm text-slate-600">
+                    Every morning the agent re-checks deadlines and dead links, and asks OpenRouter (with web search)
+                    to re-verify listings that are closing soon, stale or flagged unconfirmed.
+                    <strong>Nothing it finds reaches learners until you approve it here.</strong>
+                    Approving stamps the listing "verified" — that claim is yours, not the model's, so read the evidence first.
+                </p>
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <button data-status="pending" class="grant-filter px-3 py-1.5 text-xs font-semibold rounded-xl bg-[#0A66C2] text-white">Pending</button>
+                    <button data-status="approved" class="grant-filter px-3 py-1.5 text-xs font-semibold rounded-xl border text-slate-600">Approved</button>
+                    <button data-status="rejected" class="grant-filter px-3 py-1.5 text-xs font-semibold rounded-xl border text-slate-600">Rejected</button>
+                    <button data-status="all" class="grant-filter px-3 py-1.5 text-xs font-semibold rounded-xl border text-slate-600">All</button>
+                </div>
+            </div>
+            <div id="grantUpdatesList" class="space-y-4"></div>
+        </div>
 
         <!-- Overview tab -->
         <div id="tab-overview" class="tab-panel hidden">
@@ -469,6 +490,142 @@
         });
 
         let currentTab = 'overview';
+
+        // ── Grants review ────────────────────────────────────────────────────
+        // The approval gate for the daily agent. Deliberately shows the evidence
+        // and the current value side by side: "moved the deadline to 15 January"
+        // is unreviewable without knowing it currently says 31 July, and a
+        // proposal with no source is not something to click Approve on.
+        let grantFilter = 'pending';
+
+        const GRANT_KIND = {
+            expired:     { label: 'Deadline passed', style: 'bg-rose-100 text-rose-700' },
+            'dead-link': { label: 'Dead link',       style: 'bg-rose-100 text-rose-700' },
+            change:      { label: 'Details changed', style: 'bg-amber-100 text-amber-700' },
+            new:         { label: 'New opportunity', style: 'bg-emerald-100 text-emerald-700' },
+        };
+        const GRANT_CONFIDENCE = { high: 'text-emerald-600', medium: 'text-amber-600', low: 'text-slate-500' };
+
+        function grantUpdateHTML(u) {
+            const kind = GRANT_KIND[u.kind] || { label: u.kind, style: 'bg-slate-100 text-slate-700' };
+            const patchKeys = Object.keys(u.patch || {});
+
+            const diff = patchKeys.length ? `
+                <div class="bg-slate-50 border rounded-2xl p-3 mb-3 overflow-x-auto">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-2">Proposed change</p>
+                    <table class="text-xs w-full">
+                        ${patchKeys.map((k) => `
+                            <tr>
+                                <td class="pr-3 py-0.5 font-semibold text-slate-500 align-top">${escapeHtml(k)}</td>
+                                <td class="pr-3 py-0.5 text-slate-400 line-through align-top">${escapeHtml(u.currentValues ? (u.currentValues[k] ?? '—') : '—')}</td>
+                                <td class="py-0.5 text-slate-900 font-medium align-top">${escapeHtml(u.patch[k] ?? '—')}</td>
+                            </tr>`).join('')}
+                    </table>
+                </div>` : '';
+
+            const evidence = (u.citations && u.citations.length) ? `
+                <div class="mb-3">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-slate-400 mb-1">Evidence — read this before approving</p>
+                    <ul class="space-y-1">
+                        ${u.citations.slice(0, 5).map((c) => `
+                            <li class="text-xs">
+                                <a href="${escapeHtml(c.url)}" target="_blank" rel="noopener noreferrer" class="text-[#0A66C2] hover:underline">
+                                    ${escapeHtml(c.title || c.url)} <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                                </a>
+                                ${c.excerpt ? `<p class="text-slate-500 italic mt-0.5">"${escapeHtml(c.excerpt.slice(0, 200))}…"</p>` : ''}
+                            </li>`).join('')}
+                    </ul>
+                </div>`
+                : (u.source === 'deterministic'
+                    ? '<p class="text-xs text-slate-500 mb-3">Found by date arithmetic / HTTP status — no model involved.</p>'
+                    : '<p class="text-xs text-rose-600 mb-3">⚠ No sources attached. Do not approve this.</p>');
+
+            const actions = u.status === 'pending' ? `
+                <div class="flex flex-wrap gap-2 pt-3 border-t">
+                    <button onclick="reviewGrantUpdate('${u.id}','approved')"
+                            class="px-4 py-2 text-xs font-semibold bg-emerald-600 text-white rounded-xl hover:opacity-90">
+                        Approve &amp; publish
+                    </button>
+                    <button onclick="reviewGrantUpdate('${u.id}','rejected')"
+                            class="px-4 py-2 text-xs font-semibold border rounded-xl hover:bg-slate-50">Reject</button>
+                </div>`
+                : `<p class="text-xs text-slate-400 pt-3 border-t">
+                       ${escapeHtml(u.status)}${u.reviewedBy ? ' by ' + escapeHtml(u.reviewedBy) : ''}
+                       ${u.reviewedAt ? ' on ' + new Date(u.reviewedAt).toLocaleDateString() : ''}
+                   </p>`;
+
+            return `
+                <div class="bg-white border rounded-3xl p-5">
+                    <div class="flex items-start justify-between gap-3 mb-2 flex-wrap">
+                        <div>
+                            <span class="text-[10px] font-bold ${kind.style} px-2 py-0.5 rounded-full">${escapeHtml(kind.label)}</span>
+                            <h4 class="font-semibold mt-2">${escapeHtml(u.grantName)}</h4>
+                        </div>
+                        <p class="text-[11px] ${GRANT_CONFIDENCE[u.confidence] || 'text-slate-500'} font-semibold whitespace-nowrap">
+                            ${escapeHtml(u.confidence)} confidence
+                            <span class="text-slate-400 font-normal block text-right">${escapeHtml(u.source === 'deterministic' ? 'automatic check' : (u.model || 'model'))}</span>
+                        </p>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-3">${escapeHtml(u.summary)}</p>
+                    ${diff}
+                    ${evidence}
+                    ${actions}
+                </div>`;
+        }
+
+        async function loadGrantUpdates() {
+            const { errorEl, emptyEl } = resetListUI();
+            const list = document.getElementById('grantUpdatesList');
+            list.innerHTML = '<p class="text-center text-slate-400 py-10 text-sm">Loading…</p>';
+            try {
+                const data = await adminRequest(`/api/admin/grant-updates?status=${encodeURIComponent(grantFilter)}`);
+
+                const badge = document.getElementById('grantsPendingBadge');
+                badge.textContent = data.pendingCount;
+                badge.classList.toggle('hidden', !data.pendingCount);
+
+                if (!data.updates.length) {
+                    list.innerHTML = `<div class="bg-white border rounded-3xl p-10 text-center text-slate-500 text-sm">
+                        Nothing ${escapeHtml(grantFilter === 'all' ? '' : grantFilter)} to show. The directory is up to date.
+                    </div>`;
+                    return;
+                }
+                list.innerHTML = data.updates.map(grantUpdateHTML).join('');
+            } catch (err) {
+                list.innerHTML = '';
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+            }
+        }
+
+        async function reviewGrantUpdate(id, decision) {
+            if (decision === 'approved'
+                && !confirm('Approve this change? It goes live on the Grants page immediately and marks the listing as verified.')) return;
+            try {
+                await adminRequest(`/api/admin/grant-updates/${id}`, {
+                    method: 'PATCH',
+                    body: JSON.stringify({ decision }),
+                });
+                loadGrantUpdates();
+            } catch (err) {
+                alert(err.message);
+            }
+        }
+
+        document.querySelectorAll('.grant-filter').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                grantFilter = btn.dataset.status;
+                document.querySelectorAll('.grant-filter').forEach((b) => {
+                    const on = b.dataset.status === grantFilter;
+                    b.classList.toggle('bg-[#0A66C2]', on);
+                    b.classList.toggle('text-white', on);
+                    b.classList.toggle('border', !on);
+                    b.classList.toggle('text-slate-600', !on);
+                });
+                loadGrantUpdates();
+            });
+        });
+
         const TABS = {
             overview: { load: loadOverview },
             courseanalytics: { load: loadCourseAnalytics },
@@ -476,6 +633,7 @@
             users: { load: loadUsers },
             subscriptions: { load: loadSubscriptions },
             content: { load: loadContent },
+            grants: { load: loadGrantUpdates },
         };
 
         document.querySelectorAll('.tab-btn').forEach((btn) => {

@@ -1,0 +1,135 @@
+name: Grants agent (daily)
+
+# Keeps the Digital Skills Grants Directory current.
+#
+# Every morning this:
+#   1. Re-checks every listing's deadline arithmetic and whether its official
+#      page still resolves. No AI, no cost — this half always runs.
+#   2. Asks OpenRouter (with web search) to re-verify the listings that are
+#      closing soon, stale, or flagged unconfirmed, and to look for
+#      opportunities the directory is missing.
+#   3. Queues what it finds for review.
+#
+# It does NOT change what learners see. Proposals wait in the admin dashboard
+# until a person approves them — approving is what stamps a listing "verified",
+# and that claim belongs to a human, not a model. See docs/GRANTS_DIRECTORY.md.
+#
+# Setup:
+#   Settings → Secrets and variables → Actions → Secrets:
+#     MONGODB_URI         required to queue proposals (without it: report only)
+#     OPENROUTER_API_KEY  optional — without it, deterministic checks still run
+#   Atlas → Network Access must allow 0.0.0.0/0.
+#
+# Costs: with OPENROUTER_MODEL=openrouter/free the tokens are free, but the web
+# plugin is billed per result regardless of model. GRANTS_AGENT_MAX_RESEARCH
+# (default 6) caps how many listings get researched per run — that is the dial
+# that controls spend. Set OPENROUTER_ENABLED=false to pause the AI half.
+
+on:
+  schedule:
+    # 06:00 UTC — 07:00 in Lagos, so findings are waiting at the start of the day.
+    - cron: '0 6 * * *'
+
+  workflow_dispatch:
+    inputs:
+      save:
+        description: Queue findings for review (off = report only)
+        type: boolean
+        required: false
+        default: true
+      discover:
+        description: Also search for grants not yet in the directory
+        type: boolean
+        required: false
+        default: true
+      max_research:
+        description: Maximum listings to research with the model
+        type: string
+        required: false
+
+concurrency:
+  group: grants-agent
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      - name: Run the daily check
+        id: check
+        env:
+          # Inputs go through the environment rather than being interpolated
+          # into the script, so nothing typed into the form runs as shell.
+          SAVE: ${{ github.event_name == 'schedule' && 'true' || inputs.save }}
+          DISCOVER: ${{ github.event_name == 'schedule' && 'true' || inputs.discover }}
+          MAX_RESEARCH: ${{ inputs.max_research }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
+          OPENROUTER_WEB_RESULTS: ${{ vars.OPENROUTER_WEB_RESULTS }}
+          GRANTS_AGENT_MAX_RESEARCH: ${{ vars.GRANTS_AGENT_MAX_RESEARCH }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${OPENROUTER_API_KEY:-}" ]; then
+            echo "::notice::OPENROUTER_API_KEY not set — running deterministic checks only."
+          fi
+
+          ARGS=""
+          [ "$SAVE" = "true" ] && ARGS="$ARGS --save"
+          [ "$DISCOVER" = "false" ] && ARGS="$ARGS --no-discover"
+          [ -n "${MAX_RESEARCH:-}" ] && ARGS="$ARGS --max-research=$MAX_RESEARCH"
+
+          node src/scripts/refreshGrants.js $ARGS --report=grants-report.md
+
+      - name: Publish the report to the run summary
+        if: always()
+        run: cat grants-report.md >> "$GITHUB_STEP_SUMMARY" || true
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: grants-report
+          path: backend/grants-report.md
+          retention-days: 30
+
+      # Only speak up when a human actually needs to do something. A daily
+      # "nothing changed" notification is how a channel gets muted.
+      - name: Open an issue when there is something to review
+        if: steps.check.outputs.findings != '0' && steps.check.outputs.findings != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FINDINGS: ${{ steps.check.outputs.findings }}
+          QUEUED: ${{ steps.check.outputs.queued }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          {
+            echo "The daily grants check found **$FINDINGS** thing(s) to review; $QUEUED queued in the admin dashboard."
+            echo
+            echo "Nothing has changed on the site — approvals are manual by design."
+            echo
+            echo "[Full report]($RUN_URL)"
+            echo
+            cat grants-report.md
+          } > issue-body.md
+
+          gh issue create \
+            --title "Grants directory: $FINDINGS finding(s) to review — $(date -u +%Y-%m-%d)" \
+            --body-file issue-body.md \
+            --label "grants-agent" || echo "::warning::Could not open an issue (is the 'grants-agent' label missing?)"

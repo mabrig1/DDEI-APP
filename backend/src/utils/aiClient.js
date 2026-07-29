@@ -59,6 +59,23 @@ function normaliseHistory(history, limit = 8) {
     .filter(Boolean);
 }
 
+/**
+ * Pull url_citation annotations out of a completion. OpenRouter normalises the
+ * web plugin's results into this shape whatever the underlying vendor is.
+ * Returns [] when the plugin wasn't used — never throws on a missing field.
+ */
+function citationsOf(message) {
+  const annotations = (message && message.annotations) || [];
+  return annotations
+    .filter((a) => a && a.type === 'url_citation' && a.url_citation && a.url_citation.url)
+    .map((a) => ({
+      url: a.url_citation.url,
+      title: a.url_citation.title || null,
+      // Trimmed: the excerpt is evidence for a reviewer, not a document store.
+      excerpt: (a.url_citation.content || '').slice(0, 500) || null,
+    }));
+}
+
 function parseArguments(raw) {
   if (!raw) return {};
   if (typeof raw === 'object') return raw;
@@ -98,7 +115,11 @@ function describeFailure(err) {
  * @param {object} [options.toolContext] Passed to every tool — carries entitlements.
  * @param {number} [options.maxTokens]
  * @param {number} [options.temperature]
- * @returns {Promise<{reply: string, model: string, toolsUsed: string[], rounds: number, usage: object|null}>}
+ * @param {number|false} [options.web]  Enable OpenRouter's web plugin with this
+ *   many results. Costs extra per request, so it is opt-in and only the grants
+ *   research agent uses it.
+ * @param {boolean} [options.json]  Ask the provider for a JSON object response.
+ * @returns {Promise<{reply, model, toolsUsed, rounds, usage, citations}>}
  */
 async function runAgent({
   system,
@@ -108,6 +129,8 @@ async function runAgent({
   toolContext = {},
   maxTokens,
   temperature,
+  web = false,
+  json = false,
 }) {
   if (!isAiEnabled()) throw new AiUnavailableError('OpenRouter is not configured.');
 
@@ -154,6 +177,14 @@ async function runAgent({
     // limited or down, it tries these before returning an error to us.
     if (cfg.fallbackModels.length) body.models = [cfg.model, ...cfg.fallbackModels];
 
+    // OpenRouter's web plugin grounds the answer in live search results and
+    // returns url_citation annotations. Those citations are the whole point
+    // for the grants agent: a claim about a deadline is worth nothing without
+    // the page it came from.
+    if (web) body.plugins = [{ id: 'web', max_results: Number(web) || 5 }];
+
+    if (json) body.response_format = { type: 'json_object' };
+
     // On the final round, drop the tools so the model has no choice but to
     // answer in prose — otherwise it can spend the last round on a tool call
     // whose result nobody will ever read.
@@ -191,7 +222,7 @@ async function runAgent({
     if (!toolCalls.length) {
       const reply = (assistant.content || '').trim();
       if (!reply) throw new AiUnavailableError('OpenRouter returned an empty reply.');
-      return { reply, model: servedBy, toolsUsed, rounds: round, usage };
+      return { reply, model: servedBy, toolsUsed, rounds: round, usage, citations: citationsOf(assistant) };
     }
 
     // The assistant turn holding the tool calls must be echoed back verbatim,
@@ -216,4 +247,4 @@ async function runAgent({
   throw new AiUnavailableError(`Stopped after ${cfg.maxToolRounds} tool rounds without a final answer.`);
 }
 
-module.exports = { runAgent, AiUnavailableError, normaliseHistory };
+module.exports = { runAgent, AiUnavailableError, normaliseHistory, citationsOf };

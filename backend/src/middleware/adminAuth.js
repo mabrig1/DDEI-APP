@@ -13,6 +13,9 @@ function requireAdmin(req, res, next) {
     if (!payload.isAdmin) {
       return res.status(403).json({ message: 'Admin access required' });
     }
+    req.isAdmin = true;
+    // Recorded on grant-proposal reviews, so an approval is attributable.
+    req.adminUsername = payload.username || payload.sub || 'admin';
     next();
   } catch (err) {
     return res.status(401).json({ message: 'Invalid or expired token' });

@@ -69,6 +69,13 @@ npm run dev
   what you get, verification caveats and the apply link. Free accounts get name, provider, value **and the deadline**:
   the paywall covers curation, never a closing date. Results are ordered by what closes soonest.
 
+### Grants review (admin)
+- `GET /api/admin/grant-updates?status=pending|approved|rejected|all` — the daily agent's proposals, each with the
+  current values, the proposed patch, and the source citations behind the claim
+- `PATCH /api/admin/grant-updates/:id` — `{ decision: "approved" | "rejected", note? }`. Approving layers the change
+  onto the served directory immediately and marks the listing verified. **A model's finding never reaches learners
+  without this step** — see [../docs/GRANTS_AGENT.md](../docs/GRANTS_AGENT.md)
+
 ### AI Video Tools Vault
 - `GET /api/tools-vault` — `{ viewer, toolCount, categories }`. 123 free AI video, avatar, image, voice and
   editing tools, each with a direct link, its free-tier terms, how to use it and a starter prompt.
@@ -97,7 +104,8 @@ See [../docs/OPENROUTER_AI.md](../docs/OPENROUTER_AI.md) for the agentic AI inte
 the tool definitions, how entitlements are enforced, and cost control.
 
 See [../docs/GRANTS_DIRECTORY.md](../docs/GRANTS_DIRECTORY.md) for the grants dataset, its verification rules, and
-how to grant a learner Premium or full access.
+how to grant a learner Premium or full access, and [../docs/GRANTS_AGENT.md](../docs/GRANTS_AGENT.md) for the daily
+agent that keeps it current.
 
 ## Deployment
 

@@ -1,5 +1,7 @@
 const User = require('../models/User');
-const { GRANTS, GRANT_COUNT, CATEGORIES, LEVELS, DIRECTORY_VERIFIED_ON, deadlineState } = require('../data/grants');
+const GrantUpdate = require('../models/GrantUpdate');
+const { GRANTS, CATEGORIES, LEVELS, DIRECTORY_VERIFIED_ON, deadlineState } = require('../data/grants');
+const { applyOverlay } = require('../utils/grantsOverlay');
 
 /**
  * The Grants Directory.
@@ -63,6 +65,25 @@ function byUrgency(a, b) {
   return 0;
 }
 
+/**
+ * The directory as it stands right now: the committed baseline plus whatever an
+ * admin has approved from the daily agent.
+ *
+ * A database problem must not take the page down — approvals are an
+ * enhancement, so falling back to the baseline is the correct degradation.
+ */
+async function currentDirectory() {
+  try {
+    const approved = await GrantUpdate.find({ status: 'approved' })
+      .sort({ reviewedAt: 1 })
+      .lean();
+    return applyOverlay(approved);
+  } catch (err) {
+    console.warn(`[grants] serving the baseline directory — overlay unavailable: ${err.message}`);
+    return GRANTS;
+  }
+}
+
 async function hasPremium(userId) {
   if (!userId) return false;
   const user = await User.findById(userId);
@@ -72,9 +93,10 @@ async function hasPremium(userId) {
 async function listGrants(req, res) {
   const now = new Date();
   const unlocked = req.isAdmin || (await hasPremium(req.userId));
+  const directory = await currentDirectory();
 
   const { category, level, q } = req.query;
-  let grants = GRANTS;
+  let grants = directory;
 
   if (category) grants = grants.filter((g) => g.category === category);
   if (level) grants = grants.filter((g) => g.levels.includes(level));
@@ -87,7 +109,7 @@ async function listGrants(req, res) {
 
   res.json({
     unlocked,
-    total: GRANT_COUNT,
+    total: directory.length,
     matched: rendered.length,
     directoryVerifiedOn: DIRECTORY_VERIFIED_ON,
     categories: CATEGORIES,
@@ -102,4 +124,4 @@ async function listGrants(req, res) {
   });
 }
 
-module.exports = { listGrants };
+module.exports = { listGrants, currentDirectory };
