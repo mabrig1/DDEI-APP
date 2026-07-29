@@ -16,6 +16,7 @@ const { notFound, errorHandler } = require('./middleware/errorHandler');
 const { corsOptions } = require('./config/cors');
 const { publicConfig, isBackupEnabled } = require('./config/appwrite');
 const { backupStatus } = require('./utils/appwriteBackup');
+const { aiStatus } = require('./config/openrouter');
 
 const authRoutes = require('./routes/authRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
@@ -64,6 +65,10 @@ app.get('/api/health', (req, res) => res.json({
   status: 'ok',
   service: 'destiny-skills-bridge-backend',
   backup: backupStatus(),
+  // Whether live model calls are possible, and which model is configured. No
+  // key material — this tells an operator at a glance whether the AI features
+  // are actually running or quietly serving the rule-based fallbacks.
+  ai: aiStatus(),
 }));
 
 // Tells the frontend where the read-only Appwrite failover lives. Everything

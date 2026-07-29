@@ -48,6 +48,8 @@ Preview and Development unless noted.
 | `ADMIN_USERNAME` | Admin dashboard login |
 | `ADMIN_PASSWORD_HASH` | bcrypt hash — never the plaintext password |
 | `APPWRITE_API_KEY` | Appwrite server API key (optional; enables the mirror) |
+| `OPENROUTER_API_KEY` | Optional; powers the AI Advisor, Help Assistant and Portfolio Builder — see [OPENROUTER_AI.md](OPENROUTER_AI.md) |
+| `OPENROUTER_MODEL` | Optional; `openrouter/free` for zero cost |
 | `RESEND_API_KEY`, `ADMIN_NOTIFY_EMAIL` | Optional, for email notifications |
 
 Do **not** set `PORT` — Vercel doesn't use it.

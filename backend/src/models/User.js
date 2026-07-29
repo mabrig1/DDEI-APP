@@ -8,8 +8,14 @@ const portfolioSchema = new mongoose.Schema(
   {
     headline: String,
     summary: String,
+    // Three client-facing strengths, written by the AI portfolio agent. Empty
+    // when the deterministic template writer produced this portfolio.
+    strengths: [String],
     skills: [String],
     highlights: [String],
+    // 'ai' or 'template' — which writer produced it. Useful when comparing
+    // conversion between the two, and for regenerating template-era portfolios.
+    source: String,
     generatedAt: Date,
   },
   { _id: false }

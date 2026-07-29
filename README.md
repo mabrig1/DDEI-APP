@@ -21,7 +21,9 @@ ddei-app/
 │   │   ├── routes/                  # Express routers mounted under /api/*
 │   │   ├── middleware/              # JWT auth (required/optional), error handling
 │   │   ├── data/                    # Static skill tracks & sample opportunities
-│   │   ├── utils/advisorEngine.js   # Simulated AI Advisor reply logic
+│   │   ├── config/openrouter.js    # OpenRouter (agentic AI) configuration
+│   │   ├── utils/ai*.js             # Agent loop, tool definitions, prompts, rate limit
+│   │   ├── utils/advisorEngine.js   # Rule-based AI Advisor replies (fallback when AI is off)
 │   │   └── server.js                # App entrypoint
 │   ├── package.json
 │   └── .env.example
@@ -33,9 +35,14 @@ ddei-app/
 - **Authentication** — JWT-based register/login with bcrypt password hashing
 - **Skills Selection** — Tier 1 (Fast Start) and Tier 2 (High Growth) tracks with NGN & USD earning potential
 - **Application/Onboarding** — apply to a skill track / cohort
-- **AI Advisor Chat** — simulated, context-aware career and skills guidance
+- **AI Advisor Chat** — agentic career and skills guidance. Real models via OpenRouter, calling tools that
+  read the live catalogue, pricing and tool vault, so answers can't drift from what the site shows.
+  Falls back to the built-in rule-based replies when no key is set. See [docs/OPENROUTER_AI.md](docs/OPENROUTER_AI.md)
 - **Payments** — Paystack integration for Premium subscriptions (monthly/yearly)
 - **Premium features** — AI-powered Portfolio Builder, Opportunity Matching (sample global gigs & remote jobs)
+- **AI Video Tools Vault** — 123 curated free AI video, avatar, voice and editing tools, each with a direct
+  link, its free-tier limits and a starter prompt. Included with the Special Edition course; the AI Advisor
+  can search it for entitled learners
 - **Appwrite backup backend** — MongoDB is continuously mirrored to Appwrite Cloud, and the public site
   falls back to that mirror (read-only) if the primary API goes down. See [docs/APPWRITE_BACKUP.md](docs/APPWRITE_BACKUP.md)
 
@@ -66,4 +73,5 @@ so a deployed frontend can still serve public content when the backend is unreac
 
 See `backend/README.md` for the full API reference,
 [docs/DEPLOY_BACKEND_VERCEL.md](docs/DEPLOY_BACKEND_VERCEL.md) for running the API on Vercel,
-and [docs/APPWRITE_BACKUP.md](docs/APPWRITE_BACKUP.md) for the backup backend.
+[docs/APPWRITE_BACKUP.md](docs/APPWRITE_BACKUP.md) for the backup backend,
+and [docs/OPENROUTER_AI.md](docs/OPENROUTER_AI.md) for the agentic AI integration.

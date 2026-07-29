@@ -20,8 +20,10 @@ function buildReply(message, history = []) {
   if (mentioned) {
     return (
       `${mentioned.name} is a great choice. Most learners finish the core track in about ${mentioned.durationWeeks} weeks, ` +
-      `and global clients in this field typically pay ${mentioned.earningPotential.usdMonthly} per month ` +
-      `(roughly ${mentioned.earningPotential.ngnMonthly} at local rates). ` +
+      // Skills carry ngnMonthly only — an earlier version read a usdMonthly
+      // field that has never existed on this data, so this line shipped the
+      // word "undefined" to learners asking what they could earn.
+      `and global clients in this field typically pay ${mentioned.earningPotential.ngnMonthly} per month at local rates. ` +
       `Want me to show you the application steps, or compare it with another skill track?`
     );
   }

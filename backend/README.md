@@ -54,22 +54,41 @@ npm run dev
 - `POST /api/courses/:id/lessons/:lessonId/quiz` — `{ answers: number[] }` → `{ score, total, passed, results }` (server-side grading; auth optional, attempt persisted only if authenticated)
 
 ### AI Advisor
-- `POST /api/advisor/chat` — `{ message, history? }` → `{ reply }` (simulated, keyword/context-aware advisor)
+- `POST /api/advisor/chat` — `{ message, history? }` → `{ reply, source, model }`. Agentic: the model calls
+  tools that read the live skill tracks, course catalogue, opportunities, pricing and (for entitled learners)
+  the AI Video Tools Vault. `source` is `"ai"` when a model answered, `"fallback"` when the rule-based engine
+  did — which is what happens whenever OpenRouter is unset, paused, rate limited or failing.
+
+### Help Assistant (public)
+- `POST /api/help/chat` — `{ message, history? }` → `{ reply, source, model }`. Same agent loop, unauthenticated,
+  with a smaller tool set. Vault links are never exposed on this endpoint.
+
+### AI Video Tools Vault
+- `GET /api/tools-vault` — `{ viewer, toolCount, categories }`. 123 free AI video, avatar, image, voice and
+  editing tools, each with a direct link, its free-tier terms, how to use it and a starter prompt.
+  Requires the AI Cinematic Special Edition course, a full scholarship, or admin; otherwise `401`/`403`
+  with `vaultLocked: true`.
 
 ### Portfolio Builder (Premium)
-- `POST /api/portfolio/generate` — `{ name, trackId, highlights? }` → `{ portfolio }` (saved to user profile if authenticated)
+- `POST /api/portfolio/generate` — `{ name, trackId, highlights? }` → `{ portfolio }` (saved to user profile if
+  authenticated). `portfolio.source` is `"ai"` or `"template"`; the AI writer adds a `strengths` array. Model
+  output that isn't valid JSON is discarded in favour of the template — client-facing copy is never half-parsed.
 
 ### Payments (Paystack)
 - `POST /api/payments/initialize` — `{ plan: "premium-monthly" | "premium-yearly", email, callbackUrl? }` → `{ authorizationUrl, reference }`
 - `GET /api/payments/verify/:reference` — verifies the transaction and activates premium on success
 
 ### Health & backup backend
-- `GET /api/health` — `{ status, service, backup }`, where `backup` reports the Appwrite mirror's state
-  (`configured`, `enabled`, `degraded`, queue depth, write/failure counts, last error, last sync)
+- `GET /api/health` — `{ status, service, backup, ai }`. `backup` reports the Appwrite mirror's state
+  (`configured`, `enabled`, `degraded`, queue depth, write/failure counts, last error, last sync);
+  `ai` reports whether OpenRouter is configured and enabled and which model is selected (no key material)
 - `GET /api/config/backup` — public Appwrite config the frontend failover uses (never includes the API key)
 
 See [../docs/APPWRITE_BACKUP.md](../docs/APPWRITE_BACKUP.md) for setup, the `appwrite:provision` /
 `appwrite:sync` / `appwrite:restore` scripts, and the security model.
+
+See [../docs/OPENROUTER_AI.md](../docs/OPENROUTER_AI.md) for the agentic AI integration: choosing a model,
+the tool definitions, how entitlements are enforced, and cost control.
 
 ## Deployment
 
