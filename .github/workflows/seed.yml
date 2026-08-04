@@ -1,0 +1,60 @@
+name: Seed Admin User
+
+on:
+  workflow_dispatch:
+    inputs:
+      mongodb_uri:
+        description: 'MongoDB Atlas Connection String'
+        required: true
+        type: string
+      admin_password:
+        description: 'New Admin Password'
+        required: true
+        type: string
+
+jobs:
+  seed-admin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm install
+
+      - name: Update Admin in MongoDB
+        env:
+          MONGODB_URI: ${{ inputs.mongodb_uri }}
+          ADMIN_PASSWORD: ${{ inputs.admin_password }}
+        run: |
+          node -e "
+          const mongoose = require('mongoose');
+          const bcrypt = require('bcryptjs');
+
+          const uri = process.env.MONGODB_URI;
+          const newPassword = process.env.ADMIN_PASSWORD;
+
+          mongoose.connect(uri).then(async () => {
+            const hash = await bcrypt.hash(newPassword, 10);
+            const db = mongoose.connection.db;
+            
+            await db.collection('users').updateOne(
+              { username: 'Admin' },
+              { \$set: { password: hash, role: 'admin' } },
+              { upsert: true }
+            );
+            
+            console.log('Admin password updated successfully in MongoDB Atlas.');
+            process.exit(0);
+          }).catch((err) => {
+            console.error(err);
+            process.exit(1);
+          });
+          "
