@@ -25,39 +25,39 @@ jobs:
           node-version: 18
 
       - name: Install Dependencies
-        run: |
-          cd backend
-          npm install mongoose bcryptjs
+        run: npm install mongoose bcryptjs
 
-      - name: Update Admin in MongoDB
+      - name: Execute Admin Seed
         env:
           MONGODB_URI: ${{ inputs.mongodb_uri }}
           ADMIN_PASSWORD: ${{ inputs.admin_password }}
         run: |
-          cd backend
           cat << 'EOF' > run_seed.js
           const mongoose = require('mongoose');
           const bcrypt = require('bcryptjs');
 
-          const uri = process.env.MONGODB_URI;
-          const password = process.env.ADMIN_PASSWORD;
+          const rawUri = process.env.MONGODB_URI.trim();
+          const password = process.env.ADMIN_PASSWORD.trim();
 
           async function run() {
             try {
-              await mongoose.connect(uri);
+              console.log('Connecting to MongoDB Atlas...');
+              await mongoose.connect(rawUri);
+              console.log('Connected successfully.');
+
               const hash = await bcrypt.hash(password, 10);
               const db = mongoose.connection.db;
 
-              await db.collection('users').updateOne(
+              const result = await db.collection('users').updateOne(
                 { username: 'Admin' },
                 { $set: { password: hash, role: 'admin' } },
                 { upsert: true }
               );
 
-              console.log('Admin password updated successfully in MongoDB Atlas.');
+              console.log('Admin password successfully updated in MongoDB Atlas!');
               process.exit(0);
             } catch (err) {
-              console.error('Error during seed execution:', err);
+              console.error('Execution Failed:', err.message);
               process.exit(1);
             }
           }
