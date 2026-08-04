@@ -7,9 +7,18 @@ const connectDB = require('../src/config/db');
 const { allowOriginHeader } = require('../src/config/cors');
 
 module.exports = async function handler(req, res) {
-  // 1. Determine allowed origin (fallback to main frontend domain)
+  // 1. Determine allowed origin (explicitly handling custom domain & Vercel deployment domain)
   const reqOrigin = req.headers.origin;
-  const allowOrigin = allowOriginHeader(reqOrigin) || 'https://ddei.online';
+
+  const allowedOrigins = [
+    'https://ddei.online',
+    'https://www.ddei.online',
+    'https://ddei-app.vercel.app'
+  ];
+
+  const allowOrigin = allowedOrigins.includes(reqOrigin)
+    ? reqOrigin
+    : (allowOriginHeader(reqOrigin) || 'https://ddei.online');
 
   // 2. Set CORS headers globally on ALL outgoing responses
   res.setHeader('Access-Control-Allow-Origin', allowOrigin);
