@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Dependencies
+      - name: Install Required Packages
         run: npm install mongoose bcryptjs
 
       - name: Execute Admin Seed
@@ -48,7 +48,7 @@ jobs:
               const hash = await bcrypt.hash(password, 10);
               const db = mongoose.connection.db;
 
-              const result = await db.collection('users').updateOne(
+              await db.collection('users').updateOne(
                 { username: 'Admin' },
                 { $set: { password: hash, role: 'admin' } },
                 { upsert: true }
