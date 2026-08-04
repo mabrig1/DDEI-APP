@@ -24,37 +24,44 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Backend Dependencies
+      - name: Install Dependencies
         run: |
           cd backend
-          npm install
+          npm install mongoose bcryptjs
 
       - name: Update Admin in MongoDB
         env:
           MONGODB_URI: ${{ inputs.mongodb_uri }}
           ADMIN_PASSWORD: ${{ inputs.admin_password }}
         run: |
-          node -e "
+          cd backend
+          cat << 'EOF' > run_seed.js
           const mongoose = require('mongoose');
           const bcrypt = require('bcryptjs');
 
           const uri = process.env.MONGODB_URI;
-          const newPassword = process.env.ADMIN_PASSWORD;
+          const password = process.env.ADMIN_PASSWORD;
 
-          mongoose.connect(uri).then(async () => {
-            const hash = await bcrypt.hash(newPassword, 10);
-            const db = mongoose.connection.db;
-            
-            await db.collection('users').updateOne(
-              { username: 'Admin' },
-              { \$set: { password: hash, role: 'admin' } },
-              { upsert: true }
-            );
-            
-            console.log('Admin password updated successfully in MongoDB Atlas.');
-            process.exit(0);
-          }).catch((err) => {
-            console.error(err);
-            process.exit(1);
-          });
-          "
+          async function run() {
+            try {
+              await mongoose.connect(uri);
+              const hash = await bcrypt.hash(password, 10);
+              const db = mongoose.connection.db;
+
+              await db.collection('users').updateOne(
+                { username: 'Admin' },
+                { $set: { password: hash, role: 'admin' } },
+                { upsert: true }
+              );
+
+              console.log('Admin password updated successfully in MongoDB Atlas.');
+              process.exit(0);
+            } catch (err) {
+              console.error('Error during seed execution:', err);
+              process.exit(1);
+            }
+          }
+
+          run();
+          EOF
+          node run_seed.js
