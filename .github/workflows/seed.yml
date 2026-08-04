@@ -25,7 +25,12 @@ jobs:
           node-version: 18
 
       - name: Install Required Packages
-        run: npm install mongoose bcryptjs
+        run: |
+          # Ensure a package.json exists so npm installs dependencies into the workspace
+          if [ ! -f package.json ]; then
+            npm init -y
+          fi
+          npm install --no-audit --no-fund mongoose bcryptjs
 
       - name: Execute Admin Seed
         env:
