@@ -1,6 +1,5 @@
 const express = require('express');
 const {
-  login,
   listApplications,
   updateApplicationStatus,
   listUsers,
@@ -13,6 +12,7 @@ const {
   messageUser,
   broadcastMessage,
 } = require('../controllers/adminController');
+const { login, recover, changeCredentials } = require('../controllers/adminCredentialController');
 const { getAdmin: getServiceUpdateAdmin, postUpdate: postServiceUpdate } = require('../controllers/serviceUpdateController');
 const {
   overview,
@@ -27,6 +27,8 @@ const { asyncHandler } = require('../middleware/asyncHandler');
 const router = express.Router();
 
 router.post('/login', login);
+router.post('/recover', recover);
+router.patch('/credentials', requireAdmin, changeCredentials);
 router.get('/applications', requireAdmin, listApplications);
 router.patch('/applications/:id', requireAdmin, updateApplicationStatus);
 router.patch('/applications/:id/scholarship', requireAdmin, grantScholarship);
