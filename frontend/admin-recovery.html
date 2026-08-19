@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restore Admin Access — Destiny Skills Bridge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex items-center justify-center px-5">
+    <main class="w-full max-w-md bg-white border rounded-3xl p-8 shadow-sm">
+        <div class="w-12 h-12 bg-[#0A66C2] rounded-2xl flex items-center justify-center mb-5">
+            <span class="text-white font-bold text-xl">DS</span>
+        </div>
+        <h1 class="text-2xl font-bold tracking-tight">Restore Admin Access</h1>
+        <p class="text-sm text-slate-500 mt-2 mb-7">
+            Use the one-time recovery token to replace the old admin credentials. After a successful reset, this token cannot be used again.
+        </p>
+
+        <form id="recoveryForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Recovery token</label>
+                <input id="recoveryToken" type="password" required autocomplete="off"
+                       class="w-full border rounded-xl px-4 py-3" placeholder="Paste the one-time token">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">New admin username</label>
+                <input id="username" type="text" value="admin" required autocomplete="username"
+                       class="w-full border rounded-xl px-4 py-3">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">New admin password</label>
+                <input id="password" type="password" required minlength="12" autocomplete="new-password"
+                       class="w-full border rounded-xl px-4 py-3" placeholder="At least 12 characters">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Confirm new password</label>
+                <input id="confirmPassword" type="password" required minlength="12" autocomplete="new-password"
+                       class="w-full border rounded-xl px-4 py-3">
+            </div>
+
+            <p id="message" class="hidden text-sm rounded-xl px-4 py-3"></p>
+
+            <button id="submitBtn" type="submit"
+                    class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl hover:opacity-95 disabled:opacity-50">
+                Restore Admin Access
+            </button>
+        </form>
+
+        <p class="text-xs text-slate-400 mt-5 text-center">
+            Once restored, use the normal <a href="/admin" class="text-[#0A66C2] hover:underline">Admin Login</a> page.
+        </p>
+    </main>
+
+    <!-- DSB_RUNTIME_CONFIG -->
+    <script>
+        const API_BASE_URL = window.DSB_API_BASE_URL
+            || (/^(localhost|127\.0\.0\.1|\[::1\])?$/.test(window.location.hostname)
+                ? 'http://localhost:5000'
+                : 'https://ddei-app-kh6q.vercel.app');
+
+        const form = document.getElementById('recoveryForm');
+        const messageEl = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+
+        function showMessage(text, ok) {
+            messageEl.textContent = text;
+            messageEl.className = `text-sm rounded-xl px-4 py-3 ${ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`;
+        }
+
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const recoveryToken = document.getElementById('recoveryToken').value.trim();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                showMessage('The passwords do not match.', false);
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Restoring…';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/admin/recover`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recoveryToken, username, password }),
+                });
+                const data = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(data.message || 'Recovery failed');
+
+                localStorage.setItem('dsb_admin_token', data.token);
+                showMessage('Admin access restored. Opening the dashboard…', true);
+                window.setTimeout(() => window.location.replace('/admin'), 500);
+            } catch (err) {
+                showMessage(err.message || 'Could not restore admin access.', false);
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Restore Admin Access';
+            }
+        });
+    </script>
+</body>
+</html>
