@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const Application = require('../models/Application');
 const User = require('../models/User');
 const { sendApplicationNotification } = require('../utils/mailer');
+const { normalizeEmail, isValidEmail, passwordError, cleanText } = require('../utils/validation');
 
 const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -13,11 +14,20 @@ function signToken(user) {
 
 async function createApplication(req, res) {
   try {
-    const { fullName, email, phone, country, track, tier, motivation, password } = req.body;
+    const fullName = cleanText(req.body.fullName, 120);
+    const email = normalizeEmail(req.body.email);
+    const phone = cleanText(req.body.phone, 40);
+    const country = cleanText(req.body.country, 100);
+    const track = cleanText(req.body.track, 128);
+    const tier = cleanText(req.body.tier, 16);
+    const motivation = cleanText(req.body.motivation, 5000);
+    const { password } = req.body;
 
     if (!fullName || !email || !phone || !country || !track || !tier || !motivation) {
       return res.status(400).json({ message: 'All fields are required' });
     }
+    if (!isValidEmail(email)) return res.status(400).json({ message: 'Enter a valid email address' });
+    if (!['tier1', 'tier2'].includes(tier)) return res.status(400).json({ message: 'Invalid skill tier' });
 
     let userId = req.userId || null;
     let token = null;
@@ -27,11 +37,10 @@ async function createApplication(req, res) {
     // track their application — requireAuth only covers users who were
     // already logged in when they opened the form.
     if (!userId) {
-      if (!password || password.length < 6) {
-        return res.status(400).json({ message: 'Password must be at least 6 characters' });
-      }
+      const validationError = passwordError(password);
+      if (validationError) return res.status(400).json({ message: validationError });
 
-      const existing = await User.findOne({ email: email.toLowerCase() });
+      const existing = await User.findOne({ email });
       if (existing) {
         if (!(await existing.comparePassword(password))) {
           return res.status(409).json({ message: 'An account with this email already exists. Log in first, then submit your application.' });

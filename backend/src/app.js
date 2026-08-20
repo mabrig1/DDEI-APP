@@ -31,6 +31,8 @@ const helpRoutes = require('./routes/helpRoutes');
 const serviceUpdateRoutes = require('./routes/serviceUpdateRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const vaultRoutes = require('./routes/vaultRoutes');
+const partnerRoutes = require('./routes/partnerRoutes');
+const { rateLimit, securityHeaders } = require('./middleware/security');
 
 const app = express();
 
@@ -39,9 +41,16 @@ const app = express();
 app.set('trust proxy', 1);
 
 // CLIENT_ORIGIN accepts a comma-separated list — see src/config/cors.js.
+app.use(securityHeaders);
 app.use(cors(corsOptions()));
 
-app.use(express.json());
+app.use(express.json({
+  limit: '100kb',
+  verify(req, res, buffer) {
+    if (req.originalUrl === '/api/payments/webhook') req.rawBody = Buffer.from(buffer);
+  },
+}));
+app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 300, namespace: 'api' }));
 
 // Safety net: never leave a request hanging without a response — a hung
 // request surfaces in the browser as a bare "Failed to fetch" with no
@@ -101,6 +110,7 @@ app.use('/api/help', helpRoutes);
 app.use('/api/service-update', serviceUpdateRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/tools-vault', vaultRoutes);
+app.use('/api/partners', partnerRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

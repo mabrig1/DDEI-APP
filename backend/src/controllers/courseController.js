@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const User = require('../models/User');
-const { COURSES } = require('../data/courses');
+const { COURSES } = require('../data/courseCatalog');
 const { logActivity } = require('../utils/activityLogger');
 
 function findCourse(id) {

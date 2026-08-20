@@ -5,6 +5,7 @@ const Application = require('../models/Application');
 const User = require('../models/User');
 const Subscription = require('../models/Subscription');
 const { sendScholarshipEmail, sendCustomEmail } = require('../utils/mailer');
+const { passwordError } = require('../utils/validation');
 
 const APPLICATION_STATUSES = ['pending', 'reviewing', 'accepted', 'rejected'];
 const SCHOLARSHIP_LEVELS = ['none', 'limited', 'full'];
@@ -114,9 +115,8 @@ async function setUserPremium(req, res) {
 async function setUserPassword(req, res) {
   const { password } = req.body;
 
-  if (!password || password.length < 6) {
-    return res.status(400).json({ message: 'Password must be at least 6 characters' });
-  }
+  const validationError = passwordError(password);
+  if (validationError) return res.status(400).json({ message: validationError });
 
   const user = await User.findById(req.params.id);
   if (!user) {
@@ -213,7 +213,7 @@ async function createAccessLink(req, res) {
 // tied to that enrollment, e.g. the Tools Vault for the AI video course).
 async function grantCourseAccess(req, res) {
   const { courseId } = req.body;
-  const { COURSES } = require('../data/courses');
+  const { COURSES } = require('../data/courseCatalog');
   const course = COURSES.find((c) => c.id === courseId);
   if (!course) {
     return res.status(400).json({ message: 'Unknown courseId' });

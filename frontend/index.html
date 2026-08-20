@@ -39,6 +39,7 @@
                 <a href="#opportunities" class="text-slate-600 hover:text-slate-900">Opportunities</a>
                 <a href="#blog" class="text-slate-600 hover:text-slate-900">Blog</a>
                 <a href="#premium" class="text-slate-600 hover:text-slate-900">Premium</a>
+                <a href="#partners" class="text-slate-600 hover:text-slate-900">Fund Impact</a>
                 <a href="#ai" class="text-slate-600 hover:text-slate-900">AI Advisor</a>
             </div>
             <div class="flex items-center gap-x-3">
@@ -58,6 +59,34 @@
     <div id="serviceUpdateBanner" class="hidden bg-[#0A66C2] text-white text-sm text-center py-2 px-4">
         <span id="serviceUpdateBannerText"></span>
     </div>
+
+    <!-- Fund impact / international partnerships -->
+    <section id="partners" class="bg-emerald-950 text-white py-20">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                <div>
+                    <span class="text-emerald-300 font-semibold text-sm tracking-widest">FUND MEASURABLE AFRICAN TALENT</span>
+                    <h2 class="text-4xl font-semibold tracking-tight mt-3">Turn access into skills, portfolios and income pathways.</h2>
+                    <p class="text-emerald-100/80 mt-4 max-w-xl">Support a learner directly or partner with us on a verified youth-employment cohort. Our reporting pathway tracks enrollment, lesson activity, scholarship access and platform outcomes.</p>
+                    <div id="impactMetrics" class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-8">
+                        <div class="bg-white/10 rounded-2xl p-4"><strong class="text-2xl">—</strong><p class="text-xs text-emerald-100/70">Registered learners</p></div>
+                        <div class="bg-white/10 rounded-2xl p-4"><strong class="text-2xl">—</strong><p class="text-xs text-emerald-100/70">Scholarship learners</p></div>
+                        <div class="bg-white/10 rounded-2xl p-4"><strong class="text-2xl">—</strong><p class="text-xs text-emerald-100/70">Lessons completed</p></div>
+                    </div>
+                </div>
+                <div class="bg-white text-slate-900 rounded-3xl p-7">
+                    <h3 class="text-xl font-semibold">Sponsor a learner or cohort</h3>
+                    <p class="text-sm text-slate-500 mt-1 mb-5">Secure Paystack checkout. Sponsorships are separately tracked for transparent reporting.</p>
+                    <div class="space-y-3">
+                        <button onclick="startSponsorship('sponsor-starter')" class="w-full flex justify-between rounded-2xl border p-4 hover:border-emerald-600"><span class="font-semibold">Learning starter</span><span>₦10,000</span></button>
+                        <button onclick="startSponsorship('sponsor-complete')" class="w-full flex justify-between rounded-2xl border p-4 hover:border-emerald-600"><span class="font-semibold">Complete skill track</span><span>₦50,000</span></button>
+                        <button onclick="startSponsorship('sponsor-cohort')" class="w-full flex justify-between rounded-2xl border p-4 hover:border-emerald-600"><span class="font-semibold">Youth cohort fund</span><span>₦250,000</span></button>
+                    </div>
+                    <a href="partners.html" class="mt-5 w-full inline-flex justify-center rounded-2xl bg-emerald-700 text-white py-3 font-semibold">International grants &amp; partnerships</a>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Hero -->
     <div class="hero-bg text-white">
@@ -358,7 +387,7 @@
                 </div>
                 <div class="mb-2">
                     <label class="block text-sm font-medium mb-1">Password</label>
-                    <input id="authPassword" type="password" required minlength="6" class="w-full border rounded-xl px-4 py-2">
+                    <input id="authPassword" type="password" required minlength="10" autocomplete="current-password" class="w-full border rounded-xl px-4 py-2">
                 </div>
                 <div class="mb-6 text-right">
                     <button type="button" id="forgotPasswordLink" onclick="closeModal('authModal'); openForgotPasswordModal(document.getElementById('authEmail').value)" class="hidden text-xs text-[#0A66C2] font-medium hover:underline">Forgot your password?</button>
@@ -406,11 +435,11 @@
                 <input id="resetToken" type="hidden">
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">New Password</label>
-                    <input id="resetNewPassword" type="password" required minlength="6" class="w-full border rounded-xl px-4 py-2">
+                    <input id="resetNewPassword" type="password" required minlength="10" autocomplete="new-password" class="w-full border rounded-xl px-4 py-2">
                 </div>
                 <div class="mb-6">
                     <label class="block text-sm font-medium mb-1">Confirm New Password</label>
-                    <input id="resetNewPasswordConfirm" type="password" required minlength="6" class="w-full border rounded-xl px-4 py-2">
+                    <input id="resetNewPasswordConfirm" type="password" required minlength="10" autocomplete="new-password" class="w-full border rounded-xl px-4 py-2">
                 </div>
                 <p id="resetPasswordError" class="hidden text-red-600 text-sm mb-4"></p>
                 <p id="resetPasswordSuccess" class="hidden text-emerald-600 text-sm mb-4"></p>
@@ -447,8 +476,8 @@
                 </div>
                 <div id="appPasswordField" class="mb-4">
                     <label class="block text-sm font-medium mb-1">Create a Password</label>
-                    <input id="appPassword" type="password" minlength="6" class="w-full border rounded-xl px-4 py-2">
-                    <p class="text-xs text-slate-400 mt-1">This creates your account so you can log in and track your application — at least 6 characters.</p>
+                    <input id="appPassword" type="password" minlength="10" autocomplete="new-password" class="w-full border rounded-xl px-4 py-2">
+                    <p class="text-xs text-slate-400 mt-1">This creates your account so you can log in and track your application — at least 10 characters with a letter and number.</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Country</label>
@@ -512,12 +541,12 @@
                 : 'https://ddei-app-kh6q.vercel.app');
 
         const FALLBACK_SKILLS = [
-            { id: 'digital-marketing', tier: 'tier1', name: 'Digital Marketing', description: 'Work with global clients on Upwork & Fiverr', earningPotential: { ngnMonthly: '₦150,000 – ₦800,000' } },
-            { id: 'virtual-assistance', tier: 'tier1', name: 'Virtual Assistance & Customer Support', description: 'Support international teams remotely', earningPotential: { ngnMonthly: '₦120,000 – ₦600,000' } },
-            { id: 'content-writing', tier: 'tier1', name: 'Content Writing & Copywriting', description: 'Write for brands around the world', earningPotential: { ngnMonthly: '₦130,000 – ₦700,000' } },
-            { id: 'ai-tools-automation', tier: 'tier2', name: 'AI Tools & Automation', description: 'High-demand skill for global remote work', earningPotential: { ngnMonthly: '₦300,000 – ₦1,600,000' } },
-            { id: 'ui-ux-design', tier: 'tier2', name: 'UI/UX & Graphic Design', description: 'Design for international startups', earningPotential: { ngnMonthly: '₦250,000 – ₦1,400,000' } },
-            { id: 'web-development', tier: 'tier2', name: 'Web Development Fundamentals', description: 'Build sites and apps for global clients', earningPotential: { ngnMonthly: '₦350,000 – ₦2,000,000' } },
+            { id: 'digital-marketing', tier: 'tier1', name: 'Digital Marketing', description: 'Work with global clients on Upwork & Fiverr' },
+            { id: 'virtual-assistance', tier: 'tier1', name: 'Virtual Assistance & Customer Support', description: 'Support international teams remotely' },
+            { id: 'content-writing', tier: 'tier1', name: 'Content Writing & Copywriting', description: 'Write for brands around the world' },
+            { id: 'ai-tools-automation', tier: 'tier2', name: 'AI Tools & Automation', description: 'High-demand skill for global remote work' },
+            { id: 'ui-ux-design', tier: 'tier2', name: 'UI/UX & Graphic Design', description: 'Design for international startups' },
+            { id: 'web-development', tier: 'tier2', name: 'Web Development Fundamentals', description: 'Build sites and apps for global clients' },
         ];
 
         let cachedSkills = FALLBACK_SKILLS;
@@ -632,7 +661,6 @@
                 <div class="skill-card bg-white p-6 rounded-3xl border">
                     <h4 class="font-semibold">${skill.name}</h4>
                     <p class="text-sm text-slate-500 mt-1">${skill.description}</p>
-                    <div class="mt-4 text-${color}-600 text-sm font-medium">${skill.earningPotential.ngnMonthly}/month</div>
                 </div>`;
         }
 
@@ -864,8 +892,8 @@
             errorEl.classList.add('hidden');
             successEl.classList.add('hidden');
 
-            if (password.length < 6) {
-                errorEl.textContent = 'Password must be at least 6 characters.';
+            if (password.length < 10 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+                errorEl.textContent = 'Password must be at least 10 characters and include a letter and number.';
                 errorEl.classList.remove('hidden');
                 return false;
             }
@@ -975,8 +1003,8 @@
             errorEl.classList.add('hidden');
             successEl.classList.add('hidden');
 
-            if (!loggedIn && password.length < 6) {
-                errorEl.textContent = 'Password must be at least 6 characters.';
+            if (!loggedIn && (password.length < 10 || !/[A-Za-z]/.test(password) || !/\d/.test(password))) {
+                errorEl.textContent = 'Password must be at least 10 characters and include a letter and number.';
                 errorEl.classList.remove('hidden');
                 return false;
             }
@@ -1037,6 +1065,27 @@
             } catch (err) {
                 alert(paymentErrorMessage(err));
             }
+        }
+
+        async function startSponsorship(plan) {
+            const user = authUser();
+            const email = user ? user.email : prompt('Enter your email for the sponsorship receipt:');
+            if (!email) return;
+            try {
+                const data = await apiRequest('/api/payments/initialize', {
+                    method: 'POST',
+                    body: JSON.stringify({ plan, email, callbackUrl: window.location.href.split('?')[0] + '#partners' }),
+                });
+                window.location.href = data.authorizationUrl;
+            } catch (err) { alert(paymentErrorMessage(err)); }
+        }
+
+        async function loadPublicImpact() {
+            try {
+                const data = await apiRequest('/api/partners/impact');
+                const values = [data.metrics.registeredLearners, data.metrics.scholarshipLearners, data.metrics.lessonsCompleted];
+                document.querySelectorAll('#impactMetrics strong').forEach((el, index) => { el.textContent = Number(values[index] || 0).toLocaleString(); });
+            } catch (_) { /* Keep neutral placeholders when reporting is unavailable. */ }
         }
 
         async function startCoursePurchase(plan, courseId, certCourseId) {
@@ -1880,7 +1929,10 @@
                         refreshNavAuth();
                         renderCoursesSection();
                     } catch (e) { /* session refresh is best-effort */ }
-                    alert('✅ Payment confirmed! Your access has been unlocked. If you paid for a certificate, open your course and click "Claim Certificate".');
+                    const isSponsorship = String(data.subscription?.plan || '').startsWith('sponsor-');
+                    alert(isSponsorship
+                        ? '✅ Sponsorship confirmed. Thank you for investing in African talent. Your contribution is now included in our transparent funding records.'
+                        : '✅ Payment confirmed! Your access has been unlocked. If you paid for a certificate, open your course and click "Claim Certificate".');
                 } else {
                     alert('Your payment could not be confirmed as successful. If you were debited, contact us on WhatsApp with your payment receipt and we will resolve it quickly.');
                 }
@@ -1888,6 +1940,7 @@
                 alert('We could not verify your payment automatically. If you were debited, contact us on WhatsApp with your receipt — your access will be granted manually.');
             }
         })();
+        loadPublicImpact();
         appendChatMessage('advisor', "Hi, I'm your Destiny Skills Bridge AI Advisor. Ask me which skill to learn, how much you could earn, or how to build your portfolio.");
 
         (function trackActivity() {

@@ -98,6 +98,8 @@ userSchema.methods.hasActiveAccess = function hasActiveAccess() {
 userSchema.methods.toJSON = function toSafeJSON() {
   const obj = this.toObject();
   delete obj.password;
+  delete obj.resetPasswordToken;
+  delete obj.resetPasswordExpires;
   return obj;
 };
 

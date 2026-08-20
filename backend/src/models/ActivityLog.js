@@ -17,5 +17,8 @@ const activityLogSchema = new mongoose.Schema(
 
 activityLogSchema.index({ createdAt: -1 });
 activityLogSchema.index({ user: 1, createdAt: -1 });
+// Analytics only uses recent activity. Automatic expiry limits personal-data
+// retention and prevents this write-heavy collection from growing forever.
+activityLogSchema.index({ createdAt: 1 }, { expireAfterSeconds: 180 * 24 * 60 * 60 });
 
 module.exports = mongoose.model('ActivityLog', activityLogSchema);

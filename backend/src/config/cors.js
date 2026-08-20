@@ -3,8 +3,8 @@
  *
  * CLIENT_ORIGIN accepts a comma-separated list, because the site is reachable
  * on the apex domain, on www, and on Vercel preview URLs — a single origin
- * would break two of the three. Unset means "allow any", which keeps local
- * development and first deploys working before the variable is configured.
+ * would break two of the three. Unset allows any origin only in development;
+ * production falls back to DDEI's known public domains.
  *
  * Lives on its own so the serverless entrypoint can send the same headers on
  * its early-exit responses. Without them the browser reports an opaque CORS
@@ -13,10 +13,15 @@
  */
 
 function allowedOrigins() {
-  return (process.env.CLIENT_ORIGIN || '')
+  const configured = (process.env.CLIENT_ORIGIN || '')
     .split(',')
     .map((origin) => origin.trim().replace(/\/$/, ''))
     .filter(Boolean);
+  if (configured.length > 0) return configured;
+  if (process.env.NODE_ENV === 'production' || process.env.VERCEL) {
+    return ['https://ddei.online', 'https://www.ddei.online', 'https://ddei-app.vercel.app'];
+  }
+  return [];
 }
 
 /** True when `origin` may call this API. */

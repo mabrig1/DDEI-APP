@@ -288,7 +288,7 @@ async function mirrorCatalog({ force = false } = {}) {
 
   const { SKILLS } = require('../data/skills');
   const { OPPORTUNITIES } = require('../data/opportunities');
-  const { COURSES } = require('../data/courses');
+  const { COURSES } = require('../data/courseCatalog');
   const { VAULT_CATEGORIES, VAULT_TOOL_COUNT } = require('../data/videoToolsVault');
 
   const courseSummaries = COURSES.map((course) => ({

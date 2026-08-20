@@ -1330,8 +1330,8 @@
             setPasswordBtn.addEventListener('click', async () => {
                 const newPassword = prompt(`Set a new password for ${user.email}:`);
                 if (!newPassword) return;
-                if (newPassword.length < 6) {
-                    alert('Password must be at least 6 characters.');
+                if (newPassword.length < 10 || !/[A-Za-z]/.test(newPassword) || !/\d/.test(newPassword)) {
+                    alert('Password must be at least 10 characters and include a letter and number.');
                     return;
                 }
                 setPasswordBtn.disabled = true;

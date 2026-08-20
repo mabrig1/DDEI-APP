@@ -1,0 +1,35 @@
+name: Security checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  audit-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+      - name: Audit production dependencies
+        working-directory: backend
+        run: npm audit --omit=dev --audit-level=high
+      - name: Check backend JavaScript syntax
+        working-directory: backend
+        run: find . -path ./node_modules -prune -o -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Check frontend JavaScript syntax
+        working-directory: frontend
+        run: find . -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Build frontend
+        working-directory: frontend
+        run: node build.js

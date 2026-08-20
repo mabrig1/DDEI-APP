@@ -3,7 +3,7 @@ const path = require('path');
 
 const apiBaseUrl = process.env.API_BASE_URL || '';
 const outDir = path.join(__dirname, 'dist');
-const pages = ['index.html', 'admin.html', 'admin-recovery.html', 'earn-online.html', 'tools-vault.html', 'links.html'];
+const pages = ['index.html', 'admin.html', 'admin-recovery.html', 'earn-online.html', 'tools-vault.html', 'links.html', 'partners.html'];
 
 // ── Appwrite backup backend ──
 // Read-only failover for the public pages when the primary API is unreachable.
@@ -86,7 +86,7 @@ let courseLinkCount = 0;
 
   const links = { ...COURSE_LINK_ALIASES };
   try {
-    const { COURSES } = require('../backend/src/data/courses.js');
+    const { COURSES } = require('../backend/src/data/courseCatalog.js');
     for (const course of COURSES) {
       links[course.slug || course.id] = course.id;
     }
