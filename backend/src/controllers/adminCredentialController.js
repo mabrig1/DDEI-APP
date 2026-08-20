@@ -5,19 +5,19 @@ const AdminCredential = require('../models/AdminCredential');
 
 const PRIMARY_KEY = 'primary';
 const MIN_PASSWORD_LENGTH = 12;
-// SHA-256 of a high-entropy, one-time recovery token. The token itself is never committed.
-const RECOVERY_TOKEN_HASH = '86e800b60d6d41bac6bbea8780187f398748533cd2024752a85aa0145a7e8d55';
 
 function signAdminToken() {
   return jwt.sign({ sub: 'admin', isAdmin: true }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d',
+    expiresIn: process.env.ADMIN_JWT_EXPIRES_IN || '4h',
   });
 }
 
 function validRecoveryToken(token) {
   if (!token || typeof token !== 'string') return false;
+  const recoveryTokenHash = String(process.env.ADMIN_RECOVERY_TOKEN_HASH || '');
+  if (!/^[a-f0-9]{64}$/i.test(recoveryTokenHash)) return false;
   const supplied = crypto.createHash('sha256').update(token).digest();
-  const expected = Buffer.from(RECOVERY_TOKEN_HASH, 'hex');
+  const expected = Buffer.from(recoveryTokenHash, 'hex');
   return supplied.length === expected.length && crypto.timingSafeEqual(supplied, expected);
 }
 

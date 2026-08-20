@@ -14,4 +14,7 @@ const partnerInquirySchema = new mongoose.Schema({
   status: { type: String, enum: ['new', 'contacted', 'qualified', 'closed'], default: 'new' },
 }, { timestamps: true });
 
+partnerInquirySchema.index({ status: 1, createdAt: -1 });
+partnerInquirySchema.index({ email: 1, createdAt: -1 });
+
 module.exports = mongoose.model('PartnerInquiry', partnerInquirySchema);

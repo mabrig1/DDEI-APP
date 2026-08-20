@@ -24,11 +24,13 @@ const {
 const { requireAdmin } = require('../middleware/adminAuth');
 const { asyncHandler } = require('../middleware/asyncHandler');
 const { listInquiries, updateInquiry } = require('../controllers/partnerController');
+const { rateLimit } = require('../middleware/security');
 
 const router = express.Router();
 
-router.post('/login', login);
-router.post('/recover', recover);
+const adminAuthLimiter = rateLimit({ windowMs: 30 * 60 * 1000, max: 8, namespace: 'admin-auth' });
+router.post('/login', adminAuthLimiter, login);
+router.post('/recover', adminAuthLimiter, recover);
 router.patch('/credentials', requireAdmin, changeCredentials);
 router.get('/applications', requireAdmin, listApplications);
 router.patch('/applications/:id', requireAdmin, updateApplicationStatus);

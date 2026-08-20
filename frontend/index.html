@@ -387,7 +387,7 @@
                 </div>
                 <div class="mb-2">
                     <label class="block text-sm font-medium mb-1">Password</label>
-                    <input id="authPassword" type="password" required minlength="6" class="w-full border rounded-xl px-4 py-2">
+                    <input id="authPassword" type="password" required minlength="10" autocomplete="current-password" class="w-full border rounded-xl px-4 py-2">
                 </div>
                 <div class="mb-6 text-right">
                     <button type="button" id="forgotPasswordLink" onclick="closeModal('authModal'); openForgotPasswordModal(document.getElementById('authEmail').value)" class="hidden text-xs text-[#0A66C2] font-medium hover:underline">Forgot your password?</button>
@@ -435,11 +435,11 @@
                 <input id="resetToken" type="hidden">
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">New Password</label>
-                    <input id="resetNewPassword" type="password" required minlength="6" class="w-full border rounded-xl px-4 py-2">
+                    <input id="resetNewPassword" type="password" required minlength="10" autocomplete="new-password" class="w-full border rounded-xl px-4 py-2">
                 </div>
                 <div class="mb-6">
                     <label class="block text-sm font-medium mb-1">Confirm New Password</label>
-                    <input id="resetNewPasswordConfirm" type="password" required minlength="6" class="w-full border rounded-xl px-4 py-2">
+                    <input id="resetNewPasswordConfirm" type="password" required minlength="10" autocomplete="new-password" class="w-full border rounded-xl px-4 py-2">
                 </div>
                 <p id="resetPasswordError" class="hidden text-red-600 text-sm mb-4"></p>
                 <p id="resetPasswordSuccess" class="hidden text-emerald-600 text-sm mb-4"></p>
@@ -476,8 +476,8 @@
                 </div>
                 <div id="appPasswordField" class="mb-4">
                     <label class="block text-sm font-medium mb-1">Create a Password</label>
-                    <input id="appPassword" type="password" minlength="6" class="w-full border rounded-xl px-4 py-2">
-                    <p class="text-xs text-slate-400 mt-1">This creates your account so you can log in and track your application — at least 6 characters.</p>
+                    <input id="appPassword" type="password" minlength="10" autocomplete="new-password" class="w-full border rounded-xl px-4 py-2">
+                    <p class="text-xs text-slate-400 mt-1">This creates your account so you can log in and track your application — at least 10 characters with a letter and number.</p>
                 </div>
                 <div class="mb-4">
                     <label class="block text-sm font-medium mb-1">Country</label>
@@ -893,8 +893,8 @@
             errorEl.classList.add('hidden');
             successEl.classList.add('hidden');
 
-            if (password.length < 6) {
-                errorEl.textContent = 'Password must be at least 6 characters.';
+            if (password.length < 10 || !/[A-Za-z]/.test(password) || !/\d/.test(password)) {
+                errorEl.textContent = 'Password must be at least 10 characters and include a letter and number.';
                 errorEl.classList.remove('hidden');
                 return false;
             }
@@ -1004,8 +1004,8 @@
             errorEl.classList.add('hidden');
             successEl.classList.add('hidden');
 
-            if (!loggedIn && password.length < 6) {
-                errorEl.textContent = 'Password must be at least 6 characters.';
+            if (!loggedIn && (password.length < 10 || !/[A-Za-z]/.test(password) || !/\d/.test(password))) {
+                errorEl.textContent = 'Password must be at least 10 characters and include a letter and number.';
                 errorEl.classList.remove('hidden');
                 return false;
             }

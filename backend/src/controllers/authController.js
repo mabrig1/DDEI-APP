@@ -3,6 +3,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const { sendPasswordResetEmail } = require('../utils/mailer');
 const { logActivity, requestClientInfo } = require('../utils/activityLogger');
+const { normalizeEmail, isValidEmail, passwordError, cleanText } = require('../utils/validation');
 
 const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 const RESET_TOKEN_DURATION_MS = 60 * 60 * 1000;
@@ -15,22 +16,25 @@ function signToken(user) {
 
 async function register(req, res) {
   try {
-    const { name, email, password, track } = req.body;
+    const { password } = req.body;
+    const name = cleanText(req.body.name, 120);
+    const email = normalizeEmail(req.body.email);
+    const track = cleanText(req.body.track, 128) || null;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'name, email and password are required' });
     }
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Password must be at least 6 characters' });
-    }
+    if (!isValidEmail(email)) return res.status(400).json({ message: 'Enter a valid email address' });
+    const validationError = passwordError(password);
+    if (validationError) return res.status(400).json({ message: validationError });
 
-    const existing = await User.findOne({ email: email.toLowerCase() });
+    const existing = await User.findOne({ email });
     if (existing) {
       return res.status(409).json({ message: 'An account with this email already exists' });
     }
 
     const trialExpiresAt = new Date(Date.now() + TRIAL_DURATION_MS);
-    const user = await User.create({ name, email, password, track: track || null, trialExpiresAt });
+    const user = await User.create({ name, email, password, track, trialExpiresAt });
     const token = signToken(user);
     logActivity(user._id, user.name, 'signup', requestClientInfo(req));
     res.status(201).json({ token, user });
@@ -45,12 +49,14 @@ async function register(req, res) {
 
 async function login(req, res) {
   try {
-    const { email, password } = req.body;
+    const email = normalizeEmail(req.body.email);
+    const { password } = req.body;
     if (!email || !password) {
       return res.status(400).json({ message: 'email and password are required' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!isValidEmail(email)) return res.status(401).json({ message: 'Invalid email or password' });
+    const user = await User.findOne({ email });
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
@@ -77,12 +83,12 @@ async function me(req, res) {
 
 async function forgotPassword(req, res) {
   try {
-    const { email } = req.body;
+    const email = normalizeEmail(req.body.email);
     if (!email) {
       return res.status(400).json({ message: 'Email is required' });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = isValidEmail(email) ? await User.findOne({ email }) : null;
     if (user) {
       const rawToken = crypto.randomBytes(32).toString('hex');
       user.resetPasswordToken = crypto.createHash('sha256').update(rawToken).digest('hex');
@@ -109,9 +115,8 @@ async function resetPassword(req, res) {
     if (!token || !password) {
       return res.status(400).json({ message: 'Token and new password are required' });
     }
-    if (password.length < 6) {
-      return res.status(400).json({ message: 'Password must be at least 6 characters' });
-    }
+    const validationError = passwordError(password);
+    if (validationError) return res.status(400).json({ message: validationError });
 
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
     const user = await User.findOne({
