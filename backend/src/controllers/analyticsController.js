@@ -1,7 +1,7 @@
 const User = require('../models/User');
 const Subscription = require('../models/Subscription');
 const ActivityLog = require('../models/ActivityLog');
-const { COURSES } = require('../data/courses');
+const { COURSES } = require('../data/courseCatalog');
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

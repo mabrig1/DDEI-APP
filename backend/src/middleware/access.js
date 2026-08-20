@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const { COURSES } = require('../data/courses');
+const { COURSES } = require('../data/courseCatalog');
 
 async function requireActiveAccess(req, res, next) {
   const user = await User.findById(req.userId);

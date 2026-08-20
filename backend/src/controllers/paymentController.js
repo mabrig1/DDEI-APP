@@ -93,7 +93,7 @@ async function initializePayment(req, res) {
   let storedPlan = plan;
   let amountNGN = planConfig.amountNGN;
   if (planConfig.type === 'certificate') {
-    const { COURSES } = require('../data/courses');
+    const { COURSES } = require('../data/courseCatalog');
     const course = COURSES.find((c) => c.id === courseId);
     if (!course || !course.certificateFee) {
       return res.status(400).json({ message: 'This course does not offer a paid certificate.' });

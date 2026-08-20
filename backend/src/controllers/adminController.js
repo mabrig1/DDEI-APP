@@ -213,7 +213,7 @@ async function createAccessLink(req, res) {
 // tied to that enrollment, e.g. the Tools Vault for the AI video course).
 async function grantCourseAccess(req, res) {
   const { courseId } = req.body;
-  const { COURSES } = require('../data/courses');
+  const { COURSES } = require('../data/courseCatalog');
   const course = COURSES.find((c) => c.id === courseId);
   if (!course) {
     return res.status(400).json({ message: 'Unknown courseId' });

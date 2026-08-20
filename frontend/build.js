@@ -86,7 +86,7 @@ let courseLinkCount = 0;
 
   const links = { ...COURSE_LINK_ALIASES };
   try {
-    const { COURSES } = require('../backend/src/data/courses.js');
+    const { COURSES } = require('../backend/src/data/courseCatalog.js');
     for (const course of COURSES) {
       links[course.slug || course.id] = course.id;
     }
