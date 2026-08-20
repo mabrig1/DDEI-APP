@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { attachAppwriteMirror } = require('../utils/appwriteMirrorHooks');
 const bcrypt = require('bcryptjs');
 
-const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
+const { GRANDFATHER_CUTOFF } = require('../config/pricing');
 
 const portfolioSchema = new mongoose.Schema(
   {
@@ -54,6 +54,8 @@ const userSchema = new mongoose.Schema(
         {
           courseId: { type: String, required: true },
           purchasedAt: { type: Date, default: Date.now },
+          learningMode: { type: String, enum: ['online', 'human-assisted', 'legacy'], default: 'online' },
+          purchaseType: { type: String, enum: ['course', 'certificate'], default: 'course' },
           certificateId: { type: String, default: null },
         },
       ],
@@ -78,21 +80,23 @@ userSchema.methods.comparePassword = function comparePassword(candidate) {
   return bcrypt.compare(candidate, this.password);
 };
 
-userSchema.methods.trialEndsAt = function trialEndsAt() {
-  if (this.trialExpiresAt) return this.trialExpiresAt;
-  return new Date(this.createdAt.getTime() + TRIAL_DURATION_MS);
+userSchema.methods.hasGrandfatheredAccess = function hasGrandfatheredAccess() {
+  return Boolean(this.createdAt && this.createdAt < GRANDFATHER_CUTOFF);
 };
 
 userSchema.methods.hasPremiumAccess = function hasPremiumAccess() {
   if (this.scholarship === 'full') return true;
+  if ((this.purchasedCourses || []).some((purchase) => purchase.purchaseType !== 'certificate')) return true;
   const now = new Date();
   return this.isPremium && (!this.premiumExpiresAt || this.premiumExpiresAt > now);
 };
 
 userSchema.methods.hasActiveAccess = function hasActiveAccess() {
   if (this.scholarship === 'limited' || this.scholarship === 'full') return true;
-  if (this.hasPremiumAccess()) return true;
-  return this.trialEndsAt() > new Date();
+  // Preserve legacy Premium memberships without letting one new course
+  // purchase unlock every separately priced course.
+  if (this.isPremium && (!this.premiumExpiresAt || this.premiumExpiresAt > new Date())) return true;
+  return this.hasGrandfatheredAccess();
 };
 
 userSchema.methods.toJSON = function toSafeJSON() {
@@ -100,6 +104,8 @@ userSchema.methods.toJSON = function toSafeJSON() {
   delete obj.password;
   delete obj.resetPasswordToken;
   delete obj.resetPasswordExpires;
+  obj.grandfatheredAccess = this.hasGrandfatheredAccess();
+  obj.paidStudentAccess = (this.purchasedCourses || []).some((purchase) => purchase.purchaseType !== 'certificate');
   return obj;
 };
 

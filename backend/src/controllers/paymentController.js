@@ -5,30 +5,11 @@ const User = require('../models/User');
 const { logActivity } = require('../utils/activityLogger');
 const { allowedOrigins } = require('../config/cors');
 const { normalizeEmail, isValidEmail } = require('../utils/validation');
+const { ONLINE_COURSE_PRICE_NGN, HUMAN_ASSISTED_PRICE_NGN, isIntroductoryCourse } = require('../config/pricing');
 
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 
 const PLANS = {
-  'premium-monthly': { amountNGN: 2000, label: 'Premium Monthly', type: 'subscription' },
-  'premium-yearly': { amountNGN: 24000, label: 'Premium Yearly', type: 'subscription' },
-  'prompt-engineering-full': {
-    amountNGN: 12000,
-    label: 'Mastering Prompt Engineering — Full Course + Certificate',
-    type: 'course',
-    courseId: 'mastering-prompt-engineering',
-  },
-  'prompt-engineering-earlybird': {
-    amountNGN: 10000,
-    label: 'Mastering Prompt Engineering — Early Bird + Certificate',
-    type: 'course',
-    courseId: 'mastering-prompt-engineering',
-  },
-  'cinematic-special-edition': {
-    amountNGN: 4000,
-    label: 'AI Cinematic Video & Avatar Creation Mastery — Special Edition (7 Days) + Certificate',
-    type: 'course',
-    courseId: 'ai-cinematic-special-edition',
-  },
   'certificate-fee': {
     amountNGN: 5000,
     label: 'Verified Course Certificate',
@@ -77,9 +58,20 @@ function paymentSnapshot(data) {
 async function initializePayment(req, res) {
   const { plan, courseId } = req.body;
   const email = normalizeEmail(req.body.email);
-  const planConfig = PLANS[plan];
+  const { COURSES } = require('../data/courseCatalog');
+  const selectedCourse = courseId ? COURSES.find((course) => course.id === courseId) : null;
+  let planConfig = PLANS[plan];
+  if (plan === 'course-online' && selectedCourse && !isIntroductoryCourse(courseId)) {
+    planConfig = { amountNGN: ONLINE_COURSE_PRICE_NGN, label: `${selectedCourse.title} — Online`, type: 'course', courseId };
+  }
+  if (plan === 'course-human-assisted' && selectedCourse && !isIntroductoryCourse(courseId)) {
+    planConfig = { amountNGN: HUMAN_ASSISTED_PRICE_NGN, label: `${selectedCourse.title} — Human-Assisted`, type: 'course', courseId, learningMode: 'human-assisted' };
+  }
   if (!planConfig) {
     return res.status(400).json({ message: 'Invalid or unknown payment plan.' });
+  }
+  if ((plan === 'course-online' || plan === 'course-human-assisted') && !req.userId) {
+    return res.status(401).json({ message: 'Create an account or log in before paying so the course can be credited to you.' });
   }
   if (!isValidEmail(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
   if (!process.env.PAYSTACK_SECRET_KEY) {
@@ -93,13 +85,14 @@ async function initializePayment(req, res) {
   let storedPlan = plan;
   let amountNGN = planConfig.amountNGN;
   if (planConfig.type === 'certificate') {
-    const { COURSES } = require('../data/courseCatalog');
     const course = COURSES.find((c) => c.id === courseId);
     if (!course || !course.certificateFee) {
       return res.status(400).json({ message: 'This course does not offer a paid certificate.' });
     }
     storedPlan = `certificate-fee:${course.id}`;
     amountNGN = course.certificateFee;
+  } else if (plan === 'course-online' || plan === 'course-human-assisted') {
+    storedPlan = `${plan}:${courseId}`;
   }
 
   const reference = `dsb_${crypto.randomBytes(8).toString('hex')}`;
@@ -147,7 +140,12 @@ async function initializePayment(req, res) {
 
 async function grantPaymentBenefits(subscription, data) {
   if (!subscription.user || subscription.status !== 'success') return;
-  const resolvedPlan = PLANS[subscription.plan] || {};
+  let resolvedPlan = PLANS[subscription.plan] || {};
+  if (subscription.plan.startsWith('course-online:')) {
+    resolvedPlan = { type: 'course', courseId: subscription.plan.slice('course-online:'.length), label: 'Online Course', learningMode: 'online' };
+  } else if (subscription.plan.startsWith('course-human-assisted:')) {
+    resolvedPlan = { type: 'course', courseId: subscription.plan.slice('course-human-assisted:'.length), label: 'Human-Assisted Course', learningMode: 'human-assisted' };
+  }
   if (resolvedPlan.type === 'sponsorship') {
     logActivity(subscription.user, 'Sponsor', 'payment', {
       plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount, sponsorship: true,
@@ -159,7 +157,7 @@ async function grantPaymentBenefits(subscription, data) {
     const certCourseId = subscription.plan.split(':')[1];
     const user = await User.findById(subscription.user);
     if (user && certCourseId && !(user.purchasedCourses || []).some((p) => p.courseId === certCourseId)) {
-      user.purchasedCourses.push({ courseId: certCourseId, purchasedAt: new Date() });
+      user.purchasedCourses.push({ courseId: certCourseId, purchasedAt: new Date(), purchaseType: 'certificate' });
       await user.save();
       logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: 'Verified Course Certificate', amountNGN: subscription.amount });
     }
@@ -168,20 +166,21 @@ async function grantPaymentBenefits(subscription, data) {
 
   if (resolvedPlan.type === 'course' && resolvedPlan.courseId) {
     const user = await User.findById(subscription.user);
-    if (user && !(user.purchasedCourses || []).some((p) => p.courseId === resolvedPlan.courseId)) {
-      user.purchasedCourses.push({ courseId: resolvedPlan.courseId, purchasedAt: new Date() });
+    if (user) {
+      const existingPurchase = (user.purchasedCourses || []).find((p) => p.courseId === resolvedPlan.courseId);
+      if (!existingPurchase) {
+        user.purchasedCourses.push({ courseId: resolvedPlan.courseId, purchasedAt: new Date(), learningMode: resolvedPlan.learningMode || 'online', purchaseType: 'course' });
+      } else if (resolvedPlan.learningMode === 'human-assisted') {
+        existingPurchase.learningMode = 'human-assisted';
+      } else {
+        return;
+      }
       await user.save();
       logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount });
     }
     return;
   }
 
-  if (resolvedPlan.type === 'subscription') {
-    const expiresAt = new Date();
-    expiresAt.setMonth(expiresAt.getMonth() + (subscription.plan === 'premium-yearly' ? 12 : 1));
-    const user = await User.findByIdAndUpdate(subscription.user, { isPremium: true, premiumExpiresAt: expiresAt });
-    if (user) logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount });
-  }
 }
 
 async function settlePayment(data) {

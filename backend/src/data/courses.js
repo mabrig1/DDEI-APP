@@ -6606,10 +6606,8 @@ const COURSES = [
     estimatedHours: 24,
     specialCourse: true,
     isCertified: true,
-    price: 12000,
-    earlyBirdPrice: 10000,
-    trialDays: 7,
-    purchasePlan: 'prompt-engineering-earlybird',
+    price: 10000,
+    purchasePlan: 'course-online',
     modules: [
       // ── MODULE 1 ────────────────────────────────────────────
       {
@@ -7263,7 +7261,7 @@ const COURSES = [
 
   // ============================================================
   // SPECIAL EDITION — AI Cinematic Video & Avatar Creation Mastery
-  // 7-day intensive. Pay ₦4,000 and start instantly — no free trial.
+  // Intensive course; platform-wide enrollment pricing is applied by the course catalog.
   // ============================================================
   {
     id: 'ai-cinematic-special-edition',
@@ -7277,10 +7275,10 @@ const COURSES = [
     specialCourse: true,
     isCertified: true,
     certCode: 'CVM',
-    price: 4000,
+    price: 10000,
     paidOnly: true,
     durationDays: 7,
-    purchasePlan: 'cinematic-special-edition',
+    purchasePlan: 'course-online',
     modules: [
       // ── DAY 1 ────────────────────────────────────────────────
       {

@@ -1,43 +1,27 @@
 const User = require('../models/User');
 const { COURSES } = require('../data/courseCatalog');
+const { ONLINE_COURSE_PRICE_NGN, HUMAN_ASSISTED_PRICE_NGN, isIntroductoryCourse } = require('../config/pricing');
 
 async function requireActiveAccess(req, res, next) {
   const user = await User.findById(req.userId);
   if (!user) return res.status(404).json({ message: 'User not found' });
 
-  if (!user.trialExpiresAt) {
-    user.trialExpiresAt = user.trialEndsAt();
-    await user.save();
-  }
-
   const courseId = req.params.id;
   const course = COURSES.find((c) => c.id === courseId);
   const hasPurchased = (user.purchasedCourses || []).some((p) => p.courseId === courseId);
 
-  if (course && course.paidOnly) {
-    if (!hasPurchased && user.scholarship !== 'full') {
-      return res.status(402).json({
-        message: `This Special Edition course has no free trial. Pay ₦${(course.price || 0).toLocaleString()} once to unlock it instantly.`,
-        upgradeRequired: true,
-        purchaseRequired: true,
-        purchasePlan: course.purchasePlan || null,
-        courseId,
-      });
-    }
-    return next();
-  }
+  if (isIntroductoryCourse(courseId) || hasPurchased || user.hasActiveAccess()) return next();
 
-  if (!user.hasActiveAccess()) {
-    if (!hasPurchased) {
-      return res.status(402).json({
-        message: 'Your free 7-day trial has ended. Upgrade to Premium or purchase this course to continue.',
-        upgradeRequired: true,
-        trialExpiresAt: user.trialExpiresAt,
-      });
-    }
-  }
-
-  next();
+  return res.status(402).json({
+    message: `Enroll online for ₦${ONLINE_COURSE_PRICE_NGN.toLocaleString()} or choose online plus human-assisted learning for ₦${HUMAN_ASSISTED_PRICE_NGN.toLocaleString()}.`,
+    upgradeRequired: true,
+    purchaseRequired: true,
+    purchasePlan: 'course-online',
+    humanAssistedPlan: 'course-human-assisted',
+    courseId,
+    onlinePriceNGN: ONLINE_COURSE_PRICE_NGN,
+    humanAssistedPriceNGN: HUMAN_ASSISTED_PRICE_NGN,
+  });
 }
 
 async function requirePremium(req, res, next) {

@@ -5,7 +5,6 @@ const { sendPasswordResetEmail } = require('../utils/mailer');
 const { logActivity, requestClientInfo } = require('../utils/activityLogger');
 const { normalizeEmail, isValidEmail, passwordError, cleanText } = require('../utils/validation');
 
-const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 const RESET_TOKEN_DURATION_MS = 60 * 60 * 1000;
 
 function signToken(user) {
@@ -33,8 +32,7 @@ async function register(req, res) {
       return res.status(409).json({ message: 'An account with this email already exists' });
     }
 
-    const trialExpiresAt = new Date(Date.now() + TRIAL_DURATION_MS);
-    const user = await User.create({ name, email, password, track, trialExpiresAt });
+    const user = await User.create({ name, email, password, track });
     const token = signToken(user);
     logActivity(user._id, user.name, 'signup', requestClientInfo(req));
     res.status(201).json({ token, user });

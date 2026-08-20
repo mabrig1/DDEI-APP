@@ -40,22 +40,19 @@ function buildHelpReply(message, history = []) {
 
   if (TRIAL.test(text)) {
     return (
-      "Yes — every new account gets a 7-day free trial with access to your chosen skill track, no card required. After the trial, you can upgrade to Premium " +
-      "or apply for a scholarship to keep going for free."
+      'We no longer offer free trials. Foundational Digital Skills is the free introductory course. Every other course costs ₦10,000 online or ₦50,000 with human-assisted learning. Existing registered members retain their previous access.'
     );
   }
 
   if (PREMIUM.test(text)) {
     return (
-      'Premium is ₦2,000/month or ₦24,000/year. It unlocks the AI-Powered Portfolio Builder, priority opportunity matching, and the AI Advisor — on top of full course access. ' +
-      'You can upgrade any time from the Premium section on the homepage.'
+      'Course pricing has replaced new Premium subscriptions: ₦10,000 per online course or ₦50,000 per course with human-assisted learning. Every paid student also receives access to Premium platform content. Foundational Digital Skills remains free, and existing registered members retain their previous access.'
     );
   }
 
   if (COST.test(text)) {
     return (
-      "Getting started is free — every account starts with a 7-day free trial. After that, Premium is ₦2,000/month (or ₦24,000/year), " +
-      "or you can apply for a scholarship if cost is a barrier. Which would you like to know more about — Premium or scholarships?"
+      'Foundational Digital Skills is free. Every other course costs ₦10,000 for online self-paced learning or ₦50,000 for online plus human-assisted learning. Both paid options include Premium platform content. Scholarships may still be available where cost is a barrier.'
     );
   }
 
@@ -88,8 +85,7 @@ function buildHelpReply(message, history = []) {
 
   if (EARNING_Q.test(text)) {
     return (
-      'Earning potential ranges from $350-$2,000/month in Tier 1 skills to $800-$5,000/month in Tier 2 skills, paid in dollars via platforms like Upwork, Fiverr, ' +
-      'or direct remote contracts. Want a breakdown for a specific skill?'
+      'Income depends on skill, experience, portfolio quality, location, market demand and client acquisition. Destiny Skills Bridge provides practical training and opportunity guidance, but it does not promise or guarantee a particular income.'
     );
   }
 
@@ -103,8 +99,7 @@ function buildHelpReply(message, history = []) {
 
   if (APPLY.test(text)) {
     return (
-      'Click "Apply Now" at the top of the page, fill in your details and chosen skill track, and set a password — this creates your account with an instant 7-day free trial. ' +
-      "No payment needed to apply."
+      'Click "Apply Now" at the top of the page, fill in your details and chosen skill track, and set a password. No payment is needed to apply or begin the free Foundational Digital Skills course; paid-course enrollment is completed separately.'
     );
   }
 
@@ -117,12 +112,12 @@ function buildHelpReply(message, history = []) {
 
   if (GREETING.test(text) && history.length === 0) {
     return (
-      "Hi! I'm here to help you understand Destiny Skills Bridge. Ask me about our skill tracks, pricing, the free trial, scholarships, or how to apply."
+      "Hi! I'm here to help you understand Destiny Skills Bridge. Ask me about our skill tracks, course pricing, the free introductory course, scholarships, or how to apply."
     );
   }
 
   return (
-    "I can help with questions about our skill tracks, pricing, the free trial, scholarships, applying, or contacting our team. " +
+    "I can help with questions about our skill tracks, pricing, the free introductory course, scholarships, applying, or contacting our team. " +
     "Could you rephrase your question, or try one of those topics?"
   );
 }

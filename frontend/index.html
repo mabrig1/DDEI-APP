@@ -38,7 +38,7 @@
                 <a href="earn-online.html" class="text-slate-600 hover:text-slate-900">Earn Now</a>
                 <a href="#opportunities" class="text-slate-600 hover:text-slate-900">Opportunities</a>
                 <a href="#blog" class="text-slate-600 hover:text-slate-900">Blog</a>
-                <a href="#premium" class="text-slate-600 hover:text-slate-900">Premium</a>
+                <a href="#premium" class="text-slate-600 hover:text-slate-900">Pricing</a>
                 <a href="#partners" class="text-slate-600 hover:text-slate-900">Fund Impact</a>
                 <a href="#ai" class="text-slate-600 hover:text-slate-900">AI Advisor</a>
             </div>
@@ -258,24 +258,26 @@
         </div>
     </div>
 
-    <!-- Premium / Payments -->
+    <!-- Course Pricing -->
     <div id="premium" class="bg-slate-900 text-white py-16">
         <div class="max-w-screen-xl mx-auto px-6">
             <div class="text-center mb-10">
-                <span class="text-[#60A5FA] font-semibold text-sm tracking-widest">PREMIUM</span>
-                <h2 class="text-4xl font-semibold tracking-tight mt-2">Unlock the Full Bridge</h2>
-                <p class="text-slate-300 mt-3 max-w-xl mx-auto">AI Portfolio Builder, priority opportunity matching, and 1:1 AI Advisor sessions.</p>
+                <span class="text-[#60A5FA] font-semibold text-sm tracking-widest">SIMPLE COURSE PRICING</span>
+                <h2 class="text-4xl font-semibold tracking-tight mt-2">Choose How You Want to Learn</h2>
+                <p class="text-slate-300 mt-3 max-w-xl mx-auto">Start with Foundational Digital Skills free. Every paid course enrollment also unlocks Premium platform content.</p>
             </div>
             <div id="premiumPlans" class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                 <div class="bg-white text-slate-900 rounded-3xl p-8">
-                    <h3 class="font-semibold text-xl mb-1">Premium Monthly</h3>
-                    <p class="text-3xl font-bold mb-4">₦2,000<span class="text-base font-normal text-slate-500">/mo</span></p>
-                    <button onclick="startUpgrade('premium-monthly')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Upgrade Monthly</button>
+                    <h3 class="font-semibold text-xl mb-1">Online Learning</h3>
+                    <p class="text-3xl font-bold mb-2">₦10,000<span class="text-base font-normal text-slate-500">/course</span></p>
+                    <p class="text-sm text-slate-500 mb-4">Self-paced online lessons, quizzes, progress tracking and course completion pathway.</p>
+                    <button onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Choose an Online Course</button>
                 </div>
                 <div class="bg-white text-slate-900 rounded-3xl p-8 border-2 border-[#60A5FA]">
-                    <h3 class="font-semibold text-xl mb-1">Premium Yearly</h3>
-                    <p class="text-3xl font-bold mb-4">₦24,000<span class="text-base font-normal text-slate-500">/yr</span></p>
-                    <button onclick="startUpgrade('premium-yearly')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Upgrade Yearly</button>
+                    <h3 class="font-semibold text-xl mb-1">Online + Human Assistance</h3>
+                    <p class="text-3xl font-bold mb-2">₦50,000<span class="text-base font-normal text-slate-500">/course</span></p>
+                    <p class="text-sm text-slate-500 mb-4">Online course access plus guided human support, accountability and practical implementation assistance.</p>
+                    <button onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Choose Assisted Learning</button>
                 </div>
             </div>
         </div>
@@ -585,7 +587,7 @@
             const plans = document.getElementById('premiumPlans');
             if (!plans) return;
             const user = authUser();
-            const alreadyPremium = user && (user.isPremium || user.scholarship === 'full');
+            const alreadyPremium = user && (user.grandfatheredAccess || user.paidStudentAccess || user.isPremium || user.scholarship === 'full');
             const existingBanner = document.getElementById('premiumActiveBanner');
             if (!alreadyPremium) {
                 plans.classList.remove('hidden');
@@ -602,8 +604,10 @@
             }
             banner.classList.remove('hidden');
             banner.textContent = user.scholarship === 'full'
-                ? "You're already on a Full Scholarship — every Premium tool is unlocked, free."
-                : "You're already a Premium member — every tool is unlocked.";
+                ? "You're on a Full Scholarship — your access remains active."
+                : user.grandfatheredAccess
+                    ? "Your existing account is grandfathered — your previous course access remains active."
+                    : "Your paid course enrollment includes Premium content access.";
         }
 
         // Last resort when the primary API is down: read the same data from the
@@ -650,7 +654,7 @@
         }
 
         function showUpgradePrompt(message) {
-            alert(message || 'Your free 7-day trial has ended. Upgrade to Premium to keep learning.');
+            alert(message || 'Choose online learning for ₦10,000 or online plus human assistance for ₦50,000.');
             const premiumSection = document.getElementById('premium');
             if (premiumSection) premiumSection.scrollIntoView({ behavior: 'smooth' });
         }
@@ -1051,22 +1055,6 @@
             return `Could not start payment: ${err.message}`;
         }
 
-        async function startUpgrade(plan) {
-            const user = authUser();
-            const email = user ? user.email : prompt('Enter your email to continue to payment:');
-            if (!email) return;
-
-            try {
-                const data = await apiRequest('/api/payments/initialize', {
-                    method: 'POST',
-                    body: JSON.stringify({ plan, email, callbackUrl: window.location.href }),
-                });
-                window.location.href = data.authorizationUrl;
-            } catch (err) {
-                alert(paymentErrorMessage(err));
-            }
-        }
-
         async function startSponsorship(plan) {
             const user = authUser();
             const email = user ? user.email : prompt('Enter your email for the sponsorship receipt:');
@@ -1225,7 +1213,7 @@
                     helpBotOpened = true;
                     appendHelpBotMessage(
                         'bot',
-                        "Hi! I'm here to help you understand Destiny Skills Bridge. Ask me about our skill tracks, pricing, the free trial, scholarships, or how to apply."
+                        "Hi! I'm here to help you understand Destiny Skills Bridge. Ask me about our skill tracks, pricing, the free introductory course, scholarships, or how to apply."
                     );
                 }
             }
@@ -1285,7 +1273,8 @@
             const user = authUser();
             const hasPurchased = user && (
                 (user.purchasedCourses && user.purchasedCourses.some(p => p.courseId === course.id)) ||
-                user.scholarship === 'full'
+                user.scholarship === 'full' || user.scholarship === 'limited' ||
+                user.grandfatheredAccess || user.isPremium || course.isFreeIntro
             );
             const displayPrice = (course.earlyBirdPrice || course.price || 0).toLocaleString();
             const priceTag = hasPurchased
@@ -1297,7 +1286,8 @@
                     <p class="text-white/60 text-xs mt-1">${course.paidOnly ? 'One-time payment — instant access' : 'Full course + certificate'}</p>
                    </div>`;
             const purchaseBtn = course.purchasePlan
-                ? `<button onclick="startCoursePurchase('${course.purchasePlan}', '${course.id}')" class="w-full py-3 bg-amber-400 text-slate-900 font-bold rounded-2xl hover:bg-amber-300 transition">${course.paidOnly ? `<i class="fa-solid fa-bolt mr-1"></i> Pay ₦${displayPrice} &amp; Start Now` : `Enroll for ₦${displayPrice}`}</button>`
+                ? `<button onclick="startCoursePurchase('course-online', '${course.id}')" class="w-full py-3 bg-amber-400 text-slate-900 font-bold rounded-2xl hover:bg-amber-300 transition">Online — ₦10,000</button>
+                   <button onclick="startCoursePurchase('course-human-assisted', '${course.id}')" class="w-full py-3 bg-white/15 text-white font-bold rounded-2xl hover:bg-white/25 transition">Human-Assisted — ₦50,000</button>`
                 : '';
             const vaultLink = course.id === 'ai-cinematic-special-edition'
                 ? `<a href="tools-vault.html" class="w-full block text-center py-3 bg-white/15 text-white font-semibold rounded-2xl hover:bg-white/25 transition text-sm">🎬 Open Your 100 Free Tools Vault</a>`
@@ -1306,11 +1296,10 @@
                 ? `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition">Continue Learning</button>${vaultLink}`
                 : course.paidOnly
                     ? purchaseBtn
-                    : `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition"><i class="fa-solid fa-play mr-1"></i> Start Free Week</button>
-                       ${purchaseBtn}`;
-            const trialBadge = course.paidOnly
-                ? '<span class="text-xs font-bold bg-rose-400 text-white uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-bolt mr-1"></i>Pay &amp; Start — No Trial</span>'
-                : '<span class="text-xs font-bold bg-emerald-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-gift mr-1"></i>1-Week Free Trial</span>';
+                    : purchaseBtn;
+            const enrollmentBadge = course.isFreeIntro
+                ? '<span class="text-xs font-bold bg-emerald-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-gift mr-1"></i>Free Introductory Course</span>'
+                : '<span class="text-xs font-bold bg-rose-400 text-white uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-lock mr-1"></i>Paid Enrollment</span>';
             const durationBadge = course.durationDays
                 ? `<span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-regular fa-calendar mr-1"></i>${course.durationDays}-Day Intensive</span>`
                 : '';
@@ -1320,7 +1309,7 @@
                         <div class="flex flex-wrap items-center gap-2 mb-3">
                             <span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full">${course.category}</span>
                             ${course.isCertified ? '<span class="text-xs font-bold bg-amber-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-certificate mr-1"></i>Certificate</span>' : ''}
-                            ${trialBadge}
+                            ${enrollmentBadge}
                             ${durationBadge}
                             <span class="text-xs font-bold bg-purple-400 text-white uppercase tracking-wide px-3 py-1 rounded-full">Featured</span>
                         </div>
@@ -1342,6 +1331,12 @@
 
         function courseCardHTML(course) {
             if (course.specialCourse) return specialCourseCardHTML(course);
+            const user = authUser();
+            const hasAccess = course.isFreeIntro || (user && (
+                user.grandfatheredAccess || user.isPremium ||
+                user.scholarship === 'limited' || user.scholarship === 'full' ||
+                (user.purchasedCourses || []).some(p => p.courseId === course.id)
+            ));
             return `
                 <div data-course-id="${course.id}" class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
                     <span class="text-xs font-bold text-[#0A66C2] uppercase tracking-wide">${course.category}</span>
@@ -1352,9 +1347,10 @@
                         <span><i class="fa-solid fa-book-open mr-1"></i>${course.lessonCount} lessons</span>
                         <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
                     </div>
-                    <button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
-                        Start Course
-                    </button>
+                    ${course.isFreeIntro ? '<p class="text-sm font-bold text-emerald-600 mb-3">Free introductory course</p>' : '<p class="text-sm font-bold text-[#0A66C2] mb-3">₦10,000 online · ₦50,000 human-assisted</p>'}
+                    ${hasAccess
+                        ? `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">${course.isFreeIntro ? 'Start Free Course' : 'Continue Course'}</button>`
+                        : `<div class="grid gap-2"><button onclick="startCoursePurchase('course-online', '${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Enroll Online — ₦10,000</button><button onclick="startCoursePurchase('course-human-assisted', '${course.id}')" class="w-full py-3 border border-[#0A66C2] text-[#0A66C2] font-semibold rounded-2xl">Human-Assisted — ₦50,000</button></div>`}
                 </div>`;
         }
 
@@ -1370,16 +1366,12 @@
             openCourse(courseId);
         }
 
-        function trialStatusHTML(user) {
+        function accessStatusHTML(user) {
             if (user.scholarship === 'full') return '<p class="text-xs text-emerald-600 font-semibold mt-3">Full Scholarship — unlimited access to every tool.</p>';
             if (user.scholarship === 'limited') return '<p class="text-xs text-emerald-600 font-semibold mt-3">Limited Scholarship — full access to all courses.</p>';
             if (user.isPremium) return '<p class="text-xs text-emerald-600 font-semibold mt-3">Premium — unlimited access.</p>';
-            if (!user.trialExpiresAt) return '';
-            const daysLeft = Math.ceil((new Date(user.trialExpiresAt) - new Date()) / (24 * 60 * 60 * 1000));
-            if (daysLeft <= 0) {
-                return '<p class="text-xs text-red-600 font-semibold mt-3">Your free trial has ended. <a href="#premium" class="underline">Upgrade to Premium</a> to keep learning.</p>';
-            }
-            return `<p class="text-xs text-amber-600 font-semibold mt-3">${daysLeft} day${daysLeft === 1 ? '' : 's'} left in your free trial.</p>`;
+            if (user.grandfatheredAccess) return '<p class="text-xs text-emerald-600 font-semibold mt-3">Existing-member access preserved.</p>';
+            return '<p class="text-xs text-slate-500 font-semibold mt-3">Foundational Digital Skills is free. Other courses: ₦10,000 online or ₦50,000 human-assisted.</p>';
         }
 
         async function ensureCoursesLoaded() {
@@ -1421,7 +1413,7 @@
                             <button onclick="openChooseCourseModal()" class="px-6 py-3 border border-slate-300 text-slate-600 font-semibold rounded-2xl">Browse Full Catalog &amp; Switch</button>
                         </div>
                         <p class="text-xs text-slate-400 mt-3">Staying focused on one course at a time helps you finish faster. Don't see the course you're looking for? Click "Browse Full Catalog &amp; Switch" above — your progress is saved per course, so switching back later won't lose anything.</p>
-                        ${trialStatusHTML(user)}
+                        ${accessStatusHTML(user)}
                     </div>${specialCards}`;
                 return;
             }
@@ -1435,7 +1427,7 @@
                         <h4 class="font-semibold text-lg mb-2">Choose your first course</h4>
                         <p class="text-sm text-slate-500 mb-4">Pick one course to focus on so you're not overwhelmed — you can switch later.</p>
                         <button onclick="openChooseCourseModal()" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Browse Complete Catalog &amp; Choose a Course</button>
-                        ${trialStatusHTML(user)}
+                        ${accessStatusHTML(user)}
                     </div>${specialCards}`;
                 return;
             }
@@ -1446,14 +1438,12 @@
         function courseChooseCardHTML(course) {
             const badges = [];
             if (course.isCertified) badges.push('<span class="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-certificate mr-1"></i>Certificate</span>');
-            if (course.paidOnly) {
-                badges.push('<span class="text-xs font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-bolt mr-1"></i>Pay &amp; Start — No Trial</span>');
-            } else if (course.specialCourse) {
-                badges.push('<span class="text-xs font-bold bg-blue-100 text-[#0A66C2] px-2 py-0.5 rounded-full">1-Wk Free Trial</span>');
-            }
-            const priceHtml = course.price
-                ? `<p class="text-xs text-slate-500 mt-2">${course.earlyBirdPrice ? `<span class="line-through">₦${course.price.toLocaleString()}</span> <span class="text-amber-600 font-semibold">₦${course.earlyBirdPrice.toLocaleString()} early bird</span>` : `₦${course.price.toLocaleString()}${course.paidOnly ? ' one-time — instant access' : ''}`}</p>`
-                : '';
+            badges.push(course.isFreeIntro
+                ? '<span class="text-xs font-bold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Free Introductory Course</span>'
+                : '<span class="text-xs font-bold bg-blue-100 text-[#0A66C2] px-2 py-0.5 rounded-full">₦10,000 Online · ₦50,000 Assisted</span>');
+            const priceHtml = course.isFreeIntro
+                ? '<p class="text-xs font-semibold text-emerald-600 mt-2">Free enrollment</p>'
+                : '<p class="text-xs text-slate-500 mt-2">Choose self-paced online learning or guided human-assisted learning.</p>';
             return `
                 <div class="skill-card bg-white border rounded-3xl p-6 flex flex-col">
                     <div class="flex items-center gap-x-2 flex-wrap">
@@ -1468,9 +1458,9 @@
                         <span><i class="fa-solid fa-book-open mr-1"></i>${course.lessonCount} lessons</span>
                         <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
                     </div>
-                    <button onclick="chooseCourse('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
-                        Choose This Course
-                    </button>
+                    ${course.isFreeIntro
+                        ? `<button onclick="chooseCourse('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Start Free Course</button>`
+                        : `<div class="grid gap-2"><button onclick="startCoursePurchase('course-online', '${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Online — ₦10,000</button><button onclick="startCoursePurchase('course-human-assisted', '${course.id}')" class="w-full py-3 border border-[#0A66C2] text-[#0A66C2] font-semibold rounded-2xl">Human-Assisted — ₦50,000</button></div>`}
                 </div>`;
         }
 

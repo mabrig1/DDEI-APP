@@ -136,8 +136,8 @@ async function restoreModel(tablesDB, modelName, { confirm }) {
       await Model.create({ _id, ...doc });
       // Mongoose's timestamps plugin stamps createdAt/updatedAt with "now" on
       // create, which would silently reset every restored record's age — and
-      // User.trialEndsAt() is derived from createdAt. Put the mirrored values
-      // back.
+      // Grandfathered access is derived from createdAt. Put the mirrored
+      // timestamps back so restored access rights remain unchanged.
       if (doc.createdAt || doc.updatedAt) {
         const timestamps = {};
         if (doc.createdAt) timestamps.createdAt = doc.createdAt;

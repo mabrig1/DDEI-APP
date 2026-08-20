@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const { COURSES } = require('../data/courseCatalog');
 const { logActivity } = require('../utils/activityLogger');
+const { ONLINE_COURSE_PRICE_NGN, HUMAN_ASSISTED_PRICE_NGN, isIntroductoryCourse } = require('../config/pricing');
 
 function findCourse(id) {
   return COURSES.find((c) => c.id === id) || null;
@@ -26,6 +27,7 @@ function sanitizeCourse(course) {
 
 function courseSummary(course) {
   const lessonCount = course.modules.reduce((sum, mod) => sum + mod.lessons.length, 0);
+  const isFreeIntro = isIntroductoryCourse(course.id);
   return {
     id: course.id,
     slug: course.slug,
@@ -37,12 +39,15 @@ function courseSummary(course) {
     moduleCount: course.modules.length,
     lessonCount,
     isCertified: course.isCertified || false,
-    price: course.price || null,
-    earlyBirdPrice: course.earlyBirdPrice || null,
+    price: isFreeIntro ? 0 : ONLINE_COURSE_PRICE_NGN,
+    humanAssistedPrice: isFreeIntro ? null : HUMAN_ASSISTED_PRICE_NGN,
+    isFreeIntro,
+    earlyBirdPrice: null,
     specialCourse: course.specialCourse || false,
-    paidOnly: course.paidOnly || false,
+    paidOnly: !isFreeIntro,
     durationDays: course.durationDays || null,
-    purchasePlan: course.purchasePlan || null,
+    purchasePlan: isFreeIntro ? null : 'course-online',
+    humanAssistedPlan: isFreeIntro ? null : 'course-human-assisted',
   };
 }
 
