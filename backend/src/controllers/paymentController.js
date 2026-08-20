@@ -32,6 +32,9 @@ const PLANS = {
     label: 'Verified Course Certificate',
     type: 'certificate',
   },
+  'sponsor-starter': { amountNGN: 10000, label: 'Sponsor a Learner — Starter', type: 'sponsorship' },
+  'sponsor-complete': { amountNGN: 50000, label: 'Sponsor a Learner — Complete Track', type: 'sponsorship' },
+  'sponsor-cohort': { amountNGN: 250000, label: 'Sponsor a Youth Cohort', type: 'sponsorship' },
 };
 
 function paystackClient() {
@@ -129,6 +132,19 @@ async function verifyPayment(req, res) {
     }
 
     if (success && subscription.user) {
+      // Sponsorships are philanthropic contributions and must never unlock
+      // premium access on the donor's learner account.
+      const resolvedPlan = PLANS[subscription.plan] || {};
+      if (resolvedPlan.type === 'sponsorship') {
+        logActivity(subscription.user, data.customer?.email || 'Sponsor', 'payment', {
+          plan: subscription.plan,
+          label: resolvedPlan.label,
+          amountNGN: subscription.amount,
+          sponsorship: true,
+        });
+        return res.json({ status: subscription.status, subscription });
+      }
+
       // Certificate fees are stored as "certificate-fee:<courseId>"
       if (subscription.plan.startsWith('certificate-fee:')) {
         const certCourseId = subscription.plan.split(':')[1];

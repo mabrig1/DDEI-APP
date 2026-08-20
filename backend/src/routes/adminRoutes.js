@@ -23,6 +23,7 @@ const {
 } = require('../controllers/analyticsController');
 const { requireAdmin } = require('../middleware/adminAuth');
 const { asyncHandler } = require('../middleware/asyncHandler');
+const { listInquiries, updateInquiry } = require('../controllers/partnerController');
 
 const router = express.Router();
 
@@ -47,5 +48,7 @@ router.get('/analytics/courses', requireAdmin, asyncHandler(courseAnalytics));
 router.get('/analytics/user/:id', requireAdmin, asyncHandler(userAnalytics));
 router.get('/analytics/feed', requireAdmin, asyncHandler(activityFeed));
 router.get('/analytics/learners', requireAdmin, asyncHandler(learnerBoard));
+router.get('/partner-inquiries', requireAdmin, asyncHandler(listInquiries));
+router.patch('/partner-inquiries/:id', requireAdmin, asyncHandler(updateInquiry));
 
 module.exports = router;
