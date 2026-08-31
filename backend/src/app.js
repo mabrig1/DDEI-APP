@@ -32,6 +32,7 @@ const serviceUpdateRoutes = require('./routes/serviceUpdateRoutes');
 const activityRoutes = require('./routes/activityRoutes');
 const vaultRoutes = require('./routes/vaultRoutes');
 const partnerRoutes = require('./routes/partnerRoutes');
+const recruitmentRoutes = require('./routes/recruitmentRoutes');
 const { rateLimit, securityHeaders } = require('./middleware/security');
 
 const app = express();
@@ -111,6 +112,7 @@ app.use('/api/service-update', serviceUpdateRoutes);
 app.use('/api/activity', activityRoutes);
 app.use('/api/tools-vault', vaultRoutes);
 app.use('/api/partners', partnerRoutes);
+app.use('/api/recruitment', recruitmentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

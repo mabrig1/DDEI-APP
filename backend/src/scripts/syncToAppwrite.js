@@ -23,6 +23,7 @@ const { mirrorCatalog } = require('../utils/appwriteBackup');
 // by name.
 require('../models/User');
 require('../models/Application');
+require('../models/RecruitmentApplication');
 require('../models/Subscription');
 require('../models/Content');
 require('../models/ServiceUpdate');

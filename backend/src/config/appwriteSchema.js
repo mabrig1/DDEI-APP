@@ -143,6 +143,38 @@ const TABLES = {
     ],
   },
 
+  recruitmentApplications: {
+    id: 'recruitment_applications',
+    name: 'Recruitment Applications',
+    publicRead: false,
+    model: 'RecruitmentApplication',
+    columns: [
+      { key: 'applicant', type: 'string', size: 64 },
+      { key: 'fullName', type: 'string', size: 255 },
+      { key: 'email', type: 'string', size: 320 },
+      { key: 'phone', type: 'string', size: 64 },
+      { key: 'location', type: 'string', size: 255 },
+      { key: 'educationLevel', type: 'string', size: 32 },
+      { key: 'institution', type: 'string', size: 255 },
+      { key: 'role', type: 'string', size: 64 },
+      { key: 'skills', type: 'string', size: 10000 },
+      { key: 'availability', type: 'string', size: 32 },
+      { key: 'workPreference', type: 'string', size: 32 },
+      { key: 'portfolioUrl', type: 'string', size: 2000 },
+      { key: 'motivation', type: 'string', size: 20000 },
+      { key: 'status', type: 'string', size: 32 },
+      { key: 'adminNotes', type: 'string', size: 20000 },
+      { key: 'consentAt', type: 'datetime' },
+      { key: 'createdAt', type: 'datetime' },
+      { key: 'updatedAt', type: 'datetime' },
+      { key: 'mirroredAt', type: 'datetime' },
+    ],
+    indexes: [
+      { key: 'email', type: 'key', columns: ['email'] },
+      { key: 'status_updated', type: 'key', columns: ['status', 'updatedAt'], orders: ['ASC', 'DESC'] },
+    ],
+  },
+
   subscriptions: {
     id: 'subscriptions',
     name: 'Subscriptions',

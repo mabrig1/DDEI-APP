@@ -1,6 +1,6 @@
 # Destiny Skills Bridge — Backend
 
-Node.js + Express + MongoDB API powering the Destiny Skills Bridge platform: authentication, skill tracks, applications, interactive skills courses, the AI Advisor, the Portfolio Builder, and Paystack premium subscriptions.
+Node.js + Express + MongoDB API powering the Destiny Skills Bridge platform: authentication, skill tracks, applications, Work With Us recruitment, interactive skills courses, the AI Advisor, the Portfolio Builder, and Paystack premium subscriptions.
 
 ## Setup
 
@@ -47,6 +47,12 @@ npm run dev
 ### Applications
 - `POST /api/applications` — `{ fullName, email, phone, country, track, tier, motivation }` (auth optional)
 - `GET /api/applications/me` — requires auth, lists the current user's applications
+
+### Work With Us Recruitment
+- `POST /api/recruitment` — submit a validated recruitment application; authentication optional and limited to five submissions per hour
+- `GET /api/recruitment/me` — requires auth, lists recruitment applications linked to the current user
+- `GET /api/admin/recruitment-applications` — requires admin auth, lists candidates
+- `PATCH /api/admin/recruitment-applications/:id` — requires admin auth, updates candidate status or private review notes
 
 ### Skills Interactive Courses
 - `GET /api/courses` — list course summaries (id, title, description, category, estimatedHours, moduleCount, lessonCount)

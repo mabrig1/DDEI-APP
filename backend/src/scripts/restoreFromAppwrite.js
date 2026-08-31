@@ -31,6 +31,7 @@ const { TABLES_BY_MODEL } = require('../config/appwriteSchema');
 
 require('../models/User');
 require('../models/Application');
+require('../models/RecruitmentApplication');
 require('../models/Subscription');
 require('../models/Content');
 require('../models/ServiceUpdate');

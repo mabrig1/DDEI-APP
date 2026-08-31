@@ -60,6 +60,7 @@
                 <button data-tab="overview" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">📊 Overview</button>
                 <button data-tab="courseanalytics" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Course Analytics</button>
                 <button data-tab="applications" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Applications</button>
+                <button data-tab="recruitment" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Work With Us</button>
                 <button data-tab="users" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Users</button>
                 <button data-tab="subscriptions" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Payments</button>
                 <button data-tab="content" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Pages &amp; Posts</button>
@@ -177,6 +178,30 @@
                     </tr>
                 </thead>
                 <tbody id="applicationsBody"></tbody>
+            </table>
+        </div>
+
+        <!-- Recruitment applications tab -->
+        <div id="tab-recruitment" class="tab-panel hidden bg-white border rounded-3xl overflow-x-auto">
+            <div class="p-5 border-b">
+                <h3 class="font-display text-lg font-semibold">Work With Us Applications</h3>
+                <p class="text-xs text-slate-500 mt-1">Review skills and availability, record internal notes, and move each candidate through the recruitment pipeline.</p>
+            </div>
+            <table class="w-full min-w-[1500px] text-sm text-left">
+                <thead class="bg-slate-50 text-slate-500 uppercase text-xs">
+                    <tr>
+                        <th class="px-4 py-3">Applicant</th>
+                        <th class="px-4 py-3">Track</th>
+                        <th class="px-4 py-3">Background &amp; Skills</th>
+                        <th class="px-4 py-3">Availability</th>
+                        <th class="px-4 py-3">Motivation</th>
+                        <th class="px-4 py-3">Work Sample</th>
+                        <th class="px-4 py-3">Status</th>
+                        <th class="px-4 py-3">Admin Notes</th>
+                        <th class="px-4 py-3">Applied</th>
+                    </tr>
+                </thead>
+                <tbody id="recruitmentBody"></tbody>
             </table>
         </div>
 
@@ -473,6 +498,7 @@
             overview: { load: loadOverview },
             courseanalytics: { load: loadCourseAnalytics },
             applications: { load: loadApplications },
+            recruitment: { load: loadRecruitmentApplications },
             users: { load: loadUsers },
             subscriptions: { load: loadSubscriptions },
             content: { load: loadContent },
@@ -1018,6 +1044,25 @@
             }
         }
 
+        async function loadRecruitmentApplications() {
+            const { errorEl, emptyEl } = resetListUI();
+            const body = document.getElementById('recruitmentBody');
+            body.innerHTML = '';
+
+            try {
+                const data = await adminRequest('/api/admin/recruitment-applications');
+                const applications = data.applications || [];
+                if (applications.length === 0) {
+                    emptyEl.textContent = 'No Work With Us applications yet.';
+                    emptyEl.classList.remove('hidden');
+                    return;
+                }
+                applications.forEach((app) => body.appendChild(renderRecruitmentRow(app)));
+            } catch (err) {
+                handleListError(err, errorEl);
+            }
+        }
+
         async function loadUsers() {
             const { errorEl, emptyEl } = resetListUI();
             const body = document.getElementById('usersBody');
@@ -1528,6 +1573,94 @@
             `;
             tr.children[6].appendChild(select);
             tr.children[7].appendChild(scholarshipSelect);
+            return tr;
+        }
+
+        const RECRUITMENT_STATUS_OPTIONS = ['submitted', 'reviewing', 'shortlisted', 'interview', 'hired', 'not-selected'];
+        const RECRUITMENT_ROLE_LABELS = {
+            'learning-support': 'Learning Support Assistant',
+            'content-marketing': 'Content & Digital Marketing Trainee',
+            'web-development': 'Web Development Trainee',
+            'research-data': 'Research & Data Assistant',
+            'community-success': 'Community Success Assistant',
+            'sales-partnerships': 'Sales & Partnerships Ambassador',
+        };
+
+        function renderRecruitmentRow(app) {
+            const tr = document.createElement('tr');
+            tr.className = 'border-t align-top';
+            const portfolio = app.portfolioUrl
+                ? `<a href="${escapeHtml(app.portfolioUrl)}" target="_blank" rel="noopener" class="text-[#0A66C2] font-semibold hover:underline">Open link</a>`
+                : '<span class="text-slate-400">None</span>';
+
+            tr.innerHTML = `
+                <td class="px-4 py-3 font-medium min-w-[190px]">${escapeHtml(app.fullName)}<br><span class="text-slate-500 text-xs">${escapeHtml(app.email)}<br>${escapeHtml(app.phone)}<br>${escapeHtml(app.location)}</span></td>
+                <td class="px-4 py-3 min-w-[180px]">${escapeHtml(RECRUITMENT_ROLE_LABELS[app.role] || app.role)}</td>
+                <td class="px-4 py-3 min-w-[240px]"><strong class="text-xs">${escapeHtml(app.institution)}</strong><br><span class="text-xs text-slate-500">${escapeHtml(app.educationLevel)}</span><p class="text-xs text-slate-600 mt-2 whitespace-pre-wrap">${escapeHtml(app.skills)}</p></td>
+                <td class="px-4 py-3 min-w-[150px]">${escapeHtml(app.availability)}<br><span class="text-xs text-slate-500">${escapeHtml(app.workPreference)}</span></td>
+                <td class="px-4 py-3 min-w-[260px] text-xs text-slate-600 whitespace-pre-wrap">${escapeHtml(app.motivation)}</td>
+                <td class="px-4 py-3 min-w-[100px]">${portfolio}</td>
+                <td class="px-4 py-3 min-w-[145px]"></td>
+                <td class="px-4 py-3 min-w-[240px]"></td>
+                <td class="px-4 py-3 text-slate-500 whitespace-nowrap">${new Date(app.createdAt).toLocaleDateString()}</td>
+            `;
+
+            const statusSelect = document.createElement('select');
+            statusSelect.className = 'w-full border rounded-lg px-2 py-1.5 text-xs';
+            RECRUITMENT_STATUS_OPTIONS.forEach((status) => {
+                const option = document.createElement('option');
+                option.value = status;
+                option.textContent = status;
+                option.selected = status === app.status;
+                statusSelect.appendChild(option);
+            });
+            statusSelect.addEventListener('change', async () => {
+                statusSelect.disabled = true;
+                try {
+                    await adminRequest(`/api/admin/recruitment-applications/${app._id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ status: statusSelect.value }),
+                    });
+                    app.status = statusSelect.value;
+                } catch (err) {
+                    alert(`Failed to update recruitment status: ${err.message}`);
+                    statusSelect.value = app.status;
+                } finally {
+                    statusSelect.disabled = false;
+                }
+            });
+            tr.children[6].appendChild(statusSelect);
+
+            const notes = document.createElement('textarea');
+            notes.rows = 3;
+            notes.maxLength = 5000;
+            notes.value = app.adminNotes || '';
+            notes.placeholder = 'Private review notes...';
+            notes.className = 'w-full border rounded-lg px-2 py-1.5 text-xs';
+            const saveNotes = document.createElement('button');
+            saveNotes.type = 'button';
+            saveNotes.textContent = 'Save Notes';
+            saveNotes.className = 'mt-1 px-3 py-1.5 bg-slate-900 text-white rounded-lg text-xs font-semibold';
+            saveNotes.addEventListener('click', async () => {
+                saveNotes.disabled = true;
+                saveNotes.textContent = 'Saving...';
+                try {
+                    await adminRequest(`/api/admin/recruitment-applications/${app._id}`, {
+                        method: 'PATCH',
+                        body: JSON.stringify({ adminNotes: notes.value }),
+                    });
+                    app.adminNotes = notes.value;
+                    saveNotes.textContent = 'Saved';
+                    setTimeout(() => { saveNotes.textContent = 'Save Notes'; }, 1500);
+                } catch (err) {
+                    alert(`Failed to save notes: ${err.message}`);
+                    saveNotes.textContent = 'Save Notes';
+                } finally {
+                    saveNotes.disabled = false;
+                }
+            });
+            tr.children[7].appendChild(notes);
+            tr.children[7].appendChild(saveNotes);
             return tr;
         }
 

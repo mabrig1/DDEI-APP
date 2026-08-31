@@ -27,6 +27,38 @@ async function sendApplicationNotification(application) {
   }
 }
 
+async function sendRecruitmentNotification(application) {
+  if (!process.env.RESEND_API_KEY || !process.env.ADMIN_NOTIFY_EMAIL) return;
+
+  try {
+    await axios.post(
+      'https://api.resend.com/emails',
+      {
+        from: 'Destiny Skills Bridge <onboarding@resend.dev>',
+        to: [process.env.ADMIN_NOTIFY_EMAIL],
+        subject: `New Work With Us application: ${escapeHtml(application.fullName)}`,
+        html: `
+          <p><strong>${escapeHtml(application.fullName)}</strong> applied for <strong>${escapeHtml(application.role)}</strong>.</p>
+          <ul>
+            <li>Email: ${escapeHtml(application.email)}</li>
+            <li>Phone: ${escapeHtml(application.phone)}</li>
+            <li>Location: ${escapeHtml(application.location)}</li>
+            <li>Institution: ${escapeHtml(application.institution)}</li>
+            <li>Availability: ${escapeHtml(application.availability)}</li>
+            <li>Work preference: ${escapeHtml(application.workPreference)}</li>
+          </ul>
+          <p><strong>Skills:</strong><br>${escapeHtml(application.skills)}</p>
+          <p><strong>Motivation:</strong><br>${escapeHtml(application.motivation)}</p>
+          <p>Review this application in the Destiny Skills Bridge admin dashboard.</p>
+        `,
+      },
+      { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }
+    );
+  } catch (err) {
+    console.error('Failed to send recruitment notification email:', err.response?.data || err.message);
+  }
+}
+
 async function sendScholarshipEmail(application, level, tempPassword) {
   if (!process.env.RESEND_API_KEY) return;
 
@@ -117,4 +149,10 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
-module.exports = { sendApplicationNotification, sendScholarshipEmail, sendPasswordResetEmail, sendCustomEmail };
+module.exports = {
+  sendApplicationNotification,
+  sendRecruitmentNotification,
+  sendScholarshipEmail,
+  sendPasswordResetEmail,
+  sendCustomEmail,
+};

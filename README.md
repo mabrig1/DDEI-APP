@@ -40,6 +40,8 @@ ddei-app/
   free-model router when configured and keeps a deterministic no-cost fallback.
 - **Interactive learning tools** — saved lesson notes, browser read-aloud and spaced-review cards
   with increasing review intervals
+- **Work With Us recruitment portal** — “Earn While You Learn” opportunity tracks, secure applicant
+  intake, duplicate protection, admin review notes/status pipeline and email notifications
 - **Payments** — Paystack integration for Premium subscriptions (monthly/yearly)
 - **Premium features** — AI-powered Portfolio Builder, Opportunity Matching (sample global gigs & remote jobs)
 - **Appwrite backup backend** — MongoDB is continuously mirrored to Appwrite Cloud, and the public site

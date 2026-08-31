@@ -2,6 +2,8 @@ const express = require('express');
 const {
   listApplications,
   updateApplicationStatus,
+  listRecruitmentApplications,
+  updateRecruitmentApplication,
   listUsers,
   listSubscriptions,
   setUserPremium,
@@ -35,6 +37,8 @@ router.patch('/credentials', requireAdmin, changeCredentials);
 router.get('/applications', requireAdmin, listApplications);
 router.patch('/applications/:id', requireAdmin, updateApplicationStatus);
 router.patch('/applications/:id/scholarship', requireAdmin, grantScholarship);
+router.get('/recruitment-applications', requireAdmin, asyncHandler(listRecruitmentApplications));
+router.patch('/recruitment-applications/:id', requireAdmin, asyncHandler(updateRecruitmentApplication));
 router.get('/users', requireAdmin, listUsers);
 router.patch('/users/:id/premium', requireAdmin, setUserPremium);
 router.patch('/users/:id/password', requireAdmin, setUserPassword);

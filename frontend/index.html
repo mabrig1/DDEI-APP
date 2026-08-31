@@ -37,6 +37,7 @@
                 <a href="#courses" class="text-slate-600 hover:text-slate-900">Courses</a>
                 <a href="earn-online.html" class="text-slate-600 hover:text-slate-900">Earn Now</a>
                 <a href="#opportunities" class="text-slate-600 hover:text-slate-900">Opportunities</a>
+                <a href="#work-with-us" class="text-slate-600 hover:text-slate-900">Work With Us</a>
                 <a href="#blog" class="text-slate-600 hover:text-slate-900">Blog</a>
                 <a href="#premium" class="text-slate-600 hover:text-slate-900">Premium</a>
                 <a href="#partners" class="text-slate-600 hover:text-slate-900">Fund Impact</a>
@@ -306,6 +307,67 @@
         </div>
     </div>
 
+    <!-- Work With Us recruitment portal -->
+    <section id="work-with-us" class="bg-slate-950 text-white py-20">
+        <div class="max-w-screen-xl mx-auto px-6">
+            <div class="grid lg:grid-cols-2 gap-12 items-start">
+                <div>
+                    <span class="text-amber-300 font-semibold text-sm tracking-widest">WORK WITH US</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-semibold tracking-tight mt-3">Earn While You Learn.</h2>
+                    <p class="text-2xl text-blue-300 font-semibold mt-2">Build Skills. Gain Experience. Get Paid.</p>
+                    <p class="text-slate-300 mt-5 max-w-xl leading-relaxed">
+                        Turn your training into practical experience by supporting real projects, learners and growth initiatives at Destiny Skills Bridge. Opportunities may be internships, project-based assignments, commission-based roles or paid part-time work.
+                    </p>
+                    <div class="grid sm:grid-cols-3 gap-3 mt-8">
+                        <div class="bg-white/10 border border-white/10 rounded-2xl p-4">
+                            <i class="fa-solid fa-graduation-cap text-amber-300"></i>
+                            <p class="font-semibold mt-2">Learn by Doing</p>
+                            <p class="text-xs text-slate-400 mt-1">Build proof of work on supervised projects.</p>
+                        </div>
+                        <div class="bg-white/10 border border-white/10 rounded-2xl p-4">
+                            <i class="fa-solid fa-briefcase text-emerald-300"></i>
+                            <p class="font-semibold mt-2">Gain Experience</p>
+                            <p class="text-xs text-slate-400 mt-1">Practise teamwork, delivery and communication.</p>
+                        </div>
+                        <div class="bg-white/10 border border-white/10 rounded-2xl p-4">
+                            <i class="fa-solid fa-naira-sign text-blue-300"></i>
+                            <p class="font-semibold mt-2">Earn Transparently</p>
+                            <p class="text-xs text-slate-400 mt-1">Know the role and compensation before accepting.</p>
+                        </div>
+                    </div>
+                    <button onclick="openRecruitmentModal()" class="mt-8 w-full sm:w-auto px-8 py-4 bg-amber-400 text-slate-950 font-extrabold rounded-2xl hover:bg-amber-300">
+                        Apply to Work With Us <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                    <p class="text-xs text-slate-400 mt-4"><i class="fa-solid fa-shield-halved mr-1"></i> No application fee. Shortlisting is not guaranteed. Workload and compensation are disclosed before engagement.</p>
+                </div>
+                <div class="bg-white text-slate-900 rounded-3xl p-6 md:p-8">
+                    <h3 class="font-display text-2xl font-semibold">Opportunity Tracks</h3>
+                    <p class="text-sm text-slate-500 mt-1 mb-5">Choose the track closest to your current skills or the experience you want to build.</p>
+                    <div class="space-y-3">
+                        <button onclick="openRecruitmentModal('learning-support')" class="w-full text-left border rounded-2xl p-4 hover:border-[#0A66C2] hover:bg-blue-50">
+                            <strong>Learning Support Assistant</strong><span class="block text-xs text-slate-500 mt-1">Guide learners, organise cohorts and support course participation.</span>
+                        </button>
+                        <button onclick="openRecruitmentModal('content-marketing')" class="w-full text-left border rounded-2xl p-4 hover:border-[#0A66C2] hover:bg-blue-50">
+                            <strong>Content &amp; Digital Marketing Trainee</strong><span class="block text-xs text-slate-500 mt-1">Create educational content and help campaigns reach more learners.</span>
+                        </button>
+                        <button onclick="openRecruitmentModal('web-development')" class="w-full text-left border rounded-2xl p-4 hover:border-[#0A66C2] hover:bg-blue-50">
+                            <strong>Web Development Trainee</strong><span class="block text-xs text-slate-500 mt-1">Test, improve and document learner-facing digital products.</span>
+                        </button>
+                        <button onclick="openRecruitmentModal('research-data')" class="w-full text-left border rounded-2xl p-4 hover:border-[#0A66C2] hover:bg-blue-50">
+                            <strong>Research &amp; Data Assistant</strong><span class="block text-xs text-slate-500 mt-1">Support evidence gathering, programme reporting and impact insights.</span>
+                        </button>
+                        <button onclick="openRecruitmentModal('community-success')" class="w-full text-left border rounded-2xl p-4 hover:border-[#0A66C2] hover:bg-blue-50">
+                            <strong>Community Success Assistant</strong><span class="block text-xs text-slate-500 mt-1">Welcome members, answer questions and strengthen learner engagement.</span>
+                        </button>
+                        <button onclick="openRecruitmentModal('sales-partnerships')" class="w-full text-left border rounded-2xl p-4 hover:border-[#0A66C2] hover:bg-blue-50">
+                            <strong>Sales &amp; Partnerships Ambassador</strong><span class="block text-xs text-slate-500 mt-1">Connect learners, sponsors and organisations to suitable programmes.</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- AI Advisor Chat -->
     <div id="ai" class="max-w-screen-xl mx-auto px-6 py-16">
         <div class="max-w-2xl mx-auto">
@@ -494,6 +556,108 @@
                 <p id="appError" class="hidden text-red-600 text-sm mb-4"></p>
                 <p id="appSuccess" class="hidden text-emerald-600 text-sm mb-4"></p>
                 <button type="submit" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Submit Application</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Work With Us Modal -->
+    <div id="recruitmentModal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center px-4">
+        <div class="bg-white rounded-3xl p-6 md:p-8 max-w-3xl w-full relative max-h-[92vh] overflow-y-auto">
+            <button onclick="closeModal('recruitmentModal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700" aria-label="Close Work With Us form">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <span class="text-[#0A66C2] font-semibold text-xs tracking-widest">WORK WITH US</span>
+            <h3 class="font-display text-2xl md:text-3xl font-semibold mt-1">Earn While You Learn</h3>
+            <p class="text-slate-500 text-sm mt-1 mb-6">Build skills, gain real experience and be considered for suitable paid opportunities.</p>
+            <form id="recruitmentForm" onsubmit="return handleRecruitmentSubmit(event)">
+                <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="recruitFullName" class="block text-sm font-medium mb-1">Full Name *</label>
+                        <input id="recruitFullName" required maxlength="120" class="w-full border rounded-xl px-4 py-2.5">
+                    </div>
+                    <div>
+                        <label for="recruitEmail" class="block text-sm font-medium mb-1">Email *</label>
+                        <input id="recruitEmail" required type="email" maxlength="320" class="w-full border rounded-xl px-4 py-2.5">
+                    </div>
+                    <div>
+                        <label for="recruitPhone" class="block text-sm font-medium mb-1">Phone / WhatsApp *</label>
+                        <input id="recruitPhone" required maxlength="40" placeholder="+234..." class="w-full border rounded-xl px-4 py-2.5">
+                    </div>
+                    <div>
+                        <label for="recruitLocation" class="block text-sm font-medium mb-1">Current Location *</label>
+                        <input id="recruitLocation" required maxlength="120" placeholder="Nsukka, Enugu" class="w-full border rounded-xl px-4 py-2.5">
+                    </div>
+                    <div>
+                        <label for="recruitEducation" class="block text-sm font-medium mb-1">Education Level *</label>
+                        <select id="recruitEducation" required class="w-full border rounded-xl px-4 py-2.5 bg-white">
+                            <option value="">Select level</option>
+                            <option value="secondary">Secondary / Diploma</option>
+                            <option value="undergraduate">Undergraduate</option>
+                            <option value="graduate">Graduate</option>
+                            <option value="postgraduate">Postgraduate</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="recruitInstitution" class="block text-sm font-medium mb-1">Institution / Organisation *</label>
+                        <input id="recruitInstitution" required maxlength="180" placeholder="University, school or organisation" class="w-full border rounded-xl px-4 py-2.5">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="recruitRole" class="block text-sm font-medium mb-1">Preferred Opportunity Track *</label>
+                    <select id="recruitRole" required class="w-full border rounded-xl px-4 py-2.5 bg-white">
+                        <option value="">Choose a track</option>
+                        <option value="learning-support">Learning Support Assistant</option>
+                        <option value="content-marketing">Content &amp; Digital Marketing Trainee</option>
+                        <option value="web-development">Web Development Trainee</option>
+                        <option value="research-data">Research &amp; Data Assistant</option>
+                        <option value="community-success">Community Success Assistant</option>
+                        <option value="sales-partnerships">Sales &amp; Partnerships Ambassador</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="recruitSkills" class="block text-sm font-medium mb-1">Current Skills *</label>
+                    <textarea id="recruitSkills" required minlength="10" maxlength="2000" rows="3" class="w-full border rounded-xl px-4 py-2.5" placeholder="List the tools, skills or tasks you can already handle."></textarea>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label for="recruitAvailability" class="block text-sm font-medium mb-1">Weekly Availability *</label>
+                        <select id="recruitAvailability" required class="w-full border rounded-xl px-4 py-2.5 bg-white">
+                            <option value="">Choose availability</option>
+                            <option value="5-hours">Up to 5 hours</option>
+                            <option value="10-hours">Up to 10 hours</option>
+                            <option value="20-hours">Up to 20 hours</option>
+                            <option value="flexible">Flexible / project-based</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="recruitWorkPreference" class="block text-sm font-medium mb-1">Work Preference *</label>
+                        <select id="recruitWorkPreference" required class="w-full border rounded-xl px-4 py-2.5 bg-white">
+                            <option value="">Choose preference</option>
+                            <option value="remote">Remote</option>
+                            <option value="onsite-nsukka">On-site in Nsukka</option>
+                            <option value="hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="recruitPortfolio" class="block text-sm font-medium mb-1">Portfolio or Work Sample Link <span class="text-slate-400">(optional)</span></label>
+                    <input id="recruitPortfolio" type="url" maxlength="1000" placeholder="https://github.com/... or https://drive.google.com/..." class="w-full border rounded-xl px-4 py-2.5">
+                </div>
+                <div class="mb-4">
+                    <label for="recruitMotivation" class="block text-sm font-medium mb-1">Why should we consider you? *</label>
+                    <textarea id="recruitMotivation" required minlength="30" maxlength="5000" rows="4" class="w-full border rounded-xl px-4 py-2.5" placeholder="Tell us what you want to learn, contribute and achieve."></textarea>
+                </div>
+                <label class="flex items-start gap-3 bg-slate-50 border rounded-xl p-3 text-sm text-slate-600 mb-4">
+                    <input id="recruitConsent" required type="checkbox" class="mt-1">
+                    <span>I confirm this information is accurate and consent to its use for recruitment review. I understand that submitting does not guarantee selection or employment.</span>
+                </label>
+                <p class="text-xs text-slate-500 mb-4"><i class="fa-solid fa-circle-info mr-1"></i> Destiny Skills Bridge does not charge applicants. The role type, deliverables and compensation will be stated before you accept any engagement.</p>
+                <p id="recruitmentError" class="hidden text-red-600 text-sm mb-4" aria-live="polite"></p>
+                <p id="recruitmentSuccess" class="hidden text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-sm mb-4" aria-live="polite"></p>
+                <button id="recruitmentSubmitBtn" type="submit" class="w-full py-3.5 bg-[#0A66C2] text-white font-semibold rounded-2xl disabled:opacity-60">
+                    Submit Work With Us Application
+                </button>
             </form>
         </div>
     </div>
@@ -1038,6 +1202,64 @@
             } catch (err) {
                 errorEl.textContent = err.message;
                 errorEl.classList.remove('hidden');
+            }
+            return false;
+        }
+
+        function openRecruitmentModal(role = '') {
+            const errorEl = document.getElementById('recruitmentError');
+            const successEl = document.getElementById('recruitmentSuccess');
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+            const user = authUser();
+            if (user) {
+                document.getElementById('recruitFullName').value = user.name || '';
+                document.getElementById('recruitEmail').value = user.email || '';
+                document.getElementById('recruitPhone').value = user.phone || '';
+            }
+            if (role) document.getElementById('recruitRole').value = role;
+            openModal('recruitmentModal');
+        }
+
+        async function handleRecruitmentSubmit(event) {
+            event.preventDefault();
+            const errorEl = document.getElementById('recruitmentError');
+            const successEl = document.getElementById('recruitmentSuccess');
+            const submitBtn = document.getElementById('recruitmentSubmitBtn');
+            errorEl.classList.add('hidden');
+            successEl.classList.add('hidden');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Submitting...';
+
+            try {
+                const payload = {
+                    fullName: document.getElementById('recruitFullName').value,
+                    email: document.getElementById('recruitEmail').value,
+                    phone: document.getElementById('recruitPhone').value,
+                    location: document.getElementById('recruitLocation').value,
+                    educationLevel: document.getElementById('recruitEducation').value,
+                    institution: document.getElementById('recruitInstitution').value,
+                    role: document.getElementById('recruitRole').value,
+                    skills: document.getElementById('recruitSkills').value,
+                    availability: document.getElementById('recruitAvailability').value,
+                    workPreference: document.getElementById('recruitWorkPreference').value,
+                    portfolioUrl: document.getElementById('recruitPortfolio').value,
+                    motivation: document.getElementById('recruitMotivation').value,
+                    consent: document.getElementById('recruitConsent').checked,
+                };
+                const data = await apiRequest('/api/recruitment', {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                });
+                document.getElementById('recruitmentForm').reset();
+                successEl.textContent = data.message || 'Application received. We will contact shortlisted applicants.';
+                successEl.classList.remove('hidden');
+            } catch (err) {
+                errorEl.textContent = err.message;
+                errorEl.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Work With Us Application';
             }
             return false;
         }
@@ -2070,6 +2292,7 @@
         (function hydrateModalFromQuery() {
             const params = new URLSearchParams(window.location.search);
             if (params.get('apply') === '1') openApplicationModal();
+            else if (params.get('work') === '1') openRecruitmentModal();
             else if (params.get('login') === '1') openAuthModal('login');
             else if (params.get('register') === '1') openAuthModal('register');
         })();

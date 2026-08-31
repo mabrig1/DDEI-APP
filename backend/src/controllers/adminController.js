@@ -2,12 +2,14 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const Application = require('../models/Application');
+const RecruitmentApplication = require('../models/RecruitmentApplication');
 const User = require('../models/User');
 const Subscription = require('../models/Subscription');
 const { sendScholarshipEmail, sendCustomEmail } = require('../utils/mailer');
 const { passwordError } = require('../utils/validation');
 
 const APPLICATION_STATUSES = ['pending', 'reviewing', 'accepted', 'rejected'];
+const RECRUITMENT_STATUSES = ['submitted', 'reviewing', 'shortlisted', 'interview', 'hired', 'not-selected'];
 const SCHOLARSHIP_LEVELS = ['none', 'limited', 'full'];
 const ADMIN_PREVIEW_EMAIL = 'admin-preview@destinyskillsbridge.internal';
 const MESSAGE_CHANNELS = ['email', 'whatsapp'];
@@ -77,6 +79,35 @@ async function updateApplicationStatus(req, res) {
     return res.status(404).json({ message: 'Application not found' });
   }
 
+  res.json({ application });
+}
+
+async function listRecruitmentApplications(req, res) {
+  const applications = await RecruitmentApplication.find().sort({ createdAt: -1 });
+  res.json({ applications });
+}
+
+async function updateRecruitmentApplication(req, res) {
+  const update = {};
+  if (req.body.status !== undefined) {
+    if (!RECRUITMENT_STATUSES.includes(req.body.status)) {
+      return res.status(400).json({ message: 'Invalid recruitment status' });
+    }
+    update.status = req.body.status;
+  }
+  if (req.body.adminNotes !== undefined) {
+    update.adminNotes = String(req.body.adminNotes || '').trim().slice(0, 5000);
+  }
+  if (Object.keys(update).length === 0) {
+    return res.status(400).json({ message: 'Provide a status or adminNotes update' });
+  }
+
+  const application = await RecruitmentApplication.findByIdAndUpdate(
+    req.params.id,
+    update,
+    { new: true, runValidators: true }
+  );
+  if (!application) return res.status(404).json({ message: 'Recruitment application not found' });
   res.json({ application });
 }
 
@@ -310,6 +341,8 @@ module.exports = {
   login,
   listApplications,
   updateApplicationStatus,
+  listRecruitmentApplications,
+  updateRecruitmentApplication,
   listUsers,
   listSubscriptions,
   setUserPremium,

@@ -11,6 +11,7 @@ const EARNING_Q = /\b(earn|salary|pay|income|dollar|money)\b/i;
 const AI_ADVISOR_Q = /\b(ai advisor|advisor)\b/i;
 const PORTFOLIO_Q = /\b(portfolio)\b/i;
 const OPPORTUNITY_Q = /\b(job|gig|client|hire|opportunity|work)\b/i;
+const RECRUITMENT_Q = /\b(work with us|earn while you learn|recruit|recruitment|internship|trainee|part.?time work|join the team)\b/i;
 const LOGIN_HELP = /\b(log ?in|password|forgot|reset|can't access|cannot access|locked out)\b/i;
 const CONTACT_Q = /\b(contact|support|human|talk to someone|whatsapp|help me|reach you)\b/i;
 
@@ -69,6 +70,13 @@ function buildHelpReply(message, history = []) {
   if (PORTFOLIO_Q.test(text)) {
     return (
       "The AI Portfolio Builder (a Premium feature) turns the projects you complete into a polished, internationally-ready portfolio summary you can send to clients."
+    );
+  }
+
+  if (RECRUITMENT_Q.test(text)) {
+    return (
+      'Open the “Work With Us” section and choose an opportunity track under Earn While You Learn. You can apply for trainee, project-based, commission-based, internship or paid part-time opportunities. ' +
+      'There is no application fee, and the role, workload and compensation will be explained before you accept an engagement.'
     );
   }
 
