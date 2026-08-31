@@ -7268,7 +7268,7 @@ const COURSES = [
   {
     id: 'ai-cinematic-special-edition',
     slug: 'ai-cinematic-special-edition',
-    title: 'AI Cinematic Video & Avatar Creation Mastery',
+    title: 'AI Cinematic Video & Avatar Creation Mastery — SPECIAL EDITION',
     description:
       'Direct full cinematic AI films with Claude/ChatGPT, Veo 3, Seedance 2.0, Grok Imagine & CapCut — master hyper-real avatars, voice cloning, sound design, and a vault of 50+ free AI tools. Start with a free week, then enroll for full access and a certificate.',
     skillIds: ['ai-tools-automation'],

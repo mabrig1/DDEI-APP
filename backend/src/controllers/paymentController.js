@@ -25,7 +25,7 @@ const PLANS = {
   },
   'cinematic-special-edition': {
     amountNGN: 10000,
-    label: 'AI Cinematic Video & Avatar Creation Mastery + Certificate',
+    label: 'AI Cinematic Video & Avatar Creation Mastery — Special Edition + Certificate',
     type: 'course',
     courseId: 'ai-cinematic-special-edition',
   },
