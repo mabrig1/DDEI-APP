@@ -7262,23 +7262,23 @@ const COURSES = [
   },
 
   // ============================================================
-  // SPECIAL EDITION — AI Cinematic Video & Avatar Creation Mastery
-  // 7-day intensive. Pay ₦4,000 and start instantly — no free trial.
+  // AI Cinematic Video & Avatar Creation Mastery
+  // Standard featured course: 1-week free access, then ₦10,000 enrollment.
   // ============================================================
   {
     id: 'ai-cinematic-special-edition',
     slug: 'ai-cinematic-special-edition',
-    title: 'AI Cinematic Video & Avatar Creation Mastery — SPECIAL EDITION',
+    title: 'AI Cinematic Video & Avatar Creation Mastery',
     description:
-      'A 7-day intensive: direct full cinematic AI films with Claude/ChatGPT, Veo 3, Seedance 2.0, Grok Imagine & CapCut — hyper-real avatars, voice cloning, sound design, and a vault of 50+ free AI tools. Pay once, start instantly, earn a certificate.',
+      'Direct full cinematic AI films with Claude/ChatGPT, Veo 3, Seedance 2.0, Grok Imagine & CapCut — master hyper-real avatars, voice cloning, sound design, and a vault of 50+ free AI tools. Start with a free week, then enroll for full access and a certificate.',
     skillIds: ['ai-tools-automation'],
     category: 'AI Video & Creative Production',
     estimatedHours: 12,
     specialCourse: true,
     isCertified: true,
     certCode: 'CVM',
-    price: 4000,
-    paidOnly: true,
+    price: 10000,
+    trialDays: 7,
     durationDays: 7,
     purchasePlan: 'cinematic-special-edition',
     modules: [

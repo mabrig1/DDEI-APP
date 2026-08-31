@@ -24,8 +24,8 @@ const PLANS = {
     courseId: 'mastering-prompt-engineering',
   },
   'cinematic-special-edition': {
-    amountNGN: 4000,
-    label: 'AI Cinematic Video & Avatar Creation Mastery — Special Edition (7 Days) + Certificate',
+    amountNGN: 10000,
+    label: 'AI Cinematic Video & Avatar Creation Mastery + Certificate',
     type: 'course',
     courseId: 'ai-cinematic-special-edition',
   },
