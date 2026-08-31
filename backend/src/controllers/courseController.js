@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const User = require('../models/User');
 const { COURSES } = require('../data/courseCatalog');
 const { logActivity } = require('../utils/activityLogger');
+const { COACH_ACTIONS, runCourseCoach } = require('../utils/courseCoachAgent');
 
 function findCourse(id) {
   return COURSES.find((c) => c.id === id) || null;
@@ -191,6 +192,52 @@ async function submitQuiz(req, res) {
   res.json({ score, total, passed, results });
 }
 
+async function coachCourse(req, res) {
+  const course = findCourse(req.params.id);
+  if (!course) return res.status(404).json({ message: 'Course not found' });
+
+  const { lessonId, action = 'ask', question = '' } = req.body || {};
+  if (!lessonId) return res.status(400).json({ message: 'lessonId is required' });
+  if (!COACH_ACTIONS.has(action)) {
+    return res.status(400).json({
+      message: `Unsupported coaching action. Choose one of: ${[...COACH_ACTIONS].join(', ')}.`,
+    });
+  }
+  if (typeof question !== 'string' || question.length > 1200) {
+    return res.status(400).json({ message: 'question must be text no longer than 1,200 characters' });
+  }
+
+  const found = findLesson(course, lessonId);
+  if (!found) return res.status(404).json({ message: 'Lesson not found' });
+
+  const user = await User.findById(req.userId);
+  if (!user) return res.status(404).json({ message: 'User not found' });
+  const progress = (user.courseProgress || []).find((item) => item.courseId === course.id) || null;
+
+  const result = await runCourseCoach({
+    action,
+    course,
+    module: found.module,
+    lesson: found.lesson,
+    progress,
+    question,
+  });
+
+  logActivity(user._id, user.name, 'course_coach_used', {
+    courseId: course.id,
+    lessonId: found.lesson.id,
+    action,
+    mode: result.mode,
+    toolsUsed: result.toolsUsed,
+  });
+
+  res.json({
+    ...result,
+    action,
+    lessonId: found.lesson.id,
+  });
+}
+
 async function getProgress(req, res) {
   const course = findCourse(req.params.id);
   if (!course) return res.status(404).json({ message: 'Course not found' });
@@ -283,4 +330,13 @@ async function getCertificate(req, res) {
   });
 }
 
-module.exports = { listCourses, getCourse, updateProgress, submitQuiz, getProgress, selectCourse, getCertificate };
+module.exports = {
+  listCourses,
+  getCourse,
+  updateProgress,
+  submitQuiz,
+  coachCourse,
+  getProgress,
+  selectCourse,
+  getCertificate,
+};

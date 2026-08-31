@@ -1256,6 +1256,7 @@
 
         // ----- Interactive Courses -----
         let currentCourse = null;
+        let currentModuleId = null;
         let currentLessonId = null;
         let currentQuizModuleId = null;
 
@@ -1652,6 +1653,10 @@
             document.getElementById('courseDetailView').classList.add('hidden');
             document.getElementById('courseCatalogView').classList.remove('hidden');
             currentCourse = null;
+            currentModuleId = null;
+            currentLessonId = null;
+            currentQuizModuleId = null;
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
         }
 
         function courseShareSlug(course) {
@@ -1719,13 +1724,59 @@
                         ${lesson.keyTakeaways.map((k) => `<li>${k}</li>`).join('')}
                     </ul>
                 </div>
+                <div class="mt-6 bg-gradient-to-br from-blue-50 to-white border border-blue-200 rounded-2xl p-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <div>
+                            <p class="font-semibold text-[#0A66C2]"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Agentic Learning Lab</p>
+                            <p class="text-xs text-slate-500 mt-1">Get lesson-grounded help, then test what you can explain without looking.</p>
+                        </div>
+                        <button onclick="readCurrentLessonAloud()" class="px-3 py-2 bg-white border rounded-xl text-xs font-semibold text-slate-600 hover:border-[#0A66C2]">
+                            <i class="fa-solid fa-volume-high mr-1"></i> Read Aloud
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-4">
+                        <button onclick="runCourseCoach('explain')" class="px-3 py-2.5 bg-[#0A66C2] text-white rounded-xl text-xs font-semibold">Explain Simply</button>
+                        <button onclick="runCourseCoach('example')" class="px-3 py-2.5 bg-white border border-blue-200 text-[#0A66C2] rounded-xl text-xs font-semibold">Give an Example</button>
+                        <button onclick="runCourseCoach('practice')" class="px-3 py-2.5 bg-white border border-blue-200 text-[#0A66C2] rounded-xl text-xs font-semibold">Practice Me</button>
+                        <button onclick="runCourseCoach('plan')" class="px-3 py-2.5 bg-white border border-blue-200 text-[#0A66C2] rounded-xl text-xs font-semibold">Build My Plan</button>
+                    </div>
+                    <div class="flex flex-col sm:flex-row gap-2 mt-3">
+                        <input id="coachQuestionInput" maxlength="1200" class="flex-1 border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]" placeholder="Ask a question about this lesson...">
+                        <button onclick="runCourseCoach('ask')" class="px-4 py-2 bg-slate-900 text-white rounded-xl text-xs font-semibold">
+                            <i class="fa-solid fa-paper-plane mr-1"></i> Ask Coach
+                        </button>
+                    </div>
+                    <div id="courseCoachOutput" class="hidden mt-4 bg-white border rounded-xl p-4 text-sm text-slate-700 whitespace-pre-wrap leading-relaxed" aria-live="polite"></div>
+                    <div class="mt-4 border-t border-blue-100 pt-4">
+                        <label for="teachBackInput" class="block text-sm font-semibold text-slate-700">Teach it back in your own words</label>
+                        <p class="text-xs text-slate-500 mt-1">Write 3–5 sentences. The coach will identify what you understand and what to revisit.</p>
+                        <textarea id="teachBackInput" rows="3" maxlength="1200" class="w-full mt-2 border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]" placeholder="The main idea of this lesson is..."></textarea>
+                        <button onclick="runCourseCoach('teach_back')" class="mt-2 px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-semibold">
+                            <i class="fa-solid fa-microscope mr-1"></i> Evaluate My Understanding
+                        </button>
+                    </div>
+                </div>
+                <div class="mt-4 grid lg:grid-cols-2 gap-4">
+                    <div class="bg-white border rounded-2xl p-4">
+                        <label for="lessonNotesInput" class="font-semibold text-sm"><i class="fa-solid fa-note-sticky text-amber-500 mr-1"></i> My Lesson Notes</label>
+                        <textarea id="lessonNotesInput" rows="5" oninput="saveLessonNote(this.value)" class="w-full mt-2 border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#0A66C2]" placeholder="Write examples, questions, or action points..."></textarea>
+                        <p id="lessonNotesStatus" class="text-xs text-slate-400 mt-1">Saved privately on this device.</p>
+                    </div>
+                    <div class="bg-white border rounded-2xl p-4">
+                        <p class="font-semibold text-sm"><i class="fa-solid fa-layer-group text-purple-500 mr-1"></i> Smart Review Cards</p>
+                        <p class="text-xs text-slate-500 mt-1">Recall first, reveal the answer, then rate yourself for spaced review.</p>
+                        <div id="lessonReviewCards" class="mt-3 space-y-3"></div>
+                    </div>
+                </div>
                 <button onclick="toggleLessonComplete('${lesson.id}')"
                         class="mt-6 px-6 py-3 rounded-2xl font-semibold text-sm ${done ? 'bg-emerald-100 text-emerald-700' : 'bg-[#0A66C2] text-white'}">
                     <i class="fa-solid ${done ? 'fa-check' : 'fa-circle-check'} mr-2"></i>${done ? 'Completed' : 'Mark Complete'}
                 </button>`;
+            hydrateLessonTools(lesson);
         }
 
         function selectLesson(modId, lessonId) {
+            currentModuleId = modId;
             currentLessonId = lessonId;
             currentQuizModuleId = null;
             const mod = currentCourse.modules.find((m) => m.id === modId);
@@ -1759,11 +1810,167 @@
         }
 
         function selectQuiz(modId) {
+            currentModuleId = modId;
             currentQuizModuleId = modId;
             currentLessonId = null;
             const mod = currentCourse.modules.find((m) => m.id === modId);
             renderSidebar();
             renderQuizPanel(mod);
+        }
+
+        function lessonNotesStoreKey() { return 'dsb_lesson_notes_v1'; }
+        function lessonReviewStoreKey() { return 'dsb_lesson_review_v1'; }
+
+        function readLocalObject(key) {
+            try { return JSON.parse(localStorage.getItem(key) || '{}'); }
+            catch (err) { return {}; }
+        }
+
+        function activeLesson() {
+            if (!currentCourse || !currentModuleId || !currentLessonId) return null;
+            const mod = currentCourse.modules.find((item) => item.id === currentModuleId);
+            const lesson = mod && mod.lessons.find((item) => item.id === currentLessonId);
+            return lesson ? { mod, lesson } : null;
+        }
+
+        function lessonStorageId() {
+            return currentCourse && currentLessonId ? `${currentCourse.id}:${currentLessonId}` : null;
+        }
+
+        function saveLessonNote(value) {
+            const id = lessonStorageId();
+            if (!id) return;
+            const notes = readLocalObject(lessonNotesStoreKey());
+            notes[id] = { value, updatedAt: new Date().toISOString() };
+            localStorage.setItem(lessonNotesStoreKey(), JSON.stringify(notes));
+            const status = document.getElementById('lessonNotesStatus');
+            if (status) status.textContent = 'Saved just now on this device.';
+        }
+
+        function hydrateLessonTools(lesson) {
+            const id = lessonStorageId();
+            const notes = readLocalObject(lessonNotesStoreKey());
+            const notesInput = document.getElementById('lessonNotesInput');
+            if (notesInput) notesInput.value = (notes[id] && notes[id].value) || '';
+
+            const container = document.getElementById('lessonReviewCards');
+            if (!container) return;
+            const takeaways = (lesson.keyTakeaways || []).slice(0, 5);
+            if (!takeaways.length) {
+                container.innerHTML = '<p class="text-xs text-slate-400">Review cards will appear when this lesson has key takeaways.</p>';
+                return;
+            }
+            const review = readLocalObject(lessonReviewStoreKey());
+            container.innerHTML = takeaways.map((takeaway, index) => {
+                const cardId = `${id}:${index}`;
+                const state = review[cardId] || { level: 0, dueAt: null };
+                const dueLabel = !state.dueAt || new Date(state.dueAt) <= new Date()
+                    ? 'Due now'
+                    : `Review ${new Date(state.dueAt).toLocaleDateString()}`;
+                return `
+                    <div class="border rounded-xl p-3">
+                        <button onclick="flipReviewCard(${index})" class="w-full text-left">
+                            <span class="text-[10px] font-bold uppercase tracking-wide text-purple-600">Card ${index + 1} · ${dueLabel}</span>
+                            <p class="text-sm font-medium mt-1">Can you explain key idea ${index + 1} without looking?</p>
+                        </button>
+                        <div id="reviewAnswer-${index}" class="hidden mt-3 pt-3 border-t">
+                            <p class="text-sm text-slate-600">${escapeHtml(takeaway)}</p>
+                            <div class="flex gap-2 mt-3">
+                                <button onclick="rateReviewCard(${index}, false)" class="px-3 py-1.5 bg-rose-50 text-rose-700 rounded-lg text-xs font-semibold">Again</button>
+                                <button onclick="rateReviewCard(${index}, true)" class="px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-lg text-xs font-semibold">Got It</button>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        function flipReviewCard(index) {
+            const answer = document.getElementById(`reviewAnswer-${index}`);
+            if (answer) answer.classList.toggle('hidden');
+        }
+
+        function rateReviewCard(index, remembered) {
+            const active = activeLesson();
+            const id = lessonStorageId();
+            if (!active || !id) return;
+            const review = readLocalObject(lessonReviewStoreKey());
+            const cardId = `${id}:${index}`;
+            const previous = review[cardId] || { level: 0 };
+            const nextLevel = remembered ? Math.min(4, (previous.level || 0) + 1) : 0;
+            const intervalDays = [0, 1, 3, 7, 14][nextLevel];
+            review[cardId] = {
+                level: nextLevel,
+                dueAt: new Date(Date.now() + intervalDays * 24 * 60 * 60 * 1000).toISOString(),
+            };
+            localStorage.setItem(lessonReviewStoreKey(), JSON.stringify(review));
+            hydrateLessonTools(active.lesson);
+        }
+
+        function readCurrentLessonAloud() {
+            const active = activeLesson();
+            if (!active) return;
+            if (!('speechSynthesis' in window)) {
+                alert('Read Aloud is not supported by this browser.');
+                return;
+            }
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                return;
+            }
+            const holder = document.createElement('div');
+            holder.innerHTML = [active.lesson.title, ...(active.lesson.content || []), ...(active.lesson.keyTakeaways || [])].join('. ');
+            const speech = new SpeechSynthesisUtterance(holder.textContent || holder.innerText || '');
+            speech.rate = 0.95;
+            window.speechSynthesis.speak(speech);
+        }
+
+        async function runCourseCoach(action) {
+            const output = document.getElementById('courseCoachOutput');
+            const active = activeLesson();
+            if (!output || !active) return;
+            let question = '';
+            if (action === 'teach_back') {
+                question = document.getElementById('teachBackInput').value.trim();
+                if (question.length < 20) {
+                    output.classList.remove('hidden');
+                    output.textContent = 'Write at least 20 characters so the coach has enough to evaluate.';
+                    return;
+                }
+            } else if (action === 'ask') {
+                question = document.getElementById('coachQuestionInput').value.trim();
+                if (question.length < 3) {
+                    output.classList.remove('hidden');
+                    output.textContent = 'Write a question about this lesson first.';
+                    return;
+                }
+            }
+            output.classList.remove('hidden');
+            output.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Your course coach is working with this lesson...';
+            try {
+                const data = await apiRequest(`/api/courses/${currentCourse.id}/coach`, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action,
+                        lessonId: active.lesson.id,
+                        question,
+                    }),
+                });
+                output.textContent = data.reply + (data.mode === 'offline'
+                    ? '\n\nOffline coach mode: this answer was generated from the verified course content without using paid AI.'
+                    : '');
+            } catch (err) {
+                if (err.status === 401) {
+                    output.textContent = 'Please log in to use the Course Coach.';
+                    openAuthModal('login');
+                    return;
+                }
+                if (err.status === 402) {
+                    output.textContent = err.message;
+                    showUpgradePrompt(err.message);
+                    return;
+                }
+                output.textContent = `The Course Coach could not respond: ${err.message}`;
+            }
         }
 
         async function toggleLessonComplete(lessonId) {

@@ -22,6 +22,8 @@ npm run dev
 | `PAYSTACK_SECRET_KEY` | Paystack secret key (server-side) |
 | `PAYSTACK_PUBLIC_KEY` | Paystack public key (used by the frontend) |
 | `CLIENT_ORIGIN` | Allowed CORS origin for the frontend |
+| `OPENROUTER_API_KEY` | Optional key for generative Course Coach responses; omit to use the built-in fallback |
+| `OPENROUTER_MODEL` | Course Coach model or router (default `openrouter/free`) |
 | `APPWRITE_ENDPOINT` | Appwrite backup backend API endpoint (default `https://fra.cloud.appwrite.io/v1`) |
 | `APPWRITE_PROJECT_ID` | Appwrite project ID (default `6a686f78003e74fe1826`) |
 | `APPWRITE_DATABASE_ID` | Appwrite database ID (default `dsb-backup`) |
@@ -48,10 +50,11 @@ npm run dev
 
 ### Skills Interactive Courses
 - `GET /api/courses` — list course summaries (id, title, description, category, estimatedHours, moduleCount, lessonCount)
-- `GET /api/courses/:id` — full course content (modules, lessons, quiz questions — answer keys stripped); auth optional, returns saved `progress` if logged in
+- `GET /api/courses/:id` — full course content (modules, lessons, quiz questions — answer keys stripped); requires active access and returns saved progress
 - `GET /api/courses/:id/progress` — requires auth, returns the user's saved progress for a course
-- `POST /api/courses/:id/lessons/:lessonId/complete` — `{ completed }` (auth optional; persisted only if authenticated)
-- `POST /api/courses/:id/lessons/:lessonId/quiz` — `{ answers: number[] }` → `{ score, total, passed, results }` (server-side grading; auth optional, attempt persisted only if authenticated)
+- `POST /api/courses/:id/lessons/:lessonId/complete` — `{ completed }`; requires active access and persists progress
+- `POST /api/courses/:id/lessons/:lessonId/quiz` — `{ answers: number[] }` → `{ score, total, passed, results }`; requires active access and grades server-side
+- `POST /api/courses/:id/coach` — `{ lessonId, action, question? }` → lesson-grounded coaching; requires active access and is limited to 30 requests per 15 minutes
 
 ### AI Advisor
 - `POST /api/advisor/chat` — `{ message, history? }` → `{ reply }` (simulated, keyword/context-aware advisor)

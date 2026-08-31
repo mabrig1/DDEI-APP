@@ -22,6 +22,7 @@ ddei-app/
 │   │   ├── middleware/              # JWT auth (required/optional), error handling
 │   │   ├── data/                    # Static skill tracks & sample opportunities
 │   │   ├── utils/advisorEngine.js   # Simulated AI Advisor reply logic
+│   │   ├── utils/courseCoachAgent.js # Tool-using, lesson-grounded course coach
 │   │   └── server.js                # App entrypoint
 │   ├── package.json
 │   └── .env.example
@@ -34,6 +35,11 @@ ddei-app/
 - **Skills Selection** — Tier 1 (Fast Start) and Tier 2 (High Growth) tracks with NGN & USD earning potential
 - **Application/Onboarding** — apply to a skill track / cohort
 - **AI Advisor Chat** — simulated, context-aware career and skills guidance
+- **Agentic Learning Lab** — contextual lesson Q&A, simple explanations, practical examples,
+  retrieval practice, progress-aware study plans and teach-back feedback. It uses OpenRouter's
+  free-model router when configured and keeps a deterministic no-cost fallback.
+- **Interactive learning tools** — saved lesson notes, browser read-aloud and spaced-review cards
+  with increasing review intervals
 - **Payments** — Paystack integration for Premium subscriptions (monthly/yearly)
 - **Premium features** — AI-powered Portfolio Builder, Opportunity Matching (sample global gigs & remote jobs)
 - **Appwrite backup backend** — MongoDB is continuously mirrored to Appwrite Cloud, and the public site
@@ -49,6 +55,9 @@ npm install
 cp .env.example .env   # set MONGODB_URI, JWT_SECRET, PAYSTACK_SECRET_KEY
 npm run dev             # starts on http://localhost:5000
 ```
+
+To enable generative Course Coach responses, set `OPENROUTER_API_KEY` and optionally
+`OPENROUTER_MODEL` (defaults to `openrouter/free`). The course tools continue to work without a key.
 
 Optional — enable the Appwrite backup backend (set `APPWRITE_API_KEY` in `.env` first):
 
