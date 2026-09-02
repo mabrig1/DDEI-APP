@@ -7,6 +7,7 @@ const { allowedOrigins } = require('../config/cors');
 const { normalizeEmail, isValidEmail } = require('../utils/validation');
 
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
+const PROMOTER_CONVERSION_URL = process.env.PROMOTER_CONVERSION_URL || 'https://academic.mabrigkorie.org/api/referrals/conversion';
 
 const PLANS = {
   'premium-monthly': { amountNGN: 2000, label: 'Premium Monthly', type: 'subscription' },
@@ -47,6 +48,51 @@ function paystackClient() {
   });
 }
 
+function normalizeReferralCode(value) {
+  const clean = String(value || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 64);
+  return clean || null;
+}
+
+function commissionablePlan(plan) {
+  if (String(plan || '').startsWith('certificate-fee:')) return true;
+  const config = PLANS[plan];
+  return config?.type === 'course' || config?.type === 'subscription';
+}
+
+function planLabel(plan) {
+  if (String(plan || '').startsWith('certificate-fee:')) return 'Verified Course Certificate';
+  return PLANS[plan]?.label || String(plan || 'DDEI purchase');
+}
+
+async function reportPromoterConversion(subscription) {
+  if (!subscription?.referralCode || subscription.status !== 'success' || subscription.promoterConversionReportedAt) return;
+  if (!commissionablePlan(subscription.plan)) return;
+  if (!process.env.PROMOTER_CONVERSION_SECRET) {
+    console.warn('PROMOTER_CONVERSION_SECRET is not configured; DDEI commission reporting is disabled.');
+    return;
+  }
+  try {
+    const response = await axios.post(PROMOTER_CONVERSION_URL, {
+      referralCode: subscription.referralCode,
+      product: 'DDEI',
+      externalReference: subscription.reference,
+      label: planLabel(subscription.plan),
+      value: Number(subscription.amount || 0),
+      currency: subscription.currency || 'NGN',
+      paidAt: subscription.paystackData?.paidAt || new Date().toISOString(),
+    }, {
+      headers: { 'x-mabrig-referral-secret': process.env.PROMOTER_CONVERSION_SECRET },
+      timeout: 10000,
+    });
+    if (response.status >= 200 && response.status < 300) {
+      subscription.promoterConversionReportedAt = new Date();
+      await subscription.save();
+    }
+  } catch (err) {
+    console.error('Promoter commission reporting failed:', err.response?.data || err.message);
+  }
+}
+
 function safeCallbackUrl(value) {
   if (!value) return process.env.FRONTEND_URL || allowedOrigins()[0] || undefined;
   try {
@@ -77,27 +123,20 @@ function paymentSnapshot(data) {
 async function initializePayment(req, res) {
   const { plan, courseId } = req.body;
   const email = normalizeEmail(req.body.email);
+  const referralCode = normalizeReferralCode(req.body.referralCode);
   const planConfig = PLANS[plan];
-  if (!planConfig) {
-    return res.status(400).json({ message: 'Invalid or unknown payment plan.' });
-  }
+  if (!planConfig) return res.status(400).json({ message: 'Invalid or unknown payment plan.' });
   if (!isValidEmail(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
   if (!process.env.PAYSTACK_SECRET_KEY) {
-    return res.status(503).json({
-      message: 'Payments are not configured on the server yet (missing Paystack key). Please contact support.',
-    });
+    return res.status(503).json({ message: 'Payments are not configured on the server yet (missing Paystack key). Please contact support.' });
   }
 
-  // Certificate fees are per-course: validate the course and stamp its id
-  // into the stored plan string so verification can credit the right course.
   let storedPlan = plan;
   let amountNGN = planConfig.amountNGN;
   if (planConfig.type === 'certificate') {
     const { COURSES } = require('../data/courseCatalog');
     const course = COURSES.find((c) => c.id === courseId);
-    if (!course || !course.certificateFee) {
-      return res.status(400).json({ message: 'This course does not offer a paid certificate.' });
-    }
+    if (!course || !course.certificateFee) return res.status(400).json({ message: 'This course does not offer a paid certificate.' });
     storedPlan = `certificate-fee:${course.id}`;
     amountNGN = course.certificateFee;
   }
@@ -111,15 +150,14 @@ async function initializePayment(req, res) {
       user: req.userId || null,
       plan: storedPlan,
       reference,
+      referralCode,
       amount: amountNGN,
       currency: 'NGN',
       status: 'pending',
     });
   } catch (err) {
     console.error('Failed to create payment record:', err);
-    return res.status(503).json({
-      message: 'The payment service is temporarily unavailable. Please try again in a few minutes.',
-    });
+    return res.status(503).json({ message: 'The payment service is temporarily unavailable. Please try again in a few minutes.' });
   }
 
   try {
@@ -129,32 +167,21 @@ async function initializePayment(req, res) {
       reference,
       callback_url: safeCallbackUrl(req.body.callbackUrl),
     });
-
-    res.status(201).json({
-      authorizationUrl: response.data.data.authorization_url,
-      reference,
-      subscriptionId: subscription._id,
-    });
+    res.status(201).json({ authorizationUrl: response.data.data.authorization_url, reference, subscriptionId: subscription._id });
   } catch (err) {
-    await Subscription.updateOne(
-      { _id: subscription._id, status: 'pending' },
-      { $set: { status: 'failed' } }
-    ).catch(() => {});
+    await Subscription.updateOne({ _id: subscription._id, status: 'pending' }, { $set: { status: 'failed' } }).catch(() => {});
     const message = err.response?.data?.message || 'Failed to initialize payment with Paystack';
     res.status(502).json({ message });
   }
 }
 
-async function grantPaymentBenefits(subscription, data) {
+async function grantPaymentBenefits(subscription) {
   if (!subscription.user || subscription.status !== 'success') return;
   const resolvedPlan = PLANS[subscription.plan] || {};
   if (resolvedPlan.type === 'sponsorship') {
-    logActivity(subscription.user, 'Sponsor', 'payment', {
-      plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount, sponsorship: true,
-    });
+    logActivity(subscription.user, 'Sponsor', 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount, sponsorship: true });
     return;
   }
-
   if (subscription.plan.startsWith('certificate-fee:')) {
     const certCourseId = subscription.plan.split(':')[1];
     const user = await User.findById(subscription.user);
@@ -165,7 +192,6 @@ async function grantPaymentBenefits(subscription, data) {
     }
     return;
   }
-
   if (resolvedPlan.type === 'course' && resolvedPlan.courseId) {
     const user = await User.findById(subscription.user);
     if (user && !(user.purchasedCourses || []).some((p) => p.courseId === resolvedPlan.courseId)) {
@@ -175,7 +201,6 @@ async function grantPaymentBenefits(subscription, data) {
     }
     return;
   }
-
   if (resolvedPlan.type === 'subscription') {
     const expiresAt = new Date();
     expiresAt.setMonth(expiresAt.getMonth() + (subscription.plan === 'premium-yearly' ? 12 : 1));
@@ -201,15 +226,23 @@ async function settlePayment(data) {
     return existing;
   }
 
-  // Only one concurrent callback/webhook may transition pending → success,
-  // so entitlements and activity records cannot be duplicated.
+  if (existing.status === 'success') {
+    await reportPromoterConversion(existing);
+    return existing;
+  }
+
   const settled = await Subscription.findOneAndUpdate(
     { _id: existing._id, status: { $ne: 'success' } },
     { $set: { status: 'success', paystackData: paymentSnapshot(data) } },
     { new: true }
   );
-  if (!settled) return Subscription.findById(existing._id);
+  if (!settled) {
+    const current = await Subscription.findById(existing._id);
+    await reportPromoterConversion(current);
+    return current;
+  }
   await grantPaymentBenefits(settled, data);
+  await reportPromoterConversion(settled);
   return settled;
 }
 
@@ -217,17 +250,12 @@ async function verifyPayment(req, res) {
   const reference = String(req.params.reference || '');
   if (!/^dsb_[a-f0-9]{16}$/.test(reference)) return res.status(400).json({ message: 'Invalid payment reference.' });
   if (!process.env.PAYSTACK_SECRET_KEY) return res.status(503).json({ message: 'Payments are temporarily unavailable.' });
-
   try {
     const response = await paystackClient().get(`/transaction/verify/${reference}`);
     const data = response.data.data;
     if (data.reference !== reference) return res.status(502).json({ message: 'Payment provider returned a mismatched reference.' });
     const subscription = await settlePayment(data);
-
-    if (!subscription) {
-      return res.status(404).json({ message: 'Subscription not found for this reference' });
-    }
-
+    if (!subscription) return res.status(404).json({ message: 'Subscription not found for this reference' });
     res.json({ status: subscription.status, subscription });
   } catch (err) {
     const message = err.response?.data?.message || 'Failed to verify payment with Paystack';
@@ -238,24 +266,17 @@ async function verifyPayment(req, res) {
 async function paystackWebhook(req, res) {
   const signature = String(req.headers['x-paystack-signature'] || '');
   const rawBody = req.rawBody;
-  if (!process.env.PAYSTACK_SECRET_KEY || !rawBody || !/^[a-f0-9]{128}$/i.test(signature)) {
-    return res.status(401).json({ message: 'Invalid webhook signature.' });
-  }
+  if (!process.env.PAYSTACK_SECRET_KEY || !rawBody || !/^[a-f0-9]{128}$/i.test(signature)) return res.status(401).json({ message: 'Invalid webhook signature.' });
   const expected = crypto.createHmac('sha512', process.env.PAYSTACK_SECRET_KEY).update(rawBody).digest('hex');
   const suppliedBuffer = Buffer.from(signature, 'hex');
   const expectedBuffer = Buffer.from(expected, 'hex');
-  if (suppliedBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(suppliedBuffer, expectedBuffer)) {
-    return res.status(401).json({ message: 'Invalid webhook signature.' });
-  }
+  if (suppliedBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(suppliedBuffer, expectedBuffer)) return res.status(401).json({ message: 'Invalid webhook signature.' });
   try {
     const event = req.body;
-    if (event.event === 'charge.success' && /^dsb_[a-f0-9]{16}$/.test(String(event.data?.reference || ''))) {
-      await settlePayment(event.data);
-    }
+    if (event.event === 'charge.success' && /^dsb_[a-f0-9]{16}$/.test(String(event.data?.reference || ''))) await settlePayment(event.data);
     return res.status(200).json({ received: true });
   } catch (err) {
     console.error('Paystack webhook settlement failed:', err);
-    // A non-2xx response tells Paystack to retry delivery.
     return res.status(500).json({ message: 'Webhook processing failed.' });
   }
 }
