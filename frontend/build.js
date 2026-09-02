@@ -30,41 +30,40 @@ const runtimeConfig = [
 ].filter(Boolean).join('\n    ');
 
 function improveHomepage(html) {
-  // Keep the mission clear above the fold: training first, fundraising later.
   const sponsorPattern = /\n\s*<!-- Fund impact \/ international partnerships -->[\s\S]*?<\/section>\s*/;
   const sponsorMatch = html.match(sponsorPattern);
   const sponsorship = sponsorMatch ? sponsorMatch[0].trim() : '';
   if (sponsorship) html = html.replace(sponsorPattern, '\n');
 
-  // Earn Online remains available as its own dedicated page, not as homepage content.
   html = html.replace(/\n\s*<!-- Earn Online Now teaser[\s\S]*?<\/div>\s*<\/div>\s*(?=<!-- Opportunity Matching -->)/, '\n\n    ');
 
-  // Make the free training offer unmistakable and beginner friendly.
   html = html
     .replace('Global Platform • Built for African Youth', '100% FREE DIGITAL SKILLS TRAINING • BUILT FOR AFRICAN YOUTH')
     .replace('Global Skills.<br>\n                    <span class="text-[#60A5FA]">Dollar Opportunities.</span><br>\n                    African Futures.', 'Learn a Digital Skill.<br>\n                    <span class="text-[#60A5FA]">Build Real Projects.</span><br>\n                    Create Your Future.')
     .replace(/We bridge the gap between African youth and global economic opportunity — learn in-demand digital\s*skills, build an AI-powered international portfolio, and get matched to freelance gigs and remote\s*jobs that pay in dollars\./, 'Start from beginner level and learn practical digital skills at your own pace. Complete real lessons, build projects, track your progress, and prepare for freelance, remote-work and entrepreneurial opportunities.')
     .replace('Start Learning Free <i class="fa-solid fa-arrow-right ml-2"></i>', 'Start Free Training <i class="fa-solid fa-arrow-right ml-2"></i>');
 
-  // Add a concise trust strip directly after the hero CTA area.
   html = html.replace(
     '    <!-- Skills Section -->',
     `    <section class="bg-white border-b">\n        <div class="max-w-screen-xl mx-auto px-6 py-7 grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-sm font-semibold text-slate-700">\n            <div>✓ Beginner Friendly</div><div>✓ Learn at Your Pace</div><div>✓ Practical Projects</div><div>✓ Progress Tracking</div>\n        </div>\n    </section>\n\n    <!-- Skills Section -->`
   );
 
-  // Put sponsorship near the bottom, after users have seen the training and opportunities.
   if (sponsorship) html = html.replace('    <!-- Footer -->', `    ${sponsorship}\n\n    <!-- Footer -->`);
 
-  // Requested product attribution.
   html = html.replace(
     '<p class="mt-2 text-xs text-slate-400">Developed and operated by <strong class="font-semibold text-slate-500">Mabrig Technologies LTD</strong></p>',
     '<p class="mt-2 text-xs text-slate-400">App powered by <strong class="font-semibold text-slate-600">MABRIG Technologies</strong></p>'
   );
 
-  // Mobile guardrails: prevent the horizontal clipping visible on small phones.
   html = html.replace('</style>', `        html, body { max-width: 100%; overflow-x: hidden; }\n        img, video, iframe { max-width: 100%; }\n        @media (max-width: 767px) {\n            h1 { font-size: 2.65rem !important; line-height: 1.05 !important; }\n            h2 { font-size: 2rem !important; line-height: 1.15 !important; }\n            nav > div { padding-left: 1rem !important; padding-right: 1rem !important; }\n            nav .font-display { font-size: 1.15rem !important; }\n            nav .gap-x-3 { gap: .45rem !important; }\n            #navAuthBtn { padding: .6rem .8rem !important; }\n            nav button:last-child { padding: .6rem .8rem !important; }\n            #partners { padding-top: 3rem !important; padding-bottom: 3rem !important; }\n        }\n    </style>`);
 
   return html;
+}
+
+function injectPromoterTracking(html) {
+  if (html.includes('promoter-referral.js')) return html;
+  const script = '    <script src="/promoter-referral.js" defer></script>\n';
+  return html.includes('</head>') ? html.replace('</head>', `${script}</head>`) : `${script}${html}`;
 }
 
 for (const page of pages) {
@@ -72,6 +71,7 @@ for (const page of pages) {
   let html = fs.readFileSync(srcPath, 'utf8');
 
   if (page === 'index.html') html = improveHomepage(html);
+  html = injectPromoterTracking(html);
 
   if (html.includes(RUNTIME_CONFIG_MARKER)) {
     html = html.replace(RUNTIME_CONFIG_MARKER, runtimeConfig);
@@ -83,6 +83,7 @@ for (const page of pages) {
 }
 
 fs.copyFileSync(path.join(__dirname, 'dsb-backup.js'), path.join(outDir, 'dsb-backup.js'));
+fs.copyFileSync(path.join(__dirname, 'promoter-referral.js'), path.join(outDir, 'promoter-referral.js'));
 
 const COURSE_LINK_ALIASES = {
   'ai-video': 'ai-cinematic-special-edition',
@@ -112,5 +113,5 @@ let courseLinkCount = 0;
   }
 }
 
-console.log(`Built frontend/dist (${pages.join(', ')} + dsb-backup.js + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — built-in production fallback)'}`);
+console.log(`Built frontend/dist (${pages.join(', ')} + dsb-backup.js + promoter-referral.js + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — built-in production fallback)'}`);
 console.log(`Appwrite backup failover: ${appwriteConfig.enabled ? 'enabled' : 'disabled'} (project ${appwriteConfig.projectId}, ${appwriteConfig.endpoint})`);
