@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Impact & International Partnerships — Destiny Skills Bridge</title>
+    <meta name="author" content="MABRIG Technologies">
   <meta name="description" content="Partner with Destiny Skills Bridge to fund measurable digital-skills and youth-employment pathways across Africa.">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
@@ -21,7 +22,15 @@
       <form id="partnerForm" class="bg-white border rounded-3xl p-7 space-y-4"><input id="organization" required maxlength="180" class="w-full border rounded-xl p-3" placeholder="Organization"><input id="contactName" required maxlength="120" class="w-full border rounded-xl p-3" placeholder="Contact name"><input id="email" required type="email" class="w-full border rounded-xl p-3" placeholder="Work email"><input id="country" required class="w-full border rounded-xl p-3" placeholder="Country"><select id="partnershipType" required class="w-full border rounded-xl p-3"><option value="">Partnership type</option><option value="grant">International grant</option><option value="csr">Corporate / CSR</option><option value="implementation">Implementation partner</option><option value="research">Research & evaluation</option><option value="technology">Technology partner</option><option value="other">Other</option></select><textarea id="message" required maxlength="3000" rows="5" class="w-full border rounded-xl p-3" placeholder="Funding priorities, geography, target group and expected timeline"></textarea><p id="formMessage" class="hidden text-sm"></p><button class="w-full bg-emerald-700 text-white rounded-xl py-3 font-bold">Submit partnership inquiry</button></form>
     </section>
   </main>
-  <footer class="bg-slate-900 text-slate-400 text-center py-8 text-sm">Destiny Skills Bridge · Operated by Mabrig Technologies LTD</footer>
+  <footer class="bg-slate-900 text-slate-300 text-center py-8 text-sm">Destiny Skills Bridge
+        <p class="mt-2">A subsidiary of <strong class="font-semibold">MABRIG Technologies</strong></p>
+        <p class="mt-2">Developed and maintained by <strong class="font-semibold">MABRIG Technologies</strong></p>
+    <div class="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+            <a href="https://ddei.online" class="font-semibold hover:underline">ddei.online</a>
+            <a href="https://wa.me/2347065342818" target="_blank" rel="noopener noreferrer" class="font-semibold hover:underline">WhatsApp: 07065342818</a>
+            <a href="https://www.facebook.com/share/1FewRvL2H4/" target="_blank" rel="noopener noreferrer" class="font-semibold hover:underline">Facebook</a>
+        </div>
+    </footer>
   <!-- DSB_RUNTIME_CONFIG -->
   <script>
     const API_BASE_URL = window.DSB_API_BASE_URL || (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? 'http://localhost:5000' : 'https://ddei-app-kh6q.vercel.app');
