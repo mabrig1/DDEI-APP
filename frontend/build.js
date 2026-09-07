@@ -50,11 +50,6 @@ function improveHomepage(html) {
 
   if (sponsorship) html = html.replace('    <!-- Footer -->', `    ${sponsorship}\n\n    <!-- Footer -->`);
 
-  html = html.replace(
-    '<p class="mt-2 text-xs text-slate-400">Developed and operated by <strong class="font-semibold text-slate-500">Mabrig Technologies LTD</strong></p>',
-    '<p class="mt-2 text-xs text-slate-400">App powered by <strong class="font-semibold text-slate-600">MABRIG Technologies</strong></p>'
-  );
-
   html = html.replace('</style>', `        html, body { max-width: 100%; overflow-x: hidden; }\n        img, video, iframe { max-width: 100%; }\n        @media (max-width: 767px) {\n            h1 { font-size: 2.65rem !important; line-height: 1.05 !important; }\n            h2 { font-size: 2rem !important; line-height: 1.15 !important; }\n            nav > div { padding-left: 1rem !important; padding-right: 1rem !important; }\n            nav .font-display { font-size: 1.15rem !important; }\n            nav .gap-x-3 { gap: .45rem !important; }\n            #navAuthBtn { padding: .6rem .8rem !important; }\n            nav button:last-child { padding: .6rem .8rem !important; }\n            #partners { padding-top: 3rem !important; padding-bottom: 3rem !important; }\n        }\n    </style>`);
 
   return html;
