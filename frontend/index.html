@@ -1279,6 +1279,28 @@
             return false;
         }
 
+        function mabrigAttributionToken() {
+            const storageKey = 'mabrig_attribution_v1';
+            try {
+                const urlToken = new URLSearchParams(window.location.search).get('mabrig_attribution') || '';
+                const valid = (value) => value.length >= 20
+                    && value.length <= 2048
+                    && /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(value);
+                if (valid(urlToken)) {
+                    sessionStorage.setItem(storageKey, urlToken);
+                    localStorage.setItem(storageKey, urlToken);
+                    return urlToken;
+                }
+                const stored = sessionStorage.getItem(storageKey) || localStorage.getItem(storageKey) || '';
+                return valid(stored) ? stored : '';
+            } catch (_) {
+                return '';
+            }
+        }
+
+        // Capture the signed first-party Growth Journey token as soon as the page loads.
+        mabrigAttributionToken();
+
         function paymentErrorMessage(err) {
             const isNetworkError = err instanceof TypeError || /failed to fetch|networkerror|load failed/i.test(err.message || '');
             if (isNetworkError) {
@@ -1296,7 +1318,12 @@
             try {
                 const data = await apiRequest('/api/payments/initialize', {
                     method: 'POST',
-                    body: JSON.stringify({ plan, email, callbackUrl: window.location.href }),
+                    body: JSON.stringify({
+                        plan,
+                        email,
+                        callbackUrl: window.location.href,
+                        attributionToken: mabrigAttributionToken() || undefined,
+                    }),
                 });
                 window.location.href = data.authorizationUrl;
             } catch (err) {
@@ -1311,7 +1338,12 @@
             try {
                 const data = await apiRequest('/api/payments/initialize', {
                     method: 'POST',
-                    body: JSON.stringify({ plan, email, callbackUrl: window.location.href.split('?')[0] + '#partners' }),
+                    body: JSON.stringify({
+                        plan,
+                        email,
+                        callbackUrl: window.location.href.split('?')[0] + '#partners',
+                        attributionToken: mabrigAttributionToken() || undefined,
+                    }),
                 });
                 window.location.href = data.authorizationUrl;
             } catch (err) { alert(paymentErrorMessage(err)); }
@@ -1340,6 +1372,7 @@
                         email: user.email,
                         courseId: certCourseId || courseId,
                         callbackUrl: window.location.href.split('?')[0],
+                        attributionToken: mabrigAttributionToken() || undefined,
                     }),
                 });
                 window.location.href = data.authorizationUrl;
