@@ -11,11 +11,14 @@ const subscriptionSchema = new mongoose.Schema(
     plan: { type: String, required: true },
     reference: { type: String, required: true, unique: true },
     referralCode: { type: String, default: null, index: true, maxlength: 64 },
+    customerEmail: { type: String, default: null, lowercase: true, trim: true, maxlength: 254 },
+    attributionToken: { type: String, default: null, maxlength: 2048 },
     amount: { type: Number, required: true },
     currency: { type: String, default: 'NGN' },
     status: { type: String, enum: ['pending', 'success', 'failed'], default: 'pending' },
     paystackData: { type: mongoose.Schema.Types.Mixed, default: null },
     promoterConversionReportedAt: { type: Date, default: null },
+    growthConversionReportedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
