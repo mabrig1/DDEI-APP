@@ -5,6 +5,7 @@ const User = require('../models/User');
 const { logActivity } = require('../utils/activityLogger');
 const { allowedOrigins } = require('../config/cors');
 const { normalizeEmail, isValidEmail } = require('../utils/validation');
+const { reportMabrigConversion } = require('../utils/mabrigGrowth');
 
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 const PROMOTER_CONVERSION_URL = process.env.PROMOTER_CONVERSION_URL || 'https://academic.mabrigkorie.org/api/referrals/conversion';
@@ -48,6 +49,12 @@ function paystackClient() {
   });
 }
 
+function normalizeAttributionToken(value) {
+  const clean = String(value || '').trim();
+  if (clean.length < 20 || clean.length > 2048) return null;
+  return /^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(clean) ? clean : null;
+}
+
 function normalizeReferralCode(value) {
   const clean = String(value || '').trim().toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 64);
   return clean || null;
@@ -62,6 +69,29 @@ function commissionablePlan(plan) {
 function planLabel(plan) {
   if (String(plan || '').startsWith('certificate-fee:')) return 'Verified Course Certificate';
   return PLANS[plan]?.label || String(plan || 'DDEI purchase');
+}
+
+async function reportGrowthConversion(subscription) {
+  if (!subscription || subscription.status !== 'success' || subscription.growthConversionReportedAt) return;
+  if (!subscription.customerEmail) return;
+
+  const result = await reportMabrigConversion({
+    id: `ddei:paystack:${subscription.reference}`,
+    type: 'purchase',
+    email: subscription.customerEmail,
+    amount: Number(subscription.amount || 0),
+    currency: subscription.currency || 'NGN',
+    attributionToken: subscription.attributionToken || undefined,
+    product: planLabel(subscription.plan),
+    reference: subscription.reference,
+    occurredAt: subscription.paystackData?.paidAt || new Date().toISOString(),
+    source: 'ddei:paystack',
+  });
+
+  if (result.reported) {
+    subscription.growthConversionReportedAt = new Date();
+    await subscription.save();
+  }
 }
 
 async function reportPromoterConversion(subscription) {
@@ -124,6 +154,7 @@ async function initializePayment(req, res) {
   const { plan, courseId } = req.body;
   const email = normalizeEmail(req.body.email);
   const referralCode = normalizeReferralCode(req.body.referralCode);
+  const attributionToken = normalizeAttributionToken(req.body.attributionToken);
   const planConfig = PLANS[plan];
   if (!planConfig) return res.status(400).json({ message: 'Invalid or unknown payment plan.' });
   if (!isValidEmail(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
@@ -151,6 +182,8 @@ async function initializePayment(req, res) {
       plan: storedPlan,
       reference,
       referralCode,
+      customerEmail: email,
+      attributionToken,
       amount: amountNGN,
       currency: 'NGN',
       status: 'pending',
@@ -166,6 +199,10 @@ async function initializePayment(req, res) {
       amount: amountKobo,
       reference,
       callback_url: safeCallbackUrl(req.body.callbackUrl),
+      metadata: {
+        plan: storedPlan,
+        ...(attributionToken ? { mabrig_attribution: attributionToken } : {}),
+      },
     });
     res.status(201).json({ authorizationUrl: response.data.data.authorization_url, reference, subscriptionId: subscription._id });
   } catch (err) {
@@ -214,6 +251,14 @@ async function settlePayment(data) {
   const existing = await Subscription.findOne({ reference });
   if (!existing) return null;
 
+  if (!existing.customerEmail && data.customer?.email) {
+    const providerEmail = normalizeEmail(data.customer.email);
+    if (isValidEmail(providerEmail)) {
+      existing.customerEmail = providerEmail;
+      await existing.save();
+    }
+  }
+
   const validAmount = Number(data.amount) === existing.amount * 100;
   const validCurrency = String(data.currency || '').toUpperCase() === existing.currency;
   const success = data.status === 'success' && validAmount && validCurrency;
@@ -228,6 +273,7 @@ async function settlePayment(data) {
 
   if (existing.status === 'success') {
     await reportPromoterConversion(existing);
+    await reportGrowthConversion(existing);
     return existing;
   }
 
@@ -243,6 +289,7 @@ async function settlePayment(data) {
   }
   await grantPaymentBenefits(settled, data);
   await reportPromoterConversion(settled);
+  await reportGrowthConversion(settled);
   return settled;
 }
 
