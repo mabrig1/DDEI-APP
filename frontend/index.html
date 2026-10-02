@@ -23,15 +23,203 @@
         .modal-backdrop { background: rgba(15, 23, 42, 0.6); }
         .chat-scroll::-webkit-scrollbar { width: 6px; }
         .chat-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+
+        /* 2026 visual system — inspired by React Three Fiber / ShaderGradient,
+           Liquid Glass JS, Scroll World and Paper Design's Liquid Logo.
+           Deliberately implemented with CSS + tiny progressive JS so DDEI's
+           static/mobile frontend does not inherit a permanent WebGL cost. */
+        :root {
+            --ddei-blue: #0A66C2;
+            --ddei-cyan: #38BDF8;
+            --ddei-violet: #8B5CF6;
+            --ddei-amber: #FBBF24;
+            --ddei-ink: #06111f;
+        }
+        html { scroll-behavior: smooth; }
+        .ddei-glass-nav {
+            background: rgba(255,255,255,.82) !important;
+            border-color: rgba(148,163,184,.22) !important;
+            -webkit-backdrop-filter: blur(18px) saturate(155%);
+            backdrop-filter: blur(18px) saturate(155%);
+            box-shadow: 0 10px 34px rgba(15,23,42,.06);
+        }
+        .liquid-logo-mark {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(circle at 28% 20%, rgba(255,255,255,.95), transparent 18%),
+                conic-gradient(from 210deg, #0A66C2, #38BDF8, #8B5CF6, #0A66C2, #FBBF24, #0A66C2) !important;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.55), 0 10px 25px rgba(10,102,194,.24);
+        }
+        .liquid-logo-mark::after {
+            content: '';
+            position: absolute;
+            inset: -55% -85%;
+            z-index: -1;
+            background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,.75) 50%, transparent 60%);
+            transform: translateX(-35%) rotate(8deg);
+            animation: ddeiLogoSheen 6s ease-in-out infinite;
+        }
+        .visual-hero {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background:
+                radial-gradient(circle at 12% 18%, rgba(56,189,248,.25), transparent 34%),
+                radial-gradient(circle at 83% 20%, rgba(139,92,246,.24), transparent 32%),
+                radial-gradient(circle at 67% 86%, rgba(10,102,194,.30), transparent 38%),
+                linear-gradient(135deg, #06111f 0%, #0b1f38 48%, #111827 100%) !important;
+        }
+        .visual-hero::before {
+            content: '';
+            position: absolute;
+            inset: -38%;
+            z-index: -3;
+            opacity: .9;
+            background:
+                conic-gradient(from 80deg at 50% 50%, rgba(56,189,248,.42), rgba(139,92,246,.34), rgba(10,102,194,.18), rgba(251,191,36,.19), rgba(56,189,248,.42));
+            filter: blur(72px) saturate(145%);
+            animation: ddeiShaderDrift 18s ease-in-out infinite alternate;
+            transform: translate3d(0,0,0) scale(1.05);
+        }
+        .visual-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            z-index: -1;
+            opacity: .16;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.10) 1px, transparent 1px);
+            background-size: 72px 72px;
+            -webkit-mask-image: linear-gradient(to bottom, black, transparent 86%);
+            mask-image: linear-gradient(to bottom, black, transparent 86%);
+        }
+        .visual-hero-content { position: relative; z-index: 3; }
+        .visual-hero h1 span {
+            background: linear-gradient(105deg, #7DD3FC 0%, #60A5FA 42%, #C4B5FD 76%, #FDE68A 110%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent !important;
+        }
+        .visual-hero .inline-block.bg-white\/10 {
+            border: 1px solid rgba(255,255,255,.18);
+            -webkit-backdrop-filter: blur(14px) saturate(135%);
+            backdrop-filter: blur(14px) saturate(135%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 12px 30px rgba(2,6,23,.18);
+        }
+        .hero-orb {
+            position: absolute;
+            z-index: -2;
+            border-radius: 999px;
+            pointer-events: none;
+            filter: blur(2px);
+            opacity: .86;
+            box-shadow: inset 0 0 45px rgba(255,255,255,.18), 0 40px 90px rgba(2,6,23,.34);
+        }
+        .hero-orb-one {
+            width: 220px; height: 220px; right: 9%; top: 14%;
+            background: radial-gradient(circle at 32% 25%, rgba(255,255,255,.72), rgba(56,189,248,.44) 24%, rgba(10,102,194,.18) 54%, rgba(139,92,246,.12));
+            animation: ddeiFloatOne 10s ease-in-out infinite;
+        }
+        .hero-orb-two {
+            width: 120px; height: 120px; right: 27%; bottom: 9%;
+            background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.66), rgba(196,181,253,.44) 28%, rgba(139,92,246,.17) 66%);
+            animation: ddeiFloatTwo 12s ease-in-out infinite;
+        }
+        .hero-orb-three {
+            width: 66px; height: 66px; right: 5%; bottom: 19%;
+            background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.7), rgba(251,191,36,.48) 30%, rgba(251,191,36,.12) 68%);
+            animation: ddeiFloatThree 8s ease-in-out infinite;
+        }
+        #impactMetrics > div {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,.18);
+            background: linear-gradient(145deg, rgba(255,255,255,.14), rgba(255,255,255,.07)) !important;
+            -webkit-backdrop-filter: blur(18px) saturate(145%);
+            backdrop-filter: blur(18px) saturate(145%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,.16), 0 16px 35px rgba(2,44,34,.22);
+        }
+        #impactMetrics > div::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(circle at 16% 0%, rgba(255,255,255,.27), transparent 34%);
+        }
+        .skill-card {
+            --ddei-rx: 0deg;
+            --ddei-ry: 0deg;
+            --ddei-lift: 0px;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transform: perspective(950px) rotateX(var(--ddei-rx)) rotateY(var(--ddei-ry)) translateY(var(--ddei-lift));
+            transition: transform .24s cubic-bezier(.2,.8,.2,1), box-shadow .24s ease, border-color .24s ease;
+            box-shadow: 0 8px 22px rgba(15,23,42,.055);
+        }
+        .skill-card::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            pointer-events: none;
+            opacity: 0;
+            background: linear-gradient(120deg, transparent 24%, rgba(255,255,255,.42) 46%, transparent 66%);
+            transform: translateX(-70%);
+            transition: opacity .25s ease, transform .6s ease;
+        }
+        .skill-card:hover {
+            --ddei-lift: -7px;
+            border-color: rgba(10,102,194,.22);
+            box-shadow: 0 24px 55px rgba(15,23,42,.13), 0 6px 18px rgba(10,102,194,.08);
+        }
+        .skill-card:hover::after { opacity: .65; transform: translateX(70%); }
+        .ddei-reveal {
+            opacity: 0;
+            transform: translate3d(0, 28px, 0) scale(.992);
+            transition: opacity .72s cubic-bezier(.2,.8,.2,1), transform .72s cubic-bezier(.2,.8,.2,1);
+        }
+        .ddei-reveal.ddei-visible { opacity: 1; transform: none; }
+        @keyframes ddeiShaderDrift {
+            0% { transform: translate3d(-5%, -3%, 0) rotate(-4deg) scale(1.02); }
+            100% { transform: translate3d(6%, 4%, 0) rotate(7deg) scale(1.12); }
+        }
+        @keyframes ddeiLogoSheen {
+            0%, 55% { transform: translateX(-65%) rotate(8deg); opacity: 0; }
+            62% { opacity: 1; }
+            78%, 100% { transform: translateX(65%) rotate(8deg); opacity: 0; }
+        }
+        @keyframes ddeiFloatOne { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(-22px,18px,0); } }
+        @keyframes ddeiFloatTwo { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(18px,-20px,0); } }
+        @keyframes ddeiFloatThree { 0%,100% { transform: translate3d(0,0,0); } 50% { transform: translate3d(-12px,-14px,0); } }
+        @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+            .ddei-glass-nav { background: rgba(255,255,255,.97) !important; }
+            #impactMetrics > div { background: rgba(255,255,255,.14) !important; }
+        }
+        @media (max-width: 899px) {
+            .visual-hero::before { animation: none; opacity: .62; filter: blur(54px) saturate(125%); }
+            .hero-orb { display: none; }
+            .skill-card { transform: none !important; will-change: auto; }
+            .skill-card:hover { transform: translateY(-3px) !important; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .visual-hero::before, .liquid-logo-mark::after, .hero-orb { animation: none !important; }
+            .skill-card, .ddei-reveal { transition: none !important; transform: none !important; }
+            .ddei-reveal { opacity: 1 !important; }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900">
 
     <!-- Navbar -->
-    <nav class="bg-white border-b sticky top-0 z-50">
+    <nav class="ddei-glass-nav bg-white border-b sticky top-0 z-50">
         <div class="max-w-screen-xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-x-3">
-                <div class="w-10 h-10 bg-[#0A66C2] rounded-2xl flex items-center justify-center">
+                <div class="liquid-logo-mark w-10 h-10 bg-[#0A66C2] rounded-2xl flex items-center justify-center">
                     <span class="text-white font-bold text-2xl">DS</span>
                 </div>
                 <div>
@@ -98,8 +286,11 @@
     </section>
 
     <!-- Hero -->
-    <div class="hero-bg text-white">
-        <div class="max-w-screen-xl mx-auto px-6 pt-20 pb-24">
+    <div class="hero-bg visual-hero text-white">
+        <div class="hero-orb hero-orb-one" aria-hidden="true"></div>
+        <div class="hero-orb hero-orb-two" aria-hidden="true"></div>
+        <div class="hero-orb hero-orb-three" aria-hidden="true"></div>
+        <div class="max-w-screen-xl visual-hero-content mx-auto px-6 pt-20 pb-24">
             <div class="max-w-3xl">
                 <div class="inline-block px-4 py-1.5 bg-white/10 rounded-3xl text-sm mb-6">
                     Global Platform • Built for African Youth
@@ -2428,6 +2619,65 @@
             }
             ping('visit');
             setInterval(() => ping('heartbeat'), 2 * 60 * 1000);
+        })();
+    </script>
+    <script>
+        (function initDdeiVisualSystem() {
+            var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var saveData = !!(navigator.connection && navigator.connection.saveData);
+            var allowPointerDepth = !reduceMotion && !saveData && window.innerWidth >= 900;
+
+            var revealTargets = document.querySelectorAll(
+                '#skills, #how, #courses, #earn-online, #opportunities, #blog, #premium, #portfolio, #work-with-us, #ai, #partners'
+            );
+
+            if (!reduceMotion && 'IntersectionObserver' in window) {
+                revealTargets.forEach(function (el) { el.classList.add('ddei-reveal'); });
+                var observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('ddei-visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { rootMargin: '0px 0px -7% 0px', threshold: 0.08 });
+                revealTargets.forEach(function (el) { observer.observe(el); });
+            } else {
+                revealTargets.forEach(function (el) { el.classList.add('ddei-visible'); });
+            }
+
+            if (!allowPointerDepth) return;
+
+            var frame = 0;
+            var activeCard = null;
+            document.addEventListener('pointermove', function (event) {
+                var card = event.target.closest && event.target.closest('.skill-card');
+                if (!card) return;
+                activeCard = card;
+                if (frame) cancelAnimationFrame(frame);
+                frame = requestAnimationFrame(function () {
+                    var rect = card.getBoundingClientRect();
+                    var x = (event.clientX - rect.left) / rect.width - 0.5;
+                    var y = (event.clientY - rect.top) / rect.height - 0.5;
+                    card.style.setProperty('--ddei-rx', (-y * 5.5).toFixed(2) + 'deg');
+                    card.style.setProperty('--ddei-ry', (x * 7).toFixed(2) + 'deg');
+                });
+            }, { passive: true });
+
+            document.addEventListener('pointerout', function (event) {
+                var card = event.target.closest && event.target.closest('.skill-card');
+                if (!card || (event.relatedTarget && card.contains(event.relatedTarget))) return;
+                card.style.setProperty('--ddei-rx', '0deg');
+                card.style.setProperty('--ddei-ry', '0deg');
+                if (activeCard === card) activeCard = null;
+            }, { passive: true });
+
+            window.addEventListener('blur', function () {
+                if (!activeCard) return;
+                activeCard.style.setProperty('--ddei-rx', '0deg');
+                activeCard.style.setProperty('--ddei-ry', '0deg');
+                activeCard = null;
+            });
         })();
     </script>
 </body>
