@@ -7270,7 +7270,7 @@ const COURSES = [
     slug: 'ai-cinematic-special-edition',
     title: 'AI Cinematic Video & Avatar Creation Mastery — SPECIAL EDITION',
     description:
-      'Direct full cinematic AI films with Claude/ChatGPT, Veo 3, Seedance 2.0, Grok Imagine & CapCut — master hyper-real avatars, voice cloning, sound design, and a vault of 50+ free AI tools. Start with a free week, then enroll for full access and a certificate.',
+      'Direct full cinematic AI films with Claude/ChatGPT, Veo 3, Seedance 2.0, Grok Imagine & CapCut — master hyper-real avatars, voice cloning, sound design, and a curated vault of AI filmmaking resources including reported free tiers, trials, and open-source models. Preview lessons for one week; paid enrollment unlocks the vault and course certificate eligibility.',
     skillIds: ['ai-tools-automation'],
     category: 'AI Video & Creative Production',
     estimatedHours: 12,
