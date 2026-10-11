@@ -1,4 +1,4 @@
-// 100 Free AI Video Creation Tools — exclusive vault for AI Video Mastery
+// AI filmmaking resources — free access and rights require per-provider verification
 // (Special Edition) students and admins. Each entry: how to use + example prompt.
 const VAULT_CATEGORIES = [
   {
@@ -6,14 +6,14 @@ const VAULT_CATEGORIES = [
     title: 'Video + Audio in One Shot (Native Sound Generation)',
     icon: '🔊',
     tools: [
-      { name: 'Google Veo 3.1 (AI Studio)', url: 'https://aistudio.google.com', free: 'Free monthly credits on every Google account', how: 'The gold standard for native audio: describe the picture, the camera, AND the sound (dialogue in quotes, then SFX, then music mood) in one prompt — Veo generates 48kHz synchronized audio with the video. No separate voiceover or lip-sync step needed.', prompt: 'A bald African officer freefalls through a storm, lightning flashing, 9:16. AUDIO: roaring wind, a radio voice says "The Republic has fallen," he replies "Then I\'ll bring it back," then one massive thunder crack.' },
-      { name: 'Google Flow', url: 'https://labs.google/flow', free: 'Free tier with monthly Veo generations', how: 'Google\'s filmmaking app built on Veo: scene-by-scene project builder with native audio, shot extension, and ingredient (character) consistency across shots.', prompt: 'Scene 2, same character: he lands on a rooftop in the rain. AUDIO: boots hitting wet concrete, parachute fabric flapping, distant sirens.' },
+      { name: 'Google Veo 3.1 (AI Studio)', url: 'https://aistudio.google.com', free: 'Veo API video generation has no standing free tier; check eligibility and current account pricing', how: 'The gold standard for native audio: describe the picture, the camera, AND the sound (dialogue in quotes, then SFX, then music mood) in one prompt — Veo generates 48kHz synchronized audio with the video. No separate voiceover or lip-sync step needed.', prompt: 'A bald African officer freefalls through a storm, lightning flashing, 9:16. AUDIO: roaring wind, a radio voice says "The Republic has fallen," he replies "Then I\'ll bring it back," then one massive thunder crack.' },
+      { name: 'Google Flow', url: 'https://labs.google/flow', free: 'Limited promotional AI credits may be available; terms, region and model limits vary', how: 'Google\'s filmmaking app built on Veo: scene-by-scene project builder with native audio, shot extension, and ingredient (character) consistency across shots.', prompt: 'Scene 2, same character: he lands on a rooftop in the rain. AUDIO: boots hitting wet concrete, parachute fabric flapping, distant sirens.' },
       { name: 'Kling 3.0 Omni (Audio ON)', url: 'https://klingai.com', free: 'Daily free quota + new-user bonus points', how: 'Turn audio generation ON: Kling 3.0 Omni generates synchronized ambience, sound effects, and lip-synced character dialogue in 5 languages, understanding which sounds match the on-screen action.', prompt: 'A market woman laughs and calls out "Fresh pepper, one hundred naira!" as customers pass, bustling market. AUDIO: her voice lip-synced, crowd chatter, distant okada horns.' },
-      { name: 'Seedance 2.0 (Audio by Default)', url: 'https://seedance.tv', free: 'Free daily credits, no watermark', how: 'Generates audio by default — footsteps, ambience, and soft music ship inside every clip. Supports multi-shot narrative sequences with sound in a single pass; add @Audio references to sync to your own track.', prompt: 'Two-shot sequence: (1) a sprinter settles into blocks, stadium hushes; (2) the gun fires and she explodes forward. AUDIO: crowd murmur dropping to silence, starter pistol crack, roaring cheer.' },
+      { name: 'Seedance 2.0 (Audio by Default)', url: 'https://seedance.tv', free: 'Third-party seedance.tv service; pricing, free credits, watermarks and licensing unverified', how: 'Generates audio by default — footsteps, ambience, and soft music ship inside every clip. Supports multi-shot narrative sequences with sound in a single pass; add @Audio references to sync to your own track.', prompt: 'Two-shot sequence: (1) a sprinter settles into blocks, stadium hushes; (2) the gun fires and she explodes forward. AUDIO: crowd murmur dropping to silence, starter pistol crack, roaring cheer.' },
       { name: 'Grok Imagine (Video + Audio)', url: 'https://grok.com', free: 'Free tier', how: 'Generates 6–10 second videos with synchronized audio automatically — background music, sound effects, dialogue, even singing — from one prompt. Fastest route from idea to a complete sounding clip.', prompt: 'A choir of children sings one joyful note as sunrise breaks over a village church, camera rising. AUDIO: the sung note swelling with soft strings, birdsong, gentle wind.' },
       { name: 'PixVerse V5.5 (Native Audio)', url: 'https://pixverse.ai', free: 'Daily free credits', how: 'Multi-shot 1080p videos up to 10s with music, sound effects, and dialogue generated together in one go — plus multi-image fusion to keep your character consistent across shots.', prompt: 'Multi-shot: a chef plates a dish, wipes the rim, slides it across the counter. AUDIO: kitchen sizzle, plate sliding, a satisfied "Order up!", light jazz underneath.' },
       { name: 'Wan 2.5/2.6 (Native Audio)', url: 'https://wan.video', free: 'Daily free credits + open weights', how: 'Alibaba\'s Wan added native audio from version 2.5: describe the soundscape in your prompt and it renders synchronized sound with hyperrealistic motion. 2.6 adds multi-shot with audio.', prompt: 'Rain hammers a zinc roof as a man writes by candlelight, camera drifts closer. AUDIO: heavy rain, pen scratching paper, low thunder rolling, no music.' },
-      { name: 'LTX-2 (LTXV, Native Audio)', url: 'https://ltx.studio', free: 'Free tier; open weights for local use', how: 'Lightricks\' LTX-2 generates video with native synchronized audio and is also open-weight — the free way to run audio-native generation locally on your own GPU.', prompt: 'A blacksmith strikes glowing metal, sparks flying with each hit, forge interior. AUDIO: rhythmic hammer clangs, fire roar, metal hiss in water at the end.' },
+      { name: 'LTX-2 (LTXV, Native Audio)', url: 'https://ltx.studio', free: 'Hosted introductory allowance may be limited; open weights require hardware and license review', how: 'Lightricks\' LTX-2 generates video with native synchronized audio and is also open-weight — the free way to run audio-native generation locally on your own GPU.', prompt: 'A blacksmith strikes glowing metal, sparks flying with each hit, forge interior. AUDIO: rhythmic hammer clangs, fire roar, metal hiss in water at the end.' },
     ],
   },
   {
@@ -22,14 +22,14 @@ const VAULT_CATEGORIES = [
     icon: '🎬',
     tools: [
       { name: 'Kling AI', url: 'https://klingai.com', free: '6 free generations daily + 66 bonus inspiration points for new users (a 5s video ≈ 10 points)', how: 'Sign up → choose Image-to-Video → upload your still → paste your motion prompt → generate at standard quality first, upscale winners.', prompt: 'A Nigerian soldier walks through a rain-slicked neon Lagos street at night, slow tracking shot, volumetric smoke, cinematic 24fps.' },
-      { name: 'Google Veo (AI Studio)', url: 'https://aistudio.google.com', free: 'Free monthly credits on every Google account', how: 'Log in with Gmail → open Video generation (Veo) → describe scene + camera + audio → Veo generates video with native sound.', prompt: 'Cinematic drone shot descending over a bustling African market at golden hour, ambient crowd noise and distant drums, 8-second clip.' },
+      { name: 'Google Veo (AI Studio)', url: 'https://aistudio.google.com', free: 'Veo API video generation has no standing free tier; check eligibility and current account pricing', how: 'Log in with Gmail → open Video generation (Veo) → describe scene + camera + audio → Veo generates video with native sound.', prompt: 'Cinematic drone shot descending over a bustling African market at golden hour, ambient crowd noise and distant drums, 8-second clip.' },
       { name: 'Bing Video Creator', url: 'https://www.bing.com/create', free: 'Free short vertical videos (Sora-powered)', how: 'Sign in with Microsoft account → switch to Video → type your prompt → best for 9:16 social clips.', prompt: 'A glowing golden bridge appearing across a river at sunrise, birds flying past, vertical format, inspirational mood.' },
-      { name: 'Luma Dream Machine', url: 'https://lumalabs.ai/dream-machine', free: '30 free videos/month, no watermark', how: 'Sign up → upload a start frame (image-to-video) or type text → add camera motion keywords → download watermark-free.', prompt: 'Start frame: [your hero portrait]. The camera slowly orbits the subject as embers float upward, dramatic rim lighting.' },
+      { name: 'Luma Dream Machine', url: 'https://lumalabs.ai/dream-machine', free: 'Limited access may be offered; free-plan output is watermarked and non-commercial', how: 'Sign up → upload a start frame (image-to-video) or type text → add camera motion keywords → download watermark-free.', prompt: 'Start frame: [your hero portrait]. The camera slowly orbits the subject as embers float upward, dramatic rim lighting.' },
       { name: 'Hailuo AI (MiniMax)', url: 'https://hailuoai.video', free: '10 free generations/day (accumulates up to 30) + daily HD template trials', how: 'Sign up → paste prompt with explicit camera directions — Hailuo has industry-best camera control.', prompt: 'High-angle crane shot descending to eye level on a young entrepreneur opening her shop at dawn, warm sunlight, smooth motion.' },
       { name: 'Pika', url: 'https://pika.art', free: '~30 credits daily', how: 'Upload image → use Region Edit to animate only a selected area (flame, water, hair) while the rest stays still.', prompt: 'Animate only the candle flames flickering and curtain moving gently; keep the seated character perfectly still.' },
-      { name: 'Runway', url: 'https://runwayml.com', free: '125 one-time signup credits', how: 'Use Gen-3 image-to-video → try the Motion Brush to paint exactly which region moves and in which direction.', prompt: 'Motion brush on the clouds moving left and the river flowing toward camera; static camera, photoreal.' },
+      { name: 'Runway', url: 'https://runwayml.com', free: 'One-time promotional credits; free-plan video outputs are watermarked', how: 'Use Gen-3 image-to-video → try the Motion Brush to paint exactly which region moves and in which direction.', prompt: 'Motion brush on the clouds moving left and the river flowing toward camera; static camera, photoreal.' },
       { name: 'PixVerse', url: 'https://pixverse.ai', free: 'Daily free credits, 1080p', how: 'Choose Realistic or Anime mode → text or image input → use Extend to chain clips into longer scenes.', prompt: 'Anime style: a determined African student coding at night, city lights outside the window, rain on glass, lo-fi mood.' },
-      { name: 'Seedance', url: 'https://seedance.tv', free: 'Daily free credits, ~30s renders, no watermark', how: 'Upload up to 9 images + 3 videos + 3 audio as references → tag them in your prompt (@Image1, @Video1).', prompt: 'Generate a cinematic scene using @Image1 as the actor performing the exact motion from @Video1, slow push-in, 2.39:1.' },
+      { name: 'Seedance', url: 'https://seedance.tv', free: 'Third-party seedance.tv service; pricing, free credits, watermarks and licensing unverified', how: 'Upload up to 9 images + 3 videos + 3 audio as references → tag them in your prompt (@Image1, @Video1).', prompt: 'Generate a cinematic scene using @Image1 as the actor performing the exact motion from @Video1, slow push-in, 2.39:1.' },
       { name: 'Haiper', url: 'https://haiper.ai', free: 'Rolling free HD credits', how: 'Simplest interface for beginners — type prompt, pick duration, generate; great for testing prompt ideas cheaply.', prompt: 'A fisherman casts his net at sunrise on the Niger river, silhouette against orange sky, gentle slow motion.' },
       { name: 'Vidu', url: 'https://www.vidu.com', free: 'Free trial generations', how: 'Strong at multi-shot storytelling — describe a short sequence and let it cut between angles.', prompt: 'Three quick shots: hands typing code, a progress bar hitting 100%, a young man smiling at his screen in relief.' },
       { name: 'Dreamina (CapCut)', url: 'https://dreamina.capcut.com', free: 'Free daily credits', how: 'Generate inside the CapCut ecosystem → results drop straight into your CapCut editor timeline.', prompt: 'A market woman arranging colorful fabrics, warm morning light, shallow depth of field, gentle camera sway.' },
@@ -40,7 +40,7 @@ const VAULT_CATEGORIES = [
       { name: 'Qwen Chat', url: 'https://chat.qwen.ai', free: 'Free sign-up video generation', how: 'Chat interface — describe the video conversationally, then refine with follow-up messages.', prompt: 'Create a 5-second clip: rain falling on a zinc roof, close-up, moody blue tones, ambient sound of rain.' },
       { name: 'Creen', url: 'https://creen.ai', free: 'No-login browser generation', how: 'Zero signup — open the site, pick a model, generate. Good for quick experiments on shared computers.', prompt: 'A paper boat floating down a gutter stream after rainfall, macro shot, soft focus background.' },
       { name: 'GizAI', url: 'https://giz.ai', free: 'No-signup access to multiple models', how: 'Select from several video models in one place — compare the same prompt across engines.', prompt: 'Same prompt test: a lion walking through tall savanna grass at sunset, cinematic wildlife documentary style.' },
-      { name: 'LTX Studio', url: 'https://ltx.studio', free: 'Free tier of full AI film studio', how: 'Storyboard-first workflow: write your script, LTX breaks it into shots, then generates each shot consistently.', prompt: 'Script: "A girl finds an old key in her grandmother\'s box. It glows." — generate 3-shot storyboard then render.' },
+      { name: 'LTX Studio', url: 'https://ltx.studio', free: 'Limited one-time introductory credits; free-plan commercial rights are restricted', how: 'Storyboard-first workflow: write your script, LTX breaks it into shots, then generates each shot consistently.', prompt: 'Script: "A girl finds an old key in her grandmother\'s box. It glows." — generate 3-shot storyboard then render.' },
       { name: 'Krea AI', url: 'https://www.krea.ai', free: 'Free daily generations', how: 'Realtime canvas: draw/drag elements and watch the AI render live — then export as video.', prompt: 'Enhance and animate: cinematic re-render of my rough sketch of a futuristic Lagos skyline, dusk palette.' },
       { name: 'Kaiber', url: 'https://kaiber.ai', free: 'Free trial credits', how: 'Music-video focused — upload a song and an image, choose an evolution style, and it animates to the beat.', prompt: 'Transform this album art into a flowing animation synced to the beat, afrobeats energy, neon color cycle.' },
       { name: 'Genmo', url: 'https://www.genmo.ai', free: 'Free tier (Mochi model)', how: 'Text-to-video on the open Mochi model — good motion quality; keep prompts short and physical.', prompt: 'A basketball spinning on a finger, studio lighting, slow motion, shallow depth of field.' },
@@ -51,7 +51,7 @@ const VAULT_CATEGORIES = [
       { name: 'SnapGen AI', url: 'https://snapgen.ai', free: 'Rotating credit-free open models (verify current offer on site)', how: 'Lightweight web generator hosting rotating open models — fast 1080p clips in multiple aspect ratios with no account friction.', prompt: 'Quick 9:16 clip: hands opening a gift box that glows from inside, warm light on face, vertical format.' },
       { name: 'Lacht AI', url: 'https://lacht.ai', free: 'Free tier (verify current offer on site)', how: 'Node-based (ComfyUI-style) creator that links your Stable Diffusion or Midjourney image pipeline cleanly into video generation stages.', prompt: 'Pipeline: import Midjourney hero frame → motion node (slow dolly-in) → style-lock node → export 1080p.' },
       { name: 'Higgsfield', url: 'https://higgsfield.ai', free: 'Free daily generations', how: 'Motion-to-video specialist: upload a clip, then do character clothing/scene swaps and targeted regional motion control — strong for social remixes.', prompt: 'Swap the subject\'s outfit to a red agbada and change the background to a rooftop at sunset; keep the original walk motion.' },
-      { name: 'Adobe Firefly Video', url: 'https://firefly.adobe.com', free: 'Free monthly generative credits (commercially safe)', how: 'Text-to-video inside the Adobe web ecosystem, trained on licensed data — the safe choice for client/commercial work where usage rights matter.', prompt: 'B-roll: coffee beans pouring in slow motion into a burlap sack, warm morning window light, shallow depth of field.' },
+      { name: 'Adobe Firefly Video', url: 'https://firefly.adobe.com', free: 'Introductory generative credits may vary; check current plan and usage rights', how: 'Text-to-video inside the Adobe web ecosystem, trained on licensed data — the safe choice for client/commercial work where usage rights matter.', prompt: 'B-roll: coffee beans pouring in slow motion into a burlap sack, warm morning window light, shallow depth of field.' },
     ],
   },
   {
@@ -73,7 +73,7 @@ const VAULT_CATEGORIES = [
       { name: 'HourOne', url: 'https://hourone.ai', free: 'Free trial', how: 'Template-driven avatar news/update videos — fastest route from text to polished corporate clip.', prompt: 'Weekly update template: "Destiny Skills Bridge news — 2 new graduates this week!"' },
       { name: 'Yepic AI', url: 'https://www.yepic.ai', free: 'Free trial', how: 'Talking photos + real-time avatars; upload portrait, choose voice, type script.', prompt: 'Animate the founder\'s portrait: "Thank you for 1,000 students!" celebratory tone.' },
       { name: 'VidifyAI', url: 'https://vidifyaistudio.com', free: '3 watermark-free exports/month', how: 'Pre-loaded avatars for social shorts — script in, vertical video out.', prompt: '9:16 short: avatar explains "3 free AI tools that replace a film crew" in 30 seconds.' },
-      { name: 'Wav2Lip (open source)', url: 'https://github.com/Rudrabha/Wav2Lip', free: '100% free, runs locally/Colab', how: 'Classic lip-sync model: give it any video + any audio and it re-syncs the lips. Run via Google Colab free.', prompt: 'Input: 10s clip of your avatar + new corrected voiceover → output re-synced video.' },
+      { name: 'Wav2Lip (open source)', url: 'https://github.com/Rudrabha/Wav2Lip', free: 'Open-source code and research checkpoints; review model restrictions before commercial use', how: 'Classic lip-sync model: give it any video + any audio and it re-syncs the lips. Run via Google Colab free.', prompt: 'Input: 10s clip of your avatar + new corrected voiceover → output re-synced video.' },
       { name: 'Synths', url: 'https://synths.video', free: 'Free trial', how: 'E-commerce specialist: converts product images directly into presenter-led video ads — upload the product shot, pick a presenter, paste the pitch.', prompt: 'Product: handmade ankara bag photo. Presenter pitch: "Three reasons this bag sells out every single week…"' },
     ],
   },
@@ -103,7 +103,7 @@ const VAULT_CATEGORIES = [
     tools: [
       { name: 'ElevenLabs', url: 'https://elevenlabs.io', free: '10,000 characters/month', how: 'Pick a cinematic voice → stability 45–55% for drama → use "…" for pauses. Clone your voice with 5+ min of clean audio.', prompt: 'VO: "We traveled across the void looking for life… but found only the ruins of what we used to be."' },
       { name: 'CapCut AI Voice', url: 'https://www.capcut.com', free: 'Unlimited free TTS', how: 'Inside the editor: Text → Text-to-speech → pick accent → no character limits, no watermark.', prompt: 'Ad read, energetic Nigerian accent: "Pay four thousand naira once — start creating today!"' },
-      { name: 'Suno', url: 'https://suno.com', free: '50 credits daily (~10 songs)', how: 'Describe genre + mood + instruments → full track with or without vocals in a minute.', prompt: 'Epic cinematic orchestral score, African percussion, rising tension into triumphant choir finale, no vocals, 2 minutes.' },
+      { name: 'Suno', url: 'https://suno.com', free: 'Free credits for personal, non-commercial music; paid rights required for monetization', how: 'Describe genre + mood + instruments → full track with or without vocals in a minute.', prompt: 'Epic cinematic orchestral score, African percussion, rising tension into triumphant choir finale, no vocals, 2 minutes.' },
       { name: 'Udio', url: 'https://www.udio.com', free: 'Free monthly credits', how: 'High-fidelity music generation — great for emotional underscores and afrobeats demos.', prompt: 'Soft emotional piano and strings underscore, hopeful, builds gently, loopable, instrumental.' },
       { name: 'Adobe Podcast Enhance', url: 'https://podcast.adobe.com/enhance', free: '1 free hour daily', how: 'Upload noisy phone recordings → returns studio-quality speech. Always run VOs through this.', prompt: 'Upload: capstone narration recorded in a bedroom → download enhanced studio version.' },
       { name: 'TTSMaker', url: 'https://ttsmaker.com', free: 'Free, no signup', how: 'Quick free TTS in many languages/accents when you burn through other quotas.', prompt: 'Neutral narrator: "Module Three: Directing the camera with natural language."' },
@@ -143,6 +143,9 @@ const VAULT_CATEGORIES = [
     title: 'Open-Source & Run-It-Yourself (Unlimited Free)',
     icon: '🛠️',
     tools: [
+      { name: 'MuseTalk (open source)', url: 'https://github.com/TMElyralab/MuseTalk', free: 'Open-source repository; GPU/model downloads required, review model and commercial-use terms', how: 'Provide a portrait or video, speech audio, and the required model checkpoints. Run inference on a supported GPU; export and check synchronized lips.', prompt: 'Sync this consented presenter portrait to the supplied 10-second spoken audio; retain natural expression and lighting.' },
+      { name: 'RIFE (frame interpolation)', url: 'https://github.com/hzwer/ECCV2022-RIFE', free: 'Open-source code; local GPU/CPU compute required', how: 'Input an existing video or ordered frames, interpolate intermediate frames with RIFE, then verify motion artifacts and export with FFmpeg.', prompt: 'Interpolate a 12 fps rowing clip to 24 fps without changing the original action timing.' },
+      { name: 'FFmpeg (open source)', url: 'https://ffmpeg.org', free: 'Free and open-source command-line video processing; review distribution codec licenses', how: 'Install FFmpeg, combine existing video shots and licensed audio, adjust aspect ratio and encode MP4 outputs. No AI generation or GPU model is required.', prompt: 'Assemble six 5-second clips with the original soundtrack into a 30-second 720p MP4 suitable for Reels.' },
       { name: 'Stable Video Diffusion', url: 'https://github.com/Stability-AI/generative-models', free: 'Open weights', how: 'Image-to-video model you run locally via ComfyUI — unlimited once installed (needs GPU).', prompt: 'Input: 1024px hero still → 25-frame clip, motion bucket 127, seed locked for reruns.' },
       { name: 'AnimateDiff', url: 'https://github.com/guoyww/AnimateDiff', free: 'Open source', how: 'Adds motion to any Stable Diffusion checkpoint — stylized loops and anime motion.', prompt: 'Loop: rain falling past a neon sign, 16 frames, seamless, anime checkpoint.' },
       { name: 'HunyuanVideo', url: 'https://github.com/Tencent/HunyuanVideo', free: 'Open weights', how: 'One of the strongest open text-to-video models — run via ComfyUI workflows.', prompt: 'A drummer\'s hands hitting a talking drum, extreme close-up, shallow focus, 24fps.' },
@@ -179,7 +182,6 @@ const VAULT_CATEGORIES = [
       { name: 'Video2X', url: 'https://github.com/k4yt3x/video2x', free: 'Open source', how: 'Upscale whole videos (720p → 4K) locally, free.', prompt: 'Batch: upscale 3 capstone clips 720p → 1440p, RealESRGAN engine.' },
       { name: 'Cutout.Pro', url: 'https://www.cutout.pro', free: 'Free credits', how: 'Video background removal + photo enhancement in browser.', prompt: 'Remove background from 10s presenter clip → transparent WebM for overlay.' },
       { name: 'remove.bg', url: 'https://www.remove.bg', free: 'Free previews', how: 'Instant background removal for avatar plates before compositing.', prompt: 'Strip background from hero portrait → PNG for CapCut overlay.' },
-      { name: 'Unscreen', url: 'https://www.unscreen.com', free: 'Free tier', how: 'Removes video backgrounds without a green screen.', prompt: 'Unscreen the talking-head clip → place over animated city background.' },
       { name: 'EZGIF', url: 'https://ezgif.com', free: '100% free', how: 'Swiss-army converter: trim, resize, reverse, GIF↔MP4, speed changes — no install.', prompt: 'Convert final 10s clip to optimized GIF under 5MB for WhatsApp.' },
       { name: 'Freesound', url: 'https://freesound.org', free: 'Free (CC licenses)', how: 'Community SFX library — thunder, footsteps, market ambience. Check each license.', prompt: 'Search: "rain on metal roof loop", CC0 filter, download 2 options.' },
       { name: 'Pixabay', url: 'https://pixabay.com', free: 'Free stock', how: 'Free stock video, images and music for B-roll and beds.', prompt: 'B-roll: "Lagos aerial", "typing hands", "sunrise timelapse".' },
@@ -188,6 +190,69 @@ const VAULT_CATEGORIES = [
     ],
   },
 ];
+
+
+/**
+ * Access type describes only the *reported* offer, not an audited entitlement.
+ * Do not mark entries verified from a working website link or legacy marketing copy.
+ * A maintainer must record a dated provider pricing/terms reference after review.
+ */
+function classifyAccess(tool) {
+  const claim = String(tool.free || '').toLowerCase();
+  // Explicit 'no free tier' disclaimers must take precedence over the word 'free'.
+  if (/no (?:standing |ongoing )?free tier|paid.only|paid only/.test(claim)) return 'paid';
+  if (/open.weights|open weights/.test(claim)) return 'open-weights';
+  if (/open.source|open source/.test(claim)) return 'open-source';
+  if (/trial|one.time|one time|signup credits|introductory|new users/.test(claim)) return 'trial';
+  if (/free|credits|allowance/.test(claim)) return 'reported-free';
+  return 'unverified';
+}
+
+const CATEGORY_TASKS = {
+  'native-audio': ['native-audio', 'text-to-video'],
+  'text-to-video': ['text-to-video', 'image-to-video'],
+  avatars: ['talking-avatar'],
+  images: ['image-generation'],
+  audio: ['voice-and-music'],
+  editing: ['video-editing'],
+  opensource: ['local-production'],
+  chinese: ['text-to-video'],
+  utilities: ['video-editing'],
+};
+
+function tasksFor(tool, category) {
+  const tasks = new Set(CATEGORY_TASKS[category] || []);
+  const words = (tool.name + ' ' + tool.how).toLowerCase();
+  if (/lip.sync|lipsync|musetalk|wav2lip/.test(words)) tasks.add('lip-sync');
+  if (/music.video|music video|beat.sync|beat sync/.test(words)) tasks.add('music-video');
+  if (/upscal|enhanc|esrgan|video2x/.test(words)) tasks.add('video-upscaling');
+  if (/interpolat|rife/.test(words)) tasks.add('frame-interpolation');
+  if (/voice clon|text.to.speech|tts/.test(words)) tasks.add('voice-and-music');
+  return [...tasks];
+}
+
+const RIGHTS_NOTES = {
+  'Luma Dream Machine': { watermark: 'yes-on-free-plan', commercialUse: 'not-permitted-on-free-plan' },
+  Runway: { watermark: 'yes-on-free-plan' },
+  'LTX Studio': { commercialUse: 'not-permitted-on-free-plan' },
+  Suno: { commercialUse: 'not-permitted-on-free-plan' },
+};
+
+for (const category of VAULT_CATEGORIES) {
+  category.tools = category.tools.map((tool) => ({
+    ...tool,
+    accessType: classifyAccess(tool),
+    // All historic offers require checking against the current provider terms.
+    verificationStatus: 'unverified',
+    freeLimit: null,
+    watermark: RIGHTS_NOTES[tool.name]?.watermark || 'unknown',
+    commercialUse: RIGHTS_NOTES[tool.name]?.commercialUse || 'unknown',
+    regionRestrictions: 'unknown',
+    lastVerified: null,
+    sourceUrl: null,
+    tasks: tasksFor(tool, category.id),
+  }));
+}
 
 const VAULT_TOOL_COUNT = VAULT_CATEGORIES.reduce((s, c) => s + c.tools.length, 0);
 
