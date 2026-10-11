@@ -22,7 +22,7 @@ test('catalogue entries and categories are complete', () => {
 });
 
 test('each tool has a functioning data schema without invented verification', () => {
-  const types = new Set(['open-source', 'open-weights', 'trial', 'reported-free', 'unverified']);
+  const types = new Set(['open-source', 'open-weights', 'trial', 'reported-free', 'unverified', 'paid']);
   for (const tool of tools) {
     assert.ok(tool.name && tool.url && tool.how && tool.prompt);
     assert.equal(new URL(tool.url).protocol, 'https:');
@@ -36,6 +36,13 @@ test('each tool has a functioning data schema without invented verification', ()
     assert.equal(tool.regionRestrictions, 'unknown');
     assert.ok(Array.isArray(tool.tasks) && tool.tasks.length > 0, tool.name);
   }
+});
+
+test('explicit no-free-tier entries do not get a free badge', () => {
+  const veo = tools.find((tool) => tool.name === 'Google Veo 3.1 (AI Studio)');
+  assert.ok(veo);
+  assert.equal(veo.accessType, 'paid');
+  assert.ok(!tools.some((tool) => /no (standing )?free tier/i.test(tool.free) && tool.accessType === 'reported-free'));
 });
 
 test('retired tool removed; film-production tools present', () => {
