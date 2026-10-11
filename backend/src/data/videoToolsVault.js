@@ -199,6 +199,8 @@ const VAULT_CATEGORIES = [
  */
 function classifyAccess(tool) {
   const claim = String(tool.free || '').toLowerCase();
+  // Explicit 'no free tier' disclaimers must take precedence over the word 'free'.
+  if (/no (?:standing |ongoing )?free tier|paid.only|paid only/.test(claim)) return 'paid';
   if (/open.weights|open weights/.test(claim)) return 'open-weights';
   if (/open.source|open source/.test(claim)) return 'open-source';
   if (/trial|one.time|one time|signup credits|introductory|new users/.test(claim)) return 'trial';
