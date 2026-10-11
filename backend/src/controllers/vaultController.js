@@ -37,7 +37,7 @@ async function getVault(req, res) {
 
   if (!allowed) {
     return res.status(403).json({
-      message: 'The 100 Free AI Tools Vault is exclusive to AI Cinematic Video & Avatar Creation Mastery — Special Edition students. Enroll for ₦4,000 to unlock it instantly.',
+      message: 'The AI Filmmaking Resources Vault is exclusive to AI Cinematic Video & Avatar Creation Mastery — Special Edition students. Enroll for ₦10,000 to unlock it instantly.',
       vaultLocked: true,
       purchasePlan: 'cinematic-special-edition',
       courseId: VAULT_COURSE_ID,
