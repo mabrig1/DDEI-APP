@@ -80,6 +80,7 @@
                         <option value="trial">Trial / introductory</option>
                         <option value="reported-free">Reported free offer</option>
                         <option value="unverified">Unclassified</option>
+                        <option value="paid">Paid / no free tier</option>
                     </select>
                     <label class="text-xs font-semibold text-slate-600" for="taskFilter">Task</label>
                     <select id="taskFilter" class="border bg-white rounded-xl px-3 py-2 text-sm" aria-label="Filter by production task">
@@ -156,7 +157,7 @@
         let activeCategory = 'all';
 
         function toolCardHTML(tool, catId) {
-            const accessLabels = { 'open-source': 'Open-source code', 'open-weights': 'Open weights', trial: 'Trial / introductory', 'reported-free': 'Reported free offer', unverified: 'Access unverified' };
+            const accessLabels = { 'open-source': 'Open-source code', 'open-weights': 'Open weights', trial: 'Trial / introductory', 'reported-free': 'Reported free offer', unverified: 'Access unverified', paid: 'Paid / no free tier' };
             const access = tool.accessType || 'unverified';
             const tags = Array.isArray(tool.tasks) ? tool.tasks : [];
             const rights = tool.commercialUse === 'not-permitted-on-free-plan' ? 'Free plan: non-commercial only' : 'Commercial rights: not checked';
