@@ -16,7 +16,7 @@ Each tool returns original `name`, `url`, `free` (legacy access description), `h
 
 | Field | Meaning |
 |---|---|
-| `accessType` | `open-source`, `open-weights`, `trial`, `reported-free`, or `unverified`. Classification is based on **unverified** historic descriptions. |
+| `accessType` | `open-source`, `open-weights`, `trial`, `reported-free`, `paid`, or `unverified`. Classification is based on **unverified** historic descriptions. |
 | `verificationStatus` | `unverified` until a human explicitly checks the provider's live offer and licensing. |
 | `freeLimit` | `null` means not documented or verified, **not unlimited**. |
 | `watermark` | `unknown` unless documented; selected known limitations are flagged. |
