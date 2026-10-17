@@ -5,6 +5,8 @@ const {
   updateProgress,
   submitQuiz,
   coachCourse,
+  reasonAboutLesson,
+  interpretCourseImage,
   getProgress,
   selectCourse,
   getCertificate,
@@ -23,6 +25,8 @@ router.post('/:id/select', requireAuth, requireActiveAccess, selectCourse);
 router.post('/:id/lessons/:lessonId/complete', requireAuth, requireActiveAccess, updateProgress);
 router.post('/:id/lessons/:lessonId/quiz', requireAuth, requireActiveAccess, submitQuiz);
 router.post('/:id/coach', coachRateLimit, requireAuth, requireActiveAccess, coachCourse);
+router.post('/:id/reason', coachRateLimit, requireAuth, requireActiveAccess, reasonAboutLesson);
+router.post('/:id/vision', coachRateLimit, requireAuth, requireActiveAccess, interpretCourseImage);
 router.get('/:id/certificate', requireAuth, getCertificate);
 
 module.exports = router;
