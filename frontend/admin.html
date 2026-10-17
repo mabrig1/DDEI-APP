@@ -38,6 +38,7 @@
             <p id="loginError" class="text-red-600 text-sm mb-4 hidden"></p>
             <button type="submit" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Log In</button>
         </form>
+        <p class="text-center text-sm mt-5"><a href="/admin-recovery" class="text-[#0A66C2] font-semibold hover:underline">Forgot administrator password?</a></p>
     </div>
 
     <!-- Dashboard -->
@@ -397,10 +398,10 @@
         // The default below is the backend's real .vercel.app alias, which
         // Vercel assigned when the project was created and did NOT change when
         // the project was later renamed. Setting API_BASE_URL overrides it.
-        const API_BASE_URL = window.DSB_API_BASE_URL
+        const API_BASE_URL = (window.DSB_API_BASE_URL || '').replace('https://ddei-app-kh6q.vercel.app', 'https://api.ddei.online')
             || (/^(localhost|127\.0\.0\.1|\[::1\])?$/.test(window.location.hostname)
                 ? 'http://localhost:5000'
-                : 'https://ddei-app-kh6q.vercel.app');
+                : 'https://api.ddei.online');
 
         function adminToken() { return localStorage.getItem('dsb_admin_token'); }
         function setAdminToken(token) { localStorage.setItem('dsb_admin_token', token); }
@@ -412,6 +413,7 @@
             if (token) headers.Authorization = `Bearer ${token}`;
             const response = await fetch(`${API_BASE_URL}${path}`, Object.assign({}, options, { headers }));
             const data = await response.json().catch(() => ({}));
+            if (response.status === 401) { clearAdminToken(); showLogin(); }
             if (!response.ok) throw new Error(data.message || 'Request failed');
             return data;
         }

@@ -1,116 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restore Admin Access — Destiny Skills Bridge</title>
-    <meta name="author" content="MABRIG Technologies">
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administrator password recovery — DDEI</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f1f5f9;color:#0f172a;font:16px/1.55 system-ui,sans-serif;min-height:100vh;display:grid;place-items:center;padding:24px}main{width:100%;max-width:470px;background:white;border:1px solid #e2e8f0;border-radius:24px;padding:32px;box-shadow:0 12px 40px #0f172a09}.brand{font-weight:800;color:#0a66c2;letter-spacing:.08em}h1{font-size:27px;line-height:1.2;margin-bottom:12px}p{color:#475569}label{display:block;font-weight:600;margin:18px 0 6px}input{width:100%;border:1px solid #94a3b8;border-radius:10px;padding:12px;font:inherit}button{font:inherit;font-weight:650;cursor:pointer;width:100%;background:#0a66c2;color:white;border:0;border-radius:12px;padding:13px;margin-top:22px}button:disabled{opacity:.6;cursor:wait}a{color:#0756a5}#message{padding:13px;border-radius:10px;background:#eff6ff;overflow-wrap:anywhere}#message.error{background:#fef2f2;color:#991b1b}[hidden]{display:none!important}.small{font-size:14px}.back{display:block;margin-top:24px;text-align:center}input:focus,button:focus,a:focus{outline:3px solid #93c5fd;outline-offset:3px}
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-900 min-h-screen flex items-center justify-center px-5">
-    <main class="w-full max-w-md bg-white border rounded-3xl p-8 shadow-sm">
-        <div class="w-12 h-12 bg-[#0A66C2] rounded-2xl flex items-center justify-center mb-5">
-            <span class="text-white font-bold text-xl">DS</span>
-        </div>
-        <h1 class="text-2xl font-bold tracking-tight">Restore Admin Access</h1>
-        <p class="text-sm text-slate-500 mt-2 mb-7">
-            Use the one-time recovery token to replace the old admin credentials. After a successful reset, this token cannot be used again.
-        </p>
-
-        <form id="recoveryForm" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium mb-1">Recovery token</label>
-                <input id="recoveryToken" type="password" required autocomplete="off"
-                       class="w-full border rounded-xl px-4 py-3" placeholder="Paste the one-time token">
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">New admin username</label>
-                <input id="username" type="text" value="admin" required autocomplete="username"
-                       class="w-full border rounded-xl px-4 py-3">
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">New admin password</label>
-                <input id="password" type="password" required minlength="12" autocomplete="new-password"
-                       class="w-full border rounded-xl px-4 py-3" placeholder="At least 12 characters">
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1">Confirm new password</label>
-                <input id="confirmPassword" type="password" required minlength="12" autocomplete="new-password"
-                       class="w-full border rounded-xl px-4 py-3">
-            </div>
-
-            <p id="message" class="hidden text-sm rounded-xl px-4 py-3"></p>
-
-            <button id="submitBtn" type="submit"
-                    class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl hover:opacity-95 disabled:opacity-50">
-                Restore Admin Access
-            </button>
-        </form>
-
-        <p class="text-xs text-slate-400 mt-5 text-center">
-            Once restored, use the normal <a href="/admin" class="text-[#0A66C2] hover:underline">Admin Login</a> page.
-        </p>
-        <footer class="mt-6 border-t pt-4 text-center text-xs text-slate-600">
-            Destiny Skills Bridge
-            <p class="mt-2">A subsidiary of <strong class="font-semibold">MABRIG Technologies</strong></p>
-        <p class="mt-2">Developed and maintained by <strong class="font-semibold">MABRIG Technologies</strong></p>
-            <div class="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
-            <a href="https://ddei.online" class="font-semibold hover:underline">ddei.online</a>
-            <a href="https://wa.me/2347065342818" target="_blank" rel="noopener noreferrer" class="font-semibold hover:underline">WhatsApp: 07065342818</a>
-            <a href="https://www.facebook.com/share/1FewRvL2H4/" target="_blank" rel="noopener noreferrer" class="font-semibold hover:underline">Facebook</a>
-        </div>
-        </footer>
-    </main>
-
-    <!-- DSB_RUNTIME_CONFIG -->
-    <script>
-        const API_BASE_URL = window.DSB_API_BASE_URL
-            || (/^(localhost|127\.0\.0\.1|\[::1\])?$/.test(window.location.hostname)
-                ? 'http://localhost:5000'
-                : 'https://ddei-app-kh6q.vercel.app');
-
-        const form = document.getElementById('recoveryForm');
-        const messageEl = document.getElementById('message');
-        const submitBtn = document.getElementById('submitBtn');
-
-        function showMessage(text, ok) {
-            messageEl.textContent = text;
-            messageEl.className = `text-sm rounded-xl px-4 py-3 ${ok ? 'bg-emerald-50 text-emerald-700' : 'bg-red-50 text-red-700'}`;
-        }
-
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const recoveryToken = document.getElementById('recoveryToken').value.trim();
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-
-            if (password !== confirmPassword) {
-                showMessage('The passwords do not match.', false);
-                return;
-            }
-
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'Restoring…';
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/admin/recover`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ recoveryToken, username, password }),
-                });
-                const data = await response.json().catch(() => ({}));
-                if (!response.ok) throw new Error(data.message || 'Recovery failed');
-
-                localStorage.setItem('dsb_admin_token', data.token);
-                showMessage('Admin access restored. Opening the dashboard…', true);
-                window.setTimeout(() => window.location.replace('/admin'), 500);
-            } catch (err) {
-                showMessage(err.message || 'Could not restore admin access.', false);
-                submitBtn.disabled = false;
-                submitBtn.textContent = 'Restore Admin Access';
-            }
-        });
-    </script>
+<body>
+<main>
+  <div class="brand">DDEI · ADMINISTRATOR</div>
+  <h1 id="heading">Forgot your password?</h1>
+  <p id="intro">Enter the recovery email configured for your administrator account. We will send a secure link to verify your email and choose a new password.</p>
+  <p id="message" role="status" aria-live="polite" hidden></p>
+  <form id="requestForm">
+    <label for="email">Administrator recovery email</label>
+    <input id="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@example.com">
+    <button id="requestButton" type="submit">Send recovery email</button>
+    <p class="small">Check your inbox and spam folder. Links expire in 30 minutes. Wait at least one minute before requesting another, and use the newest email.</p>
+  </form>
+  <form id="resetForm" hidden>
+    <label for="password">New administrator password</label>
+    <input id="password" type="password" required minlength="12" maxlength="72" autocomplete="new-password" aria-describedby="passwordHelp">
+    <p id="passwordHelp" class="small">Use at least 12 characters. A unique passphrase is a good choice. Maximum 72 bytes.</p>
+    <label for="confirmPassword">Confirm new password</label>
+    <input id="confirmPassword" type="password" required minlength="12" maxlength="72" autocomplete="new-password">
+    <button id="resetButton" type="submit">Verify email and reset password</button>
+    <p class="small">This will sign out all previous administrator sessions.</p>
+  </form>
+  <a id="freshLink" href="/admin-recovery" hidden>Request a fresh recovery link</a>
+  <a class="back" href="/admin">Back to administrator login</a>
+</main>
+<!-- DSB_RUNTIME_CONFIG -->
+<script>
+  // The fragment never reaches server logs. Remove it before any subsequent navigation.
+  let resetToken = new URLSearchParams(window.location.hash.slice(1)).get('token') || '';
+  if (window.location.hash) history.replaceState(null, '', window.location.pathname);
+  const configuredApi = window.DSB_API_BASE_URL;
+  const API_BASE_URL = configuredApi && !configuredApi.includes('ddei-app-kh6q.vercel.app')
+    ? configuredApi.replace(/\/$/, '')
+    : (/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) ? 'http://localhost:5000' : 'https://api.ddei.online');
+  const el = (id) => document.getElementById(id);
+  function message(text, error = false) { el('message').textContent = text; el('message').className = error ? 'error' : ''; el('message').hidden = false; }
+  if (resetToken) {
+    el('requestForm').hidden = true;
+    el('freshLink').hidden = false;
+    if (/^[a-f0-9]{64}$/.test(resetToken)) {
+      el('heading').textContent = 'Choose a new password';
+      el('intro').textContent = 'Complete the reset to verify control of your administrator recovery email.';
+      el('resetForm').hidden = false;
+    } else { message('This recovery link is incomplete. Request a fresh link below.', true); }
+  }
+  async function post(path, body) {
+    let response;
+    try {
+      response = await fetch(`${API_BASE_URL}/api/admin/${path}`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body), signal: AbortSignal.timeout(20000), cache: 'no-store',
+      });
+    } catch (_) { throw new Error('Could not reach the recovery service. Check your connection and try again.'); }
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) { const error = new Error(data.message || 'Recovery is temporarily unavailable. Please try again shortly.'); error.code = data.code; throw error; }
+    return data;
+  }
+  el('requestForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); el('requestButton').disabled = true; el('requestButton').textContent = 'Sending…';
+    try {
+      const data = await post('forgot-password', { email: el('email').value.trim() });
+      message(data.message); el('requestButton').textContent = 'Wait one minute before resending';
+      setTimeout(() => { el('requestButton').disabled = false; el('requestButton').textContent = 'Send another recovery email'; }, 60000);
+    } catch (error) { message(error.message, true); el('requestButton').disabled = false; el('requestButton').textContent = 'Try sending again'; }
+  });
+  el('resetForm').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const password = el('password').value;
+    if (password !== el('confirmPassword').value) return message('The passwords do not match. Please enter the same password in both fields.', true);
+    if (new TextEncoder().encode(password).length > 72) return message('Please shorten your password to 72 bytes or fewer.', true);
+    el('resetButton').disabled = true; el('resetButton').textContent = 'Resetting…';
+    try {
+      const data = await post('reset-password', { token: resetToken, password });
+      resetToken = ''; el('resetForm').reset(); el('resetForm').hidden = true; el('freshLink').hidden = true;
+      localStorage.removeItem('dsb_admin_token');
+      message(data.message + (data.notificationSent === false ? ' The confirmation email could not be sent, but your password was saved successfully.' : ''));
+      el('heading').textContent = 'Administrator access restored';
+      el('intro').textContent = `Sign in as ${data.username} using your new password.`;
+    } catch (error) {
+      message(error.message, true);
+      if (error.code === 'INVALID_RESET_LINK') { resetToken = ''; el('resetForm').reset(); el('resetForm').hidden = true; }
+      el('resetButton').disabled = false; el('resetButton').textContent = 'Verify email and reset password';
+    }
+  });
+</script>
 </body>
 </html>
