@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DDEI Help Centre — Preview</title><style>
+:root{font-family:system-ui,sans-serif;color:#14213d;background:#f5f7fb}*{box-sizing:border-box}body{margin:0}header{background:#122b58;color:white;padding:2rem 1rem}main{max-width:920px;margin:auto;padding:1.5rem}h1{margin:.2rem 0}input{width:100%;font:inherit;padding:.85rem;border:1px solid #aab4c5;border-radius:.5rem}input:focus,button:focus,summary:focus{outline:3px solid #e3a733}section{margin-top:1.5rem}.card{background:white;border:1px solid #d7deea;border-radius:.6rem;padding:1rem;margin:.75rem 0}summary{font-weight:650;cursor:pointer}small{color:#53637d}p{line-height:1.6}a{color:#1551a5}#status{margin-top:.5rem}</style></head>
+<body><header><main><h1>DDEI Help Centre</h1><p>Find guidance on your account, courses, applications and payments.</p></main></header>
+<main><label for="search"><strong>Search help articles</strong></label><input id="search" type="search" placeholder="Search topics, e.g. password" autocomplete="off"><div id="status" role="status" aria-live="polite"></div><section id="results" aria-label="Help articles"></section><p><strong>Need more help?</strong> The ticketing system is being developed. Never share passwords, one-time codes or full card details with anyone claiming to be support.</p><p><a href="https://ddei.online/">Return to DDEI</a></p></main>
+<script>
+const articles=[
+["Getting started","How do I create an account?","Locate the registration option on DDEI and follow the on-screen instructions. Keep your password and verification codes private."],
+["Account access","I cannot sign in","Check your registered email address and password. If the problem persists, use the official password recovery option when it becomes available."],
+["Account access","How do I recover my password?","Password recovery is under development. When available, use Forgot Password on the sign-in page and follow the secure email link. Support staff will never request your password or reset code."],
+["Courses and learning","How do I find courses?","Browse the available training sections and check each course description, eligibility and enrollment instructions."],
+["Courses and learning","My learning progress is missing","Sign in to the correct account, refresh and check your connection. Record the course title and issue details for support."],
+["Applications","How do I get help with an application?","Review the relevant opportunity page. Keep a non-sensitive application reference if you need assistance. Submission does not guarantee selection."],
+["Payments","I paid but cannot access my subscription","Allow time for payment confirmation, then sign in again. Keep a redacted transaction reference for support. Never share card numbers or PINs."],
+["Privacy and security","How do I report suspicious activity?","Do not click suspicious links. Secure your email account and report the concern through verified official channels."],
+["Contact support","How can I contact support?","A support ticket service is being developed. Until it is published, use only contact options verified on the official DDEI website."]
+];
+const search=document.getElementById('search'),results=document.getElementById('results'),status=document.getElementById('status');
+function render(){const q=search.value.trim().toLocaleLowerCase();const matches=articles.filter(a=>a.join(' ').toLocaleLowerCase().includes(q));results.replaceChildren();for(const [category,title,body] of matches){const card=document.createElement('article');card.className='card';const tag=document.createElement('small');tag.textContent=category;const details=document.createElement('details');const summary=document.createElement('summary');summary.textContent=title;const p=document.createElement('p');p.textContent=body;details.append(summary,p);card.append(tag,details);results.append(card)}status.textContent=matches.length+' article'+(matches.length===1?'':'s')+' found.'}search.addEventListener('input',render);render();
+</script></body></html>
