@@ -1286,9 +1286,26 @@
                 successEl.classList.remove('hidden');
                 setTimeout(() => closeModal('resetPasswordModal'), 1500);
             } catch (err) {
-                errorEl.textContent = err.message;
+                const expired = err.status === 400 && /expired|invalid|reset link/i.test(err.message || '');
+                if (expired) {
+                    errorEl.textContent = 'This recovery link can no longer be used. It may have expired, already been used, or been replaced by a newer request. You can request a fresh link below.';
+                    const retry = document.createElement('button');
+                    retry.type = 'button';
+                    retry.textContent = 'Send me a new recovery link';
+                    retry.className = 'block mt-3 rounded-xl bg-[#0A66C2] px-4 py-3 text-white font-semibold';
+                    retry.onclick = () => {
+                        document.getElementById('resetToken').value = '';
+                        closeModal('resetPasswordModal');
+                        openForgotPasswordModal(document.getElementById('authEmail').value);
+                    };
+                    errorEl.replaceChildren(document.createTextNode(errorEl.textContent), retry);
+                    document.getElementById('resetToken').value = '';
+                    btn.disabled = true;
+                } else {
+                    errorEl.textContent = err.message || 'We could not update your password. Please try again.';
+                    btn.disabled = false;
+                }
                 errorEl.classList.remove('hidden');
-                btn.disabled = false;
                 btn.textContent = 'Update Password';
             }
             return false;

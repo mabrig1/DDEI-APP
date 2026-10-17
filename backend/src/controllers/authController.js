@@ -95,8 +95,13 @@ async function forgotPassword(req, res) {
       user.resetPasswordExpires = new Date(Date.now() + RESET_TOKEN_DURATION_MS);
       await user.save();
 
-      const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_ORIGIN || 'http://localhost:5500';
-      const resetUrl = `${frontendUrl}/?resetToken=${rawToken}`;
+      const configuredOrigin = (process.env.FRONTEND_URL || process.env.CLIENT_ORIGIN || 'https://ddei.online').split(',')[0].trim();
+      const frontendUrl = new URL(configuredOrigin);
+      if (process.env.NODE_ENV === 'production' && frontendUrl.protocol !== 'https:') throw new Error('Password recovery requires HTTPS');
+      frontendUrl.search = '';
+      frontendUrl.hash = '';
+      frontendUrl.searchParams.set('resetToken', rawToken);
+      const resetUrl = frontendUrl.toString();
       await sendPasswordResetEmail(user, resetUrl);
     }
 
