@@ -269,7 +269,7 @@ async function reasonAboutLesson(req, res) {
     'Lesson: ' + found.lesson.title,
     ...(found.lesson.content || []).map(item => String(item).replace(/<[^>]*>/g, ' ').slice(0, 800)),
     ...(found.lesson.keyTakeaways || []).map(item => String(item).replace(/<[^>]*>/g, ' ').slice(0, 300))
-  ].join('\\n').slice(0, 4000);
+  ].join('\n').slice(0, 4000);
   try {
     const result = await generateTutorReply({ question, task: 'reasoning', context });
     return res.json({ ...result, lessonId, task: 'reasoning' });
