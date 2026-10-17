@@ -1,0 +1,39 @@
+name: Prepare backend dependency security fixes
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare-fixes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Apply compatible npm security fixes
+        working-directory: backend
+        run: |
+          npm ci --ignore-scripts
+          npm audit fix --package-lock-only --ignore-scripts
+          npm ci --ignore-scripts
+          npm test
+          npm audit --omit=dev --audit-level=high
+      - name: Propose reviewed lockfile update
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ github.token }}
+          branch: security/backend-npm-audit-fixes
+          delete-branch: true
+          commit-message: 'security: apply compatible npm audit dependency fixes'
+          title: 'security: update backend dependencies for npm advisories'
+          body: 'Automated compatible npm audit fixes. Review package-lock diff, tests, and security checks before merging. No force upgrades.'
+          add-paths: backend/package-lock.json
+          draft: true
