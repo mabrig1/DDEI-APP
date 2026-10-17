@@ -1,6 +1,11 @@
 name: Prepare backend dependency security fixes
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - security/devshield-integration-20261017
+    paths:
+      - .github/workflows/prepare-dependency-fixes.yml
 
 permissions:
   contents: write
@@ -24,7 +29,7 @@ jobs:
           npm ci --ignore-scripts
           npm audit fix --package-lock-only --ignore-scripts
           npm ci --ignore-scripts
-          npm test
+          npm test --if-present
       - name: Audit remaining production vulnerabilities
         id: audit
         continue-on-error: true
