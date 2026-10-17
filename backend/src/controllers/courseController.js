@@ -4,6 +4,7 @@ const { COURSES } = require('../data/courseCatalog');
 const { logActivity } = require('../utils/activityLogger');
 const { COACH_ACTIONS, runCourseCoach } = require('../utils/courseCoachAgent');
 const { generateTutorReply } = require('../utils/aiTutorInference');
+const { interpretLessonImage } = require('../utils/aiVisionInference');
 
 function findCourse(id) {
   return COURSES.find((c) => c.id === id) || null;
@@ -239,6 +240,20 @@ async function coachCourse(req, res) {
   });
 }
 
+async function interpretCourseImage(req, res) {
+  const course = findCourse(req.params.id);
+  if (!course) return res.status(404).json({ message: 'Course not found' });
+  const { lessonId, question, image, mimeType } = req.body || {};
+  if (typeof lessonId !== 'string' || !findLesson(course, lessonId)) return res.status(404).json({ message: 'Lesson not found' });
+  try {
+    const result = await interpretLessonImage({ question, image, mimeType });
+    return res.json({ ...result, lessonId, task: 'vision' });
+  } catch (error) {
+    if (/^(Invalid|Unsupported|Image exceeds|Image format)/.test(error.message)) return res.status(400).json({ message: error.message });
+    return res.status(503).json({ message: 'Image tutoring is temporarily unavailable' });
+  }
+}
+
 async function reasonAboutLesson(req, res) {
   const course = findCourse(req.params.id);
   if (!course) return res.status(404).json({ message: 'Course not found' });
@@ -362,6 +377,7 @@ module.exports = {
   submitQuiz,
   coachCourse,
   reasonAboutLesson,
+  interpretCourseImage,
   getProgress,
   selectCourse,
   getCertificate,
