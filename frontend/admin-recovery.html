@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/security.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restore Admin Access — Destiny Skills Bridge</title>
@@ -102,7 +103,7 @@
                 const data = await response.json().catch(() => ({}));
                 if (!response.ok) throw new Error(data.message || 'Recovery failed');
 
-                localStorage.setItem('dsb_admin_token', data.token);
+                sessionStorage.setItem('dsb_admin_token', data.token);
                 showMessage('Admin access restored. Opening the dashboard…', true);
                 window.setTimeout(() => window.location.replace('/admin'), 500);
             } catch (err) {
@@ -114,3 +115,4 @@
     </script>
 </body>
 </html>
+

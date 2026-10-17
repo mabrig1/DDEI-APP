@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/security.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — Destiny Skills Bridge</title>
@@ -402,9 +403,9 @@
                 ? 'http://localhost:5000'
                 : 'https://ddei-app-kh6q.vercel.app');
 
-        function adminToken() { return localStorage.getItem('dsb_admin_token'); }
-        function setAdminToken(token) { localStorage.setItem('dsb_admin_token', token); }
-        function clearAdminToken() { localStorage.removeItem('dsb_admin_token'); }
+        function adminToken() { return sessionStorage.getItem('dsb_admin_token'); }
+        function setAdminToken(token) { sessionStorage.setItem('dsb_admin_token', token); }
+        function clearAdminToken() { sessionStorage.removeItem('dsb_admin_token'); }
 
         async function adminRequest(path, options = {}) {
             const headers = Object.assign({ 'Content-Type': 'application/json' }, options.headers || {});
@@ -1666,9 +1667,7 @@
         }
 
         function escapeHtml(value) {
-            const div = document.createElement('div');
-            div.textContent = value == null ? '' : String(value);
-            return div.innerHTML;
+            return String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
         }
 
         if (adminToken()) {
@@ -1690,3 +1689,4 @@
     </footer>
 </body>
 </html>
+

@@ -9,7 +9,7 @@ const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 const RESET_TOKEN_DURATION_MS = 60 * 60 * 1000;
 
 function signToken(user) {
-  return jwt.sign({ sub: user._id.toString() }, process.env.JWT_SECRET, {
+  return jwt.sign({ sub: user._id.toString(), ver: user.authVersion || 0 }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   });
 }
@@ -42,7 +42,7 @@ async function register(req, res) {
     if (err.code === 11000) {
       return res.status(409).json({ message: 'An account with this email already exists' });
     }
-    console.error('Register failed:', err);
+    console.error('Register failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not create your account right now. Please try again.' });
   }
 }
@@ -65,7 +65,7 @@ async function login(req, res) {
     logActivity(user._id, user.name, 'login', requestClientInfo(req));
     res.json({ token, user });
   } catch (err) {
-    console.error('Login failed:', err);
+    console.error('Login failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not log you in right now. Please try again.' });
   }
 }
@@ -76,7 +76,7 @@ async function me(req, res) {
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json({ user });
   } catch (err) {
-    console.error('Fetch profile failed:', err);
+    console.error('Fetch profile failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not load your account right now. Please try again.' });
   }
 }
@@ -95,7 +95,7 @@ async function forgotPassword(req, res) {
       user.resetPasswordExpires = new Date(Date.now() + RESET_TOKEN_DURATION_MS);
       await user.save();
 
-      const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_ORIGIN || 'http://localhost:5500';
+      const frontendUrl = process.env.FRONTEND_URL || process.env.CLIENT_ORIGIN?.split(',')[0].trim() || 'https://ddei.online';
       const resetUrl = `${frontendUrl}/?resetToken=${rawToken}`;
       await sendPasswordResetEmail(user, resetUrl);
     }
@@ -104,7 +104,7 @@ async function forgotPassword(req, res) {
     // so this endpoint can't be used to discover which emails have accounts.
     res.json({ message: "If an account exists for that email, we've sent a password reset link." });
   } catch (err) {
-    console.error('Forgot password failed:', err);
+    console.error('Forgot password failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not process your request right now. Please try again.' });
   }
 }
@@ -112,7 +112,7 @@ async function forgotPassword(req, res) {
 async function resetPassword(req, res) {
   try {
     const { token, password } = req.body;
-    if (!token || !password) {
+    if (typeof token !== 'string' || !/^[a-f0-9]{64}$/.test(token) || !password) {
       return res.status(400).json({ message: 'Token and new password are required' });
     }
     const validationError = passwordError(password);
@@ -128,17 +128,19 @@ async function resetPassword(req, res) {
       return res.status(400).json({ message: 'This reset link is invalid or has expired. Please request a new one.' });
     }
 
-    user.password = password;
-    user.resetPasswordToken = null;
-    user.resetPasswordExpires = null;
-    await user.save();
-
-    const jwtToken = signToken(user);
-    res.json({ token: jwtToken, user });
+    const passwordHash = await require('bcryptjs').hash(password, 10);
+    const updated = await User.findOneAndUpdate(
+      { _id: user._id, resetPasswordToken: hashedToken, resetPasswordExpires: { $gt: new Date() } },
+      { $set: { password: passwordHash, resetPasswordToken: null, resetPasswordExpires: null }, $inc: { authVersion: 1 } },
+      { new: true }
+    );
+    if (!updated) return res.status(400).json({ message: 'This reset link has already been used.' });
+    res.json({ token: signToken(updated), user: updated });
   } catch (err) {
-    console.error('Reset password failed:', err);
+    console.error('Reset password failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not reset your password right now. Please try again.' });
   }
 }
 
 module.exports = { register, login, me, forgotPassword, resetPassword };
+

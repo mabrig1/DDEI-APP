@@ -119,7 +119,7 @@ async function reportPromoterConversion(subscription) {
       await subscription.save();
     }
   } catch (err) {
-    console.error('Promoter commission reporting failed:', err.response?.data || err.message);
+    console.error('Promoter commission reporting failed:', err.code || 'operation_failed');
   }
 }
 
@@ -155,7 +155,7 @@ async function initializePayment(req, res) {
   const email = normalizeEmail(req.body.email);
   const referralCode = normalizeReferralCode(req.body.referralCode);
   const attributionToken = normalizeAttributionToken(req.body.attributionToken);
-  const planConfig = PLANS[plan];
+  const planConfig = typeof plan === 'string' && Object.hasOwn(PLANS, plan) ? PLANS[plan] : null;
   if (!planConfig) return res.status(400).json({ message: 'Invalid or unknown payment plan.' });
   if (!isValidEmail(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
   if (!process.env.PAYSTACK_SECRET_KEY) {
@@ -189,7 +189,7 @@ async function initializePayment(req, res) {
       status: 'pending',
     });
   } catch (err) {
-    console.error('Failed to create payment record:', err);
+    console.error('Failed to create payment record:', err.code || 'operation_failed');
     return res.status(503).json({ message: 'The payment service is temporarily unavailable. Please try again in a few minutes.' });
   }
 
@@ -207,43 +207,30 @@ async function initializePayment(req, res) {
     res.status(201).json({ authorizationUrl: response.data.data.authorization_url, reference, subscriptionId: subscription._id });
   } catch (err) {
     await Subscription.updateOne({ _id: subscription._id, status: 'pending' }, { $set: { status: 'failed' } }).catch(() => {});
-    const message = err.response?.data?.message || 'Failed to initialize payment with Paystack';
+    const message = 'Failed to initialize payment with Paystack';
     res.status(502).json({ message });
   }
 }
 
 async function grantPaymentBenefits(subscription) {
-  if (!subscription.user || subscription.status !== 'success') return;
-  const resolvedPlan = PLANS[subscription.plan] || {};
-  if (resolvedPlan.type === 'sponsorship') {
-    logActivity(subscription.user, 'Sponsor', 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount, sponsorship: true });
-    return;
-  }
-  if (subscription.plan.startsWith('certificate-fee:')) {
-    const certCourseId = subscription.plan.split(':')[1];
-    const user = await User.findById(subscription.user);
-    if (user && certCourseId && !(user.purchasedCourses || []).some((p) => p.courseId === certCourseId)) {
-      user.purchasedCourses.push({ courseId: certCourseId, purchasedAt: new Date() });
-      await user.save();
-      logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: 'Verified Course Certificate', amountNGN: subscription.amount });
-    }
-    return;
-  }
-  if (resolvedPlan.type === 'course' && resolvedPlan.courseId) {
-    const user = await User.findById(subscription.user);
-    if (user && !(user.purchasedCourses || []).some((p) => p.courseId === resolvedPlan.courseId)) {
-      user.purchasedCourses.push({ courseId: resolvedPlan.courseId, purchasedAt: new Date() });
-      await user.save();
-      logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount });
-    }
-    return;
-  }
-  if (resolvedPlan.type === 'subscription') {
-    const expiresAt = new Date();
+  if (!subscription.user || subscription.status !== 'success' || subscription.benefitsGrantedAt) return;
+  const plan = PLANS[subscription.plan] || {};
+  const courseId = subscription.plan.startsWith('certificate-fee:')
+    ? subscription.plan.split(':')[1] : plan.courseId;
+  if (courseId) {
+    // Atomic predicate prevents duplicate grants across verify/webhook races.
+    await User.updateOne(
+      { _id: subscription.user, 'purchasedCourses.courseId': { $ne: courseId } },
+      { $push: { purchasedCourses: { courseId, purchasedAt: subscription.settledAt || subscription.createdAt } } }
+    );
+  } else if (plan.type === 'subscription') {
+    // Fixed settlement time makes retries idempotent; $max prevents older payments
+    // from shortening a more recent entitlement.
+    const expiresAt = new Date(subscription.settledAt || subscription.createdAt);
     expiresAt.setMonth(expiresAt.getMonth() + (subscription.plan === 'premium-yearly' ? 12 : 1));
-    const user = await User.findByIdAndUpdate(subscription.user, { isPremium: true, premiumExpiresAt: expiresAt });
-    if (user) logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount });
+    await User.updateOne({ _id: subscription.user }, { $set: { isPremium: true }, $max: { premiumExpiresAt: expiresAt } });
   }
+  await Subscription.updateOne({ _id: subscription._id }, { $set: { benefitsGrantedAt: new Date() } });
 }
 
 async function settlePayment(data) {
@@ -259,19 +246,23 @@ async function settlePayment(data) {
     }
   }
 
-  const validAmount = Number(data.amount) === existing.amount * 100;
+  const validAmount = Number.isSafeInteger(data.amount) && data.amount > 0 && data.amount === Math.round(existing.amount * 100);
   const validCurrency = String(data.currency || '').toUpperCase() === existing.currency;
   const success = data.status === 'success' && validAmount && validCurrency;
   if (!success) {
     if (existing.status !== 'success') {
-      existing.status = 'failed';
-      existing.paystackData = paymentSnapshot(data);
-      await existing.save();
+      const failed = await Subscription.findOneAndUpdate(
+        { _id: existing._id, status: { $ne: 'success' } },
+        { $set: { status: 'failed', paystackData: paymentSnapshot(data) } },
+        { new: true }
+      );
+      return failed || await Subscription.findById(existing._id);
     }
     return existing;
   }
 
   if (existing.status === 'success') {
+    await grantPaymentBenefits(existing);
     await reportPromoterConversion(existing);
     await reportGrowthConversion(existing);
     return existing;
@@ -279,11 +270,12 @@ async function settlePayment(data) {
 
   const settled = await Subscription.findOneAndUpdate(
     { _id: existing._id, status: { $ne: 'success' } },
-    { $set: { status: 'success', paystackData: paymentSnapshot(data) } },
+    { $set: { status: 'success', settledAt: new Date(), paystackData: paymentSnapshot(data) } },
     { new: true }
   );
   if (!settled) {
     const current = await Subscription.findById(existing._id);
+    await grantPaymentBenefits(current);
     await reportPromoterConversion(current);
     return current;
   }
@@ -303,9 +295,10 @@ async function verifyPayment(req, res) {
     if (data.reference !== reference) return res.status(502).json({ message: 'Payment provider returned a mismatched reference.' });
     const subscription = await settlePayment(data);
     if (!subscription) return res.status(404).json({ message: 'Subscription not found for this reference' });
-    res.json({ status: subscription.status, subscription });
+    // A reference is a bearer capability for status only, never customer records.
+    res.json({ status: subscription.status, reference: subscription.reference, plan: subscription.plan });
   } catch (err) {
-    const message = err.response?.data?.message || 'Failed to verify payment with Paystack';
+    const message = 'Failed to verify payment with Paystack';
     res.status(502).json({ message });
   }
 }
@@ -313,19 +306,20 @@ async function verifyPayment(req, res) {
 async function paystackWebhook(req, res) {
   const signature = String(req.headers['x-paystack-signature'] || '');
   const rawBody = req.rawBody;
-  if (!process.env.PAYSTACK_SECRET_KEY || !rawBody || !/^[a-f0-9]{128}$/i.test(signature)) return res.status(401).json({ message: 'Invalid webhook signature.' });
+  if (!process.env.PAYSTACK_SECRET_KEY || !rawBody || !/^[a-f0-9]{128}$/i.test(signature)) { require('../middleware/security').securityEvent('webhook_signature_rejected', req); return res.status(401).json({ message: 'Invalid webhook signature.' }); }
   const expected = crypto.createHmac('sha512', process.env.PAYSTACK_SECRET_KEY).update(rawBody).digest('hex');
   const suppliedBuffer = Buffer.from(signature, 'hex');
   const expectedBuffer = Buffer.from(expected, 'hex');
-  if (suppliedBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(suppliedBuffer, expectedBuffer)) return res.status(401).json({ message: 'Invalid webhook signature.' });
+  if (suppliedBuffer.length !== expectedBuffer.length || !crypto.timingSafeEqual(suppliedBuffer, expectedBuffer)) { require('../middleware/security').securityEvent('webhook_signature_rejected', req); return res.status(401).json({ message: 'Invalid webhook signature.' }); }
   try {
     const event = req.body;
     if (event.event === 'charge.success' && /^dsb_[a-f0-9]{16}$/.test(String(event.data?.reference || ''))) await settlePayment(event.data);
     return res.status(200).json({ received: true });
   } catch (err) {
-    console.error('Paystack webhook settlement failed:', err);
+    console.error('Paystack webhook settlement failed:', err.code || 'operation_failed');
     return res.status(500).json({ message: 'Webhook processing failed.' });
   }
 }
 
-module.exports = { initializePayment, verifyPayment, paystackWebhook, PLANS };
+module.exports = { initializePayment, verifyPayment, paystackWebhook, PLANS, settlePayment, grantPaymentBenefits };
+

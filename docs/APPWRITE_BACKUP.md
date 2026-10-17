@@ -174,8 +174,7 @@ GitHub runner, so none of this requires a development environment.
    Optionally add `APPWRITE_ENDPOINT`, `APPWRITE_PROJECT_ID` or
    `APPWRITE_DATABASE_ID` under **Variables** to override the built-in defaults.
 
-2. **If MongoDB is on Atlas**, set Network Access to allow `0.0.0.0/0`. GitHub's
-   runners have no fixed IP to allowlist, so a restricted list blocks them.
+2. **If MongoDB is on Atlas**, use a runner with fixed egress or private connectivity and allow only its addresses. Keep broad public ingress disabled; verify the approved network route before running a backup.
 
 3. **Actions → "Appwrite backup" → Run workflow.** Pick `provision` the first
    time, then `sync`.
@@ -274,3 +273,4 @@ than their column are truncated so one oversized field can't lose a whole row.
 
 To add a field: add the column to the schema, run `npm run appwrite:provision`,
 then `npm run appwrite:sync` to backfill it.
+

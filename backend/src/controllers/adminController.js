@@ -233,7 +233,7 @@ async function createAccessLink(req, res) {
     await user.save();
   }
 
-  const token = jwt.sign({ sub: user._id.toString() }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ sub: user._id.toString(), ver: user.authVersion || 0 }, process.env.JWT_SECRET, {
     expiresIn: '4h',
   });
 
@@ -353,3 +353,4 @@ module.exports = {
   messageUser,
   broadcastMessage,
 };
+

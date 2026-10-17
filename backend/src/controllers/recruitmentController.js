@@ -39,7 +39,7 @@ async function createRecruitmentApplication(req, res) {
       message: 'Your Work With Us application has been received.',
     });
   } catch (err) {
-    console.error('Create recruitment application failed:', err);
+    console.error('Create recruitment application failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not submit your application right now. Please try again.' });
   }
 }
@@ -52,3 +52,4 @@ async function listMyRecruitmentApplications(req, res) {
 }
 
 module.exports = { createRecruitmentApplication, listMyRecruitmentApplications };
+

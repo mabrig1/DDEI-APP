@@ -24,6 +24,8 @@ module.exports = async function handler(req, res) {
     return;
   }
 
+  if (req.url.split('?')[0] === '/api/health') return app(req, res);
+
   try {
     // 4. CONNECT TO DATABASE
     await connectDB();
@@ -41,3 +43,4 @@ module.exports = async function handler(req, res) {
   // 5. HAND OFF TO EXPRESS APP
   return app(req, res);
 };
+

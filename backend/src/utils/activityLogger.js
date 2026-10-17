@@ -25,8 +25,7 @@ function parseUserAgent(ua = '') {
 
 function requestClientInfo(req) {
   const ua = req.headers['user-agent'] || '';
-  const forwarded = req.headers['x-forwarded-for'];
-  const ip = (typeof forwarded === 'string' ? forwarded.split(',')[0].trim() : null) || req.ip || null;
+  const ip = req.ip || null;
   return { ...parseUserAgent(ua), ip };
 }
 
@@ -37,3 +36,4 @@ function logActivity(userId, userName, action, metadata = null) {
 }
 
 module.exports = { logActivity, requestClientInfo, parseUserAgent };
+

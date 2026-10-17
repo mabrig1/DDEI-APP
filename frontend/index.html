@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/security.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Destiny Skills Bridge — Learn. Build. Create Your Future.</title>
@@ -922,19 +923,19 @@
         let cachedSkills = FALLBACK_SKILLS;
         let authMode = 'login';
 
-        function authToken() { return localStorage.getItem('dsb_token'); }
+        function authToken() { return sessionStorage.getItem('dsb_token'); }
         function authUser() {
-            const raw = localStorage.getItem('dsb_user');
+            const raw = sessionStorage.getItem('dsb_user');
             return raw ? JSON.parse(raw) : null;
         }
         function setSession(token, user) {
-            localStorage.setItem('dsb_token', token);
-            localStorage.setItem('dsb_user', JSON.stringify(user));
+            sessionStorage.setItem('dsb_token', token);
+            sessionStorage.setItem('dsb_user', JSON.stringify(user));
             refreshNavAuth();
         }
         function clearSession() {
-            localStorage.removeItem('dsb_token');
-            localStorage.removeItem('dsb_user');
+            sessionStorage.removeItem('dsb_token');
+            sessionStorage.removeItem('dsb_user');
             refreshNavAuth();
             renderCoursesSection();
         }
@@ -1080,9 +1081,7 @@
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
         function escapeHtml(value) {
-            const div = document.createElement('div');
-            div.textContent = value == null ? '' : String(value);
-            return div.innerHTML;
+            return String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
         }
 
         function blogCardHTML(item) {
@@ -1091,7 +1090,7 @@
                 : '';
             const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : '';
             return `
-                <a href="?content=${encodeURIComponent(item.slug)}" onclick="return openContentBySlug('${escapeHtml(item.slug)}', event)"
+                <a href="?content=${encodeURIComponent(item.slug)}" data-slug="${escapeHtml(item.slug)}" onclick="return openContentBySlug(this.dataset.slug, event)"
                    class="bg-white border rounded-3xl p-6 flex flex-col hover:shadow-lg transition">
                     ${image}
                     <span class="text-xs text-slate-400 mb-1">${date}</span>
@@ -1139,7 +1138,7 @@
                 document.getElementById('contentViewDate').textContent = item.publishedAt
                     ? new Date(item.publishedAt).toLocaleDateString()
                     : '';
-                document.getElementById('contentViewBody').innerHTML = item.body;
+                window.DSB_SECURITY.renderContent(document.getElementById('contentViewBody'), item.body);
                 const contentView = document.getElementById('contentView');
                 contentView.classList.remove('hidden');
                 contentView.scrollIntoView({ behavior: 'smooth' });
@@ -1167,7 +1166,7 @@
                 const data = await apiRequest('/api/content?type=page');
                 const pages = data.content || [];
                 container.innerHTML = pages
-                    .map((p) => `<a href="?content=${encodeURIComponent(p.slug)}" onclick="return openContentBySlug('${escapeHtml(p.slug)}', event)" class="hover:text-slate-800 hover:underline">${escapeHtml(p.title)}</a>`)
+                    .map((p) => `<a href="?content=${encodeURIComponent(p.slug)}" data-slug="${escapeHtml(p.slug)}" onclick="return openContentBySlug(this.dataset.slug, event)" class="hover:text-slate-800 hover:underline">${escapeHtml(p.title)}</a>`)
                     .join('');
             } catch (err) {
                 container.innerHTML = '';
@@ -1498,7 +1497,7 @@
                 return 'Could not reach the payment server. Please check your internet connection and try again in a moment. '
                     + 'If it keeps happening, message us on WhatsApp (green button at the bottom right) and we will help you enroll.';
             }
-            return `Could not start payment: ${err.message}`;
+            return `Could not start payment: ${escapeHtml(err.message)}`;
         }
 
         async function startUpgrade(plan) {
@@ -1593,9 +1592,9 @@
                 const p = data.portfolio;
                 resultEl.innerHTML = `
                     <div>
-                        <h4 class="font-semibold text-lg mb-2">${p.headline}</h4>
-                        <p class="text-sm text-slate-600 mb-4">${p.summary}</p>
-                        ${p.highlights.length ? `<ul class="text-sm list-disc list-inside space-y-1">${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>` : ''}
+                        <h4 class="font-semibold text-lg mb-2">${escapeHtml(p.headline)}</h4>
+                        <p class="text-sm text-slate-600 mb-4">${escapeHtml(p.summary)}</p>
+                        ${p.highlights.length ? `<ul class="text-sm list-disc list-inside space-y-1">${p.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join('')}</ul>` : ''}
                     </div>`;
             } catch (err) {
                 if (err.status === 401) {
@@ -1608,7 +1607,7 @@
                     showUpgradePrompt(err.message);
                     return;
                 }
-                resultEl.innerHTML = `<p class="text-red-600">${err.message}</p>`;
+                resultEl.innerHTML = `<p class="text-red-600">${escapeHtml(err.message)}</p>`;
             }
         }
 
@@ -1618,7 +1617,7 @@
             bubble.className = role === 'user' ? 'flex justify-end' : 'flex justify-start';
             bubble.innerHTML = `
                 <div class="${role === 'user' ? 'bg-[#0A66C2] text-white' : 'bg-slate-100 text-slate-800'} rounded-2xl px-4 py-3 max-w-[80%] text-sm">
-                    ${text}
+                    ${escapeHtml(text)}
                 </div>`;
             container.appendChild(bubble);
             container.scrollTop = container.scrollHeight;
@@ -1953,7 +1952,7 @@
                 closeModal('chooseCourseModal');
                 if (err.status === 402) {
                     if (err.data && err.data.purchaseRequired && err.data.purchasePlan) {
-                        if (confirm(`${err.message}\n\nProceed to secure payment now?`)) {
+                        if (confirm(`${escapeHtml(err.message)}\n\nProceed to secure payment now?`)) {
                             startCoursePurchase(err.data.purchasePlan, err.data.courseId || courseId);
                         }
                         return;
@@ -1961,7 +1960,7 @@
                     showUpgradePrompt(err.message);
                     return;
                 }
-                alert(`Could not select course: ${err.message}`);
+                alert(`Could not select course: ${escapeHtml(err.message)}`);
             }
         }
 
@@ -1981,7 +1980,7 @@
             } catch (err) {
                 if (err.status === 402) {
                     if (err.data && err.data.purchaseRequired && err.data.purchasePlan) {
-                        if (confirm(`${err.message}\n\nProceed to secure payment now?`)) {
+                        if (confirm(`${escapeHtml(err.message)}\n\nProceed to secure payment now?`)) {
                             startCoursePurchase(err.data.purchasePlan, err.data.courseId || courseId);
                         }
                         return;
@@ -1994,7 +1993,7 @@
                     openAuthModal('login');
                     return;
                 }
-                alert(`Could not load course: ${err.message}`);
+                alert(`Could not load course: ${escapeHtml(err.message)}`);
                 return;
             }
 
@@ -2070,7 +2069,7 @@
             } catch (err) {
                 if (err.status === 401) { openAuthModal('login'); return; }
                 if (err.status === 402 && err.data && err.data.certificateRequired) {
-                    if (confirm(`${err.message}\n\nPay now with Paystack? After payment you will return here to claim your certificate.`)) {
+                    if (confirm(`${escapeHtml(err.message)}\n\nPay now with Paystack? After payment you will return here to claim your certificate.`)) {
                         startCoursePurchase(err.data.purchasePlan, err.data.courseId, err.data.courseId);
                     }
                     return;
@@ -2430,7 +2429,7 @@
                     showUpgradePrompt(err.message);
                     return;
                 }
-                output.textContent = `The Course Coach could not respond: ${err.message}`;
+                output.textContent = `The Course Coach could not respond: ${escapeHtml(err.message)}`;
             }
         }
 
@@ -2497,7 +2496,7 @@
                 renderQuizResults(data);
             } catch (err) {
                 if (err.status === 402) showUpgradePrompt(err.message);
-                document.getElementById('quizResult').innerHTML = `<p class="text-red-600 text-sm">${err.message}</p>`;
+                document.getElementById('quizResult').innerHTML = `<p class="text-red-600 text-sm">${escapeHtml(err.message)}</p>`;
             }
             return false;
         }
@@ -2508,7 +2507,7 @@
             if (!token) return;
 
             history.replaceState({}, '', window.location.pathname + window.location.hash);
-            localStorage.setItem('dsb_token', token);
+            sessionStorage.setItem('dsb_token', token);
             try {
                 const data = await apiRequest('/api/auth/me');
                 setSession(token, data.user);
@@ -2598,7 +2597,7 @@
                         refreshNavAuth();
                         renderCoursesSection();
                     } catch (e) { /* session refresh is best-effort */ }
-                    const isSponsorship = String(data.subscription?.plan || '').startsWith('sponsor-');
+                    const isSponsorship = String(data.plan || '').startsWith('sponsor-');
                     alert(isSponsorship
                         ? '✅ Sponsorship confirmed. Thank you for investing in African talent. Your contribution is now included in our transparent funding records.'
                         : '✅ Payment confirmed! Your access has been unlocked. If you paid for a certificate, open your course and click "Claim Certificate".');
@@ -2682,3 +2681,4 @@
     </script>
 </body>
 </html>
+

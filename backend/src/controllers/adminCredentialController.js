@@ -6,8 +6,8 @@ const AdminCredential = require('../models/AdminCredential');
 const PRIMARY_KEY = 'primary';
 const MIN_PASSWORD_LENGTH = 12;
 
-function signAdminToken() {
-  return jwt.sign({ sub: 'admin', isAdmin: true }, process.env.JWT_SECRET, {
+function signAdminToken(version = 0) {
+  return jwt.sign({ sub: 'admin', isAdmin: true, ver: version }, process.env.JWT_SECRET, {
     expiresIn: process.env.ADMIN_JWT_EXPIRES_IN || '4h',
   });
 }
@@ -27,9 +27,11 @@ function normalizeUsername(value) {
 
 function validateCredentials(username, password) {
   if (username.length < 3) return 'Username must be at least 3 characters';
-  if (!password || password.length < MIN_PASSWORD_LENGTH) {
+  if (typeof password !== 'string' || password.length < MIN_PASSWORD_LENGTH) {
     return `Password must be at least ${MIN_PASSWORD_LENGTH} characters`;
   }
+  if (Buffer.byteLength(password, 'utf8') > 72) return 'Password must be at most 72 bytes';
+  if (username.length > 120) return 'Username is too long';
   return null;
 }
 
@@ -61,9 +63,9 @@ async function login(req, res) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
 
-    return res.json({ token: signAdminToken() });
+    return res.json({ token: signAdminToken(credential?.authVersion || 0) });
   } catch (err) {
-    console.error('Admin login failed:', err);
+    console.error('Admin login failed:', err.code || 'operation_failed');
     return res.status(500).json({ message: 'Could not log in right now. Please try again.' });
   }
 }
@@ -91,6 +93,7 @@ async function recover(req, res) {
     const passwordHash = await bcrypt.hash(password, 12);
     await AdminCredential.create({
       key: PRIMARY_KEY,
+      authVersion: 1,
       username,
       passwordHash,
       recoveryUsedAt: new Date(),
@@ -98,7 +101,7 @@ async function recover(req, res) {
     });
 
     return res.json({
-      token: signAdminToken(),
+      token: signAdminToken(1),
       username,
       message: 'Admin access restored. The previous environment password is now overridden.',
     });
@@ -106,7 +109,7 @@ async function recover(req, res) {
     if (err && err.code === 11000) {
       return res.status(409).json({ message: 'Admin recovery has already been completed.' });
     }
-    console.error('Admin recovery failed:', err);
+    console.error('Admin recovery failed:', err.code || 'operation_failed');
     return res.status(500).json({ message: 'Could not restore admin access right now. Please try again.' });
   }
 }
@@ -122,6 +125,7 @@ async function changeCredentials(req, res) {
     const credential = await AdminCredential.findOneAndUpdate(
       { key: PRIMARY_KEY },
       {
+        $inc: { authVersion: 1 },
         $set: {
           username,
           passwordHash,
@@ -129,7 +133,7 @@ async function changeCredentials(req, res) {
           updatedBy: 'authenticated-admin',
         },
       },
-      { upsert: true, new: true, setDefaultsOnInsert: true }
+      { upsert: true, new: true, setDefaultsOnInsert: false }
     );
 
     return res.json({
@@ -137,9 +141,10 @@ async function changeCredentials(req, res) {
       message: 'Admin credentials updated successfully.',
     });
   } catch (err) {
-    console.error('Admin credential update failed:', err);
+    console.error('Admin credential update failed:', err.code || 'operation_failed');
     return res.status(500).json({ message: 'Could not update admin credentials right now.' });
   }
 }
 
 module.exports = { login, recover, changeCredentials };
+

@@ -1,0 +1,33 @@
+name: DevShield preview observation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview-runtime:
+    if: github.ref == 'refs/heads/security/devshield-integration-20261017'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Observe security-branch preview only
+        uses: mabrig1/mabrig-devshield-ai@6ff4c21138d685cda4e5f06c90dead60a59481ba
+        with:
+          github-token: ${{ github.token }}
+          scan-scope: repository
+          max-files: '500'
+          fail-on: high
+          comment: 'false'
+          runtime-guard: probe
+          runtime-target: https://ddei-app-backend-git-s-068d6a-victoryonline1-gmailcoms-projects.vercel.app/api/health
+          runtime-enforce: 'false'
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: preview-runtime-evidence
+          path: .devshield/
+          include-hidden-files: true
+          retention-days: 14

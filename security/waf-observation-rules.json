@@ -1,0 +1,20 @@
+[
+  {
+    "name": "DDEI auth observation",
+    "conditionGroup": [
+      {"conditions": [{"type":"path","op":"pre","value":"/api/auth/"},{"type":"method","op":"eq","value":"POST"}]},
+      {"conditions": [{"type":"path","op":"inc","value":["/api/admin/login","/api/admin/recover"]},{"type":"method","op":"eq","value":"POST"}]}
+    ],
+    "action": {"mitigate":{"action":"log"}}
+  },
+  {
+    "name": "DDEI API observation excluding webhooks",
+    "conditionGroup": [{"conditions":[{"type":"path","op":"pre","value":"/api/"},{"type":"path","op":"pre","value":"/api/payments/webhook","neg":true}]}],
+    "action": {"mitigate":{"action":"log"}}
+  },
+  {
+    "name": "DDEI secret path observation",
+    "conditionGroup": [{"conditions":[{"type":"path","op":"inc","value":["/.env","/.git/config","/wp-admin","/phpmyadmin"]}]}],
+    "action": {"mitigate":{"action":"log"}}
+  }
+]
