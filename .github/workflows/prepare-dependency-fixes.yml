@@ -25,7 +25,11 @@ jobs:
           npm audit fix --package-lock-only --ignore-scripts
           npm ci --ignore-scripts
           npm test
-          npm audit --omit=dev --audit-level=high
+      - name: Audit remaining production vulnerabilities
+        id: audit
+        continue-on-error: true
+        working-directory: backend
+        run: npm audit --omit=dev --audit-level=high
       - name: Propose reviewed lockfile update
         uses: peter-evans/create-pull-request@v7
         with:
@@ -37,3 +41,8 @@ jobs:
           body: 'Automated compatible npm audit fixes. Review package-lock diff, tests, and security checks before merging. No force upgrades.'
           add-paths: backend/package-lock.json
           draft: true
+      - name: Fail if unresolved high-severity advisories remain
+        if: steps.audit.outcome == 'failure'
+        run: |
+          echo 'High-severity vulnerabilities remain after compatible fixes; inspect the proposed PR and plan manual remediation.'
+          exit 1
