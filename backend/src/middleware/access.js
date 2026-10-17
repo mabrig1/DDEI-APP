@@ -5,39 +5,24 @@ async function requireActiveAccess(req, res, next) {
   const user = await User.findById(req.userId);
   if (!user) return res.status(404).json({ message: 'User not found' });
 
-  if (!user.trialExpiresAt) {
-    user.trialExpiresAt = user.trialEndsAt();
-    await user.save();
-  }
-
   const courseId = req.params.id;
-  const course = COURSES.find((c) => c.id === courseId);
-  const hasPurchased = (user.purchasedCourses || []).some((p) => p.courseId === courseId);
+  const course = COURSES.find((item) => item.id === courseId);
+  if (!course) return res.status(404).json({ message: 'Course not found' });
 
-  if (course && course.paidOnly) {
-    if (!hasPurchased && user.scholarship !== 'full') {
-      return res.status(402).json({
-        message: `This Special Edition course has no free trial. Pay ₦${(course.price || 0).toLocaleString()} once to unlock it instantly.`,
-        upgradeRequired: true,
-        purchaseRequired: true,
-        purchasePlan: course.purchasePlan || null,
-        courseId,
-      });
-    }
-    return next();
-  }
+  // All course content requires verified payment or administrator-granted access.
+  // Existing course purchases and scholarships remain valid.
+  const purchased = (user.purchasedCourses || []).some((item) => item.courseId === courseId);
+  const scholarship = user.scholarship === 'full' || user.scholarship === 'limited';
+  const premium = user.hasPremiumAccess();
+  if (purchased || scholarship || premium) return next();
 
-  if (!user.hasActiveAccess()) {
-    if (!hasPurchased) {
-      return res.status(402).json({
-        message: 'Your free 7-day trial has ended. Upgrade to Premium or purchase this course to continue.',
-        upgradeRequired: true,
-        trialExpiresAt: user.trialExpiresAt,
-      });
-    }
-  }
-
-  next();
+  return res.status(402).json({
+    message: 'This course requires a paid subscription, course purchase, or an administrator-approved scholarship.',
+    upgradeRequired: true,
+    purchaseRequired: true,
+    courseId,
+    purchasePlan: course.purchasePlan || null,
+  });
 }
 
 async function requirePremium(req, res, next) {
