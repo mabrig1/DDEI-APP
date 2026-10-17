@@ -1,4 +1,5 @@
 const { ToolLoopAgent, tool, stepCountIs } = require('ai');
+const { resolveRoute } = require('./aiModelRouter');
 const { z } = require('zod');
 
 const COACH_ACTIONS = new Set(['ask', 'explain', 'example', 'practice', 'plan', 'teach_back']);
@@ -227,7 +228,9 @@ async function runAgentCoach({ action, context, course, progress, question }) {
       'X-Title': 'Destiny Skills Bridge Course Coach',
     },
   });
-  const model = provider(process.env.OPENROUTER_MODEL || 'openrouter/free');
+  const task = action === 'plan' ? 'agent' : action === 'practice' || action === 'teach_back' ? 'assessment' : 'tutoring';
+  const route = resolveRoute(task);
+  const model = provider(route.model);
   const tools = makeTools({ context, course, progress });
   const agent = new ToolLoopAgent({
     model,
@@ -282,7 +285,7 @@ async function runCourseCoach({ action, course, module, lesson, progress, questi
         question: safeQuestion,
       });
     } catch (error) {
-      console.warn(`Course coach agent fallback: ${error.message}`);
+      console.warn('Course coach switched to offline lesson support');
     }
   }
 
