@@ -46,7 +46,7 @@ app.use(securityHeaders);
 app.use(cors(corsOptions()));
 
 // Vision uploads use a separate, bounded parser; all other JSON remains capped at 100 KB.
-app.use('/api/courses/:id/vision', express.json({ limit: '3mb' }));
+app.use('/api/courses/:id/vision', require('./middleware/auth').requireAuth, express.json({ limit: '3mb' }));
 app.use(express.json({
   limit: '100kb',
   verify(req, res, buffer) {
