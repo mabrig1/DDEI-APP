@@ -1,35 +1,33 @@
 name: Security checks
-
 on:
   pull_request:
   push:
-    branches: [main]
-
+    branches: [main, security/devshield-integration-20261017]
 permissions:
   contents: read
-
 jobs:
   audit-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          node-version: 24
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
           cache: npm
           cache-dependency-path: backend/package-lock.json
       - name: Install backend dependencies
+        run: npm ci --ignore-scripts
         working-directory: backend
-        run: npm ci
-      - name: Audit production dependencies
+      - name: Backend unit and security integration tests
+        run: npm test
         working-directory: backend
-        run: npm audit --omit=dev --audit-level=high
-      - name: Check backend JavaScript syntax
+        env:
+          NODE_ENV: test
+      - name: Audit all dependencies
         working-directory: backend
-        run: find . -path ./node_modules -prune -o -name '*.js' -print0 | xargs -0 -n1 node --check
-      - name: Check frontend JavaScript syntax
-        working-directory: frontend
-        run: find . -name '*.js' -print0 | xargs -0 -n1 node --check
-      - name: Build frontend
-        working-directory: frontend
-        run: node build.js
+        run: npm audit --audit-level=high
+      - name: JavaScript syntax and frontend build regression checks
+        run: node scripts/verify-build.js

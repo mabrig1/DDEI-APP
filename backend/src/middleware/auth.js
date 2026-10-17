@@ -1,34 +1,24 @@
 const jwt = require('jsonwebtoken');
-
-function requireAuth(req, res, next) {
+const User = require('../models/User');
+const { securityEvent } = require('./security');
+async function authenticate(req, res, next, optional = false) {
   const header = req.headers.authorization || '';
+  if (!header && optional) return next();
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-
-  if (!token) {
-    return res.status(401).json({ message: 'Authentication required' });
-  }
-
+  let payload;
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = payload.sub;
-    next();
-  } catch (err) {
+    if (!token) throw new Error('missing token');
+    payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
+    if (!/^[a-f0-9]{24}$/i.test(payload.sub || '') || payload.isAdmin) throw new Error('wrong role');
+  } catch (_) {
+    securityEvent('authentication_rejected', req);
     return res.status(401).json({ message: 'Invalid or expired token' });
   }
-}
-
-function optionalAuth(req, res, next) {
-  const header = req.headers.authorization || '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-  if (!token) return next();
-
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = payload.sub;
-  } catch (err) {
-    // ignore invalid token, treat as anonymous
-  }
+  const user = await User.findById(payload.sub).select('authVersion');
+  if (!user || (payload.ver || 0) !== (user.authVersion || 0)) return res.status(401).json({ message: 'Invalid or expired token' });
+  req.userId = payload.sub;
   next();
 }
-
+function requireAuth(req, res, next) { return authenticate(req, res, next); }
+function optionalAuth(req, res, next) { return authenticate(req, res, next, true); }
 module.exports = { requireAuth, optionalAuth };

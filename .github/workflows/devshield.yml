@@ -3,34 +3,41 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
-    branches: [main]
+    branches: [main, security/devshield-integration-20261017]
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   devshield:
     name: DevShield security review
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
+    timeout-minutes: 10
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           fetch-depth: 0
           persist-credentials: false
       - name: DevShield scan
-        uses: mabrig1/mabrig-devshield-ai@v1
+        uses: mabrig1/mabrig-devshield-ai@6ff4c21138d685cda4e5f06c90dead60a59481ba
         with:
           github-token: ${{ github.token }}
           fail-on: high
+          max-files: '500'
           comment: 'false'
           scan-scope: repository
           legal-compliance: advisory
           agentic-mode: plan
           remediation-mode: propose
           runtime-guard: 'off'
+          security-graph: 'on'
+          security-history: 'on'
+          regression-gate: enforce
           sarif: 'true'
+      - name: Retain security evidence even on a failed scan
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: devshield-security-evidence-${{ github.run_id }}
+          path: .devshield/
+          include-hidden-files: true
+          retention-days: 14

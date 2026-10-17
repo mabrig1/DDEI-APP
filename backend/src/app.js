@@ -15,7 +15,7 @@ const cors = require('cors');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 const { corsOptions } = require('./config/cors');
 const { publicConfig, isBackupEnabled } = require('./config/appwrite');
-const { backupStatus } = require('./utils/appwriteBackup');
+
 
 const authRoutes = require('./routes/authRoutes');
 const applicationRoutes = require('./routes/applicationRoutes');
@@ -33,13 +33,17 @@ const activityRoutes = require('./routes/activityRoutes');
 const vaultRoutes = require('./routes/vaultRoutes');
 const partnerRoutes = require('./routes/partnerRoutes');
 const recruitmentRoutes = require('./routes/recruitmentRoutes');
-const { rateLimit, securityHeaders } = require('./middleware/security');
+const { rateLimit, securityHeaders, validateRequest } = require('./middleware/security');
 
 const app = express();
 
 // Vercel (and most proxies) terminate TLS upstream. Without this, req.ip and
 // req.protocol report the proxy rather than the visitor.
-app.set('trust proxy', 1);
+// Direct hosting trusts no proxies; Vercel overwrites the right-most forwarding hop.
+const proxyNetworks = (process.env.TRUSTED_PROXY_CIDRS || '').split(',').map(s => s.trim()).filter(Boolean);
+app.set('trust proxy', proxyNetworks.length ? proxyNetworks : (process.env.VERCEL === '1' ? 1 : false));
+app.disable('x-powered-by');
+app.set('query parser', 'simple');
 
 // CLIENT_ORIGIN accepts a comma-separated list — see src/config/cors.js.
 app.use(securityHeaders);
@@ -48,10 +52,16 @@ app.use(cors(corsOptions()));
 app.use(express.json({
   limit: '100kb',
   verify(req, res, buffer) {
-    if (req.originalUrl === '/api/payments/webhook') req.rawBody = Buffer.from(buffer);
+    if (req.path.replace(/\/$/, '') === '/api/payments/webhook') req.rawBody = Buffer.from(buffer);
   },
 }));
-app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, max: 300, namespace: 'api' }));
+app.use('/api', validateRequest);
+const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300, namespace: 'api' });
+app.use('/api', (req, res, next) => {
+  // HMAC-authenticated provider webhooks must not exhaust a shared IP quota.
+  if (req.method === 'POST' && req.path.replace(/\/$/, '') === '/payments/webhook') return next();
+  return apiLimiter(req, res, next);
+});
 
 // Safety net: never leave a request hanging without a response — a hung
 // request surfaces in the browser as a bare "Failed to fetch" with no
@@ -73,7 +83,7 @@ app.use((req, res, next) => {
 app.get('/api/health', (req, res) => res.json({
   status: 'ok',
   service: 'destiny-skills-bridge-backend',
-  backup: backupStatus(),
+
 }));
 
 // Tells the frontend where the read-only Appwrite failover lives. Everything
@@ -118,3 +128,4 @@ app.use(notFound);
 app.use(errorHandler);
 
 module.exports = app;
+

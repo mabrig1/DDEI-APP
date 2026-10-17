@@ -16,6 +16,8 @@ const subscriptionSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     currency: { type: String, default: 'NGN' },
     status: { type: String, enum: ['pending', 'success', 'failed'], default: 'pending' },
+    settledAt: { type: Date, default: null },
+    benefitsGrantedAt: { type: Date, default: null },
     paystackData: { type: mongoose.Schema.Types.Mixed, default: null },
     promoterConversionReportedAt: { type: Date, default: null },
     growthConversionReportedAt: { type: Date, default: null },
@@ -27,3 +29,4 @@ const subscriptionSchema = new mongoose.Schema(
 attachAppwriteMirror(subscriptionSchema, 'Subscription');
 
 module.exports = mongoose.model('Subscription', subscriptionSchema);
+

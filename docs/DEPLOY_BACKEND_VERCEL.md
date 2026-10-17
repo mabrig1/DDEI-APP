@@ -54,12 +54,9 @@ Do **not** set `PORT` — Vercel doesn't use it.
 
 `CLIENT_ORIGIN` takes a comma-separated list. Include every hostname the site
 answers on: leaving out `www` is the usual cause of "works on one URL, CORS
-error on the other". Leaving it unset allows all origins, which is fine for a
-first deploy but should be tightened once the URLs are settled.
+error on the other". In production, leaving it unset allows only known DDEI domains. Add preview origins explicitly for testing.
 
-**Atlas network access:** Vercel functions have no fixed IP, so Atlas must allow
-`0.0.0.0/0` under Network Access. The connection is still protected by the
-credentials in `MONGODB_URI`.
+**Atlas network access:** Use fixed egress addresses or private connectivity and allow only those addresses in Atlas. Verify TLS and a least-privilege database user. Do not open global ingress to work around dynamic egress. Confirm deployed settings before release.
 
 ## Point the frontend at it
 
@@ -105,3 +102,4 @@ site takes Paystack payments. That's a real risk of a third shutdown after
 Railway and Render, not a hypothetical one. If the site is earning, a paid plan
 removes the exposure. The failover in `frontend/dsb-backup.js` keeps the public
 site readable if the API does go down, but sign-in and payments need the API.
+

@@ -10,7 +10,7 @@ const {
 } = require('../controllers/contentController');
 const { requireContentWriteAccess } = require('../middleware/contentAccess');
 
-const router = express.Router();
+const router = require('../utils/safeRouter')();
 
 router.get('/admin/all', requireContentWriteAccess, listAdmin);
 router.get('/admin/:id', requireContentWriteAccess, getAdminById);
@@ -22,3 +22,4 @@ router.get('/', listPublic);
 router.get('/:slug', getPublicBySlug);
 
 module.exports = router;
+

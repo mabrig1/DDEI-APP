@@ -3,7 +3,7 @@ const { register, login, me, forgotPassword, resetPassword } = require('../contr
 const { requireAuth } = require('../middleware/auth');
 const { rateLimit } = require('../middleware/security');
 
-const router = express.Router();
+const router = require('../utils/safeRouter')();
 
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, namespace: 'user-auth' });
 const recoveryLimiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 5, namespace: 'user-recovery' });
@@ -15,3 +15,4 @@ router.post('/reset-password', recoveryLimiter, resetPassword);
 router.get('/me', requireAuth, me);
 
 module.exports = router;
+

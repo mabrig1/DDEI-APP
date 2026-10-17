@@ -22,10 +22,12 @@ if (!apiBaseUrl) {
   console.warn('');
 }
 
+// Escape HTML script delimiters in deployment-provided public configuration.
+const scriptJSON = value => JSON.stringify(value).replace(/</g, '\\u003c').replace(/>/g, '\\u003e').replace(/&/g, '\\u0026');
 const runtimeConfig = [
   '<script>',
-  apiBaseUrl ? `        window.DSB_API_BASE_URL = ${JSON.stringify(apiBaseUrl)};` : null,
-  `        window.DSB_APPWRITE = ${JSON.stringify(appwriteConfig)};`,
+  apiBaseUrl ? `        window.DSB_API_BASE_URL = ${scriptJSON(apiBaseUrl)};` : null,
+  `        window.DSB_APPWRITE = ${scriptJSON(appwriteConfig)};`,
   '    </script>',
 ].filter(Boolean).join('\n    ');
 
@@ -77,6 +79,7 @@ for (const page of pages) {
   fs.writeFileSync(path.join(outDir, page), html);
 }
 
+fs.copyFileSync(path.join(__dirname, 'security.js'), path.join(outDir, 'security.js'));
 fs.copyFileSync(path.join(__dirname, 'dsb-backup.js'), path.join(outDir, 'dsb-backup.js'));
 fs.copyFileSync(path.join(__dirname, 'promoter-referral.js'), path.join(outDir, 'promoter-referral.js'));
 
@@ -110,3 +113,4 @@ let courseLinkCount = 0;
 
 console.log(`Built frontend/dist (${pages.join(', ')} + dsb-backup.js + promoter-referral.js + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — built-in production fallback)'}`);
 console.log(`Appwrite backup failover: ${appwriteConfig.enabled ? 'enabled' : 'disabled'} (project ${appwriteConfig.projectId}, ${appwriteConfig.endpoint})`);
+

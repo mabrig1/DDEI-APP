@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/security.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Earn Online Now — Free Menu for Nigerians | Destiny Skills Bridge</title>
@@ -317,9 +318,7 @@
         }
 
         function escapeHtml(value) {
-            const div = document.createElement('div');
-            div.textContent = value == null ? '' : String(value);
-            return div.innerHTML;
+            return String(value == null ? '' : value).replace(/[&<>"']/g, c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]));
         }
 
         async function loadFooterPages() {
@@ -412,3 +411,4 @@
     </script>
 </body>
 </html>
+

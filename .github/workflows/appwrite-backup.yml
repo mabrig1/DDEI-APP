@@ -9,8 +9,8 @@ name: Appwrite backup
 #      (Optionally under Variables, to override the built-in defaults:
 #        APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, APPWRITE_DATABASE_ID)
 #
-#   2. If MongoDB is on Atlas, allow access from anywhere (0.0.0.0/0) under
-#      Network Access — GitHub's runners have no fixed IP to allowlist.
+#   2. Use approved fixed-egress/private runners and narrowly allowlist their
+#      database access. Never open global ingress to work around dynamic IPs.
 #
 #   3. Actions → "Appwrite backup" → Run workflow → choose `provision` once,
 #      then `sync`.
@@ -56,6 +56,9 @@ concurrency:
   group: appwrite-backup
   cancel-in-progress: false
 
+permissions:
+  contents: read
+
 jobs:
   backup:
     runs-on: ubuntu-latest
@@ -65,7 +68,7 @@ jobs:
         working-directory: backend
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
 
       - name: Check backup configuration
         id: config
@@ -106,10 +109,10 @@ jobs:
 
           echo "ready=true" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         if: steps.config.outputs.ready == 'true'
         with:
-          node-version: '20'
+          node-version: '24'
           cache: npm
           cache-dependency-path: backend/package-lock.json
 
@@ -164,3 +167,4 @@ jobs:
               exit 1
               ;;
           esac
+

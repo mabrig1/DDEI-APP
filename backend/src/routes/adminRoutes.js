@@ -28,7 +28,7 @@ const { asyncHandler } = require('../middleware/asyncHandler');
 const { listInquiries, updateInquiry } = require('../controllers/partnerController');
 const { rateLimit } = require('../middleware/security');
 
-const router = express.Router();
+const router = require('../utils/safeRouter')();
 
 const adminAuthLimiter = rateLimit({ windowMs: 30 * 60 * 1000, max: 8, namespace: 'admin-auth' });
 router.post('/login', adminAuthLimiter, login);
@@ -58,3 +58,4 @@ router.get('/partner-inquiries', requireAdmin, asyncHandler(listInquiries));
 router.patch('/partner-inquiries/:id', requireAdmin, asyncHandler(updateInquiry));
 
 module.exports = router;
+

@@ -13,6 +13,7 @@ function passwordError(password) {
   if (typeof password !== 'string' || password.length < MIN_USER_PASSWORD_LENGTH) {
     return `Password must be at least ${MIN_USER_PASSWORD_LENGTH} characters`;
   }
+  if (Buffer.byteLength(password, 'utf8') > 72) return 'Password must be at most 72 bytes.';
   if (!/[A-Za-z]/.test(password) || !/\d/.test(password)) {
     return 'Password must contain at least one letter and one number';
   }
@@ -24,3 +25,4 @@ function cleanText(value, maxLength) {
 }
 
 module.exports = { MIN_USER_PASSWORD_LENGTH, normalizeEmail, isValidEmail, passwordError, cleanText };
+

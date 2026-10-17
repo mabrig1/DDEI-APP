@@ -1,0 +1,15 @@
+{
+  "policy": "balanced",
+  "scanScope": "repository",
+  "maxFileBytes": 1500000,
+  "inlineSuppressions": false,
+  "baselineMode": "off",
+  "agenticMode": "plan",
+  "remediationMode": "propose",
+  "dependencyAgenticMode": "on",
+  "securityGraphMode": "on",
+  "securityHistoryMode": "on",
+  "regressionGateMode": "enforce",
+  "regressionNewRiskSeverity": "high",
+  "legalComplianceMode": "advisory"
+}

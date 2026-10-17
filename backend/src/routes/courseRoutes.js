@@ -13,7 +13,7 @@ const { requireAuth } = require('../middleware/auth');
 const { requireActiveAccess } = require('../middleware/access');
 const { rateLimit } = require('../middleware/security');
 
-const router = express.Router();
+const router = require('../utils/safeRouter')();
 const coachRateLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 30, namespace: 'course-coach' });
 
 router.get('/', listCourses);
@@ -26,3 +26,4 @@ router.post('/:id/coach', coachRateLimit, requireAuth, requireActiveAccess, coac
 router.get('/:id/certificate', requireAuth, getCertificate);
 
 module.exports = router;
+

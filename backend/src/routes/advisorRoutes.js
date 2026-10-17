@@ -3,8 +3,9 @@ const { chat } = require('../controllers/advisorController');
 const { requireAuth } = require('../middleware/auth');
 const { requirePremium } = require('../middleware/access');
 
-const router = express.Router();
+const router = require('../utils/safeRouter')();
 
 router.post('/chat', requireAuth, requirePremium, chat);
 
 module.exports = router;
+

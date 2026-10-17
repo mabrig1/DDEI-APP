@@ -39,6 +39,7 @@ const userSchema = new mongoose.Schema(
   {
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    authVersion: { type: Number, default: 0 },
     password: { type: String, required: true, minlength: 6 },
     phone: { type: String, default: null, trim: true },
     track: { type: String, default: null },
@@ -70,6 +71,7 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre('save', async function hashPassword(next) {
   if (!this.isModified('password')) return next();
+  if (!this.isNew) this.authVersion = (this.authVersion || 0) + 1;
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
@@ -107,3 +109,4 @@ userSchema.methods.toJSON = function toSafeJSON() {
 attachAppwriteMirror(userSchema, 'User');
 
 module.exports = mongoose.model('User', userSchema);
+

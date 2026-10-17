@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="/security.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Filmmaking Resources Vault — Destiny Skills Bridge</title>
@@ -150,7 +151,7 @@
         }
 
         function getAccessToken() {
-            return localStorage.getItem('dsb_token') || localStorage.getItem('dsb_admin_token');
+            return sessionStorage.getItem('dsb_token') || sessionStorage.getItem('dsb_admin_token');
         }
 
         let vaultData = null;
@@ -287,3 +288,4 @@
     </script>
 </body>
 </html>
+

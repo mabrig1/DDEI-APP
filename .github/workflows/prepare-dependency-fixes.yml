@@ -41,3 +41,4 @@ jobs:
           git commit -m "security: regenerate audited backend lockfile"
           # Never force-push or touch main. A concurrent update rejects this push.
           git push origin HEAD:security/devshield-integration-20261017
+
