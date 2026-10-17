@@ -30,7 +30,6 @@ jobs:
           comment: 'false'
           scan-scope: repository
           legal-compliance: advisory
-          api-trust: advisory
           agentic-mode: plan
           remediation-mode: propose
           runtime-guard: 'off'
