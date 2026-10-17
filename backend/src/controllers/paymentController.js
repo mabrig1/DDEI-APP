@@ -119,7 +119,7 @@ async function reportPromoterConversion(subscription) {
       await subscription.save();
     }
   } catch (err) {
-    console.error('Promoter commission reporting failed:', err.response?.data || err.message);
+    console.error('Promoter commission reporting failed:', err.code || 'operation_failed');
   }
 }
 
@@ -189,7 +189,7 @@ async function initializePayment(req, res) {
       status: 'pending',
     });
   } catch (err) {
-    console.error('Failed to create payment record:', err);
+    console.error('Failed to create payment record:', err.code || 'operation_failed');
     return res.status(503).json({ message: 'The payment service is temporarily unavailable. Please try again in a few minutes.' });
   }
 
@@ -316,7 +316,7 @@ async function paystackWebhook(req, res) {
     if (event.event === 'charge.success' && /^dsb_[a-f0-9]{16}$/.test(String(event.data?.reference || ''))) await settlePayment(event.data);
     return res.status(200).json({ received: true });
   } catch (err) {
-    console.error('Paystack webhook settlement failed:', err);
+    console.error('Paystack webhook settlement failed:', err.code || 'operation_failed');
     return res.status(500).json({ message: 'Webhook processing failed.' });
   }
 }

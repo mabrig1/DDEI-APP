@@ -81,7 +81,7 @@ async function createApplication(req, res) {
     if (err.code === 11000) {
       return res.status(409).json({ message: 'An account with this email already exists. Log in first, then submit your application.' });
     }
-    console.error('Create application failed:', err);
+    console.error('Create application failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not submit your application right now. Please try again.' });
   }
 }

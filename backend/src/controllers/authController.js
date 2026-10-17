@@ -42,7 +42,7 @@ async function register(req, res) {
     if (err.code === 11000) {
       return res.status(409).json({ message: 'An account with this email already exists' });
     }
-    console.error('Register failed:', err);
+    console.error('Register failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not create your account right now. Please try again.' });
   }
 }
@@ -65,7 +65,7 @@ async function login(req, res) {
     logActivity(user._id, user.name, 'login', requestClientInfo(req));
     res.json({ token, user });
   } catch (err) {
-    console.error('Login failed:', err);
+    console.error('Login failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not log you in right now. Please try again.' });
   }
 }
@@ -76,7 +76,7 @@ async function me(req, res) {
     if (!user) return res.status(404).json({ message: 'User not found' });
     res.json({ user });
   } catch (err) {
-    console.error('Fetch profile failed:', err);
+    console.error('Fetch profile failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not load your account right now. Please try again.' });
   }
 }
@@ -104,7 +104,7 @@ async function forgotPassword(req, res) {
     // so this endpoint can't be used to discover which emails have accounts.
     res.json({ message: "If an account exists for that email, we've sent a password reset link." });
   } catch (err) {
-    console.error('Forgot password failed:', err);
+    console.error('Forgot password failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not process your request right now. Please try again.' });
   }
 }
@@ -137,7 +137,7 @@ async function resetPassword(req, res) {
     if (!updated) return res.status(400).json({ message: 'This reset link has already been used.' });
     res.json({ token: signToken(updated), user: updated });
   } catch (err) {
-    console.error('Reset password failed:', err);
+    console.error('Reset password failed:', err.code || 'operation_failed');
     res.status(500).json({ message: 'Could not reset your password right now. Please try again.' });
   }
 }

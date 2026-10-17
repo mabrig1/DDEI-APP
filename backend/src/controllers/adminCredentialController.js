@@ -65,7 +65,7 @@ async function login(req, res) {
 
     return res.json({ token: signAdminToken(credential?.authVersion || 0) });
   } catch (err) {
-    console.error('Admin login failed:', err);
+    console.error('Admin login failed:', err.code || 'operation_failed');
     return res.status(500).json({ message: 'Could not log in right now. Please try again.' });
   }
 }
@@ -93,6 +93,7 @@ async function recover(req, res) {
     const passwordHash = await bcrypt.hash(password, 12);
     await AdminCredential.create({
       key: PRIMARY_KEY,
+      authVersion: 1,
       username,
       passwordHash,
       recoveryUsedAt: new Date(),
@@ -108,7 +109,7 @@ async function recover(req, res) {
     if (err && err.code === 11000) {
       return res.status(409).json({ message: 'Admin recovery has already been completed.' });
     }
-    console.error('Admin recovery failed:', err);
+    console.error('Admin recovery failed:', err.code || 'operation_failed');
     return res.status(500).json({ message: 'Could not restore admin access right now. Please try again.' });
   }
 }
@@ -140,7 +141,7 @@ async function changeCredentials(req, res) {
       message: 'Admin credentials updated successfully.',
     });
   } catch (err) {
-    console.error('Admin credential update failed:', err);
+    console.error('Admin credential update failed:', err.code || 'operation_failed');
     return res.status(500).json({ message: 'Could not update admin credentials right now.' });
   }
 }

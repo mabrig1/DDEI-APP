@@ -124,3 +124,8 @@ test('async route rejection reaches safe error handler',async()=>{
  const s=a.listen(0,'127.0.0.1');await new Promise(r=>s.once('listening',r));
  try{const r=await fetch(`http://127.0.0.1:${s.address().port}/`);assert.equal(r.status,500);assert.deepEqual(await r.json(),{message:'Internal server error'});}finally{await new Promise(r=>s.close(r));}
 });
+test('unconfigured mail delivery never logs reset links or user email',async t=>{
+ const mailer=require('../src/utils/mailer');const warnings=[];const original=process.env.RESEND_API_KEY;delete process.env.RESEND_API_KEY;
+ t.mock.method(console,'warn',(...args)=>warnings.push(args.join(' ')));
+ try{await mailer.sendPasswordResetEmail({email:'private@example.com'},'https://ddei.online/?resetToken=private-reset-token');assert.equal(warnings.length,1);assert(!/private|resetToken/.test(warnings.join(' ')));}finally{if(original!==undefined)process.env.RESEND_API_KEY=original;}
+});

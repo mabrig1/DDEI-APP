@@ -4,7 +4,7 @@ const adminCredentialSchema = new mongoose.Schema(
   {
     key: { type: String, required: true, unique: true, default: 'primary' },
     username: { type: String, required: true, trim: true },
-    authVersion: { type: Number, default: 1 },
+    authVersion: { type: Number, default: 0 },
     passwordHash: { type: String, required: true },
     recoveryUsedAt: { type: Date, default: null },
     updatedBy: { type: String, default: 'recovery' },

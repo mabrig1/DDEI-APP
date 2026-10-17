@@ -23,7 +23,7 @@ async function sendApplicationNotification(application) {
       { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }
     );
   } catch (err) {
-    console.error('Failed to send application notification email:', err.response?.data || err.message);
+    console.error('Failed to send application notification email:', err.code || 'mail_delivery_failed');
   }
 }
 
@@ -55,7 +55,7 @@ async function sendRecruitmentNotification(application) {
       { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }
     );
   } catch (err) {
-    console.error('Failed to send recruitment notification email:', err.response?.data || err.message);
+    console.error('Failed to send recruitment notification email:', err.code || 'mail_delivery_failed');
   }
 }
 
@@ -84,13 +84,13 @@ async function sendScholarshipEmail(application, level, tempPassword) {
       { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }
     );
   } catch (err) {
-    console.error('Failed to send scholarship notification email:', err.response?.data || err.message);
+    console.error('Failed to send scholarship notification email:', err.code || 'mail_delivery_failed');
   }
 }
 
 async function sendPasswordResetEmail(user, resetUrl) {
   if (!process.env.RESEND_API_KEY) {
-    console.warn(`RESEND_API_KEY not set — skipping password reset email. Reset URL for ${user.email}: ${resetUrl}`);
+    console.warn('Password reset email unavailable: mail provider is not configured.');
     return;
   }
 
@@ -111,7 +111,7 @@ async function sendPasswordResetEmail(user, resetUrl) {
       { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }
     );
   } catch (err) {
-    console.error('Failed to send password reset email:', err.response?.data || err.message);
+    console.error('Failed to send password reset email:', err.code || 'mail_delivery_failed');
   }
 }
 
@@ -135,7 +135,7 @@ async function sendCustomEmail(to, subject, message) {
     );
     return { ok: true };
   } catch (err) {
-    console.error('Failed to send custom email:', err.response?.data || err.message);
+    console.error('Failed to send custom email:', err.code || 'mail_delivery_failed');
     return { ok: false, error: err.response?.data?.message || err.message };
   }
 }
@@ -156,3 +156,4 @@ module.exports = {
   sendPasswordResetEmail,
   sendCustomEmail,
 };
+
