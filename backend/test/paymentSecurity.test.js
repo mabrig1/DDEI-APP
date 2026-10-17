@@ -13,6 +13,7 @@ test('settlement rejects underpayment, currency mismatch and unsuccessful provid
  let grants=0;t.mock.method(User,'updateOne',async()=>{grants++;});
  for(const data of [{amount:1,currency:'NGN',status:'success'},{amount:200000,currency:'USD',status:'success'},{amount:200000,currency:'NGN',status:'failed'}]){
  const payment=record();t.mock.method(Subscription,'findOne',async()=>payment);
+ t.mock.method(Subscription,'findOneAndUpdate',async(filter,update)=>{assert.deepEqual(filter.status,{$ne:'success'});Object.assign(payment,update.$set);return payment;});
  const result=await settlePayment({reference:ref,...data});assert.equal(result.status,'failed');}
  assert.equal(grants,0);
 });

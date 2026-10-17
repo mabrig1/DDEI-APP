@@ -58,6 +58,7 @@ app.use(express.json({
 app.use('/api', validateRequest);
 const apiLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 300, namespace: 'api' });
 app.use('/api', (req, res, next) => {
+  if (req.method === 'GET' && req.path === '/health') return next();
   // HMAC-authenticated provider webhooks must not exhaust a shared IP quota.
   if (req.method === 'POST' && req.path.replace(/\/$/, '') === '/payments/webhook') return next();
   return apiLimiter(req, res, next);

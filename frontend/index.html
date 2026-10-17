@@ -1090,7 +1090,7 @@
                 : '';
             const date = item.publishedAt ? new Date(item.publishedAt).toLocaleDateString() : '';
             return `
-                <a href="?content=${encodeURIComponent(item.slug)}" onclick="return openContentBySlug('${escapeHtml(item.slug)}', event)"
+                <a href="?content=${encodeURIComponent(item.slug)}" data-slug="${escapeHtml(item.slug)}" onclick="return openContentBySlug(this.dataset.slug, event)"
                    class="bg-white border rounded-3xl p-6 flex flex-col hover:shadow-lg transition">
                     ${image}
                     <span class="text-xs text-slate-400 mb-1">${date}</span>
@@ -1166,7 +1166,7 @@
                 const data = await apiRequest('/api/content?type=page');
                 const pages = data.content || [];
                 container.innerHTML = pages
-                    .map((p) => `<a href="?content=${encodeURIComponent(p.slug)}" onclick="return openContentBySlug('${escapeHtml(p.slug)}', event)" class="hover:text-slate-800 hover:underline">${escapeHtml(p.title)}</a>`)
+                    .map((p) => `<a href="?content=${encodeURIComponent(p.slug)}" data-slug="${escapeHtml(p.slug)}" onclick="return openContentBySlug(this.dataset.slug, event)" class="hover:text-slate-800 hover:underline">${escapeHtml(p.title)}</a>`)
                     .join('');
             } catch (err) {
                 container.innerHTML = '';

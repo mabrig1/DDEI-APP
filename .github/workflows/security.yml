@@ -8,6 +8,10 @@ permissions:
 jobs:
   audit-and-build:
     runs-on: ubuntu-latest
+    services:
+      mongodb:
+        image: mongo:8.0
+        ports: [27017:27017]
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -26,8 +30,35 @@ jobs:
         working-directory: backend
         env:
           NODE_ENV: test
+      - name: Real database security integration
+        working-directory: backend
+        run: node integration/databaseSecurity.js
+        env:
+          TEST_MONGODB_URI: mongodb://127.0.0.1:27017/ddei_security_ci
+          APPWRITE_BACKUP_ENABLED: 'false'
       - name: Audit all dependencies
         working-directory: backend
         run: npm audit --audit-level=high
       - name: JavaScript syntax and frontend build regression checks
         run: node scripts/verify-build.js
+  browser-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - name: Install isolated browser test harness
+        run: |
+          npm install --prefix "$RUNNER_TEMP/ddei-browser" --no-save --ignore-scripts playwright@1.62.1
+          "$RUNNER_TEMP/ddei-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Browser security regression tests
+        run: |
+          node frontend/build.js
+          NODE_PATH="$RUNNER_TEMP/ddei-browser/node_modules" node scripts/browser-security-test.js
+      - name: Read-only DNS, TLS and public deployment inspection
+        if: github.event_name == 'push'
+        run: node scripts/inspect-public-deployment.js

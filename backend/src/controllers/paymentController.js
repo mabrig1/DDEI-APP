@@ -251,9 +251,12 @@ async function settlePayment(data) {
   const success = data.status === 'success' && validAmount && validCurrency;
   if (!success) {
     if (existing.status !== 'success') {
-      existing.status = 'failed';
-      existing.paystackData = paymentSnapshot(data);
-      await existing.save();
+      const failed = await Subscription.findOneAndUpdate(
+        { _id: existing._id, status: { $ne: 'success' } },
+        { $set: { status: 'failed', paystackData: paymentSnapshot(data) } },
+        { new: true }
+      );
+      return failed || await Subscription.findById(existing._id);
     }
     return existing;
   }

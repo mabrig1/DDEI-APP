@@ -7,7 +7,7 @@ const { normalizeEmail, isValidEmail, passwordError, cleanText } = require('../u
 const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
 
 function signToken(user) {
-  return jwt.sign({ sub: user._id.toString() }, process.env.JWT_SECRET, {
+  return jwt.sign({ sub: user._id.toString(), ver: user.authVersion || 0 }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   });
 }
@@ -92,3 +92,4 @@ async function listMyApplications(req, res) {
 }
 
 module.exports = { createApplication, listMyApplications };
+
