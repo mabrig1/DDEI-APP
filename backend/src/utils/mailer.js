@@ -90,7 +90,7 @@ async function sendScholarshipEmail(application, level, tempPassword) {
 
 async function sendPasswordResetEmail(user, resetUrl) {
   if (!process.env.RESEND_API_KEY) {
-    console.warn(`RESEND_API_KEY not set — skipping password reset email. Reset URL for ${user.email}: ${resetUrl}`);
+    console.warn('Password reset email skipped: email provider is not configured.');
     return;
   }
 
@@ -156,3 +156,27 @@ module.exports = {
   sendPasswordResetEmail,
   sendCustomEmail,
 };
+
+// Authentication email failures propagate to the controller. Never log Axios
+// error objects here: their request config contains the API key and reset URL.
+async function sendAdminEmail(to, subject, html, text) {
+  if (!process.env.RESEND_API_KEY) throw new Error('Email provider not configured');
+  const response = await axios.post('https://api.resend.com/emails', {
+    from: process.env.RESEND_FROM_EMAIL || 'Destiny Skills Bridge <onboarding@resend.dev>',
+    to: [to], subject, html, text,
+  }, { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` }, timeout: 10000 });
+  if (!response.data?.id) throw new Error('Email provider did not accept email');
+}
+
+async function sendAdminRecoveryEmail(to, url) {
+  return sendAdminEmail(to, 'Reset your DDEI administrator password',
+    `<p>A password reset was requested for your DDEI administrator account.</p><p><a href="${escapeHtml(url)}">Verify your email and reset your administrator password</a></p><p>This single-use link expires in 30 minutes. Use the newest recovery email. If you did not request this, ignore it; your password has not changed.</p>`,
+    `Reset your DDEI administrator password: ${url}\nThis single-use link expires in 30 minutes. If you did not request this, ignore this email.`);
+}
+async function sendAdminPasswordChangedEmail(to) {
+  return sendAdminEmail(to, 'Your DDEI administrator password was changed',
+    '<p>Your administrator password was changed and your recovery email was verified. All previous admin sessions have ended.</p><p>If you did not make this change, use the administrator recovery page immediately and secure your email account.</p>',
+    'Your DDEI administrator password was changed. All previous admin sessions have ended. If this was not you, recover your account immediately and secure your email account.');
+}
+module.exports.sendAdminRecoveryEmail = sendAdminRecoveryEmail;
+module.exports.sendAdminPasswordChangedEmail = sendAdminPasswordChangedEmail;

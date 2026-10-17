@@ -66,7 +66,7 @@ for (const page of pages) {
   let html = fs.readFileSync(srcPath, 'utf8');
 
   if (page === 'index.html') html = improveHomepage(html);
-  html = injectPromoterTracking(html);
+  if (page !== 'admin-recovery.html' && page !== 'admin.html') html = injectPromoterTracking(html);
 
   if (html.includes(RUNTIME_CONFIG_MARKER)) {
     html = html.replace(RUNTIME_CONFIG_MARKER, runtimeConfig);
