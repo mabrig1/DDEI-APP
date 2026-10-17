@@ -92,7 +92,8 @@ userSchema.methods.hasPremiumAccess = function hasPremiumAccess() {
 userSchema.methods.hasActiveAccess = function hasActiveAccess() {
   if (this.scholarship === 'limited' || this.scholarship === 'full') return true;
   if (this.hasPremiumAccess()) return true;
-  return this.trialEndsAt() > new Date();
+  // Registration trials never grant access to paid course content.
+  return false;
 };
 
 userSchema.methods.toJSON = function toSafeJSON() {
