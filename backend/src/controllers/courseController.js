@@ -3,6 +3,7 @@ const User = require('../models/User');
 const { COURSES } = require('../data/courseCatalog');
 const { logActivity } = require('../utils/activityLogger');
 const { COACH_ACTIONS, runCourseCoach } = require('../utils/courseCoachAgent');
+const { generateTutorReply } = require('../utils/aiTutorInference');
 
 function findCourse(id) {
   return COURSES.find((c) => c.id === id) || null;
@@ -238,6 +239,30 @@ async function coachCourse(req, res) {
   });
 }
 
+async function reasonAboutLesson(req, res) {
+  const course = findCourse(req.params.id);
+  if (!course) return res.status(404).json({ message: 'Course not found' });
+  const { lessonId, question } = req.body || {};
+  if (typeof lessonId !== 'string' || typeof question !== 'string' || !question.trim() || question.length > 2000) {
+    return res.status(400).json({ message: 'Valid lessonId and a question of up to 2,000 characters are required' });
+  }
+  const found = findLesson(course, lessonId);
+  if (!found) return res.status(404).json({ message: 'Lesson not found' });
+  const context = [
+    'Course: ' + course.title,
+    'Module: ' + found.module.title,
+    'Lesson: ' + found.lesson.title,
+    ...(found.lesson.content || []).map(item => String(item).replace(/<[^>]*>/g, ' ').slice(0, 800)),
+    ...(found.lesson.keyTakeaways || []).map(item => String(item).replace(/<[^>]*>/g, ' ').slice(0, 300))
+  ].join('\\n').slice(0, 4000);
+  try {
+    const result = await generateTutorReply({ question, task: 'reasoning', context });
+    return res.json({ ...result, lessonId, task: 'reasoning' });
+  } catch (error) {
+    return res.status(503).json({ message: 'Advanced reasoning is temporarily unavailable. Please try again later.' });
+  }
+}
+
 async function getProgress(req, res) {
   const course = findCourse(req.params.id);
   if (!course) return res.status(404).json({ message: 'Course not found' });
@@ -336,6 +361,7 @@ module.exports = {
   updateProgress,
   submitQuiz,
   coachCourse,
+  reasonAboutLesson,
   getProgress,
   selectCourse,
   getCertificate,
