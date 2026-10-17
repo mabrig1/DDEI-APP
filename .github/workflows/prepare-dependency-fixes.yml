@@ -2,52 +2,42 @@ name: Prepare backend dependency security fixes
 on:
   workflow_dispatch:
   push:
-    branches:
-      - security/devshield-integration-20261017
-    paths:
-      - .github/workflows/prepare-dependency-fixes.yml
-
+    branches: [security/devshield-integration-20261017]
+    paths: [.github/workflows/prepare-dependency-fixes.yml]
 permissions:
-  contents: write
-  pull-requests: write
-
+  contents: read
 jobs:
   prepare-fixes:
+    if: github.ref == 'refs/heads/security/devshield-integration-20261017'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          persist-credentials: true
-      - uses: actions/setup-node@v4
+          ref: security/devshield-integration-20261017
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '24'
-          cache: npm
-          cache-dependency-path: backend/package-lock.json
-      - name: Apply compatible npm security fixes
+      - name: Resolve compatible dependency updates
         working-directory: backend
         run: |
-          npm ci --ignore-scripts
-          npm audit fix --package-lock-only --ignore-scripts
+          npm install --package-lock-only --ignore-scripts
+          # npm audit fix exits 1 when advisories remain. Preserve its work,
+          # then fail at the explicit audit gate below; infrastructure errors fail here.
+          status=0
+          npm audit fix --package-lock-only --ignore-scripts || status=$?
+          if [ "$status" -gt 1 ]; then exit "$status"; fi
           npm ci --ignore-scripts
           npm test
-      - name: Audit remaining production vulnerabilities
-        id: audit
-        continue-on-error: true
-        working-directory: backend
-        run: npm audit --omit=dev --audit-level=high
-      - name: Propose reviewed lockfile update
-        uses: peter-evans/create-pull-request@v7
-        with:
-          token: ${{ github.token }}
-          branch: security/backend-npm-audit-fixes
-          delete-branch: true
-          commit-message: 'security: apply compatible npm audit dependency fixes'
-          title: 'security: update backend dependencies for npm advisories'
-          body: 'Automated compatible npm audit fixes. Review package-lock diff, tests, and security checks before merging. No force upgrades.'
-          add-paths: backend/package-lock.json
-          draft: true
-      - name: Fail if unresolved high-severity advisories remain
-        if: steps.audit.outcome == 'failure'
+          npm audit --audit-level=high
+      - name: Commit verified lockfile to the security branch
         run: |
-          echo 'High-severity vulnerabilities remain after compatible fixes; inspect the proposed PR and plan manual remediation.'
-          exit 1
+          git add backend/package-lock.json
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "security: regenerate audited backend lockfile"
+          # Never force-push or touch main. A concurrent update rejects this push.
+          git push origin HEAD:security/devshield-integration-20261017
