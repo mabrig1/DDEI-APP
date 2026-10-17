@@ -65,3 +65,16 @@ GET /api/admin/support/metrics (admin only)
 - Existing login, learning, Paystack, recruitment and DevShield workflows still pass.
 
 This file is a design specification, not a claim that the support feature is already deployed.
+
+
+## Password recovery (required for users and administrators)
+- Add "Forgot password?" to sign-in and a clear recovery entry in Help & Support.
+- POST /api/auth/password/forgot accepts an email and always returns the same generic response, whether or not the account exists. Rate-limit by IP and normalized account identifier.
+- Generate a cryptographically random, single-use, short-lived reset token; store only a keyed hash of the token with expiry and redemption state. Email a HTTPS recovery link; never email a password or token to support staff.
+- GET /reset-password validates the link without disclosing account details. POST /api/auth/password/reset validates the token, enforces a strong password policy, hashes the new password using the project's approved password hashing library, atomically consumes the token and invalidates other outstanding tokens and active sessions.
+- Require reauthentication after reset. Send a security notification after successful reset without including secrets.
+- Provide a safe path for expired links, unavailable email and account takeover concerns. Support agents may guide users but must never see, choose or manually send passwords.
+- Admin password recovery follows the same secure flow plus MFA verification/re-enrollment safeguards; require step-up verification for privileged accounts and audit recovery-related actions.
+- Ensure no reset token, password or personal data appears in logs, analytics, URL referrers or third-party scripts on the reset page.
+- Test valid, invalid, reused and expired tokens; email enumeration resistance; rate limits; concurrent redemption; session revocation; CSRF protection where applicable; and admin recovery.
+- Before implementing, inspect existing auth provider and reuse its native reset-password flow where supported rather than building a competing mechanism.
