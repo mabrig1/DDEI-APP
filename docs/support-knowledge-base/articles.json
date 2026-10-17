@@ -1,0 +1,110 @@
+[
+  {
+    "slug": "create-an-account",
+    "category": "Getting started",
+    "title": "How do I create a DDEI account?",
+    "status": "draft",
+    "body": "Open the DDEI website and locate the registration option. Enter the requested details and follow any verification instructions. If registration fails, check your connection and try again. Never send your password or verification code to support.",
+    "keywords": [
+      "register",
+      "sign up",
+      "account"
+    ]
+  },
+  {
+    "slug": "sign-in-troubleshooting",
+    "category": "Account access",
+    "title": "I cannot sign in. What should I do?",
+    "status": "draft",
+    "body": "Confirm that you are using the email address registered with DDEI. Check for typing errors and try again. If you have forgotten your password, use the Forgot Password option when it becomes available. Avoid repeatedly guessing passwords. If the problem continues, contact support without sharing your password.",
+    "keywords": [
+      "login",
+      "sign in",
+      "locked out"
+    ]
+  },
+  {
+    "slug": "reset-password",
+    "category": "Account access",
+    "title": "How do I recover my password?",
+    "status": "draft",
+    "body": "When the password recovery feature is available, choose Forgot Password on the sign-in page, enter your registered email, and follow the instructions sent to your inbox. Check spam or junk folders. Reset links expire and work only once. If you cannot access your registered email, request human assistance. Support staff will never ask for your password or reset token.",
+    "keywords": [
+      "forgot password",
+      "reset",
+      "recovery"
+    ]
+  },
+  {
+    "slug": "find-courses",
+    "category": "Courses and learning",
+    "title": "How can I find training courses?",
+    "status": "draft",
+    "body": "Browse the available learning and training sections on DDEI and review each course description, eligibility, cost if applicable, and enrollment instructions. If you cannot access a course you expect to see, contact support with the course title and a description of the problem.",
+    "keywords": [
+      "training",
+      "course",
+      "learning"
+    ]
+  },
+  {
+    "slug": "learning-progress",
+    "category": "Courses and learning",
+    "title": "My course progress is missing",
+    "status": "draft",
+    "body": "Confirm that you are signed in to the correct account. Refresh the page and check your connection. Record the course name, approximate time, and what you expected to see. Report the issue to support without including passwords or payment card details.",
+    "keywords": [
+      "progress",
+      "completion",
+      "quiz"
+    ]
+  },
+  {
+    "slug": "application-status",
+    "category": "Applications and opportunities",
+    "title": "How do I get help with an application?",
+    "status": "draft",
+    "body": "Check the relevant application or opportunity section for updates. If an application appears missing or incorrect, contact support with the opportunity name and any non-sensitive reference number. Submission does not guarantee selection or employment.",
+    "keywords": [
+      "application",
+      "recruitment",
+      "status"
+    ]
+  },
+  {
+    "slug": "payment-problem",
+    "category": "Payments and subscriptions",
+    "title": "I paid but cannot access my subscription",
+    "status": "draft",
+    "body": "Allow time for payment confirmation, then sign out and sign back in. If access is still unavailable, contact support with the transaction date, amount, payment provider and a redacted transaction reference. Do not share card numbers, PINs, passwords or one-time codes. Refund eligibility must be checked against DDEI's published terms.",
+    "keywords": [
+      "payment",
+      "subscription",
+      "billing"
+    ]
+  },
+  {
+    "slug": "report-security-concern",
+    "category": "Privacy and security",
+    "title": "How do I report a suspicious message or security problem?",
+    "status": "draft",
+    "body": "Do not click suspicious links or disclose passwords or one-time codes. Change your password through the official DDEI website when recovery is available. Report the concern to DDEI support with a description and non-sensitive evidence. If your email account may be compromised, secure that account as well.",
+    "keywords": [
+      "phishing",
+      "privacy",
+      "security"
+    ]
+  },
+  {
+    "slug": "contact-support",
+    "category": "Contacting support",
+    "title": "How can I contact the support team?",
+    "status": "draft",
+    "body": "Use the DDEI Help & Support section when it is available. Describe the issue, the page where it occurred, and what you have already tried. Keep passwords, authentication codes, bank card details and other sensitive data out of your message. You should receive a ticket reference only after your request has been saved successfully.",
+    "keywords": [
+      "help",
+      "ticket",
+      "support"
+    ]
+  }
+]

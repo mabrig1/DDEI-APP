@@ -90,8 +90,8 @@ async function sendScholarshipEmail(application, level, tempPassword) {
 
 async function sendPasswordResetEmail(user, resetUrl) {
   if (!process.env.RESEND_API_KEY) {
-    console.warn(`RESEND_API_KEY not set — skipping password reset email. Reset URL for ${user.email}: ${resetUrl}`);
-    return;
+    console.warn('Password reset email unavailable: mail service not configured.');
+    return false;
   }
 
   try {
@@ -110,8 +110,10 @@ async function sendPasswordResetEmail(user, resetUrl) {
       },
       { headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` } }
     );
+    return true;
   } catch (err) {
-    console.error('Failed to send password reset email:', err.response?.data || err.message);
+    console.error('Failed to send password reset email:', err.response?.status || err.code || 'delivery error');
+    return false;
   }
 }
 
