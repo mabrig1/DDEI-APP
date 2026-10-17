@@ -38,10 +38,10 @@ function improveHomepage(html) {
   html = html.replace(/\n\s*<!-- Earn Online Now teaser[\s\S]*?<\/div>\s*<\/div>\s*(?=<!-- Opportunity Matching -->)/, '\n\n    ');
 
   html = html
-    .replace('Global Platform • Built for African Youth', '100% FREE DIGITAL SKILLS TRAINING • BUILT FOR AFRICAN YOUTH')
+    .replace('Global Platform • Built for African Youth', 'PRACTICAL DIGITAL SKILLS TRAINING • BUILT FOR AFRICAN YOUTH')
     .replace('Global Skills.<br>\n                    <span class="text-[#60A5FA]">Dollar Opportunities.</span><br>\n                    African Futures.', 'Learn a Digital Skill.<br>\n                    <span class="text-[#60A5FA]">Build Real Projects.</span><br>\n                    Create Your Future.')
     .replace(/We bridge the gap between African youth and global economic opportunity — learn in-demand digital\s*skills, build an AI-powered international portfolio, and get matched to freelance gigs and remote\s*jobs that pay in dollars\./, 'Start from beginner level and learn practical digital skills at your own pace. Complete real lessons, build projects, track your progress, and prepare for freelance, remote-work and entrepreneurial opportunities.')
-    .replace('Start Learning Free <i class="fa-solid fa-arrow-right ml-2"></i>', 'Start Free Training <i class="fa-solid fa-arrow-right ml-2"></i>');
+    .replace('Start Learning Free <i class="fa-solid fa-arrow-right ml-2"></i>', 'Start Your Training <i class="fa-solid fa-arrow-right ml-2"></i>');
 
   html = html.replace(
     '    <!-- Skills Section -->',
