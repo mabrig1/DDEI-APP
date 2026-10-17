@@ -1,0 +1,37 @@
+name: MABRIG DevShield AI
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  devshield:
+    name: DevShield security review
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: DevShield scan
+        uses: mabrig1/mabrig-devshield-ai@v1
+        with:
+          github-token: ${{ github.token }}
+          fail-on: high
+          comment: 'false'
+          scan-scope: repository
+          legal-compliance: advisory
+          api-trust: advisory
+          agentic-mode: plan
+          remediation-mode: propose
+          runtime-guard: 'off'
+          sarif: 'true'
