@@ -13,10 +13,25 @@ const PORTFOLIO_Q = /\b(portfolio)\b/i;
 const OPPORTUNITY_Q = /\b(job|gig|client|hire|opportunity|work)\b/i;
 const RECRUITMENT_Q = /\b(work with us|earn while you learn|recruit|recruitment|internship|trainee|part.?time work|join the team)\b/i;
 const LOGIN_HELP = /\b(log ?in|password|forgot|reset|can't access|cannot access|locked out)\b/i;
+const MISSING_ACCESS = /(?:paid|payment|charged|debited|paystack).*(?:access|activate|unlock|pending|course|not showing)|(?:access|course|subscription).*(?:payment|paid|not showing|unlock)/i;
+const PAYMENT_Q = /\\b(?:payment|paid|paystack|charged|receipt|transaction|activation|activate)\\b/i;
+const TICKET_Q = /\\b(?:ticket|complaint|customer support|support request|case number|human support)\\b/i;
 const CONTACT_Q = /\b(contact|support|human|talk to someone|whatsapp|help me|reach you)\b/i;
 
 function buildHelpReply(message, history = []) {
   const text = message.trim();
+
+  if (MISSING_ACCESS.test(text)) {
+    return 'You should never need administrator approval after a verified payment. Log in to the account you used at checkout, open this Help panel and choose My Payments, then Check with Paystack. If payment was successful but access is missing, choose Support Ticket and include the payment reference. Please do not pay a second time.';
+  }
+
+  if (TICKET_Q.test(text)) {
+    return 'To contact our support team, log in, choose Support Ticket below, describe your issue and submit. You will get a ticket number and can view replies here. Never share passwords, OTPs or card details. WhatsApp support is also available.';
+  }
+
+  if (PAYMENT_Q.test(text)) {
+    return 'Verified Paystack payments unlock purchased training or Premium automatically. Sign in before paying so the purchase is linked to your account. After checkout, the site checks the payment and refreshes your access. Use My Payments below to verify again or open a secure support ticket if needed.';
+  }
 
   if (CONTACT_Q.test(text)) {
     return (
@@ -125,7 +140,7 @@ function buildHelpReply(message, history = []) {
 
   if (GREETING.test(text) && history.length === 0) {
     return (
-      "Hi! I'm here to help you understand Destiny Skills Bridge. Ask me about our skill tracks, pricing, the free trial, scholarships, or how to apply."
+      "Hi! I'm here to help with courses, payments, login and learning support. Payments activate access automatically; choose My Payments or Support Ticket below if you need help."
     );
   }
 
