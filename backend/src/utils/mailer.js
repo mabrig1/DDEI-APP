@@ -126,7 +126,7 @@ async function sendCustomEmail(to, subject, message) {
     await axios.post(
       'https://api.resend.com/emails',
       {
-        from: 'Destiny Skills Bridge <onboarding@resend.dev>',
+        from: process.env.RESEND_FROM_EMAIL || 'Destiny Skills Bridge <onboarding@resend.dev>',
         to: [to],
         subject,
         html,
