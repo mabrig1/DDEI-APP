@@ -41,7 +41,7 @@ function improveHomepage(html) {
     .replace('Global Platform • Built for African Youth', 'PRACTICAL DIGITAL SKILLS TRAINING • BUILT FOR AFRICAN YOUTH')
     .replace('Global Skills.<br>\n                    <span class="text-[#60A5FA]">Dollar Opportunities.</span><br>\n                    African Futures.', 'Learn a Digital Skill.<br>\n                    <span class="text-[#60A5FA]">Build Real Projects.</span><br>\n                    Create Your Future.')
     .replace(/We bridge the gap between African youth and global economic opportunity — learn in-demand digital\s*skills, build an AI-powered international portfolio, and get matched to freelance gigs and remote\s*jobs that pay in dollars\./, 'Start from beginner level and learn practical digital skills at your own pace. Complete real lessons, build projects, track your progress, and prepare for freelance, remote-work and entrepreneurial opportunities.')
-    ;
+  ;
 
   html = html.replace(
     '    <!-- Skills Section -->',
