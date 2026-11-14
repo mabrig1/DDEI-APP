@@ -1,0 +1,31 @@
+/* DDEI no-login product tour. Compact, accessible and dependency free. */
+#demo { scroll-margin-top: 6rem; background: linear-gradient(145deg,#071629,#0d2445 58%,#072d36); color: #f8fafc; }
+#demo .demo-topline { letter-spacing:.16em; text-transform:uppercase; color:#67e8f9; font-size:.72rem; font-weight:800; }
+#demo .demo-shell { border: 1px solid rgba(148,163,184,.25); background: rgba(255,255,255,.055); border-radius: 1.7rem; overflow:hidden; box-shadow:0 40px 90px rgba(1,6,17,.36); }
+#demo .demo-sidebar { background:rgba(2,6,23,.36); border-right:1px solid rgba(148,163,184,.15); }
+#demo .demo-topbar { border-bottom:1px solid rgba(148,163,184,.18); }
+#demo .demo-track, #demo .demo-step { display:block; width:100%; text-align:left; color:#cbd5e1; padding:.8rem 1rem; border-radius:1rem; border:1px solid transparent; font-size:.9rem; transition: background .18s,border-color .18s; }
+#demo .demo-track:hover, #demo .demo-step:hover { background:rgba(255,255,255,.07); }
+#demo .demo-track[aria-pressed=true], #demo .demo-step[aria-current=step] { color:#fff; background:rgba(14,165,233,.20); border-color:rgba(103,232,249,.40); }
+#demo .demo-step { display:flex; align-items:center; gap:.65rem; }
+#demo .demo-step-number { flex:0 0 auto; width:1.8rem; height:1.8rem; display:grid; place-items:center; background:rgba(255,255,255,.12); color:#fff; border-radius:.6rem; font-weight:700; font-size:.75rem; }
+#demo .demo-content { background:linear-gradient(145deg,rgba(15,23,42,.6),rgba(15,23,42,.1)); }
+#demo .demo-glass { background:rgba(255,255,255,.065); border:1px solid rgba(148,163,184,.22); border-radius:1.25rem; }
+#demo .demo-primary { color:#0c1a2b; background:#fbbf24; font-weight:800; border-radius:.9rem; padding:.95rem 1.4rem; }
+#demo .demo-primary:hover { background:#fcd34d; }
+#demo .demo-primary:disabled { opacity:.45; cursor:not-allowed; }
+#demo .demo-outline { color:#e2e8f0; border:1px solid rgba(148,163,184,.5); border-radius:.9rem; padding:.9rem 1.15rem; font-weight:700; }
+#demo .demo-outline:hover { background:rgba(255,255,255,.1); }
+#demo .demo-option { display:block; width:100%; border:1px solid rgba(148,163,184,.35); padding:.95rem 1rem; border-radius: .9rem; color:#e2e8f0; text-align:left; background:rgba(15,23,42,.45); }
+#demo .demo-option:hover { border-color:#38bdf8; }
+#demo .demo-option[aria-pressed=true] { border-color:#fbbf24; background:rgba(251,191,36,.13); color:#fff; }
+#demo .demo-input { display:block; width:100%; color:#0f172a; background:#fff; padding:.95rem 1rem; border-radius:.9rem; border:2px solid transparent; }
+#demo .demo-input:focus { outline: 3px solid #fbbf24; outline-offset:2px; }
+#demo .demo-progress-track { height:.4rem; border-radius:99px; background:rgba(148,163,184,.24); overflow:hidden; }
+#demo #demoProgressBar { background:linear-gradient(90deg,#38bdf8,#fbbf24); height:100%; width:25%; transition:width .28s ease; }
+#demo [hidden] { display:none !important; }
+#demo .demo-portfolio { background:#f8fafc; color:#0f172a; border-radius:1.2rem; padding:1.3rem; box-shadow:0 12px 35px rgba(0,0,0,.12); }
+#demo .demo-status { min-height:1.8rem; color:#a5f3fc; font-size:.9rem; }
+#demo .demo-feature { border:1px solid rgba(148,163,184,.20); border-radius:1rem; padding:1rem; background:rgba(255,255,255,.05); }
+@media(max-width:767px){#demo .demo-sidebar{border-right:0;border-bottom:1px solid rgba(148,163,184,.15);} #demo .demo-steps-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.3rem;}#demo .demo-step{font-size:.76rem;padding:.55rem;gap:.35rem;}#demo .demo-track{font-size:.82rem;padding:.6rem;}#demo .demo-shell{border-radius:1.1rem;}}
+@media(prefers-reduced-motion:reduce){#demo #demoProgressBar,#demo .demo-track,#demo .demo-step{transition:none;}}
