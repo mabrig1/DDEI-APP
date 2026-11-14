@@ -2102,7 +2102,7 @@
                         <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
                     </div>
                     <button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
-                        ${authUser() && (authUser().hasPremiumAccess || authUser().isPremium || (authUser().purchasedCourses || []).some(p => p.courseId === course.id) || ['limited', 'full'].includes(authUser().scholarship)) ? 'Open Training' : 'See Demo & Unlock Training'}
+                        ${authUser() && ((authUser().isPremium && (!authUser().premiumExpiresAt || new Date(authUser().premiumExpiresAt) > new Date())) || (authUser().purchasedCourses || []).some(p => p.courseId === course.id) || ['limited', 'full'].includes(authUser().scholarship)) ? 'Open Training' : 'See Demo & Unlock Training'}
                     </button>
                 </div>`;
         }
