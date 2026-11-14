@@ -616,7 +616,7 @@
         <i id="helpBotToggleIcon" class="fa-solid fa-comment-dots text-2xl"></i>
     </button>
 
-    <div id="helpBotPanel" class="hidden fixed bottom-40 right-6 z-40 w-[22rem] max-w-[90vw] bg-white border rounded-3xl shadow-2xl overflow-hidden">
+    <div id="helpBotPanel" class="hidden fixed bottom-28 right-6 z-40 w-[22rem] max-w-[90vw] max-h-[80vh] overflow-y-auto bg-white border rounded-3xl shadow-2xl">
         <div class="bg-[#0A66C2] text-white px-5 py-4 flex items-center justify-between">
             <div>
                 <p class="font-display font-semibold leading-tight">Ask Us Anything</p>
@@ -634,6 +634,30 @@
                 <i class="fa-solid fa-paper-plane text-sm"></i>
             </button>
         </form>
+        <div class="p-4 border-t bg-slate-50 space-y-3">
+            <p class="text-xs text-slate-600">Payment confirmed? Your course unlocks automatically. If it is missing, check your payment below or open a private support request.</p>
+            <div class="flex gap-2">
+                <button type="button" onclick="showMyPayments()" class="flex-1 rounded-xl bg-white border px-3 py-2 text-xs font-semibold text-blue-700">My Payments</button>
+                <button type="button" onclick="toggleSupportTicketForm()" class="flex-1 rounded-xl bg-white border px-3 py-2 text-xs font-semibold text-blue-700">Support Ticket</button>
+            </div>
+            <div id="paymentHelpResults" class="text-xs space-y-2" aria-live="polite"></div>
+            <form id="supportTicketForm" class="hidden space-y-2" onsubmit="return submitSupportTicket(event)">
+                <label class="text-xs font-semibold block" for="supportCategory">Issue category</label>
+                <select id="supportCategory" required class="w-full border rounded-lg px-2 py-2 text-sm">
+                    <option value="payment">Payment / Missing Access</option>
+                    <option value="account">Account / Login</option>
+                    <option value="course">Course / Lesson</option>
+                    <option value="certificate">Certificate</option>
+                    <option value="other">Other</option>
+                </select>
+                <input id="supportSubject" required minlength="4" maxlength="120" placeholder="Brief subject" class="w-full border rounded-lg px-3 py-2 text-sm">
+                <input id="supportPaymentRef" maxlength="20" placeholder="Payment reference (optional)" class="w-full border rounded-lg px-3 py-2 text-sm">
+                <textarea id="supportDescription" required minlength="10" maxlength="3000" rows="3" placeholder="Tell us what happened. Never send your password, OTP or card details." class="w-full border rounded-lg px-3 py-2 text-sm"></textarea>
+                <button type="submit" class="bg-blue-700 rounded-xl text-white w-full px-3 py-2 text-sm font-semibold">Submit Secure Ticket</button>
+            </form>
+            <button type="button" onclick="showMyTickets()" class="text-xs text-blue-700 underline font-semibold">View my support requests and replies</button>
+            <div id="supportTicketsResults" class="text-xs space-y-2" aria-live="polite"></div>
+        </div>
     </div>
 
     <!-- Auth Modal -->
@@ -1345,6 +1369,19 @@
                 setSession(data.token, data.user);
                 closeModal('authModal');
                 renderCoursesSection();
+                const pendingPaymentReference = sessionStorage.getItem('dsb_pending_payment_reference');
+                if (pendingPaymentReference) {
+                    sessionStorage.removeItem('dsb_pending_payment_reference');
+                    await checkMyPayment(pendingPaymentReference);
+                    if (!helpBotOpened) toggleHelpBot();
+                    return false;
+                }
+                if (pendingUpgradePlan) {
+                    const plan = pendingUpgradePlan;
+                    pendingUpgradePlan = null;
+                    await startUpgrade(plan);
+                    return false;
+                }
                 if (pendingCourseSelection) {
                     const courseId = pendingCourseSelection;
                     pendingCourseSelection = null;
@@ -1518,10 +1555,15 @@
             return `Could not start payment: ${err.message}`;
         }
 
+        let pendingUpgradePlan = null;
         async function startUpgrade(plan) {
             const user = authUser();
-            const email = user ? user.email : prompt('Enter your email to continue to payment:');
-            if (!email) return;
+            if (!user) {
+                pendingUpgradePlan = plan;
+                openAuthModal('register');
+                return;
+            }
+            const email = user.email;
 
             try {
                 const data = await apiRequest('/api/payments/initialize', {
@@ -1730,6 +1772,137 @@
                 appendHelpBotMessage('bot', "I'm having trouble connecting right now — please try again, or message us on WhatsApp.");
             }
             return false;
+        }
+
+        async function showMyPayments() {
+            const area = document.getElementById('paymentHelpResults');
+            if (!authUser()) { area.textContent = 'Log in to view your payments.'; openAuthModal('login'); return; }
+            area.textContent = 'Checking your payment history...';
+            try {
+                const data = await apiRequest('/api/payments/mine');
+                const records = data.payments || [];
+                if (!records.length) { area.textContent = 'No linked payments found. If you paid before creating an account, contact support on WhatsApp with your reference.'; return; }
+                area.innerHTML = '';
+                records.forEach((payment) => {
+                    const row = document.createElement('div');
+                    row.className = 'rounded-lg border bg-white p-2';
+                    const status = payment.accessGranted ? 'Access active' : (payment.status === 'success' ? 'Payment received — access pending' : payment.status);
+                    row.innerHTML = '<strong>' + escapeHtml(payment.plan) + '</strong> · ' + escapeHtml(status)
+                        + '<p class="text-slate-500">' + escapeHtml(payment.reference) + '</p>';
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'text-blue-700 underline font-semibold mt-1';
+                    btn.textContent = 'Check with Paystack';
+                    btn.onclick = () => checkMyPayment(payment.reference);
+                    row.appendChild(btn);
+                    area.appendChild(row);
+                });
+            } catch (err) { area.textContent = 'Could not load payments: ' + err.message; }
+        }
+
+        async function checkMyPayment(reference) {
+            const area = document.getElementById('paymentHelpResults');
+            area.textContent = 'Verifying your payment with Paystack...';
+            try {
+                const data = await apiRequest('/api/payments/verify/' + encodeURIComponent(reference));
+                area.textContent = data.accessGranted
+                    ? 'Payment confirmed. Your access is active — refresh your course dashboard.'
+                    : (data.message || 'Payment status: ' + data.status + '. No access has been granted yet.');
+                if (data.accessGranted) {
+                    const account = await apiRequest('/api/auth/me');
+                    setSession(authToken(), account.user);
+                    renderCoursesSection();
+                }
+            } catch (err) { area.textContent = 'Verification unavailable: ' + err.message; }
+        }
+
+        function toggleSupportTicketForm() {
+            if (!authUser()) { openAuthModal('login'); return; }
+            document.getElementById('supportTicketForm').classList.toggle('hidden');
+        }
+
+        async function submitSupportTicket(event) {
+            event.preventDefault();
+            const result = document.getElementById('supportTicketsResults');
+            if (!authUser()) { openAuthModal('login'); return false; }
+            const form = event.target;
+            const submit = form.querySelector('button[type="submit"]');
+            submit.disabled = true;
+            result.textContent = 'Submitting your support request...';
+            try {
+                const data = await apiRequest('/api/help/tickets', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        category: document.getElementById('supportCategory').value,
+                        subject: document.getElementById('supportSubject').value,
+                        description: document.getElementById('supportDescription').value,
+                        paymentReference: document.getElementById('supportPaymentRef').value.trim(),
+                    }),
+                });
+                result.textContent = 'Ticket ' + data.ticket.number + ' created successfully. Check this panel for replies.';
+                form.reset();
+                form.classList.add('hidden');
+            } catch (err) { result.textContent = 'Ticket not submitted: ' + err.message; }
+            finally { submit.disabled = false; }
+            return false;
+        }
+
+        async function showMyTickets() {
+            const area = document.getElementById('supportTicketsResults');
+            if (!authUser()) { area.textContent = 'Log in to see your support requests.'; openAuthModal('login'); return; }
+            area.textContent = 'Loading your tickets...';
+            try {
+                const data = await apiRequest('/api/help/tickets');
+                area.innerHTML = '';
+                if (!data.tickets.length) { area.textContent = 'No support requests yet.'; return; }
+                data.tickets.forEach((ticket) => {
+                    const card = document.createElement('div');
+                    card.className = 'rounded-lg border bg-white p-3 space-y-2';
+                    card.innerHTML = '<strong>' + escapeHtml(ticket.number) + ' — ' + escapeHtml(ticket.subject)
+                        + '</strong><p>Status: ' + escapeHtml(ticket.status) + '</p>'
+                        + '<p>' + escapeHtml(ticket.description) + '</p>'
+                        + (ticket.replies || []).map(reply => '<p class="border-t pt-1"><strong>'
+                            + escapeHtml(reply.author) + ':</strong> ' + escapeHtml(reply.body) + '</p>').join('');
+                    const input = document.createElement('textarea');
+                    input.className = 'w-full border rounded-lg p-2 text-xs';
+                    input.rows = 2; input.maxLength = 3000;
+                    input.placeholder = 'Reply to support';
+                    const replyButton = document.createElement('button');
+                    replyButton.className = 'rounded-lg bg-blue-700 text-white px-3 py-2';
+                    replyButton.textContent = 'Send Reply';
+                    replyButton.onclick = async () => {
+                        if (!input.value.trim()) return;
+                        replyButton.disabled = true;
+                        try {
+                            await apiRequest('/api/help/tickets/' + encodeURIComponent(ticket._id) + '/reply', {
+                                method: 'POST', body: JSON.stringify({ message: input.value }),
+                            });
+                            await showMyTickets();
+                        } catch (err) { area.textContent = 'Could not send reply: ' + err.message; }
+                        finally { replyButton.disabled = false; }
+                    };
+                    card.appendChild(input); card.appendChild(replyButton);
+                    area.appendChild(card);
+                });
+            } catch (err) { area.textContent = 'Could not load tickets: ' + err.message; }
+        }
+
+        async function hydratePaymentReturn() {
+            const url = new URL(window.location.href);
+            const reference = url.searchParams.get('reference') || url.searchParams.get('trxref');
+            if (!reference || !/^dsb_[a-f0-9]{16}$/.test(reference)) return;
+            url.searchParams.delete('reference');
+            url.searchParams.delete('trxref');
+            window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+            if (!authUser()) {
+                document.getElementById('paymentHelpResults').textContent = 'Log in to confirm your purchase.';
+                toggleHelpBot();
+                openAuthModal('login');
+                sessionStorage.setItem('dsb_pending_payment_reference', reference);
+                return;
+            }
+            await checkMyPayment(reference);
+            if (!helpBotOpened) toggleHelpBot();
         }
 
         // ----- Interactive Courses -----
@@ -2595,6 +2768,7 @@
         }
 
         refreshNavAuth();
+        hydratePaymentReturn();
         loadSkills();
         loadOpportunities();
         loadCourses().then(hydrateCourseFromLink);
