@@ -49,7 +49,7 @@ test('legacy and new trial dates never unlock course lessons, even far in the fu
 
 test('paid courses, Premium and scholarships retain their correct permissions', async () => {
   const standard = COURSES.find((course) => !course.paidOnly);
-  const special = COURSES.find((course) => course.paidOnly);
+  const special = COURSES.find((course) => course.paidOnly || (course.specialCourse && course.purchasePlan));
   assert.ok(standard && special, 'Standard and paid-only course fixtures should exist');
   const user = new User({ name: 'Learner', email: 'learner-demo@example.com', password: 'example-password' });
   assert.equal((await checkEntitlement(user, special.id)).res.statusCode, 402);
@@ -94,6 +94,7 @@ test('the public demo really progresses through lesson, quiz, project and portfo
       setAttribute(name, value) { this.attrs[name] = value; },
       getAttribute(name) { return this.attrs[name]; },
       replaceChildren(...children) { this.children = children; },
+      appendChild(child) { this.children.push(child); return child; },
       click() { assert.ok(this.handlers.click, 'Expected interactive event binding'); this.handlers.click(); },
       scrollIntoView() {},
     };
