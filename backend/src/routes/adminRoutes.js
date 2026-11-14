@@ -27,6 +27,7 @@ const { requireAdmin } = require('../middleware/adminAuth');
 const { asyncHandler } = require('../middleware/asyncHandler');
 const { listInquiries, updateInquiry } = require('../controllers/partnerController');
 const { adminRateLimit } = require('../middleware/adminRateLimit');
+const { listAdminTickets, replyToTicket, changeTicketStatus } = require('../controllers/supportController');
 
 const router = express.Router();
 
@@ -46,6 +47,10 @@ router.patch('/users/:id/premium', requireAdmin, setUserPremium);
 router.patch('/users/:id/password', requireAdmin, setUserPassword);
 router.post('/users/:id/grant-course', requireAdmin, asyncHandler(grantCourseAccess));
 router.get('/subscriptions', requireAdmin, listSubscriptions);
+// Support inbox is accessible only with an authenticated administrator session.
+router.get('/support/tickets', requireAdmin, asyncHandler(listAdminTickets));
+router.post('/support/tickets/:id/reply', requireAdmin, asyncHandler(replyToTicket));
+router.patch('/support/tickets/:id/status', requireAdmin, asyncHandler(changeTicketStatus));
 router.post('/access-link', requireAdmin, createAccessLink);
 router.post('/users/:id/message', requireAdmin, messageUser);
 router.post('/broadcast', requireAdmin, broadcastMessage);
