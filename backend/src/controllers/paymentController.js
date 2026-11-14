@@ -6,6 +6,8 @@ const { logActivity } = require('../utils/activityLogger');
 const { allowedOrigins } = require('../config/cors');
 const { normalizeEmail, isValidEmail } = require('../utils/validation');
 const { reportMabrigConversion } = require('../utils/mabrigGrowth');
+const { sendCustomEmail } = require('../utils/mailer');
+const { entitlementForPlan, paymentMatchesRecord, entitlementExpiry } = require('../utils/paymentEntitlements');
 
 const PAYSTACK_BASE_URL = 'https://api.paystack.co';
 const PROMOTER_CONVERSION_URL = process.env.PROMOTER_CONVERSION_URL || 'https://academic.mabrigkorie.org/api/referrals/conversion';
@@ -152,11 +154,22 @@ function paymentSnapshot(data) {
 
 async function initializePayment(req, res) {
   const { plan, courseId } = req.body;
-  const email = normalizeEmail(req.body.email);
+  let email = normalizeEmail(req.body.email);
   const referralCode = normalizeReferralCode(req.body.referralCode);
   const attributionToken = normalizeAttributionToken(req.body.attributionToken);
   const planConfig = PLANS[plan];
   if (!planConfig) return res.status(400).json({ message: 'Invalid or unknown payment plan.' });
+  // Only sponsorships accept guest checkout. Paid courses, certificates and
+  // subscriptions must be tied to the authenticated learner before checkout;
+  // a payment must never wait for the owner to assign access manually.
+  let purchaser = null;
+  if (planConfig.type !== 'sponsorship') {
+    if (!req.userId) return res.status(401).json({ message: 'Create an account or log in before paying so your access can activate automatically.' });
+    purchaser = await User.findById(req.userId);
+    if (!purchaser) return res.status(401).json({ message: 'Your account was not found. Please log in again.' });
+    if (email && email !== purchaser.email) return res.status(400).json({ message: 'Payment email must match your signed-in account.' });
+    email = purchaser.email;
+  }
   if (!isValidEmail(email)) return res.status(400).json({ message: 'Enter a valid email address.' });
   if (!process.env.PAYSTACK_SECRET_KEY) {
     return res.status(503).json({ message: 'Payments are not configured on the server yet (missing Paystack key). Please contact support.' });
@@ -213,36 +226,61 @@ async function initializePayment(req, res) {
 }
 
 async function grantPaymentBenefits(subscription) {
-  if (!subscription.user || subscription.status !== 'success') return;
-  const resolvedPlan = PLANS[subscription.plan] || {};
-  if (resolvedPlan.type === 'sponsorship') {
-    logActivity(subscription.user, 'Sponsor', 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount, sponsorship: true });
-    return;
+  if (!subscription || subscription.status !== 'success') return false;
+  if (subscription.benefitsAppliedAt) return true;
+  const entitlement = entitlementForPlan(subscription.plan, PLANS);
+  if (!entitlement) throw new Error('Unknown purchased entitlement');
+  if (entitlement.type === 'sponsorship') {
+    await Subscription.updateOne({ _id: subscription._id, benefitsAppliedAt: null },
+      { $set: { benefitsAppliedAt: new Date() } });
+    return true;
   }
-  if (subscription.plan.startsWith('certificate-fee:')) {
-    const certCourseId = subscription.plan.split(':')[1];
-    const user = await User.findById(subscription.user);
-    if (user && certCourseId && !(user.purchasedCourses || []).some((p) => p.courseId === certCourseId)) {
-      user.purchasedCourses.push({ courseId: certCourseId, purchasedAt: new Date() });
-      await user.save();
-      logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: 'Verified Course Certificate', amountNGN: subscription.amount });
+  if (!subscription.user) {
+    // Old anonymous checkouts cannot be safely assigned by guessing an email.
+    // Keep them visible as paid-but-unfulfilled for private support resolution.
+    return false;
+  }
+  if (entitlement.type === 'course') {
+    // Atomic conditional push prevents duplicate course grants on concurrent
+    // webhook deliveries. A successful retry does not change a prior grant.
+    const update = await User.updateOne(
+      { _id: subscription.user, 'purchasedCourses.courseId': { $ne: entitlement.courseId } },
+      { $push: { purchasedCourses: { courseId: entitlement.courseId, purchasedAt: new Date() } } }
+    );
+    if (!update.matchedCount) {
+      const exists = await User.exists({ _id: subscription.user, 'purchasedCourses.courseId': entitlement.courseId });
+      if (!exists) throw new Error('Learner account is missing for this payment');
     }
-    return;
+  } else if (entitlement.type === 'premium') {
+    // Use the gateway payment time rather than the webhook delivery time.
+    // Replaying the same payment cannot extend the subscription repeatedly.
+    const expiration = entitlementExpiry(subscription.paystackData?.paidAt || subscription.createdAt, entitlement.months);
+    const update = await User.updateOne(
+      { _id: subscription.user },
+      { $set: { isPremium: true }, $max: { premiumExpiresAt: expiration } }
+    );
+    if (!update.matchedCount) throw new Error('Learner account is missing for this payment');
   }
-  if (resolvedPlan.type === 'course' && resolvedPlan.courseId) {
-    const user = await User.findById(subscription.user);
-    if (user && !(user.purchasedCourses || []).some((p) => p.courseId === resolvedPlan.courseId)) {
-      user.purchasedCourses.push({ courseId: resolvedPlan.courseId, purchasedAt: new Date() });
-      await user.save();
-      logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount });
-    }
-    return;
-  }
-  if (resolvedPlan.type === 'subscription') {
-    const expiresAt = new Date();
-    expiresAt.setMonth(expiresAt.getMonth() + (subscription.plan === 'premium-yearly' ? 12 : 1));
-    const user = await User.findByIdAndUpdate(subscription.user, { isPremium: true, premiumExpiresAt: expiresAt });
-    if (user) logActivity(user._id, user.name, 'payment', { plan: subscription.plan, label: resolvedPlan.label, amountNGN: subscription.amount });
+  await Subscription.updateOne(
+    { _id: subscription._id, benefitsAppliedAt: null },
+    { $set: { benefitsAppliedAt: new Date() } }
+  );
+  logActivity(subscription.user, 'Learner', 'payment', {
+    plan: subscription.plan, amountNGN: subscription.amount, automatic: true,
+  });
+  return true;
+}
+
+async function notifyAccess(subscription) {
+  if (!subscription.user || !subscription.benefitsAppliedAt || subscription.accessEmailSentAt) return;
+  if (!process.env.RESEND_API_KEY || !subscription.customerEmail) return;
+  const result = await sendCustomEmail(subscription.customerEmail,
+    'DDEI payment confirmed — your access is ready',
+    'We have confirmed your payment for ' + planLabel(subscription.plan) +
+    '. Your learner access has been activated automatically, without administrator approval.\\n\\nLog in at https://ddei.online with the account used to pay. If you cannot see your course, use Help & Support to verify the payment or open a support ticket.\\n\\nReference: ' + subscription.reference);
+  if (result.ok) {
+    await Subscription.updateOne({ _id: subscription._id, accessEmailSentAt: null },
+      { $set: { accessEmailSentAt: new Date() } });
   }
 }
 
@@ -251,29 +289,13 @@ async function settlePayment(data) {
   const existing = await Subscription.findOne({ reference });
   if (!existing) return null;
 
-  if (!existing.customerEmail && data.customer?.email) {
-    const providerEmail = normalizeEmail(data.customer.email);
-    if (isValidEmail(providerEmail)) {
-      existing.customerEmail = providerEmail;
-      await existing.save();
+  // Do not change a successfully settled transaction back to failed if a
+  // delayed/older provider event arrives after the successful callback.
+  if (!paymentMatchesRecord(data, existing)) {
+    if (existing.status !== 'success' && data.status !== 'pending') {
+      await Subscription.updateOne({ _id: existing._id, status: { $ne: 'success' } },
+        { $set: { status: 'failed', paystackData: paymentSnapshot(data) } });
     }
-  }
-
-  const validAmount = Number(data.amount) === existing.amount * 100;
-  const validCurrency = String(data.currency || '').toUpperCase() === existing.currency;
-  const success = data.status === 'success' && validAmount && validCurrency;
-  if (!success) {
-    if (existing.status !== 'success') {
-      existing.status = 'failed';
-      existing.paystackData = paymentSnapshot(data);
-      await existing.save();
-    }
-    return existing;
-  }
-
-  if (existing.status === 'success') {
-    await reportPromoterConversion(existing);
-    await reportGrowthConversion(existing);
     return existing;
   }
 
@@ -282,32 +304,57 @@ async function settlePayment(data) {
     { $set: { status: 'success', paystackData: paymentSnapshot(data) } },
     { new: true }
   );
-  if (!settled) {
-    const current = await Subscription.findById(existing._id);
-    await reportPromoterConversion(current);
-    return current;
-  }
-  await grantPaymentBenefits(settled, data);
-  await reportPromoterConversion(settled);
-  await reportGrowthConversion(settled);
-  return settled;
+  const paid = settled || await Subscription.findById(existing._id);
+  // Always retry fulfillment even when payment status was marked success on
+  // an earlier request: 'success' != 'benefits delivered'.
+  await grantPaymentBenefits(paid);
+  await notifyAccess(await Subscription.findById(paid._id));
+  // Analytics / partner reporting must never prevent paid learners entering.
+  try { await reportPromoterConversion(paid); } catch (_) { /* retried later */ }
+  try { await reportGrowthConversion(paid); } catch (_) { /* retried later */ }
+  return Subscription.findById(paid._id);
 }
 
 async function verifyPayment(req, res) {
   const reference = String(req.params.reference || '');
   if (!/^dsb_[a-f0-9]{16}$/.test(reference)) return res.status(400).json({ message: 'Invalid payment reference.' });
   if (!process.env.PAYSTACK_SECRET_KEY) return res.status(503).json({ message: 'Payments are temporarily unavailable.' });
+  const record = await Subscription.findOne({ reference });
+  if (!record) return res.status(404).json({ message: 'Payment reference not found.' });
+  const sponsorship = entitlementForPlan(record.plan, PLANS)?.type === 'sponsorship';
+  if (!sponsorship && (!req.userId || String(req.userId) !== String(record.user || ''))) {
+    return res.status(403).json({ message: 'Log in to the account that started this payment to check its status.' });
+  }
   try {
     const response = await paystackClient().get(`/transaction/verify/${reference}`);
     const data = response.data.data;
     if (data.reference !== reference) return res.status(502).json({ message: 'Payment provider returned a mismatched reference.' });
     const subscription = await settlePayment(data);
-    if (!subscription) return res.status(404).json({ message: 'Subscription not found for this reference' });
-    res.json({ status: subscription.status, subscription });
+    // Only return the owner's minimal payment state: never expose
+    // customerEmail, attribution tokens or full provider payload.
+    res.json({
+      reference,
+      status: subscription.status,
+      accessGranted: Boolean(subscription.benefitsAppliedAt),
+      message: subscription.status === 'success' && !subscription.benefitsAppliedAt
+        ? 'Payment confirmed. Access could not be linked automatically; please contact support with your reference.'
+        : undefined,
+    });
   } catch (err) {
-    const message = err.response?.data?.message || 'Failed to verify payment with Paystack';
-    res.status(502).json({ message });
+    console.error('Payment verification failed:', err.message);
+    res.status(502).json({ message: 'Could not confirm this payment. Try checking again or contact support.' });
   }
+}
+
+async function myPayments(req, res) {
+  const records = await Subscription.find({ user: req.userId })
+    .sort({ createdAt: -1 }).limit(30)
+    .select('plan reference amount currency status benefitsAppliedAt createdAt');
+  res.json({ payments: records.map((item) => ({
+    plan: item.plan, reference: item.reference, amount: item.amount,
+    currency: item.currency, status: item.status,
+    accessGranted: Boolean(item.benefitsAppliedAt), createdAt: item.createdAt,
+  })) });
 }
 
 async function paystackWebhook(req, res) {
@@ -328,4 +375,4 @@ async function paystackWebhook(req, res) {
   }
 }
 
-module.exports = { initializePayment, verifyPayment, paystackWebhook, PLANS };
+module.exports = { initializePayment, verifyPayment, paystackWebhook, myPayments, PLANS };
