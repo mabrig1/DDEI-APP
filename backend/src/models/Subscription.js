@@ -17,6 +17,11 @@ const subscriptionSchema = new mongoose.Schema(
     currency: { type: String, default: 'NGN' },
     status: { type: String, enum: ['pending', 'success', 'failed'], default: 'pending' },
     paystackData: { type: mongoose.Schema.Types.Mixed, default: null },
+    // A paid record is not the same as delivered access. Keep a separate
+    // durable fulfillment marker so webhook redelivery and callback checks
+    // can safely recover temporary database failures.
+    benefitsAppliedAt: { type: Date, default: null },
+    accessEmailSentAt: { type: Date, default: null },
     promoterConversionReportedAt: { type: Date, default: null },
     growthConversionReportedAt: { type: Date, default: null },
   },
