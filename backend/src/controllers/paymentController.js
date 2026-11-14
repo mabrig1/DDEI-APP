@@ -277,7 +277,7 @@ async function notifyAccess(subscription) {
   const result = await sendCustomEmail(subscription.customerEmail,
     'DDEI payment confirmed — your access is ready',
     'We have confirmed your payment for ' + planLabel(subscription.plan) +
-    '. Your learner access has been activated automatically, without administrator approval.\\n\\nLog in at https://ddei.online with the account used to pay. If you cannot see your course, use Help & Support to verify the payment or open a support ticket.\\n\\nReference: ' + subscription.reference);
+    '. Your learner access has been activated automatically, without administrator approval.\n\nLog in at https://ddei.online with the account used to pay. If you cannot see your course, use Help & Support to verify the payment or open a support ticket.\n\nReference: ' + subscription.reference);
   if (result.ok) {
     await Subscription.updateOne({ _id: subscription._id, accessEmailSentAt: null },
       { $set: { accessEmailSentAt: new Date() } });
