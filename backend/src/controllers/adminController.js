@@ -13,7 +13,7 @@ const RECRUITMENT_STATUSES = ['submitted', 'reviewing', 'shortlisted', 'intervie
 const SCHOLARSHIP_LEVELS = ['none', 'limited', 'full'];
 const ADMIN_PREVIEW_EMAIL = 'admin-preview@destinyskillsbridge.internal';
 const MESSAGE_CHANNELS = ['email', 'whatsapp'];
-const BROADCAST_AUDIENCES = ['all', 'trial', 'premium', 'scholarship'];
+const BROADCAST_AUDIENCES = ['all', 'prospects', 'premium', 'scholarship'];
 
 async function resolveUserPhone(user) {
   if (user.phone) return user.phone;
@@ -31,10 +31,11 @@ function buildWhatsAppLink(phone, message) {
 async function resolveAudienceUsers(audience) {
   if (audience === 'premium') return User.find({ isPremium: true });
   if (audience === 'scholarship') return User.find({ scholarship: { $in: ['limited', 'full'] } });
-  if (audience === 'trial') {
-    const candidates = await User.find({ isPremium: false, scholarship: 'none' });
-    const now = new Date();
-    return candidates.filter((user) => user.trialEndsAt() > now);
+  if (audience === 'prospects') {
+    return User.find({
+      isPremium: false, scholarship: 'none',
+      $or: [{ purchasedCourses: { $size: 0 } }, { purchasedCourses: { $exists: false } }],
+    });
   }
   return User.find();
 }
@@ -225,7 +226,7 @@ async function createAccessLink(req, res) {
       scholarship: 'full',
     });
   } else if (!user.isPremium || user.scholarship !== 'full') {
-    // Full scholarship = unrestricted: bypasses trial gates, paid-only
+    // Full scholarship = unrestricted: bypasses paid-only
     // (pay-and-start) courses, the Tools Vault, and certificate fees.
     user.isPremium = true;
     user.premiumExpiresAt = null;
