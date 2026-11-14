@@ -43,7 +43,7 @@ function courseSummary(course) {
     price: course.price || null,
     earlyBirdPrice: course.earlyBirdPrice || null,
     specialCourse: course.specialCourse || false,
-    paidOnly: course.paidOnly || false,
+    paidOnly: Boolean(course.paidOnly || (course.specialCourse && course.purchasePlan)),
     durationDays: course.durationDays || null,
     purchasePlan: course.purchasePlan || null,
   };
