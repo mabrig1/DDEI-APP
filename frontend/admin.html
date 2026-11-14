@@ -367,7 +367,7 @@
                     <label class="block text-sm font-medium mb-1">Audience</label>
                     <select id="messageAudienceInput" class="w-full border rounded-xl px-4 py-2">
                         <option value="all">All users</option>
-                        <option value="trial">Trial users</option>
+                        <option value="prospects">Prospective learners (not yet enrolled)</option>
                         <option value="premium">Premium users</option>
                         <option value="scholarship">Scholarship users</option>
                     </select>
@@ -1353,11 +1353,9 @@
         function accessStatusHTML(user) {
             if (user.scholarship === 'full') return '<span class="text-emerald-600 font-medium">Full Scholarship</span>';
             if (user.scholarship === 'limited') return '<span class="text-emerald-600 font-medium">Limited Scholarship</span>';
-            if (user.isPremium) return '<span class="text-emerald-600 font-medium">Premium</span>';
-            if (!user.trialExpiresAt) return '<span class="text-slate-400">—</span>';
-            const daysLeft = Math.ceil((new Date(user.trialExpiresAt) - new Date()) / (24 * 60 * 60 * 1000));
-            if (daysLeft <= 0) return '<span class="text-red-600 font-medium">Trial expired</span>';
-            return `<span class="text-amber-600">Trial: ${daysLeft}d left</span>`;
+            if (user.isPremium && (!user.premiumExpiresAt || new Date(user.premiumExpiresAt) > new Date())) return '<span class="text-emerald-600 font-medium">Premium</span>';
+            if ((user.purchasedCourses || []).length) return '<span class="text-emerald-600 font-medium">Course purchased</span>';
+            return '<span class="text-slate-500">Not enrolled — demo available</span>';
         }
 
         function renderUserRow(user) {

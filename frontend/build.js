@@ -41,7 +41,7 @@ function improveHomepage(html) {
     .replace('Global Platform • Built for African Youth', 'PRACTICAL DIGITAL SKILLS TRAINING • BUILT FOR AFRICAN YOUTH')
     .replace('Global Skills.<br>\n                    <span class="text-[#60A5FA]">Dollar Opportunities.</span><br>\n                    African Futures.', 'Learn a Digital Skill.<br>\n                    <span class="text-[#60A5FA]">Build Real Projects.</span><br>\n                    Create Your Future.')
     .replace(/We bridge the gap between African youth and global economic opportunity — learn in-demand digital\s*skills, build an AI-powered international portfolio, and get matched to freelance gigs and remote\s*jobs that pay in dollars\./, 'Start from beginner level and learn practical digital skills at your own pace. Complete real lessons, build projects, track your progress, and prepare for freelance, remote-work and entrepreneurial opportunities.')
-    .replace('Start Learning Free <i class="fa-solid fa-arrow-right ml-2"></i>', 'Start Your Training <i class="fa-solid fa-arrow-right ml-2"></i>');
+  ;
 
   html = html.replace(
     '    <!-- Skills Section -->',
@@ -79,6 +79,8 @@ for (const page of pages) {
 
 fs.copyFileSync(path.join(__dirname, 'dsb-backup.js'), path.join(outDir, 'dsb-backup.js'));
 fs.copyFileSync(path.join(__dirname, 'promoter-referral.js'), path.join(outDir, 'promoter-referral.js'));
+fs.copyFileSync(path.join(__dirname, 'demo.js'), path.join(outDir, 'demo.js'));
+fs.copyFileSync(path.join(__dirname, 'demo.css'), path.join(outDir, 'demo.css'));
 
 const COURSE_LINK_ALIASES = {
   'ai-video': 'ai-cinematic-special-edition',
@@ -108,5 +110,5 @@ let courseLinkCount = 0;
   }
 }
 
-console.log(`Built frontend/dist (${pages.join(', ')} + dsb-backup.js + promoter-referral.js + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — built-in production fallback)'}`);
+console.log(`Built frontend/dist (${pages.join(', ')} + dsb-backup.js + promoter-referral.js + demo.js + demo.css + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — built-in production fallback)'}`);
 console.log(`Appwrite backup failover: ${appwriteConfig.enabled ? 'enabled' : 'disabled'} (project ${appwriteConfig.projectId}, ${appwriteConfig.endpoint})`);

@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const { attachAppwriteMirror } = require('../utils/appwriteMirrorHooks');
 const bcrypt = require('bcryptjs');
 
-const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
-
 const portfolioSchema = new mongoose.Schema(
   {
     headline: String,
@@ -45,6 +43,7 @@ const userSchema = new mongoose.Schema(
     activeCourseId: { type: String, default: null },
     isPremium: { type: Boolean, default: false },
     premiumExpiresAt: { type: Date, default: null },
+    // Archived trial dates remain readable for legacy records but never grant access.
     trialExpiresAt: { type: Date, default: null },
     scholarship: { type: String, enum: ['none', 'limited', 'full'], default: 'none' },
     portfolio: { type: portfolioSchema, default: null },
@@ -78,11 +77,6 @@ userSchema.methods.comparePassword = function comparePassword(candidate) {
   return bcrypt.compare(candidate, this.password);
 };
 
-userSchema.methods.trialEndsAt = function trialEndsAt() {
-  if (this.trialExpiresAt) return this.trialExpiresAt;
-  return new Date(this.createdAt.getTime() + TRIAL_DURATION_MS);
-};
-
 userSchema.methods.hasPremiumAccess = function hasPremiumAccess() {
   if (this.scholarship === 'full') return true;
   const now = new Date();
@@ -91,8 +85,7 @@ userSchema.methods.hasPremiumAccess = function hasPremiumAccess() {
 
 userSchema.methods.hasActiveAccess = function hasActiveAccess() {
   if (this.scholarship === 'limited' || this.scholarship === 'full') return true;
-  if (this.hasPremiumAccess()) return true;
-  return this.trialEndsAt() > new Date();
+  return this.hasPremiumAccess();
 };
 
 userSchema.methods.toJSON = function toSafeJSON() {
@@ -100,6 +93,7 @@ userSchema.methods.toJSON = function toSafeJSON() {
   delete obj.password;
   delete obj.resetPasswordToken;
   delete obj.resetPasswordExpires;
+  delete obj.trialExpiresAt;
   return obj;
 };
 

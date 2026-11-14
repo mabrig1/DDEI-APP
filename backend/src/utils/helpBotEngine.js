@@ -1,7 +1,7 @@
 const GREETING = /\b(hi|hello|hey|good morning|good afternoon|good evening)\b/i;
 const WHAT_IS = /\b(what is|what's|explain|about this|what does .*do|what do you do)\b/i;
 const COST = /\b(cost|price|pricing|fee|how much|naira|₦|expensive|free)\b/i;
-const TRIAL = /\b(trial|free trial|try it|test it)\b/i;
+const DEMO = /\b(trial|free trial|try it|test it|demo|demonstration|see how it works|preview)\b/i;
 const PREMIUM = /\b(premium|upgrade|subscription|subscribe)\b/i;
 const SCHOLARSHIP = /\b(scholarship|can't afford|cannot afford|no money|sponsor)\b/i;
 const APPLY = /\b(apply|application|sign up|signup|register|join|get started|enroll)\b/i;
@@ -54,11 +54,8 @@ function buildHelpReply(message, history = []) {
     );
   }
 
-  if (TRIAL.test(text)) {
-    return (
-      "Yes — every new account gets a 7-day free trial with access to your chosen skill track, no card required. After the trial, you can upgrade to Premium " +
-      "or apply for a scholarship to keep going for free."
-    );
+  if (DEMO.test(text)) {
+    return 'DDEI no longer offers time-limited training trials. Instead, open the See How It Works demonstration section at ddei.online/#demo and explore a sample lesson, quiz, hands-on project and portfolio preview. It needs no account or payment. Full course access requires verified payment or a scholarship.';
   }
 
   if (PREMIUM.test(text)) {
@@ -70,8 +67,8 @@ function buildHelpReply(message, history = []) {
 
   if (COST.test(text)) {
     return (
-      "Getting started is free — every account starts with a 7-day free trial. After that, Premium is ₦2,000/month (or ₦24,000/year), " +
-      "or you can apply for a scholarship if cost is a barrier. Which would you like to know more about — Premium or scholarships?"
+      "You can explore the interactive demonstration for free without signing up. Full training is available through Premium at ₦2,000/month or ₦24,000/year, " +
+      "eligible one-time course purchases, or an approved scholarship. Visit ddei.online/#demo to preview a lesson, quiz and project before enrolling."
     );
   }
 
@@ -126,8 +123,8 @@ function buildHelpReply(message, history = []) {
 
   if (APPLY.test(text)) {
     return (
-      'Click "Apply Now" at the top of the page, fill in your details and chosen skill track, and set a password — this creates your account with an instant 7-day free trial. ' +
-      "No payment needed to apply."
+      'To see how training works, open ddei.online/#demo for a no-login interactive lesson, quiz and project. You can also select Apply Now to create your account. ' +
+      'Account creation does not grant paid course access; choose a plan or apply for a scholarship to access full training.'
     );
   }
 
@@ -140,12 +137,12 @@ function buildHelpReply(message, history = []) {
 
   if (GREETING.test(text) && history.length === 0) {
     return (
-      "Hi! I'm here to help with courses, payments, login and learning support. Payments activate access automatically; choose My Payments or Support Ticket below if you need help."
+      "Hi! Try the interactive learning demonstration at ddei.online/#demo. You can preview a sample lesson, quiz and project without signing in. Ask me about paid training, payments or support."
     );
   }
 
   return (
-    "I can help with questions about our skill tracks, pricing, the free trial, scholarships, applying, or contacting our team. " +
+    "I can help with the See How It Works demonstration, training plans, scholarships, enrollment, payments or contacting support. " +
     "Could you rephrase your question, or try one of those topics?"
   );
 }

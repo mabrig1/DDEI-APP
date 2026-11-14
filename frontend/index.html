@@ -13,6 +13,8 @@
     <meta property="og:description" content="A subsidiary of MABRIG Technologies. Practical digital skills training to help you learn, build, and create opportunities.">
     <meta property="og:url" content="https://ddei.online/">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/demo.css">
+    <script src="/demo.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         body { font-family: 'Inter', system-ui, sans-serif; }
@@ -229,7 +231,7 @@
             </div>
             <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
                 <a href="#skills" class="text-slate-600 hover:text-slate-900">Skills</a>
-                <a href="#how" class="text-slate-600 hover:text-slate-900">How it Works</a>
+                <a href="#demo" class="text-[#0A66C2] hover:text-slate-900 font-bold">See Demo</a>
                 <a href="#courses" class="text-slate-600 hover:text-slate-900">Courses</a>
                 <a href="earn-online.html" class="text-slate-600 hover:text-slate-900">Earn Now</a>
                 <a href="#opportunities" class="text-slate-600 hover:text-slate-900">Opportunities</a>
@@ -310,9 +312,9 @@
                 </p>
 
                 <div class="flex flex-wrap gap-4">
-                    <button onclick="document.getElementById('skills').scrollIntoView({ behavior: 'smooth' })"
+                    <button onclick="document.getElementById('demo').scrollIntoView({ behavior: 'smooth' })"
                             class="w-full sm:w-auto justify-center px-10 py-5 bg-amber-400 text-slate-950 text-lg font-extrabold rounded-2xl flex items-center gap-x-3 shadow-2xl shadow-amber-400/30 ring-4 ring-amber-300/30 hover:bg-amber-300 hover:scale-[1.02] transition">
-                        Start Learning Free <i class="fa-solid fa-arrow-right ml-2"></i>
+                        See How It Works <i class="fa-solid fa-circle-play ml-2"></i>
                     </button>
                     <button onclick="document.getElementById('ai').scrollIntoView({ behavior: 'smooth' })"
                             class="px-8 py-4 border border-white/40 rounded-3xl font-semibold flex items-center gap-x-2">
@@ -373,6 +375,103 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Public interactive product tour: no registration, trial, credential or payment -->
+    <section id="demo" class="py-20 px-5 md:px-8" aria-label="Interactive DDEI training demonstration">
+        <div class="max-w-screen-xl mx-auto">
+            <div class="grid lg:grid-cols-[1.1fr_.9fr] gap-8 lg:gap-12 items-end mb-10">
+                <div>
+                    <p class="demo-topline">Experience the classroom before you enroll</p>
+                    <h2 class="font-display text-3xl md:text-5xl font-extrabold leading-tight mt-3">Don't just read about learning. <span class="text-amber-300">Experience it.</span></h2>
+                    <p class="text-slate-300 mt-4 max-w-2xl text-base">Step inside a sample DDEI classroom: study a bite-sized lesson, answer a real practice question and build something useful. No account or card required to view this demonstration.</p>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="demo-feature"><span class="block text-2xl text-cyan-300"><i class="fa-solid fa-book-open"></i></span><strong class="block text-sm mt-2">Sample lesson</strong></div>
+                    <div class="demo-feature"><span class="block text-2xl text-amber-300"><i class="fa-solid fa-list-check"></i></span><strong class="block text-sm mt-2">Live quiz</strong></div>
+                    <div class="demo-feature"><span class="block text-2xl text-emerald-300"><i class="fa-solid fa-laptop-code"></i></span><strong class="block text-sm mt-2">Project preview</strong></div>
+                </div>
+            </div>
+            <div class="demo-shell grid md:grid-cols-[265px_minmax(0,1fr)]">
+                <aside class="demo-sidebar p-5 md:p-6">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="grid place-items-center w-10 h-10 rounded-xl bg-cyan-400 text-slate-950 font-black text-xl">D</span>
+                        <div><p class="font-bold">DDEI Learning Studio</p><p class="text-xs text-cyan-200">Interactive walkthrough</p></div>
+                    </div>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Choose your skill</p>
+                    <div id="demoTrackChoices" class="space-y-1 mb-6">
+                        <button class="demo-track" type="button" data-demo-track="ai" aria-pressed="true"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-cyan-300"></i>AI Tools &amp; Automation</button>
+                        <button class="demo-track" type="button" data-demo-track="web" aria-pressed="false"><i class="fa-solid fa-code mr-2 text-cyan-300"></i>Web Development</button>
+                        <button class="demo-track" type="button" data-demo-track="marketing" aria-pressed="false"><i class="fa-solid fa-bullhorn mr-2 text-cyan-300"></i>Digital Marketing</button>
+                    </div>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400 mb-2">Your guided journey</p>
+                    <div class="demo-steps-list space-y-1">
+                        <button type="button" class="demo-step" data-demo-step="0" aria-current="step"><span class="demo-step-number">1</span>Learn a skill</button>
+                        <button type="button" class="demo-step" data-demo-step="1" aria-current="false"><span class="demo-step-number">2</span>Test knowledge</button>
+                        <button type="button" class="demo-step" data-demo-step="2" aria-current="false"><span class="demo-step-number">3</span>Build a project</button>
+                        <button type="button" class="demo-step" data-demo-step="3" aria-current="false"><span class="demo-step-number">4</span>Show your work</button>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-6">This illustration is browser-only. Nothing you type is sent to DDEI or saved to an account.</p>
+                </aside>
+                <div class="demo-content min-w-0">
+                    <div class="demo-topbar p-5 md:px-8 flex flex-wrap justify-between items-center gap-3">
+                        <div><p class="text-xs text-cyan-300 font-bold tracking-wider uppercase">Student learning dashboard · Demonstration</p><strong id="demoTrackName" class="block text-lg mt-1">AI Tools &amp; Automation</strong></div>
+                        <span class="px-4 py-2 bg-emerald-300/10 text-emerald-200 border border-emerald-400/40 text-xs font-bold rounded-full"><i class="fa-solid fa-circle-play mr-1"></i>LIVE DEMO</span>
+                    </div>
+                    <div class="p-5 md:p-8">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-300 mb-3">
+                            <span id="demoStageLabel">Watch a sample lesson</span>
+                            <span id="demoProgressText">Step 1 of 4</span>
+                        </div>
+                        <div class="demo-progress-track mb-7"><div id="demoProgressBar"></div></div>
+
+                        <div data-demo-panel="0">
+                            <p class="text-amber-300 text-xs font-bold uppercase tracking-widest">Module 01 · Sample Lesson</p>
+                            <h3 id="demoLessonTitle" class="font-display text-2xl md:text-3xl font-bold mt-2 mb-4">Turn an idea into a useful AI prompt</h3>
+                            <p id="demoLessonText" class="leading-relaxed text-slate-200"></p>
+                            <div class="demo-glass p-5 my-6"><p class="text-cyan-300 font-bold text-sm mb-2"><i class="fa-solid fa-lightbulb mr-2"></i>Example from your instructor</p><p id="demoLessonExample" class="text-slate-100 leading-relaxed"></p></div>
+                            <button id="demoLessonNext" type="button" class="demo-primary">I've learned this · Try the quiz <i class="fa-solid fa-arrow-right ml-2"></i></button>
+                        </div>
+                        <div data-demo-panel="1" hidden>
+                            <p class="text-amber-300 text-xs font-bold uppercase tracking-widest">Knowledge Check · 1 Question</p>
+                            <h3 class="font-display text-2xl md:text-3xl font-bold mt-2 mb-2">Can you apply what you learned?</h3>
+                            <p id="demoQuizQuestion" class="text-slate-200 mt-4 mb-4 text-lg"></p>
+                            <div id="demoQuizAnswers" class="space-y-3 mb-5" role="group" aria-label="Practice quiz options"></div>
+                            <p id="demoQuizWhy" class="text-emerald-200 text-sm mb-4 min-h-[1.5rem]" aria-live="polite"></p>
+                            <div class="flex flex-wrap gap-3"><button id="demoQuizCheck" type="button" class="demo-primary">Check my answer</button><button id="demoQuizNext" type="button" class="demo-outline" disabled>Build a sample project <i class="fa-solid fa-arrow-right ml-1"></i></button></div>
+                        </div>
+                        <div data-demo-panel="2" hidden>
+                            <p class="text-amber-300 text-xs font-bold uppercase tracking-widest">Hands-On Lab · Guided Project</p>
+                            <h3 class="font-display text-2xl md:text-3xl font-bold mt-2 mb-3">Turn your knowledge into a project.</h3>
+                            <p id="demoProjectBrief" class="text-slate-200 mb-5"></p>
+                            <label for="demoProjectIdea" class="block text-sm font-bold mb-2">Describe your business or project idea</label>
+                            <input id="demoProjectIdea" class="demo-input" maxlength="100" placeholder="e.g. A bakery selling fresh bread" autocomplete="off">
+                            <div class="flex flex-wrap gap-3 mt-4"><button id="demoBuildProject" type="button" class="demo-primary"><i class="fa-solid fa-bolt mr-2"></i>Generate sample project</button><button id="demoProjectNext" type="button" class="demo-outline" disabled>Preview my portfolio</button></div>
+                            <div class="demo-glass mt-6 p-5"><p class="text-xs text-cyan-300 font-bold uppercase tracking-widest mb-2">Project Studio Output</p><p id="demoProjectResult" class="whitespace-pre-line text-slate-100 text-sm leading-relaxed min-h-[2rem]">Your guided example will appear here.</p></div>
+                        </div>
+                        <div data-demo-panel="3" hidden>
+                            <p class="text-amber-300 text-xs font-bold uppercase tracking-widest">Proof of Work · Project Portfolio</p>
+                            <h3 class="font-display text-2xl md:text-3xl font-bold mt-2 mb-5">This is what learning by doing looks like.</h3>
+                            <div class="demo-portfolio">
+                                <div class="flex flex-wrap items-center justify-between gap-2"><strong class="text-xl">My first digital project</strong><span class="text-xs font-bold rounded-full px-3 py-1 bg-amber-100 text-amber-900">DEMO PREVIEW</span></div>
+                                <p id="demoPortfolioProject" class="text-slate-700 mt-4 text-lg font-semibold"></p>
+                                <p id="demoPortfolioBadge" class="text-sm text-slate-600 mt-1"></p>
+                                <div class="h-px bg-slate-200 my-4"></div>
+                                <p class="text-xs font-bold text-blue-800 uppercase">Skills practiced</p><p id="demoPortfolioSkills" class="text-slate-700 mt-2"></p>
+                                <p class="text-xs text-slate-500 mt-4">Illustrative portfolio only. No course enrollment, verified credential or income is awarded from the demonstration.</p>
+                            </div>
+                            <div class="mt-6 flex flex-wrap gap-3"><button onclick="startUpgrade('premium-monthly')" type="button" class="demo-primary">Unlock full training <i class="fa-solid fa-arrow-right ml-1"></i></button><button id="demoRestart" type="button" class="demo-outline">Try another skill</button></div>
+                        </div>
+                        <p id="demoStatus" class="demo-status mt-5" role="status" aria-live="polite"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                <p class="text-slate-300 text-sm max-w-xl"><i class="fa-solid fa-lock text-emerald-300 mr-2"></i>Only this guided demonstration is public. Actual lessons, tutoring, saved progress and certificates require valid access.</p>
+                <a href="#premium" class="inline-flex items-center gap-2 bg-white text-slate-900 px-6 py-3 rounded-2xl font-bold hover:bg-slate-100">See training plans <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
 
     <!-- Interactive Courses -->
     <div id="courses" class="max-w-screen-xl mx-auto px-6 py-16">
@@ -1044,7 +1143,7 @@
         }
 
         function showUpgradePrompt(message) {
-            alert(message || 'Your free 7-day trial has ended. Upgrade to Premium to keep learning.');
+            alert(message || 'Full training requires paid access. Explore the interactive demonstration, then choose a plan to unlock courses.');
             const premiumSection = document.getElementById('premium');
             if (premiumSection) premiumSection.scrollIntoView({ behavior: 'smooth' });
         }
@@ -1745,7 +1844,7 @@
                     helpBotOpened = true;
                     appendHelpBotMessage(
                         'bot',
-                        "Hi! I'm here to help you understand Destiny Skills Bridge. Ask me about our skill tracks, pricing, the free trial, scholarships, or how to apply."
+                        "Hi! Explore the See How It Works demonstration — no login needed. Ask me about skills, training plans, scholarships, payments or support."
                     );
                 }
             }
@@ -1958,11 +2057,9 @@
                 ? `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition">Continue Learning</button>${vaultLink}`
                 : course.paidOnly
                     ? purchaseBtn
-                    : `<button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition"><i class="fa-solid fa-play mr-1"></i> Start Free Week</button>
-                       ${purchaseBtn}`;
-            const trialBadge = course.paidOnly
-                ? '<span class="text-xs font-bold bg-rose-400 text-white uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-bolt mr-1"></i>Pay &amp; Start — No Trial</span>'
-                : '<span class="text-xs font-bold bg-emerald-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-gift mr-1"></i>1-Week Free Trial</span>';
+                    : `<a href="#demo" class="w-full block text-center py-3 bg-white text-[#0A66C2] font-bold rounded-2xl hover:bg-slate-100 transition"><i class="fa-solid fa-circle-play mr-1"></i> See How It Works</a>
+                       ${purchaseBtn || '<a href="#premium" class="block text-center py-3 rounded-2xl bg-amber-400 text-slate-950 font-bold">Unlock with Premium</a>'}`;
+            const demoBadge = '<span class="text-xs font-bold bg-cyan-300 text-slate-950 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-circle-play mr-1"></i>Public Learning Demo</span>';
             const durationBadge = course.durationDays
                 ? `<span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-regular fa-calendar mr-1"></i>${course.durationDays}-Day Intensive</span>`
                 : '';
@@ -1972,7 +2069,7 @@
                         <div class="flex flex-wrap items-center gap-2 mb-3">
                             <span class="text-xs font-bold bg-white/20 text-white uppercase tracking-wide px-3 py-1 rounded-full">${course.category}</span>
                             ${course.isCertified ? '<span class="text-xs font-bold bg-amber-400 text-slate-900 uppercase tracking-wide px-3 py-1 rounded-full"><i class="fa-solid fa-certificate mr-1"></i>Certificate</span>' : ''}
-                            ${trialBadge}
+                            ${demoBadge}
                             ${durationBadge}
                             <span class="text-xs font-bold bg-purple-400 text-white uppercase tracking-wide px-3 py-1 rounded-full">Featured</span>
                         </div>
@@ -2005,7 +2102,7 @@
                         <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
                     </div>
                     <button onclick="handleStartCourseClick('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
-                        Start Course
+                        ${authUser() && ((authUser().isPremium && (!authUser().premiumExpiresAt || new Date(authUser().premiumExpiresAt) > new Date())) || (authUser().purchasedCourses || []).some(p => p.courseId === course.id) || ['limited', 'full'].includes(authUser().scholarship)) ? 'Open Training' : 'See Demo & Unlock Training'}
                     </button>
                 </div>`;
         }
@@ -2014,24 +2111,28 @@
         let pendingCourseSelection = null;
 
         function handleStartCourseClick(courseId) {
-            if (!authUser()) {
-                pendingCourseSelection = courseId;
-                openAuthModal('register');
+            const course = cachedCourses.find(item => item.id === courseId);
+            const user = authUser();
+            const directPurchase = user && (user.purchasedCourses || []).some(p => p.courseId === courseId);
+            const scholarship = user && (user.scholarship === 'full' || (!course?.paidOnly && user.scholarship === 'limited'));
+            const premium = user && !course?.paidOnly && (user.isPremium || user.scholarship === 'full');
+            if (user && (directPurchase || scholarship || premium)) {
+                openCourse(courseId);
                 return;
             }
-            openCourse(courseId);
+            if (course?.paidOnly && course.purchasePlan) {
+                startCoursePurchase(course.purchasePlan, course.id);
+                return;
+            }
+            document.getElementById('demo').scrollIntoView({ behavior: 'smooth' });
         }
 
-        function trialStatusHTML(user) {
-            if (user.scholarship === 'full') return '<p class="text-xs text-emerald-600 font-semibold mt-3">Full Scholarship — unlimited access to every tool.</p>';
-            if (user.scholarship === 'limited') return '<p class="text-xs text-emerald-600 font-semibold mt-3">Limited Scholarship — full access to all courses.</p>';
-            if (user.isPremium) return '<p class="text-xs text-emerald-600 font-semibold mt-3">Premium — unlimited access.</p>';
-            if (!user.trialExpiresAt) return '';
-            const daysLeft = Math.ceil((new Date(user.trialExpiresAt) - new Date()) / (24 * 60 * 60 * 1000));
-            if (daysLeft <= 0) {
-                return '<p class="text-xs text-red-600 font-semibold mt-3">Your free trial has ended. <a href="#premium" class="underline">Upgrade to Premium</a> to keep learning.</p>';
-            }
-            return `<p class="text-xs text-amber-600 font-semibold mt-3">${daysLeft} day${daysLeft === 1 ? '' : 's'} left in your free trial.</p>`;
+        function learningAccessStatusHTML(user) {
+            if (user.scholarship === 'full') return '<p class="text-xs text-emerald-600 font-semibold mt-3">Full Scholarship — complete course and Premium access.</p>';
+            if (user.scholarship === 'limited') return '<p class="text-xs text-emerald-600 font-semibold mt-3">Limited Scholarship — access to standard courses.</p>';
+            if (user.isPremium && (!user.premiumExpiresAt || new Date(user.premiumExpiresAt) > new Date())) return '<p class="text-xs text-emerald-600 font-semibold mt-3">Premium membership active.</p>';
+            if ((user.purchasedCourses || []).length) return '<p class="text-xs text-emerald-600 font-semibold mt-3">Purchased courses are available in your account.</p>';
+            return '<p class="text-xs text-blue-700 font-semibold mt-3">Try the interactive demonstration to see the classroom. Subscribe to unlock full training.</p>';
         }
 
         async function ensureCoursesLoaded() {
@@ -2073,7 +2174,7 @@
                             <button onclick="openChooseCourseModal()" class="px-6 py-3 border border-slate-300 text-slate-600 font-semibold rounded-2xl">Browse Full Catalog &amp; Switch</button>
                         </div>
                         <p class="text-xs text-slate-400 mt-3">Staying focused on one course at a time helps you finish faster. Don't see the course you're looking for? Click "Browse Full Catalog &amp; Switch" above — your progress is saved per course, so switching back later won't lose anything.</p>
-                        ${trialStatusHTML(user)}
+                        ${learningAccessStatusHTML(user)}
                     </div>${specialCards}`;
                 return;
             }
@@ -2087,7 +2188,7 @@
                         <h4 class="font-semibold text-lg mb-2">Choose your first course</h4>
                         <p class="text-sm text-slate-500 mb-4">Pick one course to focus on so you're not overwhelmed — you can switch later.</p>
                         <button onclick="openChooseCourseModal()" class="px-6 py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Browse Complete Catalog &amp; Choose a Course</button>
-                        ${trialStatusHTML(user)}
+                        ${learningAccessStatusHTML(user)}
                     </div>${specialCards}`;
                 return;
             }
@@ -2099,9 +2200,9 @@
             const badges = [];
             if (course.isCertified) badges.push('<span class="text-xs font-bold bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-certificate mr-1"></i>Certificate</span>');
             if (course.paidOnly) {
-                badges.push('<span class="text-xs font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-bolt mr-1"></i>Pay &amp; Start — No Trial</span>');
+                badges.push('<span class="text-xs font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full"><i class="fa-solid fa-bolt mr-1"></i>One-time Purchase</span>');
             } else if (course.specialCourse) {
-                badges.push('<span class="text-xs font-bold bg-blue-100 text-[#0A66C2] px-2 py-0.5 rounded-full">1-Wk Free Trial</span>');
+                badges.push('<span class="text-xs font-bold bg-blue-100 text-[#0A66C2] px-2 py-0.5 rounded-full">See Live Demo</span>');
             }
             const priceHtml = course.price
                 ? `<p class="text-xs text-slate-500 mt-2">${course.earlyBirdPrice ? `<span class="line-through">₦${course.price.toLocaleString()}</span> <span class="text-amber-600 font-semibold">₦${course.earlyBirdPrice.toLocaleString()} early bird</span>` : `₦${course.price.toLocaleString()}${course.paidOnly ? ' one-time — instant access' : ''}`}</p>`
@@ -2120,8 +2221,8 @@
                         <span><i class="fa-solid fa-book-open mr-1"></i>${course.lessonCount} lessons</span>
                         <span><i class="fa-regular fa-clock mr-1"></i>${course.estimatedHours}h</span>
                     </div>
-                    <button onclick="chooseCourse('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
-                        Choose This Course
+                    <button onclick="handleCatalogCourseClick('${course.id}')" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">
+                        View Course &amp; Enrollment
                     </button>
                 </div>`;
         }
@@ -2130,6 +2231,17 @@
             await ensureCoursesLoaded();
             document.getElementById('chooseCourseGrid').innerHTML = cachedCourses.map(courseChooseCardHTML).join('');
             openModal('chooseCourseModal');
+        }
+
+        function handleCatalogCourseClick(courseId) {
+            const course = cachedCourses.find(item => item.id === courseId);
+            const user = authUser();
+            const alreadyPurchased = user && (user.purchasedCourses || []).some(item => item.courseId === courseId);
+            const entitled = user && (alreadyPurchased || user.scholarship === 'full'
+                || (!course?.paidOnly && (user.scholarship === 'limited' || (user.isPremium && (!user.premiumExpiresAt || new Date(user.premiumExpiresAt) > new Date())))));
+            if (entitled) return chooseCourse(courseId);
+            closeModal('chooseCourseModal');
+            return handleStartCourseClick(courseId);
         }
 
         async function chooseCourse(courseId) {
@@ -2848,7 +2960,7 @@
                         refreshNavAuth();
                         renderCoursesSection();
                     } catch (e) { /* session refresh is best-effort */ }
-                    const isSponsorship = String(data.subscription?.plan || '').startsWith('sponsor-');
+                    const isSponsorship = false; // Owner-gated verification returns minimal data.
                     alert(isSponsorship
                         ? '✅ Sponsorship confirmed. Thank you for investing in African talent. Your contribution is now included in our transparent funding records.'
                         : '✅ Payment confirmed! Your access has been unlocked. If you paid for a certificate, open your course and click "Claim Certificate".');
@@ -2856,7 +2968,7 @@
                     alert('Your payment could not be confirmed as successful. If you were debited, contact us on WhatsApp with your payment receipt and we will resolve it quickly.');
                 }
             } catch (err) {
-                alert('We could not verify your payment automatically. If you were debited, contact us on WhatsApp with your receipt — your access will be granted manually.');
+                alert('Payment verification is temporarily unavailable. Open Help & Support, check My Payments, or send a support ticket with your reference. Do not pay twice.');
             }
         })();
         loadPublicImpact();
