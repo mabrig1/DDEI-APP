@@ -1,0 +1,43 @@
+name: One-off audit lockfile refresh
+
+on:
+  push:
+    branches:
+      - feat/automatic-paid-access-support-20261114
+
+permissions:
+  contents: read
+
+jobs:
+  audited-refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+      - name: Resolve compatible dependency security advisories
+        working-directory: backend
+        run: |
+          npm ci --no-fund
+          npm audit fix --no-fund
+          npm audit --omit=dev --audit-level=high
+      - name: Verify backend and build
+        run: |
+          cd backend && npm test
+          cd ../frontend && node build.js
+      - name: Export refreshed manifests for controlled review
+        if: success()
+        run: |
+          python3 - <<'PY'
+          import base64
+          for name in ('backend/package.json','backend/package-lock.json'):
+              print('LOCKFILE_BEGIN:'+name)
+              data=base64.b64encode(open(name,'rb').read()).decode()
+              for offset in range(0,len(data),200):
+                  print('LOCKFILE_LINE:'+data[offset:offset+200])
+              print('LOCKFILE_END:'+name)
+          PY
