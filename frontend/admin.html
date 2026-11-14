@@ -65,6 +65,7 @@
                 <button data-tab="recruitment" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Work With Us</button>
                 <button data-tab="users" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Users</button>
                 <button data-tab="subscriptions" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Payments</button>
+                <button data-tab="support" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">🎧 Customer Support</button>
                 <button data-tab="content" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Pages &amp; Posts</button>
             </div>
             <div class="flex items-center gap-x-2">
@@ -161,6 +162,24 @@
                     <div id="bottomLessons" class="space-y-2 text-sm"></div>
                 </div>
             </div>
+        </div>
+
+        <!-- Support tickets tab -->
+        <div id="tab-support" class="tab-panel hidden">
+            <div class="bg-white border rounded-3xl p-6 mb-4">
+                <h3 class="font-display text-lg font-semibold">Customer Support Inbox</h3>
+                <p class="text-sm text-slate-500 mt-1">Reply to learners, resolve exceptional payment issues and track open requests. Verified payments activate access automatically; this inbox does not approve payments.</p>
+                <div class="flex gap-3 mt-4 items-center">
+                    <label for="supportStatusFilter" class="text-sm font-medium">Filter</label>
+                    <select id="supportStatusFilter" onchange="loadSupportTickets()" class="border rounded-xl px-3 py-2 text-sm">
+                        <option value="">All requests</option>
+                        <option value="open">Open</option>
+                        <option value="awaiting_user">Awaiting learner</option>
+                        <option value="resolved">Resolved</option>
+                    </select>
+                </div>
+            </div>
+            <div id="supportAdminList" class="space-y-4"></div>
         </div>
 
         <!-- Applications tab -->
@@ -504,6 +523,7 @@
             recruitment: { load: loadRecruitmentApplications },
             users: { load: loadUsers },
             subscriptions: { load: loadSubscriptions },
+            support: { load: loadSupportTickets },
             content: { load: loadContent },
         };
 
@@ -528,6 +548,70 @@
         }
 
         document.getElementById('refreshBtn').addEventListener('click', () => TABS[currentTab].load());
+
+        async function loadSupportTickets() {
+            const list = document.getElementById('supportAdminList');
+            list.textContent = 'Loading secure support inbox...';
+            try {
+                const filter = document.getElementById('supportStatusFilter').value;
+                const data = await adminRequest('/api/admin/support/tickets' + (filter ? '?status=' + encodeURIComponent(filter) : ''));
+                list.innerHTML = '';
+                const tickets = data.tickets || [];
+                if (!tickets.length) { list.textContent = 'No support requests in this filter.'; return; }
+                tickets.forEach((ticket) => {
+                    const card = document.createElement('article');
+                    card.className = 'bg-white border rounded-2xl p-5 space-y-3';
+                    card.innerHTML =
+                        '<div class="flex flex-wrap justify-between gap-2"><strong>' + escapeHtml(ticket.number) + ' · ' + escapeHtml(ticket.subject)
+                        + '</strong><span class="text-xs text-slate-500">' + escapeHtml(ticket.category) + '</span></div>'
+                        + '<p class="text-sm text-slate-700">From: ' + escapeHtml(ticket.requester?.name || 'Learner')
+                        + ' (' + escapeHtml(ticket.requester?.email || 'account unavailable') + ')</p>'
+                        + (ticket.paymentReference ? '<p class="text-xs">Payment ref: ' + escapeHtml(ticket.paymentReference) + '</p>' : '')
+                        + '<p class="text-sm">' + escapeHtml(ticket.description) + '</p>'
+                        + (ticket.replies || []).map(r => '<p class="text-sm bg-slate-50 p-3 rounded-lg"><strong>'
+                            + escapeHtml(r.author) + ':</strong> ' + escapeHtml(r.body) + '</p>').join('');
+                    const status = document.createElement('select');
+                    status.className = 'border rounded-xl p-2 text-sm mr-3';
+                    ['open', 'awaiting_user', 'resolved'].forEach(value => {
+                        const option = document.createElement('option');
+                        option.value = value; option.textContent = value.replace('_', ' ');
+                        option.selected = value === ticket.status;
+                        status.appendChild(option);
+                    });
+                    status.onchange = async () => {
+                        status.disabled = true;
+                        try {
+                            await adminRequest('/api/admin/support/tickets/' + encodeURIComponent(ticket._id) + '/status', {
+                                method: 'PATCH', body: JSON.stringify({ status: status.value }),
+                            });
+                            await loadSupportTickets();
+                        } catch (err) { alert('Status not saved: ' + err.message); status.disabled = false; }
+                    };
+                    const reply = document.createElement('textarea');
+                    reply.className = 'block w-full border rounded-xl p-3 text-sm mb-3';
+                    reply.rows = 2; reply.maxLength = 3000;
+                    reply.placeholder = 'Write a helpful response to this learner';
+                    const send = document.createElement('button');
+                    send.type = 'button';
+                    send.className = 'bg-blue-700 text-white rounded-xl px-4 py-2 text-sm font-semibold';
+                    send.textContent = 'Send Reply';
+                    send.onclick = async () => {
+                        if (!reply.value.trim()) return;
+                        send.disabled = true;
+                        try {
+                            await adminRequest('/api/admin/support/tickets/' + encodeURIComponent(ticket._id) + '/reply', {
+                                method: 'POST', body: JSON.stringify({ message: reply.value }),
+                            });
+                            await loadSupportTickets();
+                        } catch (err) { alert('Reply not sent: ' + err.message); send.disabled = false; }
+                    };
+                    card.appendChild(status);
+                    card.appendChild(reply);
+                    card.appendChild(send);
+                    list.appendChild(card);
+                });
+            } catch (err) { list.textContent = 'Could not load support requests: ' + err.message; }
+        }
 
         document.getElementById('fullAccessBtn').addEventListener('click', async () => {
             const btn = document.getElementById('fullAccessBtn');
