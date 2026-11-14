@@ -14,8 +14,8 @@ const OPPORTUNITY_Q = /\b(job|gig|client|hire|opportunity|work)\b/i;
 const RECRUITMENT_Q = /\b(work with us|earn while you learn|recruit|recruitment|internship|trainee|part.?time work|join the team)\b/i;
 const LOGIN_HELP = /\b(log ?in|password|forgot|reset|can't access|cannot access|locked out)\b/i;
 const MISSING_ACCESS = /(?:paid|payment|charged|debited|paystack).*(?:access|activate|unlock|pending|course|not showing)|(?:access|course|subscription).*(?:payment|paid|not showing|unlock)/i;
-const PAYMENT_Q = /\\b(?:payment|paid|paystack|charged|receipt|transaction|activation|activate)\\b/i;
-const TICKET_Q = /\\b(?:ticket|complaint|customer support|support request|case number|human support)\\b/i;
+const PAYMENT_Q = /\b(?:payment|paid|paystack|charged|receipt|transaction|activation|activate)\b/i;
+const TICKET_Q = /\b(?:ticket|complaint|customer support|support request|case number|human support)\b/i;
 const CONTACT_Q = /\b(contact|support|human|talk to someone|whatsapp|help me|reach you)\b/i;
 
 function buildHelpReply(message, history = []) {
