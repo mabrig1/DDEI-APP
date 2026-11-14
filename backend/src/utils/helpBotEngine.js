@@ -55,7 +55,7 @@ function buildHelpReply(message, history = []) {
   }
 
   if (DEMO.test(text)) {
-    return 'DDEI no longer offers time-limited training trials. Instead, open the See How It Works section at ddei.online/#demo and explore a sample lesson, quiz, hands-on project and portfolio preview. It needs no account or payment. Full course access requires verified payment or a scholarship.';
+    return 'DDEI no longer offers time-limited training trials. Instead, open the See How It Works demonstration section at ddei.online/#demo and explore a sample lesson, quiz, hands-on project and portfolio preview. It needs no account or payment. Full course access requires verified payment or a scholarship.';
   }
 
   if (PREMIUM.test(text)) {
