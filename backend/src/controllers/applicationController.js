@@ -4,8 +4,6 @@ const User = require('../models/User');
 const { sendApplicationNotification } = require('../utils/mailer');
 const { normalizeEmail, isValidEmail, passwordError, cleanText } = require('../utils/validation');
 
-const TRIAL_DURATION_MS = 7 * 24 * 60 * 60 * 1000;
-
 function signToken(user) {
   return jwt.sign({ sub: user._id.toString() }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
@@ -51,8 +49,7 @@ async function createApplication(req, res) {
           await user.save();
         }
       } else {
-        const trialExpiresAt = new Date(Date.now() + TRIAL_DURATION_MS);
-        user = await User.create({ name: fullName, email, password, phone, track, trialExpiresAt });
+        user = await User.create({ name: fullName, email, password, phone, track });
       }
       userId = user._id;
       token = signToken(user);
