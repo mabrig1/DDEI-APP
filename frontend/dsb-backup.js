@@ -265,7 +265,7 @@
     var params = new URLSearchParams(split[1] || '');
 
     for (var i = 0; i < ROUTES.length; i++) {
-      var m = ROUTES[i].match.exec(pathname);
+      var m = pathname.match(ROUTES[i].match);
       if (!m) continue;
       return ROUTES[i].handle(m, params).then(function (data) {
         showDegradedBanner();

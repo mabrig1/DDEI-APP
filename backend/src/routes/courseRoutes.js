@@ -5,6 +5,7 @@ const {
   updateProgress,
   submitQuiz,
   coachCourse,
+  cinematicLesson,
   reasonAboutLesson,
   interpretCourseImage,
   getProgress,
@@ -21,6 +22,7 @@ const coachRateLimit = rateLimit({ windowMs: 15 * 60 * 1000, max: 30, namespace:
 router.get('/', listCourses);
 router.get('/:id', requireAuth, requireActiveAccess, getCourse);
 router.get('/:id/progress', requireAuth, getProgress);
+router.get('/:id/lessons/:lessonId/cinema', requireAuth, requireActiveAccess, cinematicLesson);
 router.post('/:id/select', requireAuth, requireActiveAccess, selectCourse);
 router.post('/:id/lessons/:lessonId/complete', requireAuth, requireActiveAccess, updateProgress);
 router.post('/:id/lessons/:lessonId/quiz', requireAuth, requireActiveAccess, submitQuiz);

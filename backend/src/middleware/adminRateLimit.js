@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const AdminAuthAttempt = require('../models/AdminAuthAttempt');
 
-function adminRateLimit(namespace, max = 8, windowMs = 15 * 60 * 1000) {
+function sharedRateLimit(namespace, max = 8, windowMs = 15 * 60 * 1000, service = 'Authentication') {
   return async (req, res, next) => {
     const now = Date.now();
     const end = (Math.floor(now / windowMs) + 1) * windowMs;
@@ -23,8 +23,13 @@ function adminRateLimit(namespace, max = 8, windowMs = 15 * 60 * 1000) {
       }
       return next();
     } catch (_) {
-      return res.status(503).json({ message: 'Administrator sign-in is temporarily unavailable. Please try again shortly.' });
+      return res.status(503).json({ message: `${service} is temporarily unavailable. Please try again shortly.` });
     }
   };
 }
-module.exports = { adminRateLimit };
+// Keep the established admin limiter while reusing the database-backed
+// counter for learner sign-in, recovery and payment endpoints.
+const adminRateLimit = (namespace, max = 8, windowMs = 15 * 60 * 1000) =>
+  sharedRateLimit(namespace, max, windowMs, 'Administrator sign-in');
+
+module.exports = { adminRateLimit, sharedRateLimit };

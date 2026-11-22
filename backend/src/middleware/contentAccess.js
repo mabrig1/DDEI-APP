@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
+const { requireAdmin } = require('./adminAuth');
 
 function safeEqual(a, b) {
   const bufA = Buffer.from(String(a));
@@ -10,24 +10,13 @@ function safeEqual(a, b) {
 
 function requireContentWriteAccess(req, res, next) {
   const apiKey = req.headers['x-content-api-key'];
+  // The server-to-server API key is a separate explicit permission boundary.
   if (apiKey && process.env.CONTENT_API_KEY && safeEqual(apiKey, process.env.CONTENT_API_KEY)) {
     return next();
   }
-
-  const header = req.headers.authorization || '';
-  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-  if (!token) {
-    return res.status(401).json({ message: 'Authentication required' });
-  }
-  try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    if (!payload.isAdmin) {
-      return res.status(403).json({ message: 'Admin access required' });
-    }
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: 'Invalid or expired token' });
-  }
+  // Apply exactly the same role, subject and session-version checks as every
+  // other administrator route. Password changes and resets revoke old tokens.
+  return requireAdmin(req, res, next);
 }
 
 module.exports = { requireContentWriteAccess };
