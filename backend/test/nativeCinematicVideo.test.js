@@ -40,7 +40,9 @@ test('video pack covers VidMint, AIVideo and Content Engine without automatic tr
   assert.match(source, /vidmint:/);
   assert.match(source, /contentEngine:/);
   const page = read('cinematic-learning.js');
-  assert.match(page, /Approve & export video/);
+  assert.match(page, /Export full 32s video/);
+  assert.match(page, /Export this 8s scene/);
+  assert.match(source, /sceneIndex === null \? studio :/);
   assert.match(page, /Download production pack/);
   assert.match(read('index.html'), /src="\/native-video-export\.js"/);
   assert.match(read('build.js'), /native-video-export\.js/);
