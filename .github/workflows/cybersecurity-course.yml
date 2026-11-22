@@ -1,0 +1,38 @@
+name: Cybersecurity Course and Lab Checks
+
+on:
+  pull_request:
+    paths:
+      - 'frontend/cybersecurity-*'
+      - 'frontend/build.js'
+      - 'backend/src/data/cybersecurityFutureCourse.js'
+      - 'backend/src/data/courseCatalog.js'
+      - '.github/workflows/cybersecurity-course.yml'
+  push:
+    branches:
+      - 'feat/cybersecurity-future-*'
+
+permissions:
+  contents: read
+
+jobs:
+  test-static-labs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Contract and privacy tests
+        run: node --test frontend/cybersecurity-labs.test.js
+      - name: Static preview build
+        working-directory: frontend
+        run: node build.js
+      - name: Verify preview outputs
+        run: |
+          test -f frontend/dist/cybersecurity-future.html
+          test -f frontend/dist/cybersecurity-labs.html
+          test -f frontend/dist/cybersecurity-challenges.html
+          test -f frontend/dist/course/cyber-security-of-the-future.html
