@@ -82,6 +82,7 @@ fs.copyFileSync(path.join(__dirname, 'promoter-referral.js'), path.join(outDir, 
 fs.copyFileSync(path.join(__dirname, 'demo.js'), path.join(outDir, 'demo.js'));
 fs.copyFileSync(path.join(__dirname, 'demo.css'), path.join(outDir, 'demo.css'));
 fs.copyFileSync(path.join(__dirname, 'cinematic-learning.js'), path.join(outDir, 'cinematic-learning.js'));
+fs.copyFileSync(path.join(__dirname, 'native-video-export.js'), path.join(outDir, 'native-video-export.js'));
 fs.copyFileSync(path.join(__dirname, 'cinematic-learning.css'), path.join(outDir, 'cinematic-learning.css'));
 
 const COURSE_LINK_ALIASES = {
