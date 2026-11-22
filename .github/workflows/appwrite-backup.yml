@@ -9,8 +9,10 @@ name: Appwrite backup
 #      (Optionally under Variables, to override the built-in defaults:
 #        APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, APPWRITE_DATABASE_ID)
 #
-#   2. If MongoDB is on Atlas, allow access from anywhere (0.0.0.0/0) under
-#      Network Access — GitHub's runners have no fixed IP to allowlist.
+#   2. Do not open MongoDB Atlas to 0.0.0.0/0 for scheduled backups.
+#      Use a self-hosted runner with a fixed allowlisted egress IP or a
+#      private network connection. GitHub-hosted runners have variable IPs;
+#      when no trusted network path exists, leave database sync disabled.
 #
 #   3. Actions → "Appwrite backup" → Run workflow → choose `provision` once,
 #      then `sync`.
