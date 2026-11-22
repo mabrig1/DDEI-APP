@@ -31,6 +31,7 @@
     if (!active) return;
     if (active.timer) window.clearInterval(active.timer);
     stopVoice();
+    if (window.DDEINativeClip) window.DDEINativeClip.cancel();
     active = null;
   }
 
@@ -120,7 +121,7 @@
 
     var heading = element('div', 'ddei-cinema-heading');
     heading.appendChild(element('h5', '', 'Cinematic Lesson Studio'));
-    heading.appendChild(element('p', '', 'Four 8-second animated scenes · visual storyboard, not an exported video'));
+    heading.appendChild(element('p', '', 'Four 8-second scenes · play, export a real clip, or send a production pack to your video apps'));
     outer.appendChild(heading);
 
     var screen = element('div', 'ddei-cinema-screen');
@@ -172,6 +173,41 @@
     });
     controls.appendChild(state.voiceButton);
     controls.appendChild(button('Copy storyboard', 'Copy scene directions', copyDirections));
+    controls.appendChild(button('Download production pack', 'Download a scene package for VidMint, AIVideo and Content Engine', function () {
+      if (!window.DDEINativeClip) return;
+      window.DDEINativeClip.downloadProductionPack(state.studio);
+      state.message.textContent = 'Saved a reusable, lesson-grounded production pack for your connected video workflow. No data was sent externally.';
+    }));
+    state.exportButton = button('Approve & export video', 'Record and download this cinematic lesson as a real video file', function () {
+      if (!window.DDEINativeClip) {
+        state.message.textContent = 'The native video recorder is not loaded.';
+        return;
+      }
+      if (!window.DDEINativeClip.available()) {
+        state.message.textContent = 'This browser cannot encode a canvas video. Try an updated desktop browser or download the production pack.';
+        return;
+      }
+      if (!window.confirm('Create a 32-second video file with source-verified captions? The export is silent and does not spend any provider credits.')) return;
+      pause();
+      state.exportButton.disabled = true;
+      state.exportButton.textContent = 'Recording video…';
+      window.DDEINativeClip.exportVideo(state.studio, function (message) {
+        if (active === state) state.message.textContent = message;
+      }).then(function () {
+        if (active === state) {
+          state.exportButton.disabled = false;
+          state.exportButton.textContent = 'Export another video';
+        }
+      }).catch(function (error) {
+        if (active === state) {
+          state.message.textContent = error.message;
+          state.exportButton.disabled = false;
+          state.exportButton.textContent = 'Approve & export video';
+        }
+      });
+    });
+    state.exportButton.classList.add('ddei-cinema-primary');
+    controls.appendChild(state.exportButton);
     outer.appendChild(controls);
 
     state.source = element('p', 'ddei-cinema-evidence');
@@ -183,7 +219,7 @@
     outer.appendChild(practice);
 
     state.message = element('p', 'ddei-cinema-message',
-      'Works without video credits or internet-based generation after this lesson loads. Voice is optional.');
+      'Video export creates a genuine silent MP4 where supported, otherwise WebM; narrated playback is separate. Optional GPU video generation requires its own approval.');
     state.message.setAttribute('aria-live', 'polite');
     outer.appendChild(state.message);
     container.replaceChildren(outer);
