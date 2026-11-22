@@ -40,7 +40,7 @@ function parseArgs(argv) {
 
 /** Accepts an ISO timestamp or a shorthand duration like `30m`, `24h`, `7d`. */
 function parseSince(value) {
-  const relative = /^(\d+)([mhd])$/.exec(value.trim());
+  const relative = value.trim().match(/^(\d+)([mhd])$/);
   if (relative) {
     const amount = Number(relative[1]);
     const ms = { m: 60_000, h: 3_600_000, d: 86_400_000 }[relative[2]];
