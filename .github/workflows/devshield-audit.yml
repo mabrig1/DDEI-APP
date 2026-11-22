@@ -1,0 +1,51 @@
+name: DDEI DevShield read-only security audit
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  devshield-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout DDEI source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Full repository DevShield audit (advisory; no production probes)
+        id: scan
+        uses: mabrig1/mabrig-devshield-ai@2070da465c84a9113a8901df6b26287f2472d5f7
+        with:
+          scan-scope: repository
+          max-files: '250'
+          fail-on: none
+          comment: 'false'
+          dependency-review: 'false'
+          api-trust: advisory
+          legal-compliance: advisory
+          agentic-mode: plan
+          security-graph: 'on'
+          runtime-guard: 'off'
+          remediation-mode: 'off'
+      - name: Display scan totals
+        if: always()
+        env:
+          FINDINGS: ${{ steps.scan.outputs.findings-count }}
+          RISK: ${{ steps.scan.outputs.risk-level }}
+          SCANNED: ${{ steps.scan.outputs.scanned-files }}
+          API_TRUST: ${{ steps.scan.outputs.api-trust-findings }}
+        run: |
+          {
+            echo "## DDEI DevShield read-only audit"
+            echo "Files scanned: ${SCANNED:-unavailable}"
+            echo "Findings: ${FINDINGS:-unavailable}"
+            echo "Risk level: ${RISK:-unavailable}"
+            echo "API trust findings: ${API_TRUST:-unavailable}"
+            echo "No live runtime probing, source remediation, cloud export, or production deploy."
+          } >> "$GITHUB_STEP_SUMMARY"
