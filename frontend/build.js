@@ -81,6 +81,8 @@ fs.copyFileSync(path.join(__dirname, 'dsb-backup.js'), path.join(outDir, 'dsb-ba
 fs.copyFileSync(path.join(__dirname, 'promoter-referral.js'), path.join(outDir, 'promoter-referral.js'));
 fs.copyFileSync(path.join(__dirname, 'demo.js'), path.join(outDir, 'demo.js'));
 fs.copyFileSync(path.join(__dirname, 'demo.css'), path.join(outDir, 'demo.css'));
+fs.copyFileSync(path.join(__dirname, 'cinematic-learning.js'), path.join(outDir, 'cinematic-learning.js'));
+fs.copyFileSync(path.join(__dirname, 'cinematic-learning.css'), path.join(outDir, 'cinematic-learning.css'));
 
 const COURSE_LINK_ALIASES = {
   'ai-video': 'ai-cinematic-special-edition',
@@ -110,5 +112,5 @@ let courseLinkCount = 0;
   }
 }
 
-console.log(`Built frontend/dist (${pages.join(', ')} + dsb-backup.js + promoter-referral.js + demo.js + demo.css + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — built-in production fallback)'}`);
+console.log(`Built frontend/dist (${pages.join(', ')} + dsb-backup.js + promoter-referral.js + demo.js + demo.css + cinematic-learning.js + cinematic-learning.css + ${courseLinkCount} course links) with API_BASE_URL=${apiBaseUrl || '(unset — built-in production fallback)'}`);
 console.log(`Appwrite backup failover: ${appwriteConfig.enabled ? 'enabled' : 'disabled'} (project ${appwriteConfig.projectId}, ${appwriteConfig.endpoint})`);
