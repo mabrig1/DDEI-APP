@@ -137,7 +137,7 @@
     busy = false;
   }
 
-  function exportVideo(studio, onStatus) {
+  function exportVideo(studio, onStatus, options) {
     if (busy) return Promise.reject(new Error('A lesson clip is already being recorded.'));
     if (!available()) return Promise.reject(new Error('This browser cannot record a canvas video. Try a recent version of Chrome, Edge, Firefox or Safari.'));
     if (!studio || studio.isGeneratedVideo !== false ||
@@ -145,6 +145,9 @@
         studio.scenes.some(function (s) {
           return s.durationSeconds !== 8 || typeof s.caption !== 'string' || s.caption.length > 144;
         })) return Promise.reject(new Error('A verified four-scene storyboard is required.'));
+    var sceneIndex = options && Number.isInteger(options.sceneIndex) ? options.sceneIndex : null;
+    if (sceneIndex !== null && (sceneIndex < 0 || sceneIndex > 3)) return Promise.reject(new Error('Invalid scene index.'));
+    var recordingStudio = sceneIndex === null ? studio : { ...studio, scenes: [studio.scenes[sceneIndex]] };
     var selected = format();
     if (!selected) return Promise.reject(new Error('No supported video recording format.'));
     var canvas = document.createElement('canvas');
@@ -153,7 +156,7 @@
     canvas.height = small ? 540 : 720;
     var ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return Promise.reject(new Error('Canvas graphics are unavailable.'));
-    var duration = studio.scenes.length * 8;
+    var duration = recordingStudio.scenes.length * 8;
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     var stream = canvas.captureStream(24);
     var recorder;
@@ -186,7 +189,8 @@
         if (job.cancelled) return finalize(new Error('Recording cancelled.'));
         var blob = new Blob(chunks, { type: selected.mime });
         if (blob.size < 1024) return finalize(new Error('No usable video was recorded.'));
-        var name = 'DDEI-' + safeName(studio.courseId) + '-' + safeName(studio.lessonId) + '.' + selected.extension;
+        var suffix = sceneIndex === null ? '' : '-scene-' + (sceneIndex + 1);
+        var name = 'DDEI-' + safeName(studio.courseId) + '-' + safeName(studio.lessonId) + suffix + '.' + selected.extension;
         download(blob, name);
         notify(onStatus, 'Saved ' + name + ' (' + Math.round(blob.size / 1024) + ' KB). This is an actual silent video file.');
         finalize(null, { fileName: name, extension: selected.extension, size: blob.size });
@@ -194,7 +198,7 @@
       function tick(now) {
         if (job.cancelled || finished) return;
         var elapsed = (now - begun) / 1000;
-        draw(ctx, canvas, studio, Math.min(elapsed, duration - .01), reduce);
+        draw(ctx, canvas, recordingStudio, Math.min(elapsed, duration - .01), reduce);
         var whole = Math.floor(elapsed);
         if (whole !== previousSecond) {
           previousSecond = whole;
@@ -206,7 +210,7 @@
         }
         job.frameId = requestAnimationFrame(tick);
       }
-      draw(ctx, canvas, studio, 0, reduce);
+      draw(ctx, canvas, recordingStudio, 0, reduce);
       try {
         recorder.start(1000);
         begun = performance.now();
