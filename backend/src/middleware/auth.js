@@ -9,7 +9,7 @@ function requireAuth(req, res, next) {
   }
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
     req.userId = payload.sub;
     next();
   } catch (err) {
@@ -23,7 +23,7 @@ function optionalAuth(req, res, next) {
   if (!token) return next();
 
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
+    const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
     req.userId = payload.sub;
   } catch (err) {
     // ignore invalid token, treat as anonymous
