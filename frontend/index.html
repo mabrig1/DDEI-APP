@@ -231,6 +231,7 @@
                 </div>
             </div>
             <div class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a href="#cybersecurity-featured" class="text-[#0A66C2] hover:text-[#07408a] font-extrabold"><i class="fa-solid fa-shield-halved mr-1" aria-hidden="true"></i>Cybersecurity</a>
                 <a href="#skills" class="text-slate-600 hover:text-slate-900">Skills</a>
                 <a href="#demo" class="text-[#0A66C2] hover:text-slate-900 font-bold">See Demo</a>
                 <a href="#courses" class="text-slate-600 hover:text-slate-900">Courses</a>
@@ -259,6 +260,59 @@
     <div id="serviceUpdateBanner" class="hidden bg-[#0A66C2] text-white text-sm text-center py-2 px-4">
         <span id="serviceUpdateBannerText"></span>
     </div>
+
+    <!-- First featured programme: DDEI discovery + independent AI University standalone enrolment -->
+    <section id="cybersecurity-featured" data-featured-course="cyber-security-of-the-future"
+             class="relative isolate overflow-hidden text-white border-b border-cyan-700/30"
+             style="background:radial-gradient(circle at 82% 15%,rgba(6,182,212,.19),transparent 38%),linear-gradient(118deg,#07182b 0%,#0b3253 62%,#0d233b 100%)"
+             aria-labelledby="cybersecurity-featured-title">
+        <div class="max-w-screen-xl mx-auto px-5 sm:px-6 py-10 md:py-14">
+            <div class="flex flex-col lg:flex-row items-start lg:items-center gap-8 lg:gap-12">
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap gap-2 items-center mb-5">
+                        <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-black tracking-wider uppercase bg-cyan-300 text-slate-950"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> #1 Featured Course</span>
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold border border-white/25 text-cyan-100">New cybersecurity training pathway</span>
+                    </div>
+                    <h2 id="cybersecurity-featured-title" class="font-display text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight leading-tight">
+                        The Cyber Security <span class="text-cyan-300">of the Future</span>
+                    </h2>
+                    <p class="text-lg text-slate-200 max-w-2xl mt-4 leading-relaxed">
+                        Prepare for tomorrow's digital threats. Learn AI defense, Zero Trust, cloud and API security,
+                        incident response, Nigerian privacy practice, and post-quantum readiness through guided, ethical labs.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-5 text-xs sm:text-sm font-semibold text-cyan-100">
+                        <span class="rounded-lg bg-white/10 px-3 py-2">9 core modules</span>
+                        <span class="rounded-lg bg-white/10 px-3 py-2">Practical labs</span>
+                        <span class="rounded-lg bg-white/10 px-3 py-2">Incident simulations</span>
+                        <span class="rounded-lg bg-white/10 px-3 py-2">AI &amp; cybersecurity</span>
+                    </div>
+                    <div class="flex flex-wrap gap-3 mt-7">
+                        <a href="https://aiuniversity.mabrigkorie.org/cybersecurity/"
+                           class="inline-flex w-full sm:w-auto justify-center items-center gap-2 px-6 py-3.5 rounded-xl bg-amber-300 text-slate-950 font-extrabold hover:bg-amber-200 focus-visible:ring-4 focus-visible:ring-amber-100"
+                           rel="noopener noreferrer" aria-label="Enrol in The Cyber Security of the Future at AI University, 30,000 naira one-time">
+                            Enrol for ₦30,000 <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                        </a>
+                        <a href="/cybersecurity-future"
+                           class="inline-flex w-full sm:w-auto justify-center items-center gap-2 px-6 py-3.5 rounded-xl border border-cyan-200/60 text-white font-bold hover:bg-white/10 focus-visible:ring-4 focus-visible:ring-cyan-200">
+                            <i class="fa-solid fa-circle-play" aria-hidden="true"></i> Try a Free Safety Lab
+                        </a>
+                        <a href="/cybersecurity-labs"
+                           class="inline-flex w-full sm:w-auto justify-center items-center gap-2 px-5 py-3.5 rounded-xl border border-white/25 text-cyan-100 font-semibold hover:bg-white/10 focus-visible:ring-4 focus-visible:ring-cyan-200">
+                            Explore DDEI practice labs
+                        </a>
+                    </div>
+                </div>
+                <aside class="w-full lg:w-80 shrink-0 rounded-3xl border border-cyan-200/30 bg-white/10 p-6 shadow-2xl" aria-label="Standalone course pricing and access">
+                    <p class="text-xs uppercase tracking-widest font-bold text-cyan-200">Standalone course at AI University</p>
+                    <p class="font-display text-5xl font-extrabold tracking-tight mt-3">₦30,000</p>
+                    <p class="text-slate-200 mt-1 text-sm">One-time payment · No recurring subscription</p>
+                    <div class="h-px bg-white/15 my-5" aria-hidden="true"></div>
+                    <p class="text-cyan-100 text-sm leading-relaxed"><i class="fa-solid fa-circle-check text-emerald-300 mr-1" aria-hidden="true"></i> Nine core modules with guided assessments, specialist pathways and practical evidence exercises.</p>
+                    <p class="mt-4 text-xs text-slate-300 leading-relaxed">Purchase and paid access are managed by AI University, not DDEI. DDEI's free simulations require no payment. Training is non-accredited; terms apply.</p>
+                </aside>
+            </div>
+        </div>
+    </section>
 
     <!-- Fund impact / international partnerships -->
     <section id="partners" class="bg-emerald-950 text-white py-20">
@@ -2140,7 +2194,9 @@
             if (cachedCourses.length) return;
             try {
                 const data = await apiRequest('/api/courses');
-                cachedCourses = data.courses;
+                cachedCourses = Array.isArray(data.courses) ? data.courses.slice().sort((a, b) =>
+                    Number(b.id === 'cyber-security-of-the-future') - Number(a.id === 'cyber-security-of-the-future')
+                ) : [];
             } catch (err) {
                 cachedCourses = [];
             }
