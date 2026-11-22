@@ -27,7 +27,7 @@ test('browser exports actual MediaRecorder video and never a mislabeled placehol
   assert.match(source, /new Blob\(chunks/);
   assert.match(source, /video\/mp4/);
   assert.match(source, /video\/webm/);
-  assert.match(source, /duration = studio\.scenes\.length \* 8/);
+  assert.match(source, /duration = recordingStudio\.scenes\.length \* 8/);
   assert.match(source, /This is an actual silent video file/);
   assert.doesNotMatch(source, /fetch\(/);
   assert.doesNotMatch(source, /OPENROUTER_API_KEY|MAGIC_HOUR_API_KEY|RUNWAY_API_KEY/);
