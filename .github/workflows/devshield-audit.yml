@@ -1,0 +1,82 @@
+name: DDEI DevShield read-only security audit
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  devshield-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout DDEI source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Full repository DevShield audit (advisory; no production probes)
+        id: scan
+        uses: mabrig1/mabrig-devshield-ai@2070da465c84a9113a8901df6b26287f2472d5f7
+        with:
+          scan-scope: repository
+          max-files: '250'
+          fail-on: none
+          comment: 'false'
+          dependency-review: 'false'
+          api-trust: advisory
+          legal-compliance: advisory
+          agentic-mode: plan
+          security-graph: 'on'
+          runtime-guard: 'off'
+          remediation-mode: 'off'
+      - name: Print bounded scanner evidence
+        if: always()
+        run: |
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const root = '.devshield';
+          if (!fs.existsSync(root)) { console.log('No DevShield report directory found.'); process.exit(0); }
+          const fields = ['id', 'rule', 'ruleId', 'severity', 'level', 'category', 'file', 'path', 'line', 'title', 'type'];
+          for (const name of fs.readdirSync(root).filter(f => f.endsWith('.json'))) {
+            const obj = JSON.parse(fs.readFileSync(root + '/' + name, 'utf8'));
+            console.log('REPORT', name, 'keys:', Object.keys(obj).join(','));
+            for (const [key, value] of Object.entries(obj)) {
+              if (!Array.isArray(value) || !value.length || typeof value[0] !== 'object') continue;
+              console.log('SECTION', key, 'count:', value.length, 'item keys:', Object.keys(value[0]).join(','));
+              for (const finding of value.slice(0, 45)) {
+                const safe = {};
+                for (const field of fields) if (finding[field] != null && typeof finding[field] !== 'object') safe[field] = finding[field];
+                console.log(JSON.stringify(safe));
+              }
+            }
+          }
+          NODE
+      - name: Upload DevShield reports
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ddei-devshield-evidence
+          path: .devshield/
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Display scan totals
+        if: always()
+        env:
+          FINDINGS: ${{ steps.scan.outputs.findings-count }}
+          RISK: ${{ steps.scan.outputs.risk-level }}
+          SCANNED: ${{ steps.scan.outputs.scanned-files }}
+          API_TRUST: ${{ steps.scan.outputs.api-trust-findings }}
+        run: |
+          {
+            echo "## DDEI DevShield read-only audit"
+            echo "Files scanned: ${SCANNED:-unavailable}"
+            echo "Findings: ${FINDINGS:-unavailable}"
+            echo "Risk level: ${RISK:-unavailable}"
+            echo "API trust findings: ${API_TRUST:-unavailable}"
+            echo "No live runtime probing, source remediation, cloud export, or production deploy."
+          } >> "$GITHUB_STEP_SUMMARY"
