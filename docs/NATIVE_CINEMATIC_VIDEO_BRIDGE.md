@@ -4,7 +4,7 @@ Status: implementation in a review-only branch, not a production deployment.
 
 ## What works without keys or credits
 
-An enrolled learner can open a DDEI course lesson, select **Play Cinematic Lesson**, then click **Approve & export video**. The browser paints four evidence-grounded 8-second scenes on an HTML canvas and captures a genuine silent video using MediaRecorder. Output is MP4 only where supported by the browser, otherwise WebM. The download belongs to the learner's device; no source or media is sent to any external provider. Reduced-motion and mobile Save-Data paths avoid unnecessary animation and resolution.
+An enrolled learner can open a DDEI course lesson, select **Play Cinematic Lesson**, then choose **Export full 32s video** or **Export this 8s scene**. Both exports require explicit confirmation. The browser paints four evidence-grounded 8-second scenes on an HTML canvas and captures a genuine silent video using MediaRecorder. Output is MP4 only where supported by the browser, otherwise WebM. The download belongs to the learner's device; no source or media is sent to any external provider. Reduced-motion and mobile Save-Data paths avoid unnecessary animation and resolution.
 
 The file is **not** a generated photorealistic AI scene, synthetic presenter or lip-synced video. Browser text-to-speech is for playback and is **not** embedded in the exported file. Close the page or navigate away to cancel the render.
 
