@@ -5,6 +5,7 @@ const { logActivity } = require('../utils/activityLogger');
 const { COACH_ACTIONS, runCourseCoach } = require('../utils/courseCoachAgent');
 const { generateTutorReply } = require('../utils/aiTutorInference');
 const { interpretLessonImage } = require('../utils/aiVisionInference');
+const { buildCinematicLesson } = require('../utils/cinematicSwarm');
 
 function findCourse(id) {
   return COURSES.find((c) => c.id === id) || null;
@@ -51,6 +52,17 @@ function courseSummary(course) {
 
 function listCourses(req, res) {
   res.json({ courses: COURSES.map(courseSummary) });
+}
+
+// The course access middleware runs before this handler. Do not expose lessons
+// or evidence from restricted courses through a public storyboard endpoint.
+function cinematicLesson(req, res) {
+  const course = findCourse(req.params.id);
+  if (!course) return res.status(404).json({ message: 'Course not found' });
+  const found = findLesson(course, req.params.lessonId);
+  if (!found) return res.status(404).json({ message: 'Lesson not found' });
+  const studio = buildCinematicLesson(course, found.module, found.lesson);
+  return res.json({ studio });
 }
 
 async function getCourse(req, res) {
@@ -373,6 +385,7 @@ async function getCertificate(req, res) {
 module.exports = {
   listCourses,
   getCourse,
+  cinematicLesson,
   updateProgress,
   submitQuiz,
   coachCourse,
