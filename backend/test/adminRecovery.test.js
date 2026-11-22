@@ -10,7 +10,8 @@ const AdminCredential = require('../src/models/AdminCredential');
 const AdminAuthAttempt = require('../src/models/AdminAuthAttempt');
 const { login, forgotPassword, resetPassword, recover, changeCredentials } = require('../src/controllers/adminCredentialController');
 const { requireAdmin } = require('../src/middleware/adminAuth');
-const { adminRateLimit } = require('../src/middleware/adminRateLimit');
+const { adminRateLimit, sharedRateLimit } = require('../src/middleware/adminRateLimit');
+const { requireContentWriteAccess } = require('../src/middleware/contentAccess');
 let db, sent, failMail, originalPost;
 const email = 'owner@example.com';
 const password = 'A fresh administrator passphrase';
@@ -144,4 +145,47 @@ test('credential changes require current password and invalidate outstanding lin
   const result=await call(changeCredentials,{username:email,password,currentPassword:'Existing administrator passphrase'});
   assert.equal(result.statusCode,200); assert.equal((await session(result.body.token)).allowed,true);
   assert.equal((await call(resetPassword,{token,password})).statusCode,400);
+});
+
+test('content administration rejects revoked sessions and forged role claims', async () => {
+  await seed({ sessionVersion: 'session-v1' });
+  const token = jwt.sign({ sub: 'admin', isAdmin: true, sv: 'session-v1' }, process.env.JWT_SECRET);
+  const ask = async (authorization, headers = {}) => {
+    const res = response();
+    let allowed = false;
+    await requireContentWriteAccess({
+      headers: { authorization: authorization ? 'Bearer ' + authorization : '', ...headers },
+    }, res, () => { allowed = true; });
+    return { res, allowed };
+  };
+  assert.equal((await ask(token)).allowed, true);
+  await AdminCredential.updateOne({ key: 'primary' }, { $set: { sessionVersion: 'session-v2' } });
+  const revoked = await ask(token);
+  assert.equal(revoked.allowed, false);
+  assert.equal(revoked.res.statusCode, 401);
+
+  const malformed = jwt.sign({ sub: 'learner', isAdmin: true, sv: 'session-v2' }, process.env.JWT_SECRET);
+  assert.equal((await ask(malformed)).res.statusCode, 403);
+  const replacement = jwt.sign({ sub: 'admin', isAdmin: true, sv: 'session-v2' }, process.env.JWT_SECRET);
+  assert.equal((await ask(replacement)).allowed, true);
+
+  process.env.CONTENT_API_KEY = 'test-server-key-only';
+  try {
+    assert.equal((await ask('', { 'x-content-api-key': 'incorrect' })).allowed, false);
+    assert.equal((await ask('', { 'x-content-api-key': 'test-server-key-only' })).allowed, true);
+  } finally {
+    delete process.env.CONTENT_API_KEY;
+  }
+});
+
+test('learner and payment shared rate limits are process-independent', async () => {
+  const limiters = Array.from({ length: 6 }, () => sharedRateLimit('learner-test', 3, 60_000, 'Learner sign-in'));
+  let allowed = 0;
+  const results = await Promise.all(limiters.map(async (limiter) => {
+    const res = response();
+    await limiter({ ip: '198.51.100.23' }, res, () => { allowed++; });
+    return res;
+  }));
+  assert.equal(allowed, 3);
+  assert.equal(results.filter((res) => res.statusCode === 429).length, 3);
 });
