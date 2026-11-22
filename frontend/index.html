@@ -1247,6 +1247,63 @@
             return false;
         }
 
+        // Rebuild trusted formatting from an allowlist rather than inserting
+        // server-supplied article HTML directly into the live DOM.
+        function safeArticleFragment(html) {
+            const template = document.createElement('template');
+            template.innerHTML = String(html || '');
+            const safe = document.createDocumentFragment();
+            const allowed = new Set([
+                'p', 'div', 'span', 'br', 'hr', 'strong', 'b', 'em', 'i', 'u',
+                'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote',
+                'code', 'pre', 'a', 'img', 'table', 'thead', 'tbody', 'tr', 'td', 'th'
+            ]);
+            const blocked = new Set([
+                'script', 'style', 'iframe', 'object', 'embed', 'svg', 'math',
+                'form', 'input', 'button', 'select', 'textarea', 'template',
+                'base', 'link', 'meta', 'video', 'audio', 'source'
+            ]);
+            function copy(node, parent) {
+                if (node.nodeType === 3) {
+                    parent.appendChild(document.createTextNode(node.textContent));
+                    return;
+                }
+                if (node.nodeType !== 1) return;
+                const tag = node.tagName.toLowerCase();
+                if (blocked.has(tag)) return;
+                if (!allowed.has(tag)) {
+                    Array.from(node.childNodes).forEach((child) => copy(child, parent));
+                    return;
+                }
+                const clean = document.createElement(tag);
+                if (tag === 'a' || tag === 'img') {
+                    const attribute = tag === 'a' ? 'href' : 'src';
+                    const raw = node.getAttribute(attribute);
+                    if (raw) {
+                        try {
+                            const parsed = new URL(raw, window.location.href);
+                            const valid = parsed.protocol === 'https:' ||
+                                (parsed.protocol === 'http:' && parsed.origin === window.location.origin) ||
+                                (tag === 'a' && parsed.protocol === 'mailto:');
+                            if (valid) clean.setAttribute(attribute, parsed.href);
+                        } catch (_) { /* Invalid URLs are never copied. */ }
+                    }
+                    if (tag === 'a') {
+                        clean.rel = 'noopener noreferrer';
+                    } else {
+                        if (!clean.getAttribute('src')) return;
+                        clean.alt = String(node.getAttribute('alt') || '').slice(0, 160);
+                        clean.loading = 'lazy';
+                        clean.referrerPolicy = 'no-referrer';
+                    }
+                }
+                Array.from(node.childNodes).forEach((child) => copy(child, clean));
+                parent.appendChild(clean);
+            }
+            Array.from(template.content.childNodes).forEach((node) => copy(node, safe));
+            return safe;
+        }
+
         async function showContentBySlug(slug) {
             try {
                 const data = await apiRequest(`/api/content/${encodeURIComponent(slug)}`);
@@ -1263,7 +1320,7 @@
                 document.getElementById('contentViewDate').textContent = item.publishedAt
                     ? new Date(item.publishedAt).toLocaleDateString()
                     : '';
-                document.getElementById('contentViewBody').innerHTML = item.body;
+                document.getElementById('contentViewBody').replaceChildren(safeArticleFragment(item.body));
                 const contentView = document.getElementById('contentView');
                 contentView.classList.remove('hidden');
                 contentView.scrollIntoView({ behavior: 'smooth' });
@@ -1752,9 +1809,9 @@
                 const p = data.portfolio;
                 resultEl.innerHTML = `
                     <div>
-                        <h4 class="font-semibold text-lg mb-2">${p.headline}</h4>
-                        <p class="text-sm text-slate-600 mb-4">${p.summary}</p>
-                        ${p.highlights.length ? `<ul class="text-sm list-disc list-inside space-y-1">${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>` : ''}
+                        <h4 class="font-semibold text-lg mb-2">${escapeHtml(p.headline)}</h4>
+                        <p class="text-sm text-slate-600 mb-4">${escapeHtml(p.summary)}</p>
+                        ${p.highlights.length ? `<ul class="text-sm list-disc list-inside space-y-1">${p.highlights.map(h => `<li>${escapeHtml(h)}</li>`).join('')}</ul>` : ''}
                     </div>`;
             } catch (err) {
                 if (err.status === 401) {
@@ -1767,7 +1824,7 @@
                     showUpgradePrompt(err.message);
                     return;
                 }
-                resultEl.innerHTML = `<p class="text-red-600">${err.message}</p>`;
+                resultEl.textContent = String(err.message || 'Could not generate your portfolio.');
             }
         }
 
@@ -1777,7 +1834,7 @@
             bubble.className = role === 'user' ? 'flex justify-end' : 'flex justify-start';
             bubble.innerHTML = `
                 <div class="${role === 'user' ? 'bg-[#0A66C2] text-white' : 'bg-slate-100 text-slate-800'} rounded-2xl px-4 py-3 max-w-[80%] text-sm">
-                    ${text}
+                    ${escapeHtml(text)}
                 </div>`;
             container.appendChild(bubble);
             container.scrollTop = container.scrollHeight;
