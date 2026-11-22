@@ -9,7 +9,7 @@ name: Appwrite backup
 #      (Optionally under Variables, to override the built-in defaults:
 #        APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, APPWRITE_DATABASE_ID)
 #
-#   2. Do not open MongoDB Atlas to 0.0.0.0/0 for scheduled backups.
+#   2. Never allow all IPv4 networks through MongoDB Atlas firewall rules for scheduled backups.
 #      Use a self-hosted runner with a fixed allowlisted egress IP or a
 #      private network connection. GitHub-hosted runners have variable IPs;
 #      when no trusted network path exists, leave database sync disabled.
