@@ -64,3 +64,6 @@ Each scenario supplies three responses, one safer answer, explicit feedback, a f
 
 ## Non-goals
 No scraping private messages, real phishing links, bulk email simulations, password collection, voice-clone generator, exploit lab, hidden surveillance, automatic publishing of unreviewed model output or claims of active live threat updates in this pilot.
+
+## Expanded interactive practice (22 November 2026)
+The draft now includes `frontend/cybersecurity-labs.html`, an offline-friendly mobile hub with **16 simulated labs**: three beginner decision labs, nine core/module labs (0–8), and four specialist lab exercises. Each lab contains a scenario, guided practice, decision checkpoint, feedback, a learner evidence field, and a client-side Markdown worksheet download. Learner entries are held in page memory only and are not transmitted or certified. A correct multiple-choice response is not evidence of professional competency; an instructor must review the worksheet. The static build includes both the starter pilot and the lab hub. It is not connected to the enrolled-learner course catalogue or a live intelligence feed.
