@@ -24,6 +24,8 @@ const {
   learnerBoard,
 } = require('../controllers/analyticsController');
 const { requireAdmin } = require('../middleware/adminAuth');
+const { catalog: cinematicCatalog, startRender: startCinematicRender, renderStatus: cinematicRenderStatus } = require('../controllers/cinematicVideoController');
+const { sharedRateLimit } = require('../middleware/adminRateLimit');
 const { asyncHandler } = require('../middleware/asyncHandler');
 const { listInquiries, updateInquiry } = require('../controllers/partnerController');
 const { adminRateLimit } = require('../middleware/adminRateLimit');
@@ -37,6 +39,11 @@ router.post('/recover', adminRateLimit('admin-bootstrap'), recover);
 router.post('/forgot-password', adminRateLimit('admin-forgot', 5), forgotPassword);
 router.post('/reset-password', adminRateLimit('admin-reset'), resetPassword);
 router.patch('/credentials', requireAdmin, changeCredentials);
+// Owner-only cinematic generation. Provider credits cannot be used through these routes.
+router.get('/cinematic/catalog', requireAdmin, cinematicCatalog);
+router.post('/cinematic/render', requireAdmin, sharedRateLimit('cinematic-gpu', 5, 60 * 60 * 1000, 'Cinematic studio'), asyncHandler(startCinematicRender));
+router.get('/cinematic/render/:requestId', requireAdmin, asyncHandler(cinematicRenderStatus));
+
 router.get('/applications', requireAdmin, listApplications);
 router.patch('/applications/:id', requireAdmin, updateApplicationStatus);
 router.patch('/applications/:id/scholarship', requireAdmin, grantScholarship);
