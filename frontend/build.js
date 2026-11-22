@@ -3,7 +3,7 @@ const path = require('path');
 
 const apiBaseUrl = process.env.API_BASE_URL || '';
 const outDir = path.join(__dirname, 'dist');
-const pages = ['index.html', 'admin.html', 'admin-recovery.html', 'earn-online.html', 'tools-vault.html', 'links.html', 'partners.html'];
+const pages = ['index.html', 'admin.html', 'admin-recovery.html', 'earn-online.html', 'tools-vault.html', 'links.html', 'partners.html', 'cybersecurity-future.html', 'cybersecurity-labs.html'];
 
 const appwriteConfig = {
   endpoint: process.env.APPWRITE_ENDPOINT || 'https://fra.cloud.appwrite.io/v1',
