@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b1730">
+<meta name="description" content="A free, fictional, phone-first cybersecurity decision lab from Destiny Skills Bridge.">
+<title>Before You Pay | The Cyber Security of the Future</title>
+<style>
+:root{color-scheme:dark;--bg:#081327;--panel:#122440;--edge:#315173;--text:#f4f8ff;--muted:#bbd0e3;--aqua:#72e7d2;--yellow:#ffd58c}
+*{box-sizing:border-box}html{font-family:system-ui,-apple-system,"Segoe UI",sans-serif}body{background:linear-gradient(155deg,#071122,#102e4c);color:var(--text);margin:0;min-height:100vh;line-height:1.55}
+main,footer{max-width:820px;margin:auto;padding:22px 18px}header{padding:15px 18px;background:#081527;border-bottom:1px solid var(--edge)}.brand{max-width:820px;margin:auto;font-size:.87rem;letter-spacing:.07em;font-weight:750}
+.pill{display:inline-block;border:1px solid #4c9a9d;color:var(--aqua);border-radius:100px;padding:5px 12px;font-size:.78rem;font-weight:650}
+h1{font-size:clamp(1.8rem,6vw,3rem);line-height:1.1;letter-spacing:-.03em;margin:18px 0 12px}h2{font-size:1.35rem;line-height:1.25}p{color:var(--muted)}.lead{font-size:1.12rem}.panel{background:var(--panel);border:1px solid var(--edge);border-radius:20px;padding:22px;margin-top:23px;box-shadow:0 10px 30px #0014}.scenario{border-left:4px solid var(--aqua);padding:11px 16px;background:#071a30;border-radius:8px;white-space:pre-line;color:#ecf9ff}
+.small{font-size:.87rem;color:var(--muted)}.progress{height:9px;border-radius:15px;overflow:hidden;background:#31445d;margin:12px 0 18px}.progress>span{display:block;height:100%;background:var(--aqua);transition:width .2s}
+button{width:100%;text-align:left;min-height:52px;margin:8px 0;padding:12px 16px;border:1px solid #6081a0;background:#193453;color:#fff;border-radius:12px;font:inherit;cursor:pointer}button:hover,button:focus-visible{border-color:var(--aqua);outline:2px solid #72e7d275}button:disabled{opacity:.65;cursor:default}button.primary{background:var(--aqua);border-color:var(--aqua);color:#061627;text-align:center;font-weight:750}
+.feedback{padding:15px;background:#112f3d;border:1px solid #4eaba0;border-radius:12px;margin:14px 0;color:#fff}.feedback.warning{background:#392b24;border-color:#dca55e}.feedback p{color:#fff;margin:5px 0}
+a{color:#9ce9e0}a:focus-visible{outline:2px solid var(--aqua)}ul{color:var(--muted);padding-left:19px}footer{font-size:.83rem;color:var(--muted)}[hidden]{display:none!important}
+@media (max-width:480px){main,footer{padding:18px 13px}.panel{padding:17px}h1{font-size:2rem}button{font-size:.98rem}}
+</style>
+</head>
+<body>
+<header><div class="brand">DESTINY SKILLS BRIDGE <span aria-hidden="true"> / </span> MABRIG TECHNOLOGIES</div></header>
+<main>
+<span class="pill">FREE PRACTICE LAB · NO ACCOUNT NEEDED</span>
+<h1>The Cyber Security<br>of the Future</h1>
+<p class="lead"><strong style="color:#fff">Before You Pay:</strong> three decisions that can protect your money, identity, and community.</p>
+<p>Each incident below is fictional. No real messages, links, accounts, or payments are involved. This demonstration does not save or transmit your answers.</p>
+<section class="panel" id="lab" aria-label="Cybersecurity simulation">
+<div class="small" id="status">Scenario 1 of 3</div>
+<div class="progress" aria-hidden="true"><span id="bar" style="width:33.33%"></span></div>
+<h2 id="title"></h2>
+<div class="scenario" id="message"></div>
+<p id="question" style="color:#fff;font-weight:650"></p>
+<div id="choices" role="group" aria-label="Choose your safest action"></div>
+<div id="feedback" aria-live="polite"></div>
+<button class="primary" id="next" hidden>Next scenario</button>
+</section>
+<section class="panel">
+<h2>What changes when new threats appear?</h2>
+<p>The permanent rule remains: independently verify an unexpected request before transferring money or sharing information. Future updates will add reviewed examples of how criminals try to bypass this rule.</p>
+<p class="small"><strong>Update status:</strong> This pilot has static teaching content. Automatic advisory monitoring, approval workflow and personalized refreshers are proposed, not activated.</p>
+<h2>Verified references</h2>
+<ul>
+<li><a href="https://cert.gov.ng/advisories/" target="_blank" rel="noopener noreferrer">Nigeria CERT — national advisories</a></li>
+<li><a href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CISA — known exploited vulnerabilities</a></li>
+<li><a href="https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20" target="_blank" rel="noopener noreferrer">NIST — Cybersecurity Framework 2.0</a></li>
+</ul>
+</section>
+</main>
+<footer>© 2026 MABRIG Technologies · Learning simulation, not a substitute for incident-response professionals · <a href="https://ddei.online">Return to Destiny Skills Bridge</a></footer>
+<script>
+(function(){
+'use strict';
+const lessons=[
+{title:'1. The hostel deadline',message:'WhatsApp · A familiar coursemate\n“UNN hostel allocation closes in 30 minutes. Pay immediately using this new link or lose your bed space!”',question:'What is your safest next step?',choices:['Open the official university portal independently and check the allocation notice.','Pay quickly because a coursemate sent it.','Forward the link to your classmates so they do not miss out.'],correct:0,why:'Do not use the payment link or telephone number inside the unexpected message. Go independently to the official university portal or a previously verified office contact before paying or forwarding.'},
+{title:'2. New supplier bank details',message:'Email · A campus printing supplier\n“Our account has changed. Send today’s invoice payment to this new bank account. The attached invoice is proof.”',question:'How should the business owner verify?',choices:['Reply to the same email and ask if the details are genuine.','Call a previously verified supplier contact and follow an independent payment-approval process.','Trust the attached invoice because it displays the business logo.'],correct:1,why:'A compromised email thread and forged invoice can look authentic. Confirm a changed payment destination through contact details recorded before the request and follow any second-person approval rule.'},
+{title:'3. The familiar voice note',message:'Voice note · A supposed church leader\n“I am in an emergency meeting. Please send the ministry funds immediately. You know my voice—do not delay!”',question:'What should the treasurer do?',choices:['Transfer the money because the voice sounds familiar.','Call the number given inside the voice note to confirm.','Contact the leader through a known, independently saved channel and require the usual second approval.'],correct:2,why:'A familiar-sounding voice is not sufficient proof of authorization, particularly with AI voice imitation. Use an independent known contact method and normal dual authorization before a transfer.'}
+];
+let index=0,answered=false,score=0;
+const el=id=>document.getElementById(id),choices=el('choices'),feedback=el('feedback'),next=el('next');
+function node(tag,text,cls){const e=document.createElement(tag);if(text)e.textContent=text;if(cls)e.className=cls;return e}
+function render(){
+if(index>=lessons.length){el('status').textContent='Simulation complete';el('bar').style.width='100%';el('title').textContent='Your decision score: '+score+' / 3';el('message').textContent=score===3?'Excellent. You verified all three requests independently.':'Each of these situations can be handled more safely with an independent check.';el('question').textContent='Remember: pause, verify independently, and follow the approval process.';choices.replaceChildren();feedback.replaceChildren();const recap=node('p','Repeat the exercise to practise the decisions again.');feedback.appendChild(recap);next.textContent='Try again';next.hidden=false;return}
+const x=lessons[index];answered=false;el('status').textContent='Scenario '+(index+1)+' of 3';el('bar').style.width=((index+1)/lessons.length*100)+'%';el('title').textContent=x.title;el('message').textContent=x.message;el('question').textContent=x.question;choices.replaceChildren();feedback.replaceChildren();next.hidden=true;
+x.choices.forEach((choice,n)=>{const b=node('button',String.fromCharCode(65+n)+'. '+choice);b.type='button';b.addEventListener('click',()=>select(n));choices.appendChild(b)});
+}
+function select(n){if(answered)return;answered=true;const x=lessons[index];const correct=n===x.correct;if(correct)score++;Array.from(choices.children).forEach(b=>b.disabled=true);const card=node('div',null,'feedback'+(correct?'':' warning'));card.appendChild(node('strong',correct?'Good decision.':'Safer decision: '+x.choices[x.correct]));card.appendChild(node('p',x.why));feedback.replaceChildren(card);next.textContent=index===2?'See my result':'Next scenario';next.hidden=false;next.focus()}
+next.addEventListener('click',()=>{if(index>=lessons.length){index=0;score=0}else{index++}render()});render();
+})();
+</script>
+</body>
+</html>
