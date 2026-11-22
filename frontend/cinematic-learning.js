@@ -178,7 +178,7 @@
       window.DDEINativeClip.downloadProductionPack(state.studio);
       state.message.textContent = 'Saved a reusable, lesson-grounded production pack for your connected video workflow. No data was sent externally.';
     }));
-    state.exportButton = button('Approve & export video', 'Record and download this cinematic lesson as a real video file', function () {
+    function beginExport(sceneIndex) {
       if (!window.DDEINativeClip) {
         state.message.textContent = 'The native video recorder is not loaded.';
         return;
@@ -187,27 +187,38 @@
         state.message.textContent = 'This browser cannot encode a canvas video. Try an updated desktop browser or download the production pack.';
         return;
       }
-      if (!window.confirm('Create a 32-second video file with source-verified captions? The export is silent and does not spend any provider credits.')) return;
+      var seconds = sceneIndex === null ? 32 : 8;
+      if (!window.confirm('Record an actual ' + seconds + '-second silent video with source-verified captions? No provider credits are spent.')) return;
       pause();
       state.exportButton.disabled = true;
+      state.sceneExportButton.disabled = true;
       state.exportButton.textContent = 'Recording video…';
       window.DDEINativeClip.exportVideo(state.studio, function (message) {
         if (active === state) state.message.textContent = message;
-      }).then(function () {
+      }, sceneIndex === null ? {} : { sceneIndex: sceneIndex }).then(function () {
         if (active === state) {
           state.exportButton.disabled = false;
-          state.exportButton.textContent = 'Export another video';
+          state.sceneExportButton.disabled = false;
+          state.exportButton.textContent = 'Export full 32s video';
         }
       }).catch(function (error) {
         if (active === state) {
           state.message.textContent = error.message;
           state.exportButton.disabled = false;
-          state.exportButton.textContent = 'Approve & export video';
+          state.sceneExportButton.disabled = false;
+          state.exportButton.textContent = 'Export full 32s video';
         }
       });
+    }
+    state.exportButton = button('Export full 32s video', 'Render and download the full 32-second lesson', function () {
+      beginExport(null);
     });
     state.exportButton.classList.add('ddei-cinema-primary');
     controls.appendChild(state.exportButton);
+    state.sceneExportButton = button('Export this 8s scene', 'Render and download only the currently selected eight-second scene', function () {
+      beginExport(state.index);
+    });
+    controls.appendChild(state.sceneExportButton);
     outer.appendChild(controls);
 
     state.source = element('p', 'ddei-cinema-evidence');
