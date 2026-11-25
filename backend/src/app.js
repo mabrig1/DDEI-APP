@@ -111,7 +111,15 @@ app.use('/api/courses', courseRoutes);
 app.get('/api/management-swarm/cron', require('./middleware/asyncHandler').asyncHandler(async (req, res) => {
   const { validCronAuth, runSwarm } = require('./utils/managementSwarm');
   if (!validCronAuth(req.headers.authorization, process.env.CRON_SECRET)) return res.status(401).json({ message: 'Unauthorized' });
+  if ((process.env.MANAGEMENT_SWARM_SCHEDULER || 'vercel') !== 'vercel') return res.json({ skipped: true, reason: 'wrong-scheduler' });
   res.json(await runSwarm('scheduled'));
+}));
+app.post('/api/management-swarm/cloudflare', require('./middleware/asyncHandler').asyncHandler(async (req, res) => {
+  const { validCronAuth, runSwarm } = require('./utils/managementSwarm');
+  const secret = process.env.SWARM_WORKER_SECRET;
+  if (!secret || secret.length < 32 || !validCronAuth(req.headers.authorization, secret)) return res.status(401).json({ message: 'Unauthorized' });
+  if (process.env.MANAGEMENT_SWARM_SCHEDULER !== 'cloudflare') return res.json({ skipped: true, reason: 'wrong-scheduler' });
+  res.json(await runSwarm('cloudflare'));
 }));
 app.use('/api/admin', adminRoutes);
 app.use('/api/content', contentRoutes);
