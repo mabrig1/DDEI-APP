@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const Application = require('../models/Application');
 const User = require('../models/User');
-const { sendApplicationNotification } = require('../utils/mailer');
+const { sendApplicationNotification, sendLearnerOnboarding } = require('../utils/mailer');
 const { normalizeEmail, isValidEmail, passwordError, cleanText } = require('../utils/validation');
 
 function signToken(user) {
@@ -67,6 +67,15 @@ async function createApplication(req, res) {
     });
 
     await sendApplicationNotification(application);
+
+    // Use the authenticated account email, not an arbitrary address supplied
+    // in the application form. The application is already saved.
+    try {
+      const learner = user || await User.findById(userId);
+      if (learner) await sendLearnerOnboarding(learner, application);
+    } catch (_) {
+      console.warn('Learner application email unavailable; application remains saved.');
+    }
 
     const response = { application };
     if (token) {
