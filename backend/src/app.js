@@ -107,6 +107,12 @@ app.use('/api/skills', skillsRoutes);
 app.use('/api/opportunities', opportunityRoutes);
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/courses', courseRoutes);
+// Vercel cron sends its server-side bearer secret; never accept anonymous jobs.
+app.get('/api/management-swarm/cron', require('./middleware/asyncHandler').asyncHandler(async (req, res) => {
+  const { validCronAuth, runSwarm } = require('./utils/managementSwarm');
+  if (!validCronAuth(req.headers.authorization, process.env.CRON_SECRET)) return res.status(401).json({ message: 'Unauthorized' });
+  res.json(await runSwarm('scheduled'));
+}));
 app.use('/api/admin', adminRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/help', helpRoutes);
