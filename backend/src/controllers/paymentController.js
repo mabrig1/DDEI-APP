@@ -336,9 +336,8 @@ async function verifyPayment(req, res) {
       reference,
       status: subscription.status,
       accessGranted: Boolean(subscription.benefitsAppliedAt),
-      // Owner-gated, non-sensitive routing hints for automatic classroom entry.
-      paymentKind: reference && subscription.plan.startsWith('certificate-fee:') ? 'certificate' : entitlementForPlan(subscription.plan, PLANS)?.type,
-      courseId: entitlementForPlan(subscription.plan, PLANS)?.courseId || null,
+      accessType: String(record.plan).startsWith('certificate-fee:') ? 'certificate' : entitlementForPlan(record.plan, PLANS)?.type,
+      courseId: PLANS[record.plan]?.courseId || undefined,
       message: subscription.status === 'success' && !subscription.benefitsAppliedAt
         ? 'Payment confirmed. Access could not be linked automatically; please contact support with your reference.'
         : undefined,

@@ -1992,10 +1992,10 @@
         // Never infer entitlement from URL parameters or application status.
         function paidCourseDestination(data, user, courses, skills) {
             if (data.status !== 'success' || !data.accessGranted || !user) return null;
-            if (data.paymentKind === 'course') {
+            if (data.accessType === 'course') {
                 return courses.find(c => c.id === data.courseId)?.id || null;
             }
-            if (data.paymentKind !== 'premium') return null;
+            if (data.accessType !== 'premium') return null;
             const standard = courses.filter(c => !c.paidOnly && !(c.specialCourse && c.purchasePlan));
             const active = standard.find(c => c.id === user.activeCourseId);
             if (active) return active.id;
@@ -2018,7 +2018,7 @@
                     area.textContent = data.message || 'Payment status: ' + data.status + '. No access has been granted yet. Do not pay twice; use Check with Paystack to retry.';
                     return false;
                 }
-                if (data.paymentKind === 'sponsorship') {
+                if (data.accessType === 'sponsorship') {
                     area.textContent = 'Sponsorship confirmed. Thank you for investing in learners.';
                     if (enterCourse) alert(area.textContent);
                 } else {
@@ -2033,7 +2033,7 @@
                             await chooseCourse(courseId);
                         } else {
                             document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
-                            if (data.paymentKind === 'premium' || data.paymentKind === 'course') {
+                            if (data.accessType === 'premium' || data.accessType === 'course') {
                                 await openChooseCourseModal();
                             }
                         }

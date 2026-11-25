@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const User = require('../models/User');
-const { sendPasswordResetEmail, sendCustomEmail } = require('../utils/mailer');
+const { sendPasswordResetEmail, sendLearnerOnboarding } = require('../utils/mailer');
 const { logActivity, requestClientInfo } = require('../utils/activityLogger');
 const { normalizeEmail, isValidEmail, passwordError, cleanText } = require('../utils/validation');
 
@@ -35,33 +35,11 @@ async function register(req, res) {
     const user = await User.create({ name, email, password, track });
     const token = signToken(user);
     logActivity(user._id, user.name, 'signup', requestClientInfo(req));
-    // Transactional onboarding only: promotional campaigns require separate consent.
-    // A mail-provider outage must never prevent a successful registration.
-    if (process.env.RESEND_API_KEY && process.env.WELCOME_EMAIL_ENABLED === 'true') {
-      const safeName = user.name.replace(/[\\r\\n]/g, ' ').slice(0, 100);
-      const safeTrack = String(user.track || 'your chosen programme').replace(/[\\r\\n]/g, ' ').slice(0, 120);
-      try {
-        await sendCustomEmail(
-          user.email,
-          'Welcome to DDEI — Your Learning Journey Begins',
-          `Hello ${safeName},
-
-Welcome to Destiny Development and Empowerment Initiative (DDEI)! Your learner account has been created.
-
-Your programme: ${safeTrack}
-
-Next step: Sign in to explore your programme and the available learning and subscription options:
-https://ddei.online
-
-Registration does not guarantee admission, employment, or freelance work.
-
-If you need assistance, reply to this email.
-
-DDEI Learner Support Team`
-        );
-      } catch (mailError) {
-        console.error('Welcome email could not be queued for delivery');
-      }
+    // Transactional message, not a marketing subscription.
+    try {
+      await sendLearnerOnboarding(user);
+    } catch (_) {
+      console.warn('Learner onboarding email unavailable; registration remains saved.');
     }
     res.status(201).json({ token, user });
   } catch (err) {
