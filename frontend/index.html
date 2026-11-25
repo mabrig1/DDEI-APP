@@ -904,7 +904,7 @@
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <h3 class="text-2xl font-semibold mb-1">Apply to a Skill Track</h3>
-            <p class="text-slate-500 text-sm mb-6">Tell us about yourself and we'll match you to a cohort.</p>
+            <p class="text-slate-500 text-sm mb-6">Tell us about yourself and we'll match you to a cohort. After applying, choose a training plan to continue to secure payment if you do not already have access.</p>
             <form id="applicationForm" onsubmit="return handleApplicationSubmit(event)">
                 <div class="grid grid-cols-2 gap-4 mb-4">
                     <div>
@@ -939,8 +939,14 @@
                 </div>
                 <p id="appError" class="hidden text-red-600 text-sm mb-4"></p>
                 <p id="appSuccess" class="hidden text-emerald-600 text-sm mb-4"></p>
-                <button type="submit" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl">Submit Application</button>
+                <button id="appSubmitBtn" type="submit" class="w-full py-3 bg-[#0A66C2] text-white font-semibold rounded-2xl disabled:opacity-60">Submit Application</button>
             </form>
+            <section id="appNextStep" class="hidden mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4" aria-live="polite">
+                <h4 class="font-bold text-emerald-900">Application received</h4>
+                <p id="appNextMessage" class="text-sm text-slate-700 mt-2"></p>
+                <button id="appContinueBtn" type="button" class="mt-4 w-full rounded-xl bg-[#0A66C2] text-white py-3 font-semibold"></button>
+                <button type="button" onclick="closeModal('applicationModal')" class="mt-2 w-full py-2 text-sm text-slate-600 underline">Continue later</button>
+            </section>
         </div>
     </div>
 
@@ -1133,7 +1139,7 @@
             const plans = document.getElementById('premiumPlans');
             if (!plans) return;
             const user = authUser();
-            const alreadyPremium = user && (user.isPremium || user.scholarship === 'full');
+            const alreadyPremium = user && ((user.isPremium && (!user.premiumExpiresAt || new Date(user.premiumExpiresAt) > new Date())) || user.scholarship === 'full');
             const existingBanner = document.getElementById('premiumActiveBanner');
             if (!alreadyPremium) {
                 plans.classList.remove('hidden');
@@ -1560,6 +1566,8 @@
         }
 
         function openApplicationModal() {
+            document.getElementById('applicationForm').classList.remove('hidden');
+            document.getElementById('appNextStep').classList.add('hidden');
             document.getElementById('appError').classList.add('hidden');
             document.getElementById('appSuccess').classList.add('hidden');
             const passwordField = document.getElementById('appPasswordField');
@@ -1587,6 +1595,9 @@
                 return false;
             }
 
+            const submitBtn = document.getElementById('appSubmitBtn');
+            if (submitBtn.disabled) return false;
+            submitBtn.disabled = true;
             try {
                 const payload = {
                     fullName: document.getElementById('appFullName').value,
@@ -1604,20 +1615,44 @@
                     body: JSON.stringify(payload),
                 });
 
-                if (data.token) {
-                    setSession(data.token, data.user);
-                    successEl.textContent = "Application received and your account is ready — you're now logged in. We'll be in touch soon.";
-                } else {
-                    successEl.textContent = "Application received! We'll be in touch soon.";
-                }
-                successEl.classList.remove('hidden');
+                if (data.token && data.user) setSession(data.token, data.user);
                 document.getElementById('applicationForm').reset();
+                document.getElementById('applicationForm').classList.add('hidden');
+                showApplicationNextStep();
                 renderCoursesSection();
             } catch (err) {
                 errorEl.textContent = err.message;
                 errorEl.classList.remove('hidden');
+            } finally {
+                submitBtn.disabled = false;
             }
             return false;
+        }
+
+        // Registration is not a payment. Offer existing plans without charging
+        // automatically, changing prices, or bypassing server-side verification.
+        function showApplicationNextStep() {
+            const user = authUser();
+            const access = user && (['limited', 'full'].includes(user.scholarship) ||
+                (user.isPremium && (!user.premiumExpiresAt || new Date(user.premiumExpiresAt) > new Date())));
+            const message = document.getElementById('appNextMessage');
+            const button = document.getElementById('appContinueBtn');
+            document.getElementById('appNextStep').classList.remove('hidden');
+            if (access) {
+                message.textContent = 'Your account already includes standard training access. Continue to your course dashboard.';
+                button.textContent = 'Continue to courses';
+                button.onclick = () => {
+                    closeModal('applicationModal');
+                    document.getElementById('courseCatalogGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                };
+            } else {
+                message.textContent = 'Your application is saved. Training access requires a paid plan. Review the monthly or yearly fee and select a plan to proceed to Paystack. Payment is confirmed separately.';
+                button.textContent = 'View training fees & pay securely';
+                button.onclick = () => {
+                    closeModal('applicationModal');
+                    document.getElementById('premium').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                };
+            }
         }
 
         function openRecruitmentModal(role = '') {
