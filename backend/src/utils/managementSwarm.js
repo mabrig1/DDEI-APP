@@ -89,10 +89,12 @@ async function runSwarm(trigger) {
   const now = Date.now(), token = crypto.randomUUID(), act = canAct();
   let lease;
   try {
-    lease = await State.findOneAndUpdate({ _id: KEY, $or: [{ leaseUntil: { $lte: new Date(now) } }, { leaseUntil: null }] },
+    const filter = { _id: KEY, $or: [{ leaseUntil: { $lte: new Date(now) } }, { leaseUntil: null }] };
+    if (trigger === 'cloudflare') filter['lastRun.startedAt'] = { $not: { $gt: new Date(now - 14 * 60000) } };
+    lease = await State.findOneAndUpdate(filter,
       { $set: { leaseUntil: new Date(now + 120000), leaseToken: token } }, { upsert: true, new: true });
   } catch (err) {
-    if (err.code === 11000) return { skipped: true, reason: 'already-running' };
+    if (err.code === 11000) return { skipped: true, reason: trigger === 'cloudflare' ? 'interval-limit' : 'already-running' };
     throw err;
   }
   if (!lease || lease.leaseToken !== token) return { skipped: true, reason: 'already-running' };
@@ -119,7 +121,9 @@ async function runSwarm(trigger) {
 
 async function swarmStatus() {
   const state = await State.findById(KEY).lean();
-  return { enabled: enabled(), actionsEnabled: canAct(), scheduleConfigured: Boolean(process.env.CRON_SECRET),
+  const scheduler = process.env.MANAGEMENT_SWARM_SCHEDULER || 'vercel';
+  return { enabled: enabled(), actionsEnabled: canAct(), scheduler,
+    scheduleConfigured: scheduler === 'cloudflare' ? Boolean(process.env.SWARM_WORKER_SECRET && process.env.SWARM_WORKER_SECRET.length >= 32) : Boolean(process.env.CRON_SECRET),
     lastRun: state?.lastRun || null };
 }
 
