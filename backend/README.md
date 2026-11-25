@@ -100,3 +100,16 @@ describe a long-running host (a VM or container).
 5. Optionally enable the Appwrite backup backend: set `APPWRITE_API_KEY` (plus the other `APPWRITE_*`
    variables if you aren't using the defaults), then run `npm run appwrite:provision` and
    `npm run appwrite:sync` once. See [../docs/APPWRITE_BACKUP.md](../docs/APPWRITE_BACKUP.md).
+
+## Management swarm
+
+The admin dashboard's Management Swarm tab displays the last persisted run of five coordinated deterministic agents (no LLM provider or paid inference required). Enrollment and learning agents measure activity; the payment agent may reconcile one existing account-linked payment per run through server-side Paystack verification; support may post up to five account-linked, evidence-based in-app replies; the supervisor records errors and mode. No agent creates charges, changes pricing, issues refunds, grants arbitrary entitlements or sends mass messages. Paid enrollment continues to work independently of the swarm.
+
+Production setup (backend Vercel project):
+- Set `MANAGEMENT_SWARM_ENABLED=true` to run monitoring.
+- Set `MANAGEMENT_SWARM_ACTIONS=true` to permit bounded reconciliation and support replies without individual administrator approval.
+- Set a strong random `CRON_SECRET` directly in the production environment. Do not commit it. Vercel's scheduled job calls GET /api/management-swarm/cron daily at 03:00 UTC. Verify the job is active after deployment.
+- The administrator can inspect GET /api/admin/swarm or initiate POST /api/admin/swarm/run. Both require admin authentication; the scheduler uses its separate bearer secret.
+- A MongoDB lease prevents overlapping runs and the latest aggregate summary is persisted. Disable actions or the entire swarm by setting the corresponding flag false and redeploying. No secret, learner email or support message is included in the summary.
+
+This first release does not provide continuous background workers, LLM reasoning, automated refunds, proactive marketing, or historical audit retention. Payment recovery is deliberately rate-bounded and does not replace signed webhooks or user-initiated verification.
