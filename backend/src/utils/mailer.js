@@ -180,3 +180,52 @@ async function sendAdminPasswordChangedEmail(to) {
 }
 module.exports.sendAdminRecoveryEmail = sendAdminRecoveryEmail;
 module.exports.sendAdminPasswordChangedEmail = sendAdminPasswordChangedEmail;
+
+
+ // Transactional learner onboarding. Never use Resend's test sender for
+ // external recipients; configure a verified sender in production.
+function learnerOnboardingMessage(user, application) {
+  const name = String(user.name || 'Learner').replace(/[\r\n]/g, ' ').slice(0, 120);
+  const track = String(application?.track || user.track || 'your chosen programme').replace(/[\r\n]/g, ' ').slice(0, 128);
+  const hasAccess = user.scholarship === 'limited' || user.scholarship === 'full' ||
+    (user.isPremium && (!user.premiumExpiresAt || new Date(user.premiumExpiresAt) > new Date())) ||
+    (user.purchasedCourses || []).length > 0;
+  const nextStep = hasAccess
+    ? 'Sign in to your existing account to review your available courses and access. You do not need to pay again for training already covered by your account.'
+    : 'Sign in to your account and choose a training plan to unlock standard training. Monthly: ₦2,000. Yearly: ₦24,000. Review the current fees and pay securely through Paystack at https://ddei.online/#premium. Payment is optional until you decide to enroll.';
+  const subject = application ? 'Application received — your next step at Destiny Skills Bridge' : 'Welcome to Destiny Skills Bridge — start your learning journey';
+  const text = [
+    'Hello ' + name + ',',
+    application ? 'Thank you for applying for ' + track + ' at Destiny Skills Bridge. Your application has been received.' : 'Thank you for registering at Destiny Skills Bridge. Your learner account is ready. Programme: ' + track + '.',
+    nextStep,
+    'Log in at https://ddei.online/. You do not need to register again. If you have already paid, check your payment history before paying again.',
+    'Registration does not guarantee admission, employment or freelance work. If you need help, use the support options on our website.',
+    'Welcome to Destiny Skills Bridge!\nDDEI Learner Support Team'
+  ].join('\n\n');
+  return { subject, text };
+}
+
+async function sendLearnerOnboarding(user, application = null) {
+  if (process.env.WELCOME_EMAIL_ENABLED === 'false') return { ok: false, skipped: true };
+  const from = process.env.RESEND_FROM_EMAIL;
+  if (!process.env.RESEND_API_KEY || !from || /@resend\.dev\b/i.test(from)) {
+    console.warn('Learner onboarding email skipped: configure a verified RESEND_FROM_EMAIL and RESEND_API_KEY.');
+    return { ok: false, skipped: true };
+  }
+  if (!user?.email || !(application?._id || user._id)) return { ok: false, skipped: true };
+  try {
+    const { subject, text } = learnerOnboardingMessage(user, application);
+    const key = application ? 'learner-application/' + application._id : 'learner-registration/' + user._id;
+    const response = await axios.post('https://api.resend.com/emails', {
+      from, to: [user.email], subject, text,
+      html: '<p>' + escapeHtml(text).replace(/\n/g, '<br>') + '</p>',
+    }, { headers: { Authorization: 'Bearer ' + process.env.RESEND_API_KEY, 'Idempotency-Key': key }, timeout: 8000 });
+    if (!response.data?.id) throw new Error('Email provider did not accept message');
+    return { ok: true };
+  } catch (_) {
+    console.warn('Learner onboarding email not accepted; registration remains saved.');
+    return { ok: false };
+  }
+}
+module.exports.sendLearnerOnboarding = sendLearnerOnboarding;
+module.exports.learnerOnboardingMessage = learnerOnboardingMessage;
