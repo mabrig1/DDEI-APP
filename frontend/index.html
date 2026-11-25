@@ -1531,9 +1531,8 @@
                 renderCoursesSection();
                 const pendingPaymentReference = sessionStorage.getItem('dsb_pending_payment_reference');
                 if (pendingPaymentReference) {
-                    sessionStorage.removeItem('dsb_pending_payment_reference');
-                    await checkMyPayment(pendingPaymentReference);
-                    if (!helpBotOpened) toggleHelpBot();
+                    const completed = await checkMyPayment(pendingPaymentReference, true);
+                    if (!completed && !helpBotOpened) toggleHelpBot();
                     return false;
                 }
                 if (pendingUpgradePlan) {
@@ -1989,20 +1988,65 @@
             } catch (err) { area.textContent = 'Could not load payments: ' + err.message; }
         }
 
-        async function checkMyPayment(reference) {
+        // Use only verified payment metadata and a freshly loaded account.
+        // Never infer entitlement from URL parameters or application status.
+        function paidCourseDestination(data, user, courses, skills) {
+            if (data.status !== 'success' || !data.accessGranted || !user) return null;
+            if (data.paymentKind === 'course') {
+                return courses.find(c => c.id === data.courseId)?.id || null;
+            }
+            if (data.paymentKind !== 'premium') return null;
+            const standard = courses.filter(c => !c.paidOnly && !(c.specialCourse && c.purchasePlan));
+            const active = standard.find(c => c.id === user.activeCourseId);
+            if (active) return active.id;
+            const track = String(user.track || '').trim().toLowerCase();
+            if (!track) return null;
+            const skill = skills.find(s => s.id === track || s.name.toLowerCase() === track);
+            const exact = standard.find(c => c.title.toLowerCase() === track ||
+                c.title.toLowerCase().startsWith(track + ':'));
+            if (exact) return exact.id;
+            const matches = skill ? standard.filter(c => (c.skillIds || []).includes(skill.id)) : [];
+            return matches.length === 1 ? matches[0].id : null;
+        }
+
+        async function checkMyPayment(reference, enterCourse = false) {
             const area = document.getElementById('paymentHelpResults');
             area.textContent = 'Verifying your payment with Paystack...';
             try {
                 const data = await apiRequest('/api/payments/verify/' + encodeURIComponent(reference));
-                area.textContent = data.accessGranted
-                    ? 'Payment confirmed. Your access is active — refresh your course dashboard.'
-                    : (data.message || 'Payment status: ' + data.status + '. No access has been granted yet.');
-                if (data.accessGranted) {
+                if (data.status !== 'success' || !data.accessGranted) {
+                    area.textContent = data.message || 'Payment status: ' + data.status + '. No access has been granted yet. Do not pay twice; use Check with Paystack to retry.';
+                    return false;
+                }
+                if (data.paymentKind === 'sponsorship') {
+                    area.textContent = 'Sponsorship confirmed. Thank you for investing in learners.';
+                    if (enterCourse) alert(area.textContent);
+                } else {
+                    area.textContent = 'Payment confirmed. Your access is active.';
                     const account = await apiRequest('/api/auth/me');
                     setSession(authToken(), account.user);
+                    await ensureCoursesLoaded();
                     renderCoursesSection();
+                    if (enterCourse) {
+                        const courseId = paidCourseDestination(data, account.user, cachedCourses, cachedSkills);
+                        if (courseId) {
+                            await chooseCourse(courseId);
+                        } else {
+                            document.getElementById('courses').scrollIntoView({ behavior: 'smooth' });
+                            if (data.paymentKind === 'premium' || data.paymentKind === 'course') {
+                                await openChooseCourseModal();
+                            }
+                        }
+                    }
                 }
-            } catch (err) { area.textContent = 'Verification unavailable: ' + err.message; }
+                if (sessionStorage.getItem('dsb_pending_payment_reference') === reference) {
+                    sessionStorage.removeItem('dsb_pending_payment_reference');
+                }
+                return true;
+            } catch (err) {
+                area.textContent = 'Verification or classroom access temporarily unavailable: ' + err.message + '. Do not pay twice; retry from My Payments.';
+                return false;
+            }
         }
 
         function toggleSupportTicketForm() {
@@ -2080,18 +2124,18 @@
             const url = new URL(window.location.href);
             const reference = url.searchParams.get('reference') || url.searchParams.get('trxref');
             if (!reference || !/^dsb_[a-f0-9]{16}$/.test(reference)) return;
+            sessionStorage.setItem('dsb_pending_payment_reference', reference);
             url.searchParams.delete('reference');
             url.searchParams.delete('trxref');
             window.history.replaceState({}, '', url.pathname + url.search + url.hash);
             if (!authUser()) {
-                document.getElementById('paymentHelpResults').textContent = 'Log in to confirm your purchase.';
-                toggleHelpBot();
+                document.getElementById('paymentHelpResults').textContent = 'Log in to the account used for your payment to confirm your purchase.';
+                if (!helpBotOpened) toggleHelpBot();
                 openAuthModal('login');
-                sessionStorage.setItem('dsb_pending_payment_reference', reference);
                 return;
             }
-            await checkMyPayment(reference);
-            if (!helpBotOpened) toggleHelpBot();
+            const completed = await checkMyPayment(reference, true);
+            if (!completed && !helpBotOpened) toggleHelpBot();
         }
 
         // ----- Interactive Courses -----
@@ -3036,33 +3080,6 @@
             }, 700);
         }
 
-        // When Paystack redirects back with ?reference=..., verify the payment
-        // so the account is actually credited (premium / course / certificate).
-        (async function hydratePaymentResult() {
-            const params = new URLSearchParams(window.location.search);
-            const reference = params.get('reference') || params.get('trxref');
-            if (!reference) return;
-            window.history.replaceState({}, '', window.location.pathname);
-            try {
-                const data = await apiRequest(`/api/payments/verify/${encodeURIComponent(reference)}`);
-                if (data.status === 'success') {
-                    try {
-                        const me = await apiRequest('/api/auth/me');
-                        setSession(authToken(), me.user);
-                        refreshNavAuth();
-                        renderCoursesSection();
-                    } catch (e) { /* session refresh is best-effort */ }
-                    const isSponsorship = false; // Owner-gated verification returns minimal data.
-                    alert(isSponsorship
-                        ? '✅ Sponsorship confirmed. Thank you for investing in African talent. Your contribution is now included in our transparent funding records.'
-                        : '✅ Payment confirmed! Your access has been unlocked. If you paid for a certificate, open your course and click "Claim Certificate".');
-                } else {
-                    alert('Your payment could not be confirmed as successful. If you were debited, contact us on WhatsApp with your payment receipt and we will resolve it quickly.');
-                }
-            } catch (err) {
-                alert('Payment verification is temporarily unavailable. Open Help & Support, check My Payments, or send a support ticket with your reference. Do not pay twice.');
-            }
-        })();
         loadPublicImpact();
         appendChatMessage('advisor', "Hi, I'm your Destiny Skills Bridge AI Advisor. Ask me which skill to learn, how much you could earn, or how to build your portfolio.");
 
