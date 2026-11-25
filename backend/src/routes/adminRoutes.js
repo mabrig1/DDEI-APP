@@ -29,7 +29,10 @@ const { listInquiries, updateInquiry } = require('../controllers/partnerControll
 const { adminRateLimit } = require('../middleware/adminRateLimit');
 const { listAdminTickets, replyToTicket, changeTicketStatus } = require('../controllers/supportController');
 
+const { runSwarm, swarmStatus } = require('../utils/managementSwarm');
 const router = express.Router();
+router.get('/swarm', requireAdmin, asyncHandler(async (req, res) => res.json(await swarmStatus())));
+router.post('/swarm/run', requireAdmin, adminRateLimit('swarm-run', 5), asyncHandler(async (req, res) => res.json(await runSwarm('admin'))));
 
 const adminAuthLimiter = adminRateLimit('admin-login');
 router.post('/login', adminAuthLimiter, login);

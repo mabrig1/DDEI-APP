@@ -59,6 +59,7 @@
 
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center gap-x-2 flex-wrap gap-y-2" id="tabBar">
+                <button data-tab="swarm" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Management Swarm</button>
                 <button data-tab="overview" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">📊 Overview</button>
                 <button data-tab="courseanalytics" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Course Analytics</button>
                 <button data-tab="applications" class="tab-btn px-4 py-2 text-sm font-semibold rounded-xl">Applications</button>
@@ -79,6 +80,19 @@
 
         <div id="genericEmpty" class="hidden bg-white border rounded-3xl p-10 text-center text-slate-500"></div>
         <div id="genericError" class="hidden text-red-600 text-sm mb-4"></div>
+
+        <!-- Management swarm -->
+        <div id="tab-swarm" class="tab-panel hidden">
+            <div class="bg-slate-900 text-white rounded-3xl p-6 mb-4">
+                <p class="text-xs uppercase tracking-widest text-cyan-300">DDEI Operations</p>
+                <h2 class="text-2xl font-bold mt-2">Management Swarm</h2>
+                <p class="text-sm text-slate-300 mt-2">Five coordinated operational agents. Verified payment recovery, learner support, enrollment, engagement and oversight.</p>
+                <p id="swarmStatus" class="text-sm mt-4" role="status">Loading...</p>
+                <button id="swarmRun" type="button" onclick="runManagementSwarm()" class="mt-4 px-5 py-2.5 bg-cyan-300 text-slate-900 rounded-xl font-semibold disabled:opacity-50">Run agents now</button>
+            </div>
+            <div id="swarmAgents" class="grid md:grid-cols-2 gap-4"></div>
+            <p class="text-sm text-slate-500 mt-4">The scheduler runs daily at 03:00 UTC when configured. No payments are initiated, and no fees, credentials, scholarships or refunds are changed.</p>
+        </div>
 
         <!-- Overview tab -->
         <div id="tab-overview" class="tab-panel hidden">
@@ -517,6 +531,7 @@
 
         let currentTab = 'overview';
         const TABS = {
+            swarm: { load: loadManagementSwarm },
             overview: { load: loadOverview },
             courseanalytics: { load: loadCourseAnalytics },
             applications: { load: loadApplications },
@@ -548,6 +563,52 @@
         }
 
         document.getElementById('refreshBtn').addEventListener('click', () => TABS[currentTab].load());
+
+        function renderSwarm(data) {
+            const status = document.getElementById('swarmStatus');
+            const area = document.getElementById('swarmAgents');
+            document.getElementById('swarmRun').disabled = !data.enabled;
+            status.textContent = (data.enabled ? (data.actionsEnabled ? 'Bounded autonomous actions enabled' : 'Monitor-only mode') : 'Disabled — configure MANAGEMENT_SWARM_ENABLED') +
+                (data.scheduleConfigured ? ' · Cron secret configured' : ' · Cron secret not configured') +
+                (data.lastRun ? ' · Last run: ' + new Date(data.lastRun.finishedAt).toLocaleString() : ' · No recorded run yet');
+            area.replaceChildren();
+            const names = { enrollment: 'Enrollment agent', payments: 'Payment recovery agent', learning: 'Learning engagement agent', support: 'Learner support agent', supervisor: 'Supervisor agent' };
+            for (const [id, name] of Object.entries(names)) {
+                const entry = data.lastRun?.agents?.find(a => a.id === id);
+                const card = document.createElement('section');
+                card.className = 'rounded-2xl border bg-white p-5';
+                const title = document.createElement('h3');
+                title.className = 'font-bold text-slate-900';
+                title.textContent = name;
+                const state = document.createElement('p');
+                state.className = 'text-sm text-slate-500 mt-1';
+                state.textContent = entry?.status || 'Not yet run';
+                card.append(title, state);
+                for (const [key, value] of Object.entries(entry?.result || {})) {
+                    const line = document.createElement('p');
+                    line.className = 'text-sm mt-2 break-words';
+                    line.textContent = key.replace(/([A-Z])/g, ' $1') + ': ' + String(value);
+                    card.appendChild(line);
+                }
+                area.appendChild(card);
+            }
+        }
+        async function loadManagementSwarm() {
+            try { renderSwarm(await adminRequest('/api/admin/swarm')); }
+            catch (err) { document.getElementById('swarmStatus').textContent = err.message; document.getElementById('swarmRun').disabled = true; }
+        }
+        async function runManagementSwarm() {
+            const btn = document.getElementById('swarmRun');
+            btn.disabled = true;
+            document.getElementById('swarmStatus').textContent = 'Running coordinated agents...';
+            try {
+                await adminRequest('/api/admin/swarm/run', { method: 'POST' });
+                await loadManagementSwarm();
+            } catch (err) {
+                document.getElementById('swarmStatus').textContent = err.message;
+                btn.disabled = false;
+            }
+        }
 
         async function loadSupportTickets() {
             const list = document.getElementById('supportAdminList');
