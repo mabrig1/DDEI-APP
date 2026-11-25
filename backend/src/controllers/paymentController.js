@@ -336,6 +336,8 @@ async function verifyPayment(req, res) {
       reference,
       status: subscription.status,
       accessGranted: Boolean(subscription.benefitsAppliedAt),
+      accessType: String(record.plan).startsWith('certificate-fee:') ? 'certificate' : entitlementForPlan(record.plan, PLANS)?.type,
+      courseId: PLANS[record.plan]?.courseId || undefined,
       message: subscription.status === 'success' && !subscription.benefitsAppliedAt
         ? 'Payment confirmed. Access could not be linked automatically; please contact support with your reference.'
         : undefined,
