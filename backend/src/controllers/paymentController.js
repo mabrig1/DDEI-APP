@@ -377,4 +377,23 @@ async function paystackWebhook(req, res) {
   }
 }
 
-module.exports = { initializePayment, verifyPayment, paystackWebhook, myPayments, PLANS };
+// Management agent may reconcile an existing, account-linked transaction.
+// It cannot create a charge, accept a browser receipt or invent an entitlement.
+async function reconcileManagedPayment(reference) {
+  if (!process.env.PAYSTACK_SECRET_KEY || !/^dsb_[a-f0-9]{16}$/.test(String(reference))) return 'unavailable';
+  const record = await Subscription.findOne({ reference, user: { $ne: null }, status: { $in: ['pending', 'success'] }, benefitsAppliedAt: null });
+  if (!record) return 'not-needed';
+  const response = await paystackClient().get('/transaction/verify/' + reference, { timeout: 4000 });
+  const data = response.data?.data;
+  if (!paymentMatchesRecord(data, record) || !data.customer?.email || !record.customerEmail ||
+      normalizeEmail(data.customer.email) !== normalizeEmail(record.customerEmail)) return 'not-confirmed';
+  const settled = await Subscription.findOneAndUpdate(
+    { _id: record._id, status: { $ne: 'success' } },
+    { $set: { status: 'success', paystackData: paymentSnapshot(data) } }, { new: true });
+  const paid = settled || await Subscription.findById(record._id);
+  await grantPaymentBenefits(paid);
+  const updated = await Subscription.findById(record._id);
+  return updated?.benefitsAppliedAt ? 'recovered' : 'not-fulfilled';
+}
+
+module.exports = { initializePayment, verifyPayment, paystackWebhook, myPayments, PLANS, reconcileManagedPayment };
