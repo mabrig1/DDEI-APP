@@ -184,7 +184,7 @@
                     <button id="swarmRun" type="button" onclick="runManagementSwarm()" class="px-5 py-2.5 bg-blue-700 text-white rounded-xl font-semibold disabled:opacity-50">Run real agents now</button>
                 </div>
                 <div id="swarmAgents" class="grid md:grid-cols-2 gap-4"></div>
-                <p class="text-sm text-slate-500 mt-4">Actual results reflect the most recently recorded backend run, not a live event stream. Scheduled daily at 03:00 UTC when configured. Real actions obey server-side policy and configuration.</p>
+                <p class="text-sm text-slate-500 mt-4">Actual results reflect the most recently recorded backend run, not a live event stream. Vercel runs daily or Cloudflare every 15 minutes, depending on the selected scheduler. Backend credential configuration does not prove the Worker is deployed. Real actions obey server-side policy and configuration.</p>
             </section>
         </div>
 
@@ -786,7 +786,8 @@
             const area = document.getElementById('swarmAgents');
             document.getElementById('swarmRun').disabled = !data.enabled;
             status.textContent = (data.enabled ? (data.actionsEnabled ? 'Bounded autonomous actions enabled' : 'Monitor-only mode') : 'Disabled — configure MANAGEMENT_SWARM_ENABLED') +
-                (data.scheduleConfigured ? ' · Cron secret configured' : ' · Cron secret not configured') +
+                (' · Scheduler: ' + (data.scheduler === 'cloudflare' ? 'Cloudflare Worker / 15 min' : 'Vercel / daily')) +
+                (data.scheduleConfigured ? ' · Backend scheduler credential configured' : ' · Scheduler credential missing') +
                 (data.lastRun ? ' · Last run: ' + new Date(data.lastRun.finishedAt).toLocaleString() : ' · No recorded run yet');
             area.replaceChildren();
             const names = { enrollment: 'Enrollment agent', payments: 'Payment recovery agent', learning: 'Learning engagement agent', support: 'Learner support agent', supervisor: 'Supervisor agent' };
