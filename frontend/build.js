@@ -81,6 +81,9 @@ fs.copyFileSync(path.join(__dirname, 'dsb-backup.js'), path.join(outDir, 'dsb-ba
 fs.copyFileSync(path.join(__dirname, 'promoter-referral.js'), path.join(outDir, 'promoter-referral.js'));
 fs.copyFileSync(path.join(__dirname, 'demo.js'), path.join(outDir, 'demo.js'));
 fs.copyFileSync(path.join(__dirname, 'demo.css'), path.join(outDir, 'demo.css'));
+fs.copyFileSync(path.join(__dirname, 'swarm-cinema.js'), path.join(outDir, 'swarm-cinema.js'));
+fs.mkdirSync(path.join(outDir, 'vendor'), { recursive: true });
+for (const file of ['anime.min.js','anime.LICENSE.txt']) fs.copyFileSync(path.join(__dirname,'vendor',file),path.join(outDir,'vendor',file));
 
 const COURSE_LINK_ALIASES = {
   'ai-video': 'ai-cinematic-special-edition',

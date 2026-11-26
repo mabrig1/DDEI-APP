@@ -37,7 +37,22 @@
         @media(max-width:600px) { .swarm-map { gap:9px; min-height:220px; } .swarm-node { padding:10px 4px; font-size:11px; } .swarm-node .node-status { font-size:10px; } }
         @media(prefers-reduced-motion:reduce) { .swarm-link[data-on="true"] { animation:none; } .swarm-node { transition:none; transform:none!important; } }
 
-    </style>
+    
+.cinema-theater{position:relative;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 48%,#155160 0%,#0b2135 30%,#030711 72%);border:1px solid #386378;border-radius:22px;min-height:330px;aspect-ratio:16/9;box-shadow:inset 0 0 80px #000a,0 16px 35px #0007}
+.cinema-theater svg{position:absolute;inset:0;width:100%;height:100%}
+.cinema-orbit{transform-origin:400px 210px;animation:cinemaOrbit 18s linear infinite}.cinema-orbit.reverse{animation-direction:reverse;animation-duration:12s}
+@keyframes cinemaOrbit{to{transform:rotate(360deg)}}
+.cinema-hud{position:absolute;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:16px;z-index:2;background:linear-gradient(#020611cc 0%,transparent 23%,transparent 74%,#020611ee 100%)}
+.cinema-shot{font-weight:800;color:#fff;letter-spacing:.07em;font-size:clamp(11px,1.6vw,19px);text-shadow:0 0 18px #4ae7ff}.cinema-tag{color:#a3edfc;letter-spacing:.16em;font:700 10px system-ui}
+.cinema-agent{transition:opacity .35s;opacity:.6}.cinema-agent[data-state="running"]{opacity:1;filter:url(#cinemaGlow)}.cinema-agent[data-state="done"]{opacity:.9}.cinema-agent[data-state="done"] .cinema-outline{stroke:#55e9b2}.cinema-agent[data-state="blocked"]{opacity:1}.cinema-agent[data-state="blocked"] .cinema-outline{stroke:#ffc166}.cinema-agent[data-state="running"] .cinema-outline{stroke:#9dfff4;stroke-width:3}
+.cinema-agent[data-state="running"] .cinema-pulse{animation:cinemaPulse 1.2s ease-out infinite;transform-box:fill-box;transform-origin:center}@keyframes cinemaPulse{from{transform:scale(.85);opacity:1}to{transform:scale(1.45);opacity:0}}
+.cinema-theater[data-paused="true"] *,.cinema-theater[data-phase="ready"] *,.cinema-theater[data-phase="final"] *{animation-play-state:paused!important}
+.cinema-theater[data-blocked="true"]{border-color:#ffc166}.cinema-theater[data-phase="final"]:not([data-blocked="true"]){border-color:#55e9b2}
+.cinema-flash{position:absolute;inset:0;background:radial-gradient(ellipse,#9dfff444,transparent 70%);opacity:0;pointer-events:none}
+.swarm-stage:fullscreen .cinema-theater{max-height:48vh;min-height:260px}
+@media(max-width:640px){.cinema-theater{min-height:235px;aspect-ratio:4/3}.cinema-hud{padding:9px}}
+@media(prefers-reduced-motion:reduce){.cinema-theater *{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
 
@@ -130,10 +145,21 @@
                     </label>
                     <label class="text-xs text-slate-300">Pacing
                         <select id="swarmSpeed" class="block rounded-xl bg-slate-800 text-white border border-slate-600 p-2.5 mt-1">
-                            <option value="2600">Teaching</option><option value="4200">Slow</option><option value="1100">Fast</option>
+                            <option value="6500">Cinematic</option><option value="14000">Spoken narration</option><option value="2600">Teaching</option><option value="4200">Slow</option><option value="1100">Fast</option>
                         </select>
                     </label>
                     <button id="swarmFullscreen" type="button" class="rounded-xl border border-slate-500 px-3 py-2.5 text-sm text-white">Full screen</button>
+                </div>
+                <div class="flex flex-wrap items-center gap-4 mb-3 text-xs text-slate-300"><span class="font-bold tracking-widest text-cyan-200">CINEMATIC MISSION THEATER</span><label class="flex items-center gap-2"><input id="cinemaSound" type="checkbox"> Sound effects</label><label class="flex items-center gap-2"><input id="cinemaVoice" type="checkbox"> Spoken narration (browser voice)</label></div>
+                <div id="cinemaTheater" class="cinema-theater mb-5" data-phase="ready" data-paused="true" data-blocked="false" aria-label="Animated fictional agent mission">
+                    <svg viewBox="0 0 800 420" aria-hidden="true">
+                        <defs><radialGradient id="cinemaCore"><stop stop-color="#c8fff9"/><stop offset=".25" stop-color="#26d9df"/><stop offset=".65" stop-color="#124b70"/><stop offset="1" stop-color="#06152e"/></radialGradient><linearGradient id="cinemaFloor" x2="0%" y2="100%"><stop stop-color="#18c6e2" stop-opacity=".1"/><stop offset="1" stop-color="#18c6e2" stop-opacity=".6"/></linearGradient><linearGradient id="cinemaPanel" x2="0%" y2="100%"><stop stop-color="#173f56"/><stop offset="1" stop-color="#081425"/></linearGradient><filter id="cinemaGlow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+                        <g fill="none" stroke="url(#cinemaFloor)" stroke-width="1" opacity=".35"><path d="M400 225 L-200 420"/><path d="M400 225 L-100 420"/><path d="M400 225 L0 420"/><path d="M400 225 L100 420"/><path d="M400 225 L200 420"/><path d="M400 225 L300 420"/><path d="M400 225 L400 420"/><path d="M400 225 L500 420"/><path d="M400 225 L600 420"/><path d="M400 225 L700 420"/><path d="M400 225 L800 420"/><path d="M400 225 L900 420"/><path d="M400 225 L1000 420"/><path d="M0 250 H800"/><path d="M0 268 H800"/><path d="M0 291 H800"/><path d="M0 322 H800"/><path d="M0 362 H800"/><path d="M0 410 H800"/></g>
+                        <g fill="none" stroke="#428ba4" opacity=".35" stroke-dasharray="3 9"><path d="M145 100 Q400 155 400 210 Q400 265 655 320"/><path d="M655 100 Q400 155 400 210 Q400 265 145 320"/><ellipse cx="400" cy="351" rx="258" ry="32"/></g>
+                        <g id="cinemaPackets"></g>
+                        <g data-cinema-agent="supervisor" data-state="idle" class="cinema-agent"><ellipse cx="400" cy="316" rx="100" ry="17" fill="#1ae2ea" opacity=".18"/><circle cx="400" cy="210" r="77" fill="none" stroke="#5ad8eb" opacity=".35"/><circle cx="400" cy="210" r="65" stroke="#8affed" stroke-width="1.5" fill="url(#cinemaCore)" class="cinema-outline"/><circle cx="400" cy="210" r="82" fill="none" stroke="#f8c56c" stroke-width="2" stroke-dasharray="20 9 5 15" class="cinema-orbit"/><ellipse cx="400" cy="210" rx="91" ry="35" fill="none" stroke="#8affed" stroke-width="1.5" class="cinema-orbit reverse"/><circle cx="400" cy="210" r="73" stroke="#8affed" stroke-width="2" fill="none" class="cinema-pulse"/><text x="400" y="206" text-anchor="middle" fill="#efffff" font-size="15" font-weight="800">05</text><text x="400" y="224" text-anchor="middle" fill="#efffff" font-size="11" font-weight="700">COMMAND CORE</text></g>
+                        <g class="cinema-agent" data-cinema-agent="enrollment" data-state="idle" transform="translate(145 100)"><ellipse cy="42" rx="72" ry="10" fill="#20ddff" opacity=".16"/><rect x="-80" y="-43" width="160" height="85" rx="14" fill="url(#cinemaPanel)" stroke="#548da4" class="cinema-outline"/><circle cy="-12" r="27" fill="none" stroke="#56d9ff" class="cinema-pulse"/><path d="M-9 -3 H9 M0 -12 V7 M-14 13 H14" transform="translate(0 -12)" stroke="#b6fff6" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><text x="-66" y="-25" fill="#f7c675" font-size="10">01</text><text y="26" text-anchor="middle" fill="#e5fbff" font-size="11" font-weight="800">ENROLLMENT</text></g><g class="cinema-agent" data-cinema-agent="payments" data-state="idle" transform="translate(655 100)"><ellipse cy="42" rx="72" ry="10" fill="#20ddff" opacity=".16"/><rect x="-80" y="-43" width="160" height="85" rx="14" fill="url(#cinemaPanel)" stroke="#548da4" class="cinema-outline"/><circle cy="-12" r="27" fill="none" stroke="#56d9ff" class="cinema-pulse"/><path d="M-17 -9 H17 V9 H-17 Z M-17 -2 H17 M-11 5 H-3" transform="translate(0 -12)" stroke="#b6fff6" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><text x="-66" y="-25" fill="#f7c675" font-size="10">02</text><text y="26" text-anchor="middle" fill="#e5fbff" font-size="11" font-weight="800">PAYMENT RECOVERY</text></g><g class="cinema-agent" data-cinema-agent="learning" data-state="idle" transform="translate(145 320)"><ellipse cy="42" rx="72" ry="10" fill="#20ddff" opacity=".16"/><rect x="-80" y="-43" width="160" height="85" rx="14" fill="url(#cinemaPanel)" stroke="#548da4" class="cinema-outline"/><circle cy="-12" r="27" fill="none" stroke="#56d9ff" class="cinema-pulse"/><path d="M-16 -7 L0 -13 L16 -7 L0 0 Z M-9 -3 V8 L0 12 L9 8 V-3" transform="translate(0 -12)" stroke="#b6fff6" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><text x="-66" y="-25" fill="#f7c675" font-size="10">03</text><text y="26" text-anchor="middle" fill="#e5fbff" font-size="11" font-weight="800">LEARNING</text></g><g class="cinema-agent" data-cinema-agent="support" data-state="idle" transform="translate(655 320)"><ellipse cy="42" rx="72" ry="10" fill="#20ddff" opacity=".16"/><rect x="-80" y="-43" width="160" height="85" rx="14" fill="url(#cinemaPanel)" stroke="#548da4" class="cinema-outline"/><circle cy="-12" r="27" fill="none" stroke="#56d9ff" class="cinema-pulse"/><path d="M-14 2 V-2 A14 14 0 0 1 14 -2 V7 H7 M-14 2 H-8 V10 H-14 Z" transform="translate(0 -12)" stroke="#b6fff6" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><text x="-66" y="-25" fill="#f7c675" font-size="10">04</text><text y="26" text-anchor="middle" fill="#e5fbff" font-size="11" font-weight="800">SUPPORT</text></g>
+                    </svg><div id="cinemaFlash" class="cinema-flash"></div><div class="cinema-hud"><div class="flex justify-between items-start"><span class="cinema-tag">DDEI / SIMULATION</span><span class="cinema-tag">CHAPTER <span id="cinemaChapter">00</span></span></div><div><div id="cinemaShot" class="cinema-shot">STANDBY // AWAITING MISSION</div><div id="cinemaHandoff" class="text-xs sm:text-sm text-cyan-200 mt-1">Choose a scenario and launch the simulation.</div></div></div>
                 </div>
                 <div class="grid lg:grid-cols-[1.55fr_1fr] gap-5">
                     <div class="rounded-2xl border border-cyan-900/70 p-3 sm:p-4 bg-slate-950/30">
@@ -513,6 +539,8 @@
         </div>
     </div>
 
+    <script src="/vendor/anime.min.js"></script>
+    <script src="/swarm-cinema.js"></script>
     <!-- DSB_RUNTIME_CONFIG -->
     <script>
         // Never let a production build talk to localhost. build.js injects
@@ -659,6 +687,7 @@
 
         document.getElementById('refreshBtn').addEventListener('click', () => TABS[currentTab].load());
 
+        window.DDEICinema?.init();
         // Fictional, browser-only teaching events. Never call adminRequest or fetch here.
         const SWARM_MISSIONS = {
             success: [
@@ -700,6 +729,7 @@
         const swarmDemoState = { reg:'Waiting', pay:'Not checked', access:'Locked' };
         function swarmMission() { return SWARM_MISSIONS[document.getElementById('swarmScenario').value] || SWARM_MISSIONS.success; }
         function swarmPause() {
+            window.DDEICinema?.pause();
             clearTimeout(swarmDemoTimer);
             swarmDemoTimer = null;
             swarmDemoPlaying = false;
@@ -708,6 +738,7 @@
         function swarmReset() {
             swarmPause();
             swarmDemoIndex = 0;
+            window.DDEICinema?.reset();
             Object.assign(swarmDemoState, { reg:'Waiting', pay:'Not checked', access:'Locked' });
             document.querySelectorAll('#swarmStage .swarm-node').forEach(n => { n.dataset.state='idle'; n.querySelector('.node-status').textContent='Standby'; });
             document.querySelectorAll('#swarmStage .swarm-link').forEach(n => { n.dataset.on='false'; });
@@ -754,6 +785,7 @@
                 document.getElementById('swarmNext').disabled=true;
                 swarmPause();
             }
+            window.DDEICinema?.scene(step,swarmDemoIndex,mission.length);
             return true;
         }
         function swarmTick() {
