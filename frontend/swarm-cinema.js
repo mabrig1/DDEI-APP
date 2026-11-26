@@ -61,15 +61,18 @@
     stopMotion(); if(window.speechSynthesis)window.speechSynthesis.cancel();
     active=[];previous=[];stageState='ready';
     const stage=byId('cinemaTheater');if(!stage)return;
-    stage.dataset.phase='ready';stage.dataset.blocked='false';
+    stage.dataset.phase='ready';stage.dataset.blocked='false';stage.dataset.paused='true';
+    if(byId('cinemaFlash'))byId('cinemaFlash').style.opacity='0';
     byId('cinemaShot').textContent='STANDBY // AWAITING MISSION';
     byId('cinemaHandoff').textContent='Choose a scenario and launch the simulation.';
     byId('cinemaChapter').textContent='00';
-    stage.querySelectorAll('[data-cinema-agent]').forEach(n=>{n.dataset.state='idle';});
+    stage.querySelectorAll('[data-cinema-agent]').forEach(n=>{n.dataset.state='idle'; const label=n.querySelector('.cinema-agent-status');if(label)label.textContent='STANDBY';});
   }
   function pause(){
     stopMotion();if(window.speechSynthesis)window.speechSynthesis.cancel();
     const stage=byId('cinemaTheater');if(stage)stage.dataset.paused='true';
+    if(byId('cinemaFlash'))byId('cinemaFlash').style.opacity='0';
+    if(byId('cinemaWorld'))byId('cinemaWorld').style.transform='';
   }
   function scene(step,index,total){
     const stage=byId('cinemaTheater');if(!stage)return;
@@ -85,6 +88,8 @@
       const a=n.dataset.cinemaAgent;
       if(active.includes(a))n.dataset.state=(step.blocked||[]).includes(a)?'blocked':step.outcome?'done':'running';
       else if(n.dataset.state==='running')n.dataset.state='done';
+      const label=n.querySelector('.cinema-agent-status');
+      if(label)label.textContent=({idle:'STANDBY',running:'EXECUTING',done:'COMPLETE',blocked:'POLICY GATE'})[n.dataset.state]||'STANDBY';
     });
     if(!step.outcome){
       active.forEach(a=>{
@@ -94,7 +99,8 @@
     }
     animate(byId('cinemaShot'),{opacity:[.1,1],translateY:[12,0],duration:550,easing:'easeOutCubic'});
     animate(byId('cinemaHandoff'),{opacity:[.15,1],duration:650,easing:'easeOutCubic'});
-    animate(byId('cinemaFlash'),{opacity:[.65,0],duration:850,easing:'easeOutQuad'});
+    animate(byId('cinemaFlash'),{opacity:[.42,0],duration:850,easing:'easeOutQuad'});
+    if(!reduced() && typeof window.anime==='function')animate(byId('cinemaWorld'),{scale:[1.025,1],duration:850,easing:'easeOutCubic'});
     sound(byId('cinemaSound')?.checked,blocked);
     voice(step.title+'. '+step.narration);
   }
